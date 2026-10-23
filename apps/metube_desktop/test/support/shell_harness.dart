@@ -101,7 +101,12 @@ class ShellHarness {
     this.library,
     this.server,
     this.transcripts = const {},
+    this.serverError,
   });
+
+  /// Why the server part of the library is missing, as if it stopped
+  /// answering after the library was last read.
+  final Object? serverError;
 
   /// Transcripts by canonical URL, as if already on this computer.
   final Map<String, Transcript> transcripts;
@@ -131,6 +136,8 @@ class ShellHarness {
       ),
       if (library case final items?)
         libraryItemsProvider.overrideWith((ref) async => items),
+      if (serverError case final error?)
+        libraryServerErrorProvider.overrideWithValue(error),
     ],
     child: const EmberApp(),
   );

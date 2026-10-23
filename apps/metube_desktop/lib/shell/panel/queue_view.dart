@@ -82,8 +82,12 @@ class _QueueLine extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        child: SizedBox(
-          height: MTDensity.desktop.row + MTSpace.sm,
+        // A floor, not a fixed height: with large text the two lines need
+        // more than one row's worth.
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MTDensity.desktop.row + MTSpace.sm,
+          ),
           child: Row(
             children: [
               ReorderableDragStartListener(

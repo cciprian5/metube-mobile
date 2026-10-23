@@ -1490,18 +1490,6 @@ abstract class MTLocalizations {
   /// **'Language'**
   String get language;
 
-  /// No description provided for @languageArabic.
-  ///
-  /// In en, this message translates to:
-  /// **'العربية'**
-  String get languageArabic;
-
-  /// No description provided for @languageEnglish.
-  ///
-  /// In en, this message translates to:
-  /// **'English'**
-  String get languageEnglish;
-
   /// No description provided for @languageSystem.
   ///
   /// In en, this message translates to:

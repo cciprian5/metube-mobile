@@ -805,12 +805,6 @@ class MTLocalizationsEn extends MTLocalizations {
   String get language => 'Language';
 
   @override
-  String get languageArabic => 'العربية';
-
-  @override
-  String get languageEnglish => 'English';
-
-  @override
   String get languageSystem => 'System';
 
   @override

@@ -101,41 +101,51 @@ class _LinesState extends State<_Lines> {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          context.mtl.desktopTranscriptHint,
-          style: text.labelSmall?.copyWith(color: p.ink3),
-        ),
-        const SizedBox(height: MTSpace.sm),
-        Expanded(
-          child: NotificationListener<UserScrollNotification>(
-            onNotification: (n) {
-              if (n.direction != ScrollDirection.idle) {
-                _scrolledByHand = DateTime.now();
-              }
-              return false;
-            },
-            // A column, not a lazy list, so the line being said always has
-            // a place to scroll to; a transcript is a few hundred lines.
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (final (i, line) in widget.segments.indexed)
-                    _Line(
-                      key: i == _now ? _current : null,
-                      line: line,
-                      current: i == _now,
-                      onTap: () => unawaited(widget.player.seek(line.start)),
-                    ),
-                ],
+    return LayoutBuilder(
+      builder: (context, box) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // At most a third of the panel, so in a short window with large
+          // text the hint is clipped rather than pushing the lines out. Not
+          // a Flexible: beside the Expanded below it would halve the list.
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: box.maxHeight / 3),
+            child: ClipRect(
+              child: Text(
+                context.mtl.desktopTranscriptHint,
+                style: text.labelSmall?.copyWith(color: p.ink3),
               ),
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: MTSpace.sm),
+          Expanded(
+            child: NotificationListener<UserScrollNotification>(
+              onNotification: (n) {
+                if (n.direction != ScrollDirection.idle) {
+                  _scrolledByHand = DateTime.now();
+                }
+                return false;
+              },
+              // A column, not a lazy list, so the line being said always has
+              // a place to scroll to; a transcript is a few hundred lines.
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final (i, line) in widget.segments.indexed)
+                      _Line(
+                        key: i == _now ? _current : null,
+                        line: line,
+                        current: i == _now,
+                        onTap: () => unawaited(widget.player.seek(line.start)),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

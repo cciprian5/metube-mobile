@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/shell/panel/queue_view.dart';
+import 'package:metube_desktop/shell/panel/transcript_view.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
@@ -93,6 +94,22 @@ void main() {
     final h = await open(tester, transcripts: {_url: _transcript});
     await tester.tap(inPanel(find.textContaining('If the pool dies')));
     expect(h.player.calls, ['seek']);
+  });
+
+  testWidgets('the lines get the panel; the hint takes only its own line', (
+    tester,
+  ) async {
+    await open(tester, transcripts: {_url: _transcript});
+    final whole = tester.getSize(find.byType(TranscriptView)).height;
+    final lines = tester
+        .getSize(
+          find.descendant(
+            of: find.byType(TranscriptView),
+            matching: find.byType(SingleChildScrollView),
+          ),
+        )
+        .height;
+    expect(lines, greaterThan(whole * 0.8));
   });
 
   testWidgets('a clip with no transcript says so', (tester) async {

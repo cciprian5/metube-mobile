@@ -155,13 +155,17 @@ class MTMediaRow extends StatelessWidget {
                                 style: small,
                               ),
                             ),
+                          // Flexible, so with large text the tags shorten
+                          // to an ellipsis instead of pushing out the row.
                           if (showTags)
                             for (final tag in tags.take(3))
-                              Padding(
-                                padding: const EdgeInsetsDirectional.only(
-                                  start: MTSpace.xs,
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.only(
+                                    start: MTSpace.xs,
+                                  ),
+                                  child: _Tag(tag),
                                 ),
-                                child: _Tag(tag),
                               ),
                         ],
                       ),
@@ -255,6 +259,7 @@ class _Tag extends StatelessWidget {
       child: Text(
         '#$tag',
         maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: Theme.of(context).textTheme.labelSmall!.copyWith(color: p.ink2),
       ),
     );

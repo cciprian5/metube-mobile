@@ -109,8 +109,8 @@ void main() {
                     value: 'system',
                     label: Text(l10n.languageSystem),
                   ),
-                  ButtonSegment(value: 'ar', label: Text(l10n.languageArabic)),
-                  ButtonSegment(value: 'en', label: Text(l10n.languageEnglish)),
+                  ButtonSegment(value: 'ar', label: Text(mtLanguageName('ar'))),
+                  ButtonSegment(value: 'en', label: Text(mtLanguageName('en'))),
                 ],
                 selected: const {'ar'},
                 onSelectionChanged: (_) {},
@@ -124,7 +124,7 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text(l10n.languageSystem), findsOneWidget);
-    expect(find.text(l10n.languageArabic), findsOneWidget);
-    expect(find.text(l10n.languageEnglish), findsOneWidget);
+    expect(find.text(mtLanguageName('ar')), findsOneWidget);
+    expect(find.text(mtLanguageName('en')), findsOneWidget);
   });
 }

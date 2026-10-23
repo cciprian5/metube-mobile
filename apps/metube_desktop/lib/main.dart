@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'data/lab_server.dart';
 import 'data/library_data.dart';
+import 'features/library/artwork.dart';
 import 'di.dart';
 import 'identity.dart';
 import 'platform/error_log.dart';
@@ -85,6 +86,9 @@ Future<void> main(List<String> args) async {
         initialShellLayoutProvider.overrideWithValue(layout),
         windowControlsProvider.overrideWithValue(controls),
         serverConfigProvider.overrideWithValue(labServerFrom(args)),
+        artworkCacheProvider.overrideWithValue(
+          artworkCacheIn('${local.path}/cache'),
+        ),
       ],
       child: const EmberApp(),
     ),

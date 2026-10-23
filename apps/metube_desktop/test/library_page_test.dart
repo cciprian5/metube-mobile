@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/features/library/library_state.dart';
@@ -188,6 +189,44 @@ void main() {
     await tester.tap(find.text('Clear filters'));
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaGridCard), findsNWidgets(4));
+  });
+
+  testWidgets("**the guard**: YouTube's cover goes without the password", (
+    tester,
+  ) async {
+    final locked = ServerConfig(
+      baseUrl: 'http://nas:8081',
+      username: 'owner',
+      password: 'secret',
+    );
+    await open(
+      tester,
+      server: locked,
+      library: [
+        LibraryItem(
+          canonicalUrl: 'https://youtu.be/aaaaaaaaaaa',
+          title: 'From YouTube',
+          onServer: true,
+          thumbnail: 'https://i.ytimg.com/vi/aaaaaaaaaaa/hqdefault.jpg',
+        ),
+        LibraryItem(
+          canonicalUrl: 'https://example.com/b',
+          title: 'Cover on the server',
+          onServer: true,
+          thumbnail: 'http://nas:8081/download/b.jpg',
+        ),
+        const LibraryItem(canonicalUrl: 'https://example.com/c', title: 'None'),
+      ],
+    );
+    final covers = {
+      for (final c in tester.widgetList<CachedNetworkImage>(
+        find.byType(CachedNetworkImage),
+      ))
+        c.imageUrl: c.httpHeaders ?? const {},
+    };
+    expect(covers.keys, hasLength(2));
+    expect(covers['https://i.ytimg.com/vi/aaaaaaaaaaa/hqdefault.jpg'], isEmpty);
+    expect(covers['http://nas:8081/download/b.jpg'], contains('Authorization'));
   });
 
   testWidgets('**the guard**: no Material icon on screen, in any layout', (

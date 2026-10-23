@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/app.dart';
 import 'package:metube_desktop/data/library_data.dart';
+import 'package:metube_desktop/features/library/artwork.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
 import 'package:metube_desktop/shell/shell_state.dart';
@@ -105,6 +107,7 @@ class ShellHarness {
       windowControlsProvider.overrideWithValue(controls),
       serverConfigProvider.overrideWithValue(server),
       playbackResolverProvider.overrideWithValue(resolver),
+      artworkCacheProvider.overrideWithValue(NoCovers()),
       if (library case final items?)
         libraryItemsProvider.overrideWith((ref) async => items),
     ],
@@ -137,3 +140,15 @@ Finder byLabel(String label) => find.byWidgetPredicate(
   (w) => w is MTShortcutTooltip && w.message == label,
   description: 'control "$label"',
 );
+
+/// A cover cache that never fetches anything, so a test touches neither
+/// the network nor the disk; a card then shows its placeholder.
+class NoCovers extends Fake implements BaseCacheManager {
+  @override
+  Stream<FileResponse> getFileStream(
+    String url, {
+    String? key,
+    Map<String, String>? headers,
+    bool withProgress = false,
+  }) => const Stream.empty();
+}

@@ -8,6 +8,7 @@ import 'package:mt_media/mt_media.dart' show mtFormatDuration;
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/library_data.dart';
+import 'artwork.dart';
 
 /// One library item in the current layout: a grid card, a table row, or a
 /// compact row. The shared Wahaj pieces draw it; this only says what to
@@ -33,6 +34,11 @@ class LibraryItemView extends ConsumerWidget {
   final bool playing;
   final bool paused;
   final VoidCallback onPlay;
+
+  /// The cover boxes of the grid and the compact row (`MTLibrarySliver`
+  /// and `MTMediaCard`), for decoding at the size actually drawn.
+  static const double _gridCell = 210;
+  static const double _compactWidth = 64;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -61,11 +67,15 @@ class LibraryItemView extends ConsumerWidget {
 
     void favorite() => unawaited(toggleFavorite());
 
+    Widget? cover(double width, double height) =>
+        artworkFor(ref, context, item.thumbnail, width: width, height: height);
+
     if (columns case final columns?) {
       return MTMediaRow(
         columns: columns,
         title: item.title,
         subtitle: subtitle,
+        thumbnail: cover(MTMediaColumns.thumbWidth, MTMediaColumns.thumbHeight),
         platform: platform,
         duration: duration,
         size: item.sizeBytes == null ? null : mtFormatSize(item.sizeBytes!),
@@ -86,6 +96,8 @@ class LibraryItemView extends ConsumerWidget {
       return MTMediaGridCard(
         title: item.title,
         subtitle: subtitle,
+        // The grid's widest cell, so a cover is never decoded too small.
+        thumbnail: cover(_gridCell, _gridCell * 9 / 16),
         platform: platform,
         location: item.location,
         locationLabel: locationLabel,
@@ -102,6 +114,7 @@ class LibraryItemView extends ConsumerWidget {
       compact: true,
       title: item.title,
       subtitle: subtitle,
+      thumbnail: cover(_compactWidth, _compactWidth * 10 / 16),
       platform: platform,
       location: item.location,
       locationLabel: locationLabel,

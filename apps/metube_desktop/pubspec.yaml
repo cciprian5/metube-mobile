@@ -19,6 +19,11 @@ dependencies:
   mt_ui:
     path: ../../packages/mt_ui
   # The same ranges as Super, so the shared resolution does not move.
+  cached_network_image: ^3.4.1
+  # Covers are cached under the app's local data folder rather than the
+  # system temp folder; these two name the cache's directory and index.
+  file: ^7.0.1
+  flutter_cache_manager: ^3.4.1
   flutter_riverpod: ^2.6.1
   go_router: ^16.2.0
   path_provider: ^2.1.5

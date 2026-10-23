@@ -271,6 +271,8 @@ class _PlayButton extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
+          // Not the theme's opaque hover fill, which would hide the ember.
+          hoverColor: ink.withValues(alpha: 0.12),
           child: SizedBox.square(
             dimension: MTDensity.desktop.row,
             child: Center(

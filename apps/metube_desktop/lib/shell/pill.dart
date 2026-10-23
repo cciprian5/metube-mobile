@@ -37,7 +37,21 @@ class EmberPill extends StatelessWidget {
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
+          // **A fresh ink layer whenever the choice flips** (seen on the
+          // real window): the hover highlight made before a click kept the
+          // opaque light fill it was created with, and covered the newly
+          // chosen pill's cream label for as long as the pointer stayed.
+          key: ValueKey(selected),
           onTap: onTap,
+          // A chosen pill only lightens a little under the pointer; the
+          // theme's light fills would hide its label.
+          overlayColor: WidgetStateProperty.resolveWith((states) {
+            if (states.isEmpty) return null;
+            if (selected) return p.bg.withValues(alpha: 0.12);
+            return states.contains(WidgetState.pressed)
+                ? p.accentSoft
+                : p.cardAlt;
+          }),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: MTSpace.md,

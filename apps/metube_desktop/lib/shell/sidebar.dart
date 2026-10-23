@@ -140,6 +140,8 @@ class _AddButton extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
+          // Not the theme's opaque hover fill, which would hide the ember.
+          hoverColor: p.onAccent.withValues(alpha: 0.12),
           child: SizedBox(
             height: MTDensity.desktop.row + MTSpace.xxs,
             child: narrow

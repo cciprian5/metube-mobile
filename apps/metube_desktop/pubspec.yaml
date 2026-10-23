@@ -18,6 +18,11 @@ dependencies:
     path: ../../packages/mt_transcripts
   mt_ui:
     path: ../../packages/mt_ui
+  # The same ranges as Super, so the shared resolution does not move.
+  flutter_riverpod: ^2.6.1
+  go_router: ^16.2.0
+  path_provider: ^2.1.5
+  shared_preferences: ^2.3.3
   # No audio_service, just_audio, video_player, flutter_background or
   # receive_sharing_intent: they are the phones' playback and share paths,
   # and Windows has its own (media_kit, SMTC, drag and drop).
@@ -36,6 +41,8 @@ dependencies:
   # Both drag directions: desktop_drop cannot share the window's single OLE
   # drop registration with this package, so it is not used at all.
   super_drag_and_drop: 0.9.1
+  # 1.2.0 needs win32 6, which super_drag_and_drop's win32 5 rules out.
+  windows_single_instance: 1.1.0
 
 dev_dependencies:
   flutter_test:

@@ -157,10 +157,7 @@ void main() {
       );
       for (final marker in ['lite', 'super']) {
         expect(
-          await checkerOf(
-            body,
-            marker: marker,
-          ).check(currentVersion: '2.0.0'),
+          await checkerOf(body, marker: marker).check(currentVersion: '2.0.0'),
           isNull,
           reason: marker,
         );

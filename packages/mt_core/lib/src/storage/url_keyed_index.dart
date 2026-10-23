@@ -55,15 +55,26 @@ abstract base class UrlKeyedIndex<V> {
   Future<void> removeKey(String canonicalUrl) =>
       mutate((map) => map.remove(canonicalUrl));
 
+  /// Whether [afterWrite] wants to see each write. Off by default, so an
+  /// index that keeps no side record pays for no second read.
+  bool get observesWrites => false;
+
+  /// Sees each write with the map as it was and as it is now written,
+  /// **under the same lock**, so a side record kept here cannot drift from
+  /// the index it describes.
+  Future<void> afterWrite(Map<String, V> before, Map<String, V> after) async {}
+
   /// An atomic read-modify-write under the lock.
   Future<void> mutate(void Function(Map<String, V> map) apply) =>
       mutex.run(() async {
+        final before = observesWrites ? await readAll() : null;
         final map = await readAll();
         apply(map);
         await store.setString(
           prefsKey,
           json.encode(map.map((k, v) => MapEntry(k, encodeValue(v)))),
         );
+        if (before != null) await afterWrite(before, map);
         onChanged?.call();
       });
 

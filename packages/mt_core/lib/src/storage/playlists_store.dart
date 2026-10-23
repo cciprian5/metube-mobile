@@ -7,7 +7,12 @@ import 'key_value_store.dart';
 /// Every edit runs inside [PrefsMutex], and the old Lite format
 /// (videoPaths) is read automatically.
 class PlaylistsStore {
-  PlaylistsStore({required this.store, required this.mutex, this.onChanged});
+  PlaylistsStore({
+    required this.store,
+    required this.mutex,
+    this.onChanged,
+    this.clock,
+  });
 
   static const String prefsKey = 'saved_playlists';
 
@@ -18,6 +23,11 @@ class PlaylistsStore {
   /// point. The app uses it to request an automatic backup rather than
   /// scattering that call through every screen.
   final void Function()? onChanged;
+
+  /// Stamps edits when set ([SavedPlaylist.updatedAt] and
+  /// [PlaylistEntry.addedAt]); null writes exactly what was written before,
+  /// which is what an app that never syncs wants.
+  final DateTime Function()? clock;
 
   /// **Defensive reading, item by item:** the catch used to cover
   /// `FormatException` alone, while `SavedPlaylist.fromJson` throws a
@@ -156,11 +166,53 @@ class PlaylistsStore {
   Future<void> _mutateAll(void Function(List<SavedPlaylist>) apply) =>
       mutex.run(() async {
         final all = await readAll();
+        final before = clock == null ? null : _fingerprints(all);
         apply(all);
+        if (before != null) _stamp(all, before, clock!());
         await store.setString(
           prefsKey,
           json.encode(all.map((p) => p.toJson()).toList()),
         );
         onChanged?.call();
       });
+
+  /// What an edit can change, per playlist, and who was in it. The
+  /// last-played time is left out: playing a playlist is use, not an edit,
+  /// and must not make it win a merge against a real rename elsewhere.
+  static Map<String, ({String print, Set<String> members})> _fingerprints(
+    List<SavedPlaylist> all,
+  ) => {for (final p in all) p.id: _fingerprint(p)};
+
+  static ({String print, Set<String> members}) _fingerprint(SavedPlaylist p) {
+    final members = [for (final e in p.items) _memberKey(e)];
+    return (
+      print: json.encode([p.name, p.pinned, members]),
+      members: members.toSet(),
+    );
+  }
+
+  static String _memberKey(PlaylistEntry e) =>
+      e.canonicalUrl.isEmpty ? e.legacyPath ?? '' : e.canonicalUrl;
+
+  /// Stamps the playlists an edit changed, and only the members that joined
+  /// in it: an old member of a renamed playlist keeps having no date rather
+  /// than pretending it was added at the rename.
+  static void _stamp(
+    List<SavedPlaylist> all,
+    Map<String, ({String print, Set<String> members})> before,
+    DateTime now,
+  ) {
+    for (final p in all) {
+      final was = before[p.id];
+      if (was?.print == _fingerprint(p).print) continue;
+      p.updatedAt = now;
+      for (var i = 0; i < p.items.length; i++) {
+        final e = p.items[i];
+        if (e.addedAt == null &&
+            !(was?.members.contains(_memberKey(e)) ?? false)) {
+          p.items[i] = e.withAddedAt(now);
+        }
+      }
+    }
+  }
 }

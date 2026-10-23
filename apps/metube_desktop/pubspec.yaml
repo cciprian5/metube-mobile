@@ -1,0 +1,46 @@
+name: metube_desktop
+description: "MeTube Ember — the server owner's edition for Windows."
+publish_to: none
+resolution: workspace
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mt_core:
+    path: ../../packages/mt_core
+  mt_media:
+    path: ../../packages/mt_media
+  mt_transcripts:
+    path: ../../packages/mt_transcripts
+  mt_ui:
+    path: ../../packages/mt_ui
+  # No audio_service, just_audio, video_player, flutter_background or
+  # receive_sharing_intent: they are the phones' playback and share paths,
+  # and Windows has its own (media_kit, SMTC, drag and drop).
+  #
+  # Exact pins: each version below was built and measured on this machine
+  # (Flutter 3.47.2) before any screen was written.
+  media_kit: 1.2.6
+  media_kit_video: 2.0.1
+  media_kit_libs_windows_video: 1.0.11
+  smtc_windows: 1.1.0
+  # smtc_windows ships Rust bindings generated with 2.11.1 and refuses any
+  # other runtime at start-up; pub would otherwise pick the newest.
+  flutter_rust_bridge: 2.11.1
+  window_manager: 0.5.2
+  screen_retriever: 0.2.2
+  # Both drag directions: desktop_drop cannot share the window's single OLE
+  # drop registration with this package, so it is not used at all.
+  super_drag_and_drop: 0.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

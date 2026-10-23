@@ -57,6 +57,9 @@ final tagsIndexProvider = Provider(
   (ref) => TagsIndex(
     store: ref.watch(keyValueStoreProvider),
     mutex: ref.watch(prefsMutexProvider),
+    // Stamped so that a later merge with another device knows which write
+    // is newer; Lite never syncs and passes no clock.
+    clock: DateTime.now,
     // **A single choke point for the automatic backup** (2026-09-04):
     // every tag write, from any screen, requests a backup, so no screen
     // can be forgotten.
@@ -85,6 +88,7 @@ final playlistsStoreProvider = Provider(
   (ref) => PlaylistsStore(
     store: ref.watch(keyValueStoreProvider),
     mutex: ref.watch(prefsMutexProvider),
+    clock: DateTime.now,
     // **A counter that invalidates the playlists cache** when they are
     // written from outside their own screen. Without it, an automatically
     // collected playlist stayed invisible until the app restarted
@@ -252,6 +256,7 @@ final playbackPositionsProvider = Provider(
   (ref) => PlaybackPositionStore(
     store: ref.watch(keyValueStoreProvider),
     mutex: ref.watch(prefsMutexProvider),
+    clock: DateTime.now,
   ),
 );
 

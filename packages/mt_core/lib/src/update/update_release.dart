@@ -37,6 +37,11 @@ class UpdateRelease {
 
   /// Reads GitHub's response and picks the asset matching [assetMarker].
   ///
+  /// **Every asset is optional.** The apps share one release stream, so a
+  /// release may carry any subset of the Lite APK, the Super APK and the
+  /// Windows installer; a release without this app's file is "no update",
+  /// never an error.
+  ///
   /// Returns `null` rather than throwing on any anomaly: a draft, a
   /// pre-release, a release with no APK for this app, or unexpected JSON.
   /// **An update check never troubles the user with an error** (rule 5: a
@@ -71,7 +76,8 @@ class UpdateRelease {
       final lower = name.toLowerCase();
       // **Matching on both the marker and the extension**: one release
       // carries both apps' files, so without the marker a Lite user
-      // installs Super.
+      // installs Super; and without the extension a phone could be handed
+      // the Windows installer that shares the release.
       if (!lower.endsWith('.apk') || !lower.contains(marker)) continue;
       final size = asset['size'];
       return UpdateRelease(

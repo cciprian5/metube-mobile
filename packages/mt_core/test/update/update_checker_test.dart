@@ -88,6 +88,84 @@ void main() {
       final r = await checkerOf(body).check(currentVersion: '2.0.0');
       expect(r!.apkUrl, 'https://x/super.apk');
     });
+
+    test(
+      '**the guard**: a phone is never handed the Windows installer',
+      () async {
+        // Listed first and carrying the marker in its name: only the
+        // extension stands between a phone and an .exe it cannot install.
+        final body = release(
+          assets: [
+            {
+              'name': 'MeTube-Super-v2.7.0-windows-x64-setup.exe',
+              'browser_download_url': 'https://x/setup.exe',
+              'size': 90000000,
+            },
+            {
+              'name': 'MeTube-Super-v2.7.0.apk',
+              'browser_download_url': 'https://x/super.apk',
+              'size': 24000000,
+            },
+          ],
+        );
+        final r = await checkerOf(body).check(currentVersion: '2.0.0');
+        expect(r!.apkUrl, 'https://x/super.apk');
+      },
+    );
+
+    test('a release of all three apps gives each phone its own APK', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Ember-v2.7.0-windows-x64-setup.exe',
+            'browser_download_url': 'https://x/setup.exe',
+            'size': 90000000,
+          },
+          {
+            'name': 'MeTube-Lite-v2.7.0.apk',
+            'browser_download_url': 'https://x/lite.apk',
+            'size': 21000000,
+          },
+          {
+            'name': 'MeTube-Super-v2.7.0.apk',
+            'browser_download_url': 'https://x/super.apk',
+            'size': 24000000,
+          },
+        ],
+      );
+      for (final (marker, url) in [
+        ('lite', 'https://x/lite.apk'),
+        ('super', 'https://x/super.apk'),
+      ]) {
+        final r = await checkerOf(
+          body,
+          marker: marker,
+        ).check(currentVersion: '2.0.0');
+        expect(r!.apkUrl, url, reason: marker);
+      }
+    });
+
+    test('a Windows-only release is no update for either phone', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Ember-v2.7.0-windows-x64-setup.exe',
+            'browser_download_url': 'https://x/setup.exe',
+            'size': 90000000,
+          },
+        ],
+      );
+      for (final marker in ['lite', 'super']) {
+        expect(
+          await checkerOf(
+            body,
+            marker: marker,
+          ).check(currentVersion: '2.0.0'),
+          isNull,
+          reason: marker,
+        );
+      }
+    });
   });
 
   group('the display policy', () {

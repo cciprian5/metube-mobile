@@ -54,7 +54,11 @@ Future<void> main() async {
     builder: () => MTAudioHandler(
       player: JustAudioPort(),
       resolver: resolver,
-      positions: PlaybackPositionStore(store: store, mutex: mutex),
+      positions: PlaybackPositionStore(
+        store: store,
+        mutex: mutex,
+        clock: DateTime.now,
+      ),
       prefs: PlaybackPrefs(store: store, mutex: mutex),
       stateStore: AudioStateStore(store: store, mutex: mutex),
     ),

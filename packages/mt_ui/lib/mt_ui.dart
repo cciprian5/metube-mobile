@@ -56,6 +56,8 @@ export 'src/wahaj/mt_badge.dart';
 export 'src/wahaj/mt_boxed_settings.dart';
 export 'src/wahaj/mt_confirm_dialog.dart';
 export 'src/wahaj/mt_empty_frame.dart';
+export 'src/wahaj/mt_focus_ring.dart';
+export 'src/wahaj/mt_hover_lift.dart';
 export 'src/wahaj/mt_link_button.dart';
 export 'src/wahaj/mt_notice.dart';
 export 'src/wahaj/mt_progress.dart';

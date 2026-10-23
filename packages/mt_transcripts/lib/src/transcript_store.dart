@@ -35,8 +35,11 @@ class TranscriptStore {
   /// as "no transcript", never as another clip's.
   static String _hashName(String key) {
     // 64-bit FNV-1a. Native integers wrap at 64 bits, which is the
-    // arithmetic the algorithm expects.
-    var hash = 0xcbf29ce484222325;
+    // arithmetic the algorithm expects. The offset basis is built from two
+    // halves, the same bits as the literal 0xcbf29ce484222325, because a
+    // literal that size does not compile for the web, where the widget
+    // previewer runs (the store itself is never used there).
+    var hash = (0xcbf29ce4 << 32) | 0x84222325;
     for (final byte in utf8.encode(key)) {
       hash ^= byte;
       hash *= 0x100000001b3;

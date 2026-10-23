@@ -26,6 +26,21 @@ ThemeData mtDesktopTheme(MTVariant variant, Brightness brightness) {
     splashFactory: NoSplash.splashFactory,
     highlightColor: p.accentSoft,
     hoverColor: p.cardAlt,
+    // No filled square on keyboard focus: the ring drawn by
+    // MTFocusRingLayer marks it instead, and only for the keyboard.
+    focusColor: Colors.transparent,
+    // A thin thumb that comes with the mouse or a scroll and leaves
+    // again, darker while dragged; never Windows' wide grey bar.
+    scrollbarTheme: ScrollbarThemeData(
+      thickness: WidgetStatePropertyAll(MTDensity.desktop.scrollbar),
+      radius: Radius.circular(MTDensity.desktop.scrollbar / 2),
+      thumbColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.dragged) ? p.ink3 : p.line2,
+      ),
+      thumbVisibility: const WidgetStatePropertyAll(false),
+      trackVisibility: const WidgetStatePropertyAll(false),
+      interactive: true,
+    ),
     // Square icon buttons with small corners; pressed, they warm up.
     iconButtonTheme: IconButtonThemeData(
       style: ButtonStyle(
@@ -93,7 +108,7 @@ ThemeData mtDesktopTheme(MTVariant variant, Brightness brightness) {
         horizontal: MTSpace.sm,
         vertical: MTSpace.xs,
       ),
-      waitDuration: const Duration(milliseconds: 500),
+      waitDuration: const Duration(milliseconds: 600),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: p.card,

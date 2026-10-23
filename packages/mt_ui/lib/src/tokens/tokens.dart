@@ -208,6 +208,8 @@ class MTDensity {
     required this.row,
     required this.iconButton,
     required this.gap,
+    required this.scrollbar,
+    required this.focusRing,
   });
 
   /// The height of a list or table row.
@@ -219,8 +221,20 @@ class MTDensity {
   /// The space between neighbouring controls.
   final double gap;
 
+  /// How thick a scrollbar's thumb is: a thin line, not Windows' bar.
+  final double scrollbar;
+
+  /// How thick the keyboard focus ring is.
+  final double focusRing;
+
   /// The Windows app. The phones keep their own spacing (`MTSpace`).
-  static const desktop = MTDensity(row: 36, iconButton: 32, gap: 12);
+  static const desktop = MTDensity(
+    row: 36,
+    iconButton: 32,
+    gap: 12,
+    scrollbar: 6,
+    focusRing: 2,
+  );
 }
 
 /// **Fixed-width digits** for live counters.
@@ -263,6 +277,17 @@ abstract final class MTShadow {
       blurRadius: 32,
       offset: const Offset(0, 16),
       spreadRadius: -10,
+    ),
+  ];
+
+  /// A card under the mouse (Windows only): a warm glow lighter than the
+  /// resting card's shadow, so hovering reads as a lift, not a jump.
+  static List<BoxShadow> hover(MTPalette p) => [
+    BoxShadow(
+      color: p.accentDeep.withValues(alpha: 0.22),
+      blurRadius: 28,
+      offset: const Offset(0, 12),
+      spreadRadius: -12,
     ),
   ];
 

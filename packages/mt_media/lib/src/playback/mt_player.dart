@@ -75,6 +75,10 @@ abstract interface class MTPlayer {
 
   /// [index] is an index into [MTPlayerState.items].
   Future<void> skipToQueueItem(int index);
+
+  /// Moves an item of "up next" from [from] to [to], both positions in
+  /// [MTPlayerState.ordered]; what is playing goes on playing.
+  Future<void> moveQueueItem(int from, int to);
   Future<void> setSpeed(double speed);
   Future<void> setPlayMode(PlayMode mode);
   Future<void> setShuffle(bool value);

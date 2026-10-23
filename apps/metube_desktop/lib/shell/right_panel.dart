@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'panel/details_view.dart';
+import 'panel/queue_view.dart';
+import 'panel/transcript_view.dart';
 import 'pill.dart';
 import 'shell_metrics.dart';
 
@@ -9,19 +12,20 @@ import 'shell_metrics.dart';
 enum PanelTab { transcript, upNext, details }
 
 /// The side panel: the transcript following playback, what comes next,
-/// and the clip's details. The faces themselves are filled by the steps
-/// that build them; the shell gives them their place and their tabs.
+/// and the clip's details.
 class EmberRightPanel extends StatelessWidget {
   const EmberRightPanel({
     super.key,
     required this.tab,
     required this.onTab,
     required this.state,
+    required this.player,
   });
 
   final PanelTab tab;
   final ValueChanged<PanelTab> onTab;
   final MTPlayerState state;
+  final MTPlayer player;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +70,7 @@ class EmberRightPanel extends StatelessWidget {
                 ),
               ),
             )
-          else
+          else ...[
             Text(
               current.title,
               maxLines: 2,
@@ -77,6 +81,18 @@ class EmberRightPanel extends StatelessWidget {
               ),
               style: Theme.of(context).textTheme.titleSmall,
             ),
+            const SizedBox(height: MTSpace.md),
+            Expanded(
+              child: switch (tab) {
+                PanelTab.transcript => TranscriptView(
+                  item: current,
+                  player: player,
+                ),
+                PanelTab.upNext => QueueView(state: state, player: player),
+                PanelTab.details => DetailsView(item: current),
+              },
+            ),
+          ],
         ],
       ),
     );

@@ -878,6 +878,12 @@ abstract class MTLocalizations {
   /// **'Back'**
   String get desktopBack;
 
+  /// No description provided for @desktopChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get desktopChannel;
+
   /// No description provided for @desktopChannels.
   ///
   /// In en, this message translates to:
@@ -889,6 +895,18 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Clear filters'**
   String get desktopClearFilters;
+
+  /// No description provided for @desktopCopyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get desktopCopyLink;
+
+  /// No description provided for @desktopDragToReorder.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to reorder'**
+  String get desktopDragToReorder;
 
   /// No description provided for @desktopEmptyLibraryMessage.
   ///
@@ -907,6 +925,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Hide side panel'**
   String get desktopHidePanel;
+
+  /// No description provided for @desktopLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get desktopLinkCopied;
 
   /// No description provided for @desktopNarrowSidebar.
   ///
@@ -932,6 +956,18 @@ abstract class MTLocalizations {
   /// **'Set up your MeTube server and its library appears here.'**
   String get desktopNoServerMessage;
 
+  /// No description provided for @desktopNoTranscriptMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'It shows here once the server has the clip\'s subtitles.'**
+  String get desktopNoTranscriptMessage;
+
+  /// No description provided for @desktopNoTranscriptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No transcript for this clip'**
+  String get desktopNoTranscriptTitle;
+
   /// No description provided for @desktopNothingPlaying.
   ///
   /// In en, this message translates to:
@@ -949,6 +985,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'{count} offline'**
   String desktopOfflineCount(int count);
+
+  /// No description provided for @desktopQueueEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing comes after this one'**
+  String get desktopQueueEnd;
 
   /// No description provided for @desktopSearch.
   ///
@@ -973,6 +1015,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Show side panel'**
   String get desktopShowPanel;
+
+  /// No description provided for @desktopTranscriptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Follows playback · click a line to jump'**
+  String get desktopTranscriptHint;
 
   /// No description provided for @desktopViewCompact.
   ///

@@ -35,20 +35,8 @@ class TranscriptLines extends StatefulWidget {
 
   /// The line being said at [position]: the last one begun by then. Null
   /// before the first.
-  static int? lineAt(List<TranscriptSegment> segments, Duration position) {
-    int? found;
-    var low = 0, high = segments.length - 1;
-    while (low <= high) {
-      final middle = (low + high) >> 1;
-      if (segments[middle].start <= position) {
-        found = middle;
-        low = middle + 1;
-      } else {
-        high = middle - 1;
-      }
-    }
-    return found;
-  }
+  static int? lineAt(List<TranscriptSegment> segments, Duration position) =>
+      segmentAt(segments, position);
 
   @override
   State<TranscriptLines> createState() => TranscriptLinesState();

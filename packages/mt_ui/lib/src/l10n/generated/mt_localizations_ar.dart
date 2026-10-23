@@ -478,10 +478,19 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopBack => 'رجوع';
 
   @override
+  String get desktopChannel => 'القناة';
+
+  @override
   String get desktopChannels => 'القنوات';
 
   @override
   String get desktopClearFilters => 'مسح المرشحات';
+
+  @override
+  String get desktopCopyLink => 'نسخ الرابط';
+
+  @override
+  String get desktopDragToReorder => 'اسحب لتغيير الترتيب';
 
   @override
   String get desktopEmptyLibraryMessage =>
@@ -492,6 +501,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopHidePanel => 'إخفاء اللوحة الجانبية';
+
+  @override
+  String get desktopLinkCopied => 'نُسخ الرابط';
 
   @override
   String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
@@ -506,6 +518,13 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopNoServerMessage => 'اضبط سيرفر MeTube فتظهر مكتبته هنا.';
 
   @override
+  String get desktopNoTranscriptMessage =>
+      'يظهر هنا حين تكون ترجمة المقطع على السيرفر.';
+
+  @override
+  String get desktopNoTranscriptTitle => 'لا نص لهذا المقطع';
+
+  @override
   String get desktopNothingPlaying => 'لا شيء قيد التشغيل';
 
   @override
@@ -516,6 +535,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String desktopOfflineCount(int count) {
     return '$count بلا اتصال';
   }
+
+  @override
+  String get desktopQueueEnd => 'لا شيء بعد هذا المقطع';
 
   @override
   String get desktopSearch => 'البحث';
@@ -529,6 +551,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopShowPanel => 'إظهار اللوحة الجانبية';
+
+  @override
+  String get desktopTranscriptHint => 'يتبع التشغيل · انقر سطراً لتنتقل إليه';
 
   @override
   String get desktopViewCompact => 'مدمج';

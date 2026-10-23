@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/app.dart';
 import 'package:metube_desktop/data/library_data.dart';
+import 'package:metube_desktop/data/transcripts_data.dart';
 import 'package:metube_desktop/features/library/artwork.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
@@ -15,6 +16,7 @@ import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart';
+import 'package:mt_transcripts/mt_transcripts.dart';
 
 /// A player that records the commands it gets and plays nothing.
 class FakePlayer implements MTPlayer {
@@ -38,6 +40,12 @@ class FakePlayer implements MTPlayer {
       duration: const Duration(minutes: 3, seconds: 10),
     );
     _states.add(state);
+  }
+
+  /// As if playback reached [at].
+  void reach(Duration at) {
+    position = at;
+    _positions.add(at);
   }
 
   Future<void> _note(String call) async => calls.add(call);
@@ -71,6 +79,8 @@ class FakePlayer implements MTPlayer {
   @override
   Future<void> skipToQueueItem(int index) => _note('skipTo');
   @override
+  Future<void> moveQueueItem(int from, int to) => _note('move $from $to');
+  @override
   Future<void> setSpeed(double speed) => _note('speed $speed');
   @override
   Future<void> setPlayMode(PlayMode mode) => _note('mode ${mode.name}');
@@ -86,7 +96,15 @@ class FakePlayer implements MTPlayer {
 
 /// Everything the shell reads, with nothing behind it.
 class ShellHarness {
-  ShellHarness({this.layout = const ShellLayout(), this.library, this.server});
+  ShellHarness({
+    this.layout = const ShellLayout(),
+    this.library,
+    this.server,
+    this.transcripts = const {},
+  });
+
+  /// Transcripts by canonical URL, as if already on this computer.
+  final Map<String, Transcript> transcripts;
 
   final ShellLayout layout;
 
@@ -108,6 +126,9 @@ class ShellHarness {
       serverConfigProvider.overrideWithValue(server),
       playbackResolverProvider.overrideWithValue(resolver),
       artworkCacheProvider.overrideWithValue(NoCovers()),
+      transcriptForProvider.overrideWith(
+        (ref, key) async => transcripts[key.canonicalUrl],
+      ),
       if (library case final items?)
         libraryItemsProvider.overrideWith((ref) async => items),
     ],

@@ -187,6 +187,13 @@ class MTSessionPlayer implements MTPlayer {
   }
 
   @override
+  Future<void> moveQueueItem(int from, int to) async {
+    if (!_queue.moveOrdered(from, to)) return;
+    _broadcast();
+    await persist();
+  }
+
+  @override
   Future<void> setSpeed(double speed) async {
     final value = PlaybackSpeeds.clamp(speed);
     await port.setSpeed(value);

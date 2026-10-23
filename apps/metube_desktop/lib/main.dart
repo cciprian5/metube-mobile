@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
+import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'data/lab_server.dart';
 import 'data/library_data.dart';
+import 'data/transcripts_data.dart';
 import 'features/library/artwork.dart';
 import 'di.dart';
 import 'identity.dart';
@@ -51,6 +54,7 @@ Future<void> main(List<String> args) async {
   final store = SharedPrefsKeyValueStore(prefs);
   final mutex = PrefsMutex();
   final local = await getApplicationCacheDirectory();
+  final roaming = await getApplicationSupportDirectory();
   final logger = MTLogger(
     filePath: '${local.path}/logs/${EmberIdentity.logFile}',
   );
@@ -86,6 +90,9 @@ Future<void> main(List<String> args) async {
         initialShellLayoutProvider.overrideWithValue(layout),
         windowControlsProvider.overrideWithValue(controls),
         serverConfigProvider.overrideWithValue(labServerFrom(args)),
+        transcriptStoreProvider.overrideWithValue(
+          TranscriptStore(Directory('${roaming.path}/transcripts')),
+        ),
         artworkCacheProvider.overrideWithValue(
           artworkCacheIn('${local.path}/cache'),
         ),

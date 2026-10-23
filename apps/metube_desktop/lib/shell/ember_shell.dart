@@ -79,9 +79,11 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     final router = GoRouter.of(context);
     ref.watch(playbackWiringProvider);
 
-    return Material(
-      color: p.bg,
-      child: LayoutBuilder(
+    // A Scaffold underneath, so notices (`showMTNotice`) have somewhere to
+    // appear, above the player bar.
+    return Scaffold(
+      backgroundColor: p.bg,
+      body: LayoutBuilder(
         builder: (context, box) {
           final arranged = arrangeShell(box.maxWidth, layout);
           final panelShown = arranged.panelBeside
@@ -94,6 +96,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
               tab: _tab,
               onTab: (tab) => setState(() => _tab = tab),
               state: snap.data ?? player.state,
+              player: player,
             ),
           );
           return Column(

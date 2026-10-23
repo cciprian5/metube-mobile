@@ -458,10 +458,19 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopBack => 'Back';
 
   @override
+  String get desktopChannel => 'Channel';
+
+  @override
   String get desktopChannels => 'Channels';
 
   @override
   String get desktopClearFilters => 'Clear filters';
+
+  @override
+  String get desktopCopyLink => 'Copy link';
+
+  @override
+  String get desktopDragToReorder => 'Drag to reorder';
 
   @override
   String get desktopEmptyLibraryMessage =>
@@ -472,6 +481,9 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopHidePanel => 'Hide side panel';
+
+  @override
+  String get desktopLinkCopied => 'Link copied';
 
   @override
   String get desktopNarrowSidebar => 'Collapse sidebar';
@@ -487,6 +499,13 @@ class MTLocalizationsEn extends MTLocalizations {
       'Set up your MeTube server and its library appears here.';
 
   @override
+  String get desktopNoTranscriptMessage =>
+      'It shows here once the server has the clip\'s subtitles.';
+
+  @override
+  String get desktopNoTranscriptTitle => 'No transcript for this clip';
+
+  @override
   String get desktopNothingPlaying => 'Nothing playing';
 
   @override
@@ -497,6 +516,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String desktopOfflineCount(int count) {
     return '$count offline';
   }
+
+  @override
+  String get desktopQueueEnd => 'Nothing comes after this one';
 
   @override
   String get desktopSearch => 'Search';
@@ -510,6 +532,9 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopShowPanel => 'Show side panel';
+
+  @override
+  String get desktopTranscriptHint => 'Follows playback · click a line to jump';
 
   @override
   String get desktopViewCompact => 'Compact';

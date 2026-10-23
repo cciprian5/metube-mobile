@@ -475,6 +475,52 @@ class MTLocalizationsAr extends MTLocalizations {
   String get deselectAll => 'إلغاء التحديد';
 
   @override
+  String get desktopBack => 'رجوع';
+
+  @override
+  String get desktopChannels => 'القنوات';
+
+  @override
+  String get desktopForward => 'تقدّم';
+
+  @override
+  String get desktopHidePanel => 'إخفاء اللوحة الجانبية';
+
+  @override
+  String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
+
+  @override
+  String get desktopNothingPlaying => 'لا شيء قيد التشغيل';
+
+  @override
+  String get desktopNothingPlayingHint =>
+      'شغّل مقطعاً فيظهر هنا نصه وما يليه وتفاصيله.';
+
+  @override
+  String get desktopSearch => 'البحث';
+
+  @override
+  String get desktopSearchHint => 'ابحث في العناوين وما قيل…';
+
+  @override
+  String get desktopShowPanel => 'إظهار اللوحة الجانبية';
+
+  @override
+  String get desktopWidenSidebar => 'توسيع الشريط الجانبي';
+
+  @override
+  String get desktopWindowClose => 'إغلاق';
+
+  @override
+  String get desktopWindowMaximize => 'تكبير';
+
+  @override
+  String get desktopWindowMinimize => 'تصغير';
+
+  @override
+  String get desktopWindowRestore => 'استعادة الحجم';
+
+  @override
   String get details => 'التفاصيل';
 
   @override

@@ -16,8 +16,11 @@ import 'platform/error_log.dart';
 import 'platform/player_desktop.dart';
 import 'platform/prefs_store.dart';
 import 'platform/single_instance.dart';
+import 'platform/window_controls_windows.dart';
 import 'platform/window_frame.dart';
 import 'platform/window_placement.dart';
+import 'shell/shell_layout.dart';
+import 'shell/shell_state.dart';
 
 /// Bootstrap only: one copy, storage, the player, the window, runApp.
 ///
@@ -61,10 +64,12 @@ Future<void> main(List<String> args) async {
   // never starts sound by itself.
   unawaited(player.restoreSession());
 
+  final layout = await ShellLayoutStore(store: store, mutex: mutex).read();
   await EmberWindow.open(
     placements: WindowPlacementStore(store: store, mutex: mutex),
     beforeClose: player.persist,
   );
+  final controls = await WindowManagerControls.create();
   unawaited(logger.log('app started (ember)', tag: 'app'));
 
   runApp(
@@ -75,6 +80,8 @@ Future<void> main(List<String> args) async {
         loggerProvider.overrideWithValue(logger),
         playbackResolverProvider.overrideWithValue(resolver),
         playerProvider.overrideWithValue(player),
+        initialShellLayoutProvider.overrideWithValue(layout),
+        windowControlsProvider.overrideWithValue(controls),
       ],
       child: const EmberApp(),
     ),

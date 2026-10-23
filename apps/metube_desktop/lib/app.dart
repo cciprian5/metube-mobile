@@ -4,6 +4,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'identity.dart';
 import 'router.dart';
+import 'shell/ember_shell.dart';
 
 /// The MeTube Ember root: the Wahaj desktop theme in Super's identity,
 /// following Windows between day and night, plus localisation and the
@@ -21,7 +22,12 @@ class EmberApp extends StatefulWidget {
 class _EmberAppState extends State<EmberApp> {
   // Built once for the life of the app: a router rebuilt with the widget
   // would reset the navigation and everything living under the shell.
-  late final GoRouter _router = widget.router ?? buildEmberRouter();
+  late final GoRouter _router =
+      widget.router ??
+      buildEmberRouter(
+        shell: (_, state, child) =>
+            EmberShell(location: state.uri, child: child),
+      );
 
   @override
   Widget build(BuildContext context) {

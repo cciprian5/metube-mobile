@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metube_desktop/app.dart';
 import 'package:metube_desktop/router.dart';
 import 'package:mt_ui/mt_ui.dart';
+
+import 'support/shell_harness.dart';
 
 void main() {
   BuildContext place(WidgetTester tester) =>
       tester.element(find.byType(PendingPlace));
 
   testWidgets('the app starts on the Super palette', (tester) async {
-    await tester.pumpWidget(const EmberApp());
+    await tester.pumpWidget(ShellHarness().app());
     await tester.pumpAndSettle();
     expect(
       Theme.of(place(tester)).colorScheme.primary,
@@ -18,10 +19,8 @@ void main() {
   });
 
   testWidgets('the app declares itself the Windows app', (tester) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(1280, 800);
-    addTearDown(tester.view.reset);
-    await tester.pumpWidget(const EmberApp());
+    ShellHarness.useWindow(tester, const Size(1280, 800));
+    await tester.pumpWidget(ShellHarness().app());
     await tester.pumpAndSettle();
     expect(place(tester).windowClass, MTWindowClass.desktop);
   });
@@ -29,7 +28,7 @@ void main() {
   testWidgets('day and night follow Windows', (tester) async {
     tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
     addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
-    await tester.pumpWidget(const EmberApp());
+    await tester.pumpWidget(ShellHarness().app());
     await tester.pumpAndSettle();
     final scheme = Theme.of(place(tester)).colorScheme;
     expect(scheme.brightness, Brightness.dark);
@@ -48,7 +47,7 @@ void main() {
   ) async {
     tester.platformDispatcher.localesTestValue = const [Locale('ar', 'SA')];
     addTearDown(tester.platformDispatcher.clearLocalesTestValue);
-    await tester.pumpWidget(const EmberApp());
+    await tester.pumpWidget(ShellHarness().app());
     await tester.pumpAndSettle();
     expect(Directionality.of(place(tester)), TextDirection.rtl);
   });

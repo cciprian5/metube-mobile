@@ -43,6 +43,8 @@ class EmberWindow with WindowListener {
         size: bounds.size,
         minimumSize: minimumWindowSize,
         title: EmberIdentity.displayName,
+        // The shell draws its own title bar on the cream paper.
+        titleBarStyle: TitleBarStyle.hidden,
       ),
       () async {
         await windowManager.setBounds(bounds);

@@ -1,0 +1,72 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:window_manager/window_manager.dart';
+
+import '../shell/window_controls.dart';
+
+/// [WindowControls] over window_manager, plus the runner's Snap Layouts
+/// channel (`windows/runner/flutter_window.cpp`).
+///
+/// **Why the runner is involved at all:** Windows 11 shows Snap Layouts
+/// only over a window's native maximize button, and with the title bar
+/// drawn by Flutter there is none. So the drawn button reports where it
+/// is, and the runner answers Windows' hit test there as a maximize
+/// button. Windows then owns that spot, its clicks included, and tells us
+/// about the hover so the drawn button can light up.
+class WindowManagerControls with WindowListener implements WindowControls {
+  WindowManagerControls._() {
+    _snap.setMethodCallHandler((call) async {
+      if (call.method == 'hover') {
+        maximizeHovered.value = call.arguments == true;
+      }
+    });
+    windowManager.addListener(this);
+  }
+
+  static Future<WindowManagerControls> create() async {
+    final controls = WindowManagerControls._();
+    controls.maximized.value = await windowManager.isMaximized();
+    return controls;
+  }
+
+  static const _snap = MethodChannel('metube_ember/snap');
+
+  @override
+  final ValueNotifier<bool> maximized = ValueNotifier(false);
+  @override
+  final ValueNotifier<bool> maximizeHovered = ValueNotifier(false);
+
+  @override
+  void minimize() => unawaited(windowManager.minimize());
+
+  @override
+  void toggleMaximize() => unawaited(
+    maximized.value ? windowManager.unmaximize() : windowManager.maximize(),
+  );
+
+  @override
+  void close() => unawaited(windowManager.close());
+
+  @override
+  void startDragging() => unawaited(windowManager.startDragging());
+
+  @override
+  void reportMaximizeButton(Rect physical) => unawaited(
+    _snap.invokeMethod('setMaxButtonRect', [
+      physical.left.round(),
+      physical.top.round(),
+      physical.right.round(),
+      physical.bottom.round(),
+    ]),
+  );
+
+  @override
+  void onWindowMaximize() => maximized.value = true;
+  @override
+  void onWindowUnmaximize() => maximized.value = false;
+  @override
+  void onWindowRestore() =>
+      unawaited(windowManager.isMaximized().then((v) => maximized.value = v));
+}

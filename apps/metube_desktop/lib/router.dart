@@ -27,6 +27,11 @@ enum EmberSettingsPane {
 /// The addresses of the app's places.
 abstract final class EmberRoutes {
   static const library = '/library';
+
+  /// Favourites and offline are the library seen through a filter, so the
+  /// filter chips and these two sidebar entries are one state.
+  static const favorites = '/library?only=favorites';
+  static const offline = '/library?only=offline';
   static const search = '/search';
   static const playlists = '/playlists';
   static const channels = '/channels';
@@ -36,6 +41,35 @@ abstract final class EmberRoutes {
   /// question marks, so it travels percent-encoded as one path segment.
   static String item(String canonicalUrl) =>
       '/item/${Uri.encodeComponent(canonicalUrl)}';
+}
+
+/// The places the sidebar can show as current.
+enum EmberPlace {
+  library,
+  favorites,
+  offline,
+  search,
+  playlists,
+  channels,
+  settings,
+  item,
+}
+
+/// Which place [location] is, for the sidebar's highlight.
+EmberPlace placeOf(Uri location) {
+  final first = location.pathSegments.firstOrNull;
+  return switch (first) {
+    'library' => switch (location.queryParameters['only']) {
+      'favorites' => EmberPlace.favorites,
+      'offline' => EmberPlace.offline,
+      _ => EmberPlace.library,
+    },
+    'search' => EmberPlace.search,
+    'playlists' => EmberPlace.playlists,
+    'channels' => EmberPlace.channels,
+    'settings' => EmberPlace.settings,
+    _ => EmberPlace.item,
+  };
 }
 
 /// Builds the shell around every place; the drawn shell replaces the
@@ -63,7 +97,13 @@ GoRouter buildEmberRouter({
     ShellRoute(
       builder: shell,
       routes: [
-        _place(EmberRoutes.library, 'library'),
+        GoRoute(
+          path: EmberRoutes.library,
+          builder: (_, state) => PendingPlace(
+            'library',
+            argument: state.uri.queryParameters['only'],
+          ),
+        ),
         _place(EmberRoutes.search, 'search'),
         _place(EmberRoutes.playlists, 'playlists'),
         _place(EmberRoutes.channels, 'channels'),

@@ -455,6 +455,52 @@ class MTLocalizationsEn extends MTLocalizations {
   String get deselectAll => 'Deselect All';
 
   @override
+  String get desktopBack => 'Back';
+
+  @override
+  String get desktopChannels => 'Channels';
+
+  @override
+  String get desktopForward => 'Forward';
+
+  @override
+  String get desktopHidePanel => 'Hide side panel';
+
+  @override
+  String get desktopNarrowSidebar => 'Collapse sidebar';
+
+  @override
+  String get desktopNothingPlaying => 'Nothing playing';
+
+  @override
+  String get desktopNothingPlayingHint =>
+      'Play a clip and its transcript, what comes next and its details appear here.';
+
+  @override
+  String get desktopSearch => 'Search';
+
+  @override
+  String get desktopSearchHint => 'Search titles and what was said…';
+
+  @override
+  String get desktopShowPanel => 'Show side panel';
+
+  @override
+  String get desktopWidenSidebar => 'Expand sidebar';
+
+  @override
+  String get desktopWindowClose => 'Close';
+
+  @override
+  String get desktopWindowMaximize => 'Maximize';
+
+  @override
+  String get desktopWindowMinimize => 'Minimize';
+
+  @override
+  String get desktopWindowRestore => 'Restore down';
+
+  @override
   String get details => 'Details';
 
   @override

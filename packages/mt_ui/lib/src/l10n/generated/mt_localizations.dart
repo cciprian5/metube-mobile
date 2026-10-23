@@ -872,6 +872,96 @@ abstract class MTLocalizations {
   /// **'Deselect All'**
   String get deselectAll;
 
+  /// No description provided for @desktopBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get desktopBack;
+
+  /// No description provided for @desktopChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get desktopChannels;
+
+  /// No description provided for @desktopForward.
+  ///
+  /// In en, this message translates to:
+  /// **'Forward'**
+  String get desktopForward;
+
+  /// No description provided for @desktopHidePanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide side panel'**
+  String get desktopHidePanel;
+
+  /// No description provided for @desktopNarrowSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse sidebar'**
+  String get desktopNarrowSidebar;
+
+  /// No description provided for @desktopNothingPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing playing'**
+  String get desktopNothingPlaying;
+
+  /// No description provided for @desktopNothingPlayingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Play a clip and its transcript, what comes next and its details appear here.'**
+  String get desktopNothingPlayingHint;
+
+  /// No description provided for @desktopSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get desktopSearch;
+
+  /// No description provided for @desktopSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search titles and what was said…'**
+  String get desktopSearchHint;
+
+  /// No description provided for @desktopShowPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Show side panel'**
+  String get desktopShowPanel;
+
+  /// No description provided for @desktopWidenSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand sidebar'**
+  String get desktopWidenSidebar;
+
+  /// No description provided for @desktopWindowClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get desktopWindowClose;
+
+  /// No description provided for @desktopWindowMaximize.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximize'**
+  String get desktopWindowMaximize;
+
+  /// No description provided for @desktopWindowMinimize.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimize'**
+  String get desktopWindowMinimize;
+
+  /// No description provided for @desktopWindowRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore down'**
+  String get desktopWindowRestore;
+
   /// No description provided for @details.
   ///
   /// In en, this message translates to:

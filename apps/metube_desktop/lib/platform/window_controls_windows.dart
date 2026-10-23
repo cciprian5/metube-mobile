@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:screen_retriever/screen_retriever.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../shell/window_controls.dart';
+import 'window_frame.dart';
+import 'window_placement.dart';
 
 /// [WindowControls] over window_manager, plus the runner's Snap Layouts
 /// channel (`windows/runner/flutter_window.cpp`).
@@ -28,6 +31,7 @@ class WindowManagerControls with WindowListener implements WindowControls {
   static Future<WindowManagerControls> create() async {
     final controls = WindowManagerControls._();
     controls.maximized.value = await windowManager.isMaximized();
+    await controls._readWorkArea();
     return controls;
   }
 
@@ -61,6 +65,40 @@ class WindowManagerControls with WindowListener implements WindowControls {
       physical.bottom.round(),
     ]),
   );
+
+  @override
+  final ValueNotifier<Size?> workArea = ValueNotifier(null);
+
+  @override
+  void setMinimumSize(Size logical) => unawaited(_setMinimum(logical));
+
+  Future<void> _setMinimum(Size logical) async {
+    await windowManager.setMinimumSize(logical);
+    if (await windowManager.isMaximized()) return;
+    final size = await windowManager.getSize();
+    if (size.width < logical.width || size.height < logical.height) {
+      await windowManager.setSize(
+        Size(
+          size.width < logical.width ? logical.width : size.width,
+          size.height < logical.height ? logical.height : size.height,
+        ),
+      );
+    }
+  }
+
+  /// Which screen the window is on, by most overlap.
+  Future<void> _readWorkArea() async {
+    final bounds = await windowManager.getBounds();
+    final areas = [
+      for (final d in await screenRetriever.getAllDisplays()) workAreaOf(d),
+    ];
+    workArea.value = workAreaHolding(bounds, areas)?.size ?? workArea.value;
+  }
+
+  /// Moving fires once the drag ends, so a window carried to a smaller
+  /// screen is measured there.
+  @override
+  void onWindowMoved() => unawaited(_readWorkArea());
 
   @override
   void onWindowMaximize() => maximized.value = true;

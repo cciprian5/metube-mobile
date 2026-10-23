@@ -136,3 +136,20 @@ Rect _fit(Rect bounds, Rect area, Size minimum) {
 }
 
 double _atLeast(double value, double floor) => value < floor ? floor : value;
+
+/// The work area a window at [bounds] is on: the one it overlaps most, or
+/// null when it overlaps none.
+Rect? workAreaHolding(Rect bounds, List<Rect> workAreas) {
+  Rect? best;
+  var most = 0.0;
+  for (final area in workAreas) {
+    final seen = bounds.intersect(area);
+    if (seen.width <= 0 || seen.height <= 0) continue;
+    final overlap = seen.width * seen.height;
+    if (overlap > most) {
+      most = overlap;
+      best = area;
+    }
+  }
+  return best;
+}

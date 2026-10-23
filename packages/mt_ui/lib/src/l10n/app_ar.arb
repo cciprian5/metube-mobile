@@ -262,6 +262,8 @@
   "desktopWindowMaximize": "تكبير",
   "desktopWindowMinimize": "تصغير",
   "desktopWindowRestore": "استعادة الحجم",
+  "desktopZoomChange": "غيّره",
+  "desktopZoomLowered": "صُغّرت الواجهة إلى {percent} لتتسع لهذه الشاشة.",
   "details": "التفاصيل",
   "developer": "المطور",
   "developerName": "ياسر صغير",

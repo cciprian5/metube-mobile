@@ -1064,6 +1064,18 @@ abstract class MTLocalizations {
   /// **'Restore down'**
   String get desktopWindowRestore;
 
+  /// No description provided for @desktopZoomChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get desktopZoomChange;
+
+  /// No description provided for @desktopZoomLowered.
+  ///
+  /// In en, this message translates to:
+  /// **'The interface is now {percent} so it fits this screen.'**
+  String desktopZoomLowered(String percent);
+
   /// No description provided for @details.
   ///
   /// In en, this message translates to:

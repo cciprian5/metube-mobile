@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show Size;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +11,7 @@ import 'package:metube_desktop/shell/ember_shell.dart';
 import 'package:metube_desktop/shell/pill.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
+import 'package:metube_desktop/shell/ui_zoom.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart';
@@ -227,5 +229,58 @@ void main() {
         },
       );
     });
+  }
+
+  // The interface size at both ends, each in its smallest window, and the
+  // laptop that only fits at 90%.
+  for (final (zoom, window) in [
+    (0.8, const EmberWindowSize('smallest at 80%', Size(768, 480))),
+    (1.5, const EmberWindowSize('smallest at 150%', Size(1440, 900))),
+    (0.9, const EmberWindowSize('laptop 1093x566 at 90%', Size(1093, 566))),
+  ]) {
+    for (final mode in emberLibraryModes) {
+      testWidgets('the library as ${mode.name}, ${window.name}', (
+        tester,
+      ) async {
+        await expectNoOverflow(tester, () {
+          final h = ShellHarness(
+            library: _library,
+            server: _server,
+            zoom: UiZoom(zoom),
+          );
+          unawaited(h.store.setString(EmberLibraryNotifier.modeKey, mode.name));
+          return h.app();
+        }, windows: [window]);
+      });
+    }
+
+    for (final (i, tab) in PanelTab.values.indexed) {
+      testWidgets('playing, ${tab.name} open, ${window.name}', (tester) async {
+        late ShellHarness h;
+        await expectNoOverflow(
+          tester,
+          () => (h = ShellHarness(
+            library: _library,
+            server: _server,
+            transcripts: {_url: _transcript},
+            zoom: UiZoom(zoom),
+          )).app(),
+          windows: [window],
+          then: (tester) async {
+            h.player.showPlaying(_queue, playing: false);
+            await tester.pumpAndSettle();
+            await _openPanel(tester);
+            await tester.tap(
+              find
+                  .descendant(
+                    of: find.byType(EmberRightPanel),
+                    matching: find.byType(EmberPill),
+                  )
+                  .at(i),
+            );
+          },
+        );
+      });
+    }
   }
 }

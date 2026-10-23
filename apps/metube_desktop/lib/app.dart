@@ -6,6 +6,7 @@ import 'identity.dart';
 import 'features/library/library_page.dart';
 import 'router.dart';
 import 'shell/ember_shell.dart';
+import 'shell/zoom_frame.dart';
 
 /// The MeTube Ember root: the Wahaj desktop theme in Super's identity,
 /// following Windows between day and night, plus localisation and the
@@ -47,6 +48,10 @@ class _EmberAppState extends State<EmberApp> {
         supportedLocales: MTLocalizations.supportedLocales,
         localeListResolutionCallback: mtLocaleResolution,
         routerConfig: _router,
+        builder: (context, child) => EmberZoomFrame(
+          onChangeZoom: () => _router.go(EmberSettingsPane.appearance.route),
+          child: child!,
+        ),
       ),
     );
   }

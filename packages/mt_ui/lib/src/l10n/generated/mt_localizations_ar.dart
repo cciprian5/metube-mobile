@@ -578,6 +578,14 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopWindowRestore => 'استعادة الحجم';
 
   @override
+  String get desktopZoomChange => 'غيّره';
+
+  @override
+  String desktopZoomLowered(String percent) {
+    return 'صُغّرت الواجهة إلى $percent لتتسع لهذه الشاشة.';
+  }
+
+  @override
   String get details => 'التفاصيل';
 
   @override

@@ -558,6 +558,14 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopWindowRestore => 'Restore down';
 
   @override
+  String get desktopZoomChange => 'Change';
+
+  @override
+  String desktopZoomLowered(String percent) {
+    return 'The interface is now $percent so it fits this screen.';
+  }
+
+  @override
   String get details => 'Details';
 
   @override

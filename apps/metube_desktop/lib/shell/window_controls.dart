@@ -24,6 +24,15 @@ abstract interface class WindowControls {
   /// Where the maximize button is, in physical pixels of the window's
   /// client area, so Windows can show Snap Layouts when hovering it.
   void reportMaximizeButton(Rect physical);
+
+  /// The usable size of the screen the window is on (the taskbar left
+  /// out), in logical pixels; it changes when the window moves to another
+  /// screen. Null while unknown.
+  ValueListenable<Size?> get workArea;
+
+  /// The smallest the user may make the window, in logical pixels; it
+  /// follows the interface size. A window already smaller grows to it.
+  void setMinimumSize(Size logical);
 }
 
 /// A window that does nothing: tests, previews and the component sheet.
@@ -46,4 +55,12 @@ class InertWindowControls implements WindowControls {
   void startDragging() => calls.add('startDragging');
   @override
   void reportMaximizeButton(Rect physical) {}
+
+  /// Set by a test to stand for a screen.
+  @override
+  final ValueNotifier<Size?> workArea = ValueNotifier(null);
+
+  @override
+  void setMinimumSize(Size logical) =>
+      calls.add('minimum ${logical.width.round()}x${logical.height.round()}');
 }

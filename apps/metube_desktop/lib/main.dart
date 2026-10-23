@@ -27,6 +27,7 @@ import 'platform/window_frame.dart';
 import 'platform/window_placement.dart';
 import 'shell/shell_layout.dart';
 import 'shell/shell_state.dart';
+import 'shell/ui_zoom.dart';
 
 /// Bootstrap only: one copy, storage, the player, the window, runApp.
 ///
@@ -72,10 +73,17 @@ Future<void> main(List<String> args) async {
   unawaited(player.restoreSession());
 
   final layout = await ShellLayoutStore(store: store, mutex: mutex).read();
-  await EmberWindow.open(
+  final zooms = UiZoomStore(store: store, mutex: mutex);
+  final wanted = await zooms.read();
+  final window = await EmberWindow.open(
     placements: WindowPlacementStore(store: store, mutex: mutex),
     beforeClose: player.persist,
+    zoom: wanted,
   );
+  // A size that did not fit this screen was stepped down; it is kept, and
+  // the shell says so once.
+  final lowered = window.zoom < wanted;
+  if (lowered) await zooms.write(window.zoom);
   final controls = await WindowManagerControls.create();
   unawaited(logger.log('app started (ember)', tag: 'app'));
 
@@ -88,6 +96,9 @@ Future<void> main(List<String> args) async {
         playbackResolverProvider.overrideWithValue(resolver),
         playerProvider.overrideWithValue(player),
         initialShellLayoutProvider.overrideWithValue(layout),
+        initialUiZoomProvider.overrideWithValue(
+          UiZoom(window.zoom, lowered: lowered),
+        ),
         windowControlsProvider.overrideWithValue(controls),
         serverConfigProvider.overrideWithValue(labServerFrom(args)),
         transcriptStoreProvider.overrideWithValue(

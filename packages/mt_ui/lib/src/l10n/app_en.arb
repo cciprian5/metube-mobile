@@ -556,6 +556,16 @@
   "desktopWindowMaximize": "Maximize",
   "desktopWindowMinimize": "Minimize",
   "desktopWindowRestore": "Restore down",
+  "desktopZoomChange": "Change",
+  "desktopZoomLowered": "The interface is now {percent} so it fits this screen.",
+  "@desktopZoomLowered": {
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "90%"
+      }
+    }
+  },
   "details": "Details",
   "developer": "Developer",
   "developerName": "Yasir Sagheer",

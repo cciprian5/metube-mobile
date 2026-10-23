@@ -5,6 +5,7 @@ import 'package:screen_retriever/screen_retriever.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../identity.dart';
+import '../shell/ui_zoom.dart';
 import 'window_placement.dart';
 
 /// The main window: opened where it was left, saved whenever it moves or
@@ -14,6 +15,10 @@ class EmberWindow with WindowListener {
 
   final WindowPlacementStore _placements;
   final Future<void> Function() _beforeClose;
+
+  /// The interface size the window opened at: the one asked for, or a
+  /// smaller one when that does not fit the screen it opened on.
+  double zoom = 1.0;
   Rect? _normal;
   Timer? _saveSoon;
 
@@ -21,27 +26,38 @@ class EmberWindow with WindowListener {
   /// that refuses to close.
   static const closeBudget = Duration(seconds: 2);
 
-  /// Shows the window. [beforeClose] runs when the user closes it, so the
-  /// playback position and queue are written first.
+  /// Shows the window at the interface size [zoom], or the largest that
+  /// fits the screen it opens on. [beforeClose] runs when the user closes
+  /// it, so the playback position and queue are written first.
   static Future<EmberWindow> open({
     required WindowPlacementStore placements,
     required Future<void> Function() beforeClose,
+    required double zoom,
   }) async {
     await windowManager.ensureInitialized();
     final window = EmberWindow._(placements, beforeClose);
     final saved = await placements.read();
-    final bounds = placeWindow(
+    final areas = [
+      for (final d in await screenRetriever.getAllDisplays()) workAreaOf(d),
+    ];
+    final primary = workAreaOf(await screenRetriever.getPrimaryDisplay());
+    Rect place(double zoom) => placeWindow(
       saved: saved,
-      workAreas: [
-        for (final d in await screenRetriever.getAllDisplays()) _work(d),
-      ],
-      primary: _work(await screenRetriever.getPrimaryDisplay()),
+      workAreas: areas,
+      primary: primary,
+      minimum: minimumWindowAt(zoom),
     );
+    var bounds = place(zoom);
+    window.zoom = fittingZoom(
+      zoom,
+      (workAreaHolding(bounds, areas) ?? primary).size,
+    );
+    if (window.zoom != zoom) bounds = place(window.zoom);
     window._normal = bounds;
     await windowManager.waitUntilReadyToShow(
       WindowOptions(
         size: bounds.size,
-        minimumSize: minimumWindowSize,
+        minimumSize: minimumWindowAt(window.zoom),
         title: EmberIdentity.displayName,
         // The shell draws its own title bar on the cream paper.
         titleBarStyle: TitleBarStyle.hidden,
@@ -56,12 +72,6 @@ class EmberWindow with WindowListener {
     await windowManager.setPreventClose(true);
     windowManager.addListener(window);
     return window;
-  }
-
-  static Rect _work(Display d) {
-    final origin = d.visiblePosition ?? Offset.zero;
-    final size = d.visibleSize ?? d.size;
-    return origin & size;
   }
 
   /// Moves and resizes arrive as a stream while dragging; one write after
@@ -116,4 +126,11 @@ class EmberWindow with WindowListener {
       await windowManager.close();
     }
   }
+}
+
+/// The part of [display] a window may use: the screen minus the taskbar.
+Rect workAreaOf(Display display) {
+  final origin = display.visiblePosition ?? Offset.zero;
+  final size = display.visibleSize ?? display.size;
+  return origin & size;
 }

@@ -11,6 +11,7 @@ import 'package:metube_desktop/features/library/artwork.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
 import 'package:metube_desktop/shell/shell_state.dart';
+import 'package:metube_desktop/shell/ui_zoom.dart';
 import 'package:metube_desktop/shell/window_controls.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_core/mt_core.dart';
@@ -102,7 +103,15 @@ class ShellHarness {
     this.server,
     this.transcripts = const {},
     this.serverError,
+    this.zoom = const UiZoom(1.0),
+    this.workArea,
   });
+
+  /// The interface size the app opens at.
+  final UiZoom zoom;
+
+  /// The screen the window is on, minus the taskbar; null is unknown.
+  final Size? workArea;
 
   /// Why the server part of the library is missing, as if it stopped
   /// answering after the library was last read.
@@ -122,11 +131,17 @@ class ShellHarness {
   final store = MemoryKeyValueStore();
   final resolver = PlaybackSourceResolver(endpoint: ServerStreamEndpoint.none);
 
-  Widget app() => ProviderScope(
+  Widget app() {
+    controls.workArea.value = workArea;
+    return _app();
+  }
+
+  Widget _app() => ProviderScope(
     overrides: [
       keyValueStoreProvider.overrideWithValue(store),
       playerProvider.overrideWithValue(player),
       initialShellLayoutProvider.overrideWithValue(layout),
+      initialUiZoomProvider.overrideWithValue(zoom),
       windowControlsProvider.overrideWithValue(controls),
       serverConfigProvider.overrideWithValue(server),
       playbackResolverProvider.overrideWithValue(resolver),

@@ -12,6 +12,8 @@ export 'src/playback/audio_handler.dart';
 export 'src/playback/just_audio_port.dart';
 export 'src/playback/media_item_mapper.dart';
 export 'src/playback/media_player_port.dart';
+export 'src/playback/mt_player.dart';
+export 'src/playback/mt_session_player.dart';
 export 'src/playback/playback_queue.dart';
 export 'src/screens/mt_audio_screen.dart';
 export 'src/screens/mt_now_playing_panel.dart';

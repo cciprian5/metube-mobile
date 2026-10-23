@@ -1,23 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metube_desktop/main.dart';
+import 'package:metube_desktop/app.dart';
+import 'package:metube_desktop/router.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 void main() {
-  testWidgets('the shell starts on the Super palette', (tester) async {
-    await tester.pumpWidget(const EmberApp());
+  BuildContext place(WidgetTester tester) =>
+      tester.element(find.byType(PendingPlace));
 
-    final context = tester.element(find.byType(Scaffold));
-    expect(Theme.of(context).colorScheme.primary, const Color(0xFFC25E2E));
+  testWidgets('the app starts on the Super palette', (tester) async {
+    await tester.pumpWidget(const EmberApp());
+    await tester.pumpAndSettle();
+    expect(
+      Theme.of(place(tester)).colorScheme.primary,
+      const Color(0xFFC25E2E),
+    );
   });
 
-  testWidgets('the shell declares itself the Windows app', (tester) async {
+  testWidgets('the app declares itself the Windows app', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(1280, 800);
     addTearDown(tester.view.reset);
     await tester.pumpWidget(const EmberApp());
+    await tester.pumpAndSettle();
+    expect(place(tester).windowClass, MTWindowClass.desktop);
+  });
 
-    final context = tester.element(find.byType(Scaffold));
-    expect(context.windowClass, MTWindowClass.desktop);
+  testWidgets('day and night follow Windows', (tester) async {
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+    addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+    await tester.pumpWidget(const EmberApp());
+    await tester.pumpAndSettle();
+    final scheme = Theme.of(place(tester)).colorScheme;
+    expect(scheme.brightness, Brightness.dark);
+    expect(scheme.primary, const Color(0xFFE0784A));
+
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
+    await tester.pumpAndSettle();
+    expect(
+      Theme.of(place(tester)).colorScheme.primary,
+      const Color(0xFFC25E2E),
+    );
+  });
+
+  testWidgets('the language follows Windows: Arabic reads right to left', (
+    tester,
+  ) async {
+    tester.platformDispatcher.localesTestValue = const [Locale('ar', 'SA')];
+    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+    await tester.pumpWidget(const EmberApp());
+    await tester.pumpAndSettle();
+    expect(Directionality.of(place(tester)), TextDirection.rtl);
   });
 }

@@ -13,11 +13,10 @@ class ShellLayout {
   /// The right panel (transcript, up next, details) is folded away.
   final bool panelHidden;
 
-  ShellLayout copyWith({bool? sidebarNarrow, bool? panelHidden}) =>
-      ShellLayout(
-        sidebarNarrow: sidebarNarrow ?? this.sidebarNarrow,
-        panelHidden: panelHidden ?? this.panelHidden,
-      );
+  ShellLayout copyWith({bool? sidebarNarrow, bool? panelHidden}) => ShellLayout(
+    sidebarNarrow: sidebarNarrow ?? this.sidebarNarrow,
+    panelHidden: panelHidden ?? this.panelHidden,
+  );
 
   @override
   bool operator ==(Object other) =>

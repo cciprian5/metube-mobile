@@ -1,46 +1,82 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-/// A bare shell that proves the workspace builds for Windows with the
-/// shared packages; the real bootstrap (storage, player, window) replaces it.
+import 'app.dart';
+import 'di.dart';
+import 'identity.dart';
+import 'platform/error_log.dart';
+import 'platform/player_desktop.dart';
+import 'platform/prefs_store.dart';
+import 'platform/single_instance.dart';
+import 'platform/window_frame.dart';
+import 'platform/window_placement.dart';
+
+/// Bootstrap only: one copy, storage, the player, the window, runApp.
 ///
-/// `--gallery` opens the Wahaj component sheet for review by eye, with
-/// `--night` and `--ltr` for the other theme and direction.
-void main(List<String> args) {
+/// `--gallery` opens the Wahaj component sheet instead, with `--night` and
+/// `--ltr` for the other theme and direction.
+Future<void> main(List<String> args) async {
+  WidgetsFlutterBinding.ensureInitialized();
   registerMTIconLicenses();
-  runApp(
-    EmberApp(
-      gallery: args.contains('--gallery'),
-      night: args.contains('--night'),
-      arabic: !args.contains('--ltr'),
-    ),
-  );
-}
-
-class EmberApp extends StatelessWidget {
-  const EmberApp({
-    super.key,
-    this.gallery = false,
-    this.night = false,
-    this.arabic = true,
-  });
-
-  final bool gallery;
-  final bool night;
-  final bool arabic;
-
-  @override
-  Widget build(BuildContext context) {
-    // Declares this the Windows app, the only place that does, so shared
-    // layouts may take their desktop branch here and never on a phone.
-    return MTDesktopApp(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: mtDesktopTheme(MTVariant.superApp, Brightness.light),
-        darkTheme: mtDesktopTheme(MTVariant.superApp, Brightness.dark),
-        themeMode: night ? ThemeMode.dark : ThemeMode.light,
-        home: gallery ? MTWahajGallery(arabic: arabic) : const Scaffold(),
+  if (args.contains('--gallery')) {
+    runApp(
+      EmberGalleryApp(
+        night: args.contains('--night'),
+        arabic: !args.contains('--ltr'),
       ),
     );
+    return;
   }
+  // First, before anything opens a file or a window: a second copy exits
+  // here and the first comes to the front.
+  await claimSingleInstance(args);
+  initMTL10n();
+  MediaKit.ensureInitialized();
+
+  final prefs = await SharedPreferences.getInstance();
+  final store = SharedPrefsKeyValueStore(prefs);
+  final mutex = PrefsMutex();
+  final local = await getApplicationCacheDirectory();
+  final logger = MTLogger(
+    filePath: '${local.path}/logs/${EmberIdentity.logFile}',
+  );
+  logEveryError(logger);
+
+  final resolver = PlaybackSourceResolver(endpoint: ServerStreamEndpoint.none);
+  final player = DesktopPlayer.create(
+    resolver: resolver,
+    store: store,
+    mutex: mutex,
+  ).session;
+  await player.loadPreferences();
+  // The last queue comes back paused, as on the phone: opening the app
+  // never starts sound by itself.
+  unawaited(player.restoreSession());
+
+  await EmberWindow.open(
+    placements: WindowPlacementStore(store: store, mutex: mutex),
+    beforeClose: player.persist,
+  );
+  unawaited(logger.log('app started (ember)', tag: 'app'));
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        keyValueStoreProvider.overrideWithValue(store),
+        prefsMutexProvider.overrideWithValue(mutex),
+        loggerProvider.overrideWithValue(logger),
+        playbackResolverProvider.overrideWithValue(resolver),
+        playerProvider.overrideWithValue(player),
+      ],
+      child: const EmberApp(),
+    ),
+  );
 }

@@ -98,8 +98,7 @@ Rect placeWindow({
     );
     for (final area in workAreas) {
       final seen = titleBar.intersect(area);
-      if (seen.width >= _grabbable.width &&
-          seen.height >= _grabbable.height) {
+      if (seen.width >= _grabbable.width && seen.height >= _grabbable.height) {
         return _fit(wanted, area, minimum);
       }
     }
@@ -120,12 +119,18 @@ Rect placeWindow({
 /// but never below [minimum] (a tiny screen gets a window that overhangs
 /// rather than a broken layout).
 Rect _fit(Rect bounds, Rect area, Size minimum) {
-  final w = bounds.width.clamp(minimum.width, _atLeast(area.width, minimum.width));
+  final w = bounds.width.clamp(
+    minimum.width,
+    _atLeast(area.width, minimum.width),
+  );
   final h = bounds.height.clamp(
     minimum.height,
     _atLeast(area.height, minimum.height),
   );
-  final left = bounds.left.clamp(area.left, _atLeast(area.right - w, area.left));
+  final left = bounds.left.clamp(
+    area.left,
+    _atLeast(area.right - w, area.left),
+  );
   final top = bounds.top.clamp(area.top, _atLeast(area.bottom - h, area.top));
   return Rect.fromLTWH(left, top, w, h);
 }

@@ -28,7 +28,12 @@ bool FlutterWindow::OnCreate() {
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
-    this->Show();
+    // The Dart side shows the window itself, where it was left and
+    // maximized if it was; showing it "normal" here would undo that. This
+    // stays only as a fallback for a start that failed before showing it.
+    if (!::IsWindowVisible(GetHandle())) {
+      this->Show();
+    }
   });
 
   // Flutter can complete the first frame before the "show window" callback is

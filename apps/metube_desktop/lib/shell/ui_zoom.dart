@@ -137,7 +137,9 @@ class UiZoomNotifier extends Notifier<UiZoom> {
 
   void _apply(UiZoom next) {
     state = next;
-    ref.read(windowControlsProvider).setMinimumSize(minimumWindowAt(next.value));
+    ref
+        .read(windowControlsProvider)
+        .setMinimumSize(minimumWindowAt(next.value));
     unawaited(ref.read(uiZoomStoreProvider).write(next.value));
   }
 }

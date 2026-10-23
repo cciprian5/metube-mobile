@@ -126,9 +126,7 @@ void main() {
       expect(shell(tester), const Size(1440, 900));
     });
 
-    testWidgets('changing the size keeps the app as it was', (
-      tester,
-    ) async {
+    testWidgets('changing the size keeps the app as it was', (tester) async {
       await open(tester);
       final before = tester.state(find.byType(EmberShell));
       await ctrl(tester, LogicalKeyboardKey.equal);

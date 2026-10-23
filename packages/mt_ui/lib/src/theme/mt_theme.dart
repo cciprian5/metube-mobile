@@ -27,7 +27,11 @@ class MTThemeX extends ThemeExtension<MTThemeX> {
 /// The Wahaj theme. **A documented lesson**: the five surfaceContainer*
 /// roles must be set explicitly, or Material 3 imposes its own greys over
 /// the cream ground.
-ThemeData mtTheme(MTVariant variant, Brightness brightness) {
+ThemeData mtTheme(
+  MTVariant variant,
+  Brightness brightness, {
+  MTTypeScale type = MTTypeScale.mobile,
+}) {
   final p = MTPalette.of(variant, brightness);
   final isDark = brightness == Brightness.dark;
 
@@ -118,14 +122,14 @@ ThemeData mtTheme(MTVariant variant, Brightness brightness) {
     pageTransitionsTheme: mtPageTransitionsTheme,
     dividerTheme: DividerThemeData(color: p.line, thickness: 1, space: 1),
     textTheme: TextTheme(
-      headlineLarge: display(24, FontWeight.w700),
+      headlineLarge: display(type.headline, FontWeight.w700),
       headlineMedium: display(20, FontWeight.w700),
       titleLarge: display(17, FontWeight.w700),
       titleMedium: display(14, FontWeight.w700),
       titleSmall: display(12.5, FontWeight.w500),
-      bodyLarge: body(15, FontWeight.w400),
+      bodyLarge: body(type.body, FontWeight.w400),
       bodyMedium: body(13.5, FontWeight.w400),
-      bodySmall: body(11.5, FontWeight.w400, color: p.ink3),
+      bodySmall: body(type.secondary, FontWeight.w400, color: p.ink3),
       labelLarge: body(13.5, FontWeight.w700),
       labelMedium: body(12.5, FontWeight.w500),
       labelSmall: body(10.5, FontWeight.w500, color: p.ink3),
@@ -136,7 +140,7 @@ ThemeData mtTheme(MTVariant variant, Brightness brightness) {
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
-      titleTextStyle: display(24, FontWeight.w700),
+      titleTextStyle: display(type.headline, FontWeight.w700),
     ),
     cardTheme: CardThemeData(
       color: p.card,

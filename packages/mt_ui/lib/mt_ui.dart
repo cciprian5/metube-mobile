@@ -4,6 +4,10 @@
 library;
 
 export 'src/gallery/gallery_screen.dart';
+export 'src/icons/mt_icon.dart';
+export 'src/icons/mt_icon_data.dart';
+export 'src/icons/mt_icon_licenses.dart';
+export 'src/icons/mt_icons.dart';
 export 'src/l10n/app_locale.dart';
 export 'src/l10n/bidi.dart';
 export 'src/l10n/file_size.dart';
@@ -13,6 +17,7 @@ export 'src/theme/mt_theme.dart';
 export 'src/tokens/tokens.dart';
 export 'src/widgets/mt_active_downloads_bar.dart';
 export 'src/widgets/mt_adaptive.dart';
+export 'src/widgets/mt_desktop_app.dart';
 export 'src/widgets/mt_clipboard_banner.dart';
 export 'src/widgets/mt_connection_icon.dart';
 export 'src/widgets/mt_download_progress_card.dart';

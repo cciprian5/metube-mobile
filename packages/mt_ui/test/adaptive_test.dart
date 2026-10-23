@@ -48,6 +48,62 @@ void main() {
       expect(MTBreakpoint.classOf(839), MTWindowClass.medium);
       expect(MTBreakpoint.classOf(840), MTWindowClass.expanded);
     });
+
+    test('desktop needs both the width and the Windows app', () {
+      expect(MTBreakpoint.classOf(3840), MTWindowClass.expanded);
+      expect(
+        MTBreakpoint.classOf(959, desktopApp: true),
+        MTWindowClass.expanded,
+      );
+      expect(
+        MTBreakpoint.classOf(960, desktopApp: true),
+        MTWindowClass.desktop,
+      );
+    });
+
+    Future<MTWindowClass> classIn(
+      WidgetTester tester,
+      double width, {
+      required bool desktopApp,
+    }) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = Size(width, 900);
+      addTearDown(tester.view.reset);
+      late MTWindowClass seen;
+      final probe = Builder(
+        builder: (context) {
+          seen = context.windowClass;
+          return const SizedBox();
+        },
+      );
+      await tester.pumpWidget(
+        MaterialApp(home: desktopApp ? MTDesktopApp(child: probe) : probe),
+      );
+      return seen;
+    }
+
+    testWidgets('**the guard**: a phone app never sees desktop, at any width', (
+      tester,
+    ) async {
+      for (var width = 320.0; width <= 3840; width += 160) {
+        expect(
+          await classIn(tester, width, desktopApp: false),
+          isNot(MTWindowClass.desktop),
+          reason: '$width',
+        );
+      }
+    });
+
+    testWidgets('the Windows app sees desktop from 960', (tester) async {
+      expect(
+        await classIn(tester, 1280, desktopApp: true),
+        MTWindowClass.desktop,
+      );
+      expect(
+        await classIn(tester, 900, desktopApp: true),
+        MTWindowClass.expanded,
+      );
+    });
   });
 
   group('the shell frame', () {

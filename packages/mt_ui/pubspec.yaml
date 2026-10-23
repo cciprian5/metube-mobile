@@ -15,6 +15,9 @@ dependencies:
     sdk: flutter
   intl: any
   timeago: ^3.7.1
+  # The Wahaj icons. Pinned to the version measured on Windows before any
+  # screen used it.
+  flutter_svg: 2.3.0
 
 dev_dependencies:
   flutter_test:

@@ -114,6 +114,56 @@ abstract final class MTType {
   static const String package = 'mt_ui';
 }
 
+/// The three type sizes that differ between the phone and the computer.
+///
+/// A desktop screen is read from further away but with a finer pointer, so
+/// body text is a step smaller and secondary text a step larger than on a
+/// phone, where it sits a hand's length from the eye.
+class MTTypeScale {
+  const MTTypeScale({
+    required this.headline,
+    required this.body,
+    required this.secondary,
+  });
+
+  /// Screen titles, in the heading font at 700.
+  final double headline;
+
+  /// Running text, in the body font at 400.
+  final double body;
+
+  /// Captions and metadata under a title.
+  final double secondary;
+
+  /// The phones' scale, exactly the sizes they always had.
+  static const mobile = MTTypeScale(headline: 24, body: 15, secondary: 11.5);
+
+  /// The Windows app's scale.
+  static const desktop = MTTypeScale(headline: 24, body: 14, secondary: 12.5);
+}
+
+/// Spacing for a pointer rather than a finger: rows a mouse can still hit
+/// comfortably at a third less height than a thumb needs.
+class MTDensity {
+  const MTDensity({
+    required this.row,
+    required this.iconButton,
+    required this.gap,
+  });
+
+  /// The height of a list or table row.
+  final double row;
+
+  /// The square an icon button occupies, its hit area included.
+  final double iconButton;
+
+  /// The space between neighbouring controls.
+  final double gap;
+
+  /// The Windows app. The phones keep their own spacing (`MTSpace`).
+  static const desktop = MTDensity(row: 36, iconButton: 32, gap: 12);
+}
+
 /// **Fixed-width digits** for live counters.
 ///
 /// **A documented trap:** adding `FontFeature.tabularFigures()` on its own

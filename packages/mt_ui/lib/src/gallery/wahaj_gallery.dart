@@ -9,6 +9,7 @@ import '../wahaj/mt_boxed_settings.dart';
 import '../wahaj/mt_confirm_dialog.dart';
 import '../wahaj/mt_shortcut_tooltip.dart';
 import '../wahaj/mt_switch.dart';
+import 'wahaj_gallery_motion.dart';
 
 /// An internal sheet of the Wahaj components, for reviewing them by eye in
 /// both themes and both directions. **Not a product screen**: its strings
@@ -121,6 +122,7 @@ class _MTWahajGalleryState extends State<MTWahajGallery> {
                 ],
               ),
             ),
+            MTWahajGalleryMotion(arabic: widget.arabic),
             label(t('الحوار', 'Dialog')),
             Align(
               alignment: AlignmentDirectional.centerStart,

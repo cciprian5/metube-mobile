@@ -21,6 +21,35 @@ ThemeData mtDesktopTheme(MTVariant variant, Brightness brightness) {
   final hairline = BorderSide(color: p.line2, width: 1.6);
 
   return base.copyWith(
+    // "Warmth" instead of Material's sparkle: a press fills with the soft
+    // accent and fades, with no ripple travelling across the control.
+    splashFactory: NoSplash.splashFactory,
+    highlightColor: p.accentSoft,
+    hoverColor: p.cardAlt,
+    // Square icon buttons with small corners; pressed, they warm up.
+    iconButtonTheme: IconButtonThemeData(
+      style: ButtonStyle(
+        fixedSize: WidgetStatePropertyAll(
+          Size.square(MTDensity.desktop.iconButton),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(corners.iconButton),
+          ),
+        ),
+        foregroundColor: WidgetStateProperty.resolveWith(
+          (states) =>
+              states.contains(WidgetState.pressed) ? p.accentInk : p.ink2,
+        ),
+        overlayColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.pressed)
+              ? p.accentSoft
+              : states.contains(WidgetState.hovered)
+              ? p.cardAlt
+              : null,
+        ),
+      ),
+    ),
     // A hairline square with small corners; on, it fills with the accent.
     checkboxTheme: CheckboxThemeData(
       shape: RoundedRectangleBorder(

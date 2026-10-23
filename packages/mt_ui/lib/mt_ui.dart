@@ -5,6 +5,7 @@ library;
 
 export 'src/gallery/gallery_screen.dart';
 export 'src/gallery/wahaj_gallery.dart';
+export 'src/gallery/wahaj_gallery_motion.dart';
 export 'src/icons/mt_icon.dart';
 export 'src/icons/mt_icon_data.dart';
 export 'src/icons/mt_icon_licenses.dart';
@@ -54,5 +55,9 @@ export 'src/widgets/mt_whats_new_sheet.dart';
 export 'src/wahaj/mt_badge.dart';
 export 'src/wahaj/mt_boxed_settings.dart';
 export 'src/wahaj/mt_confirm_dialog.dart';
+export 'src/wahaj/mt_empty_frame.dart';
+export 'src/wahaj/mt_link_button.dart';
+export 'src/wahaj/mt_notice.dart';
+export 'src/wahaj/mt_progress.dart';
 export 'src/wahaj/mt_shortcut_tooltip.dart';
 export 'src/wahaj/mt_switch.dart';

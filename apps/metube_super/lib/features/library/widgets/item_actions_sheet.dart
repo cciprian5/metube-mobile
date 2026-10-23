@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mt_media/library.dart';
 
 import '../../playlists/add_to_playlist_sheet.dart';
 import '../../shared/error_report.dart';
@@ -9,7 +10,6 @@ import '../../shared/external_player.dart';
 import '../../tags/item_tags_sheet.dart';
 import '../../transcripts/transcript_openers.dart';
 import '../../transcripts/transcripts_state.dart';
-import '../library_models.dart';
 import '../library_actions.dart';
 import '../library_providers.dart';
 import 'item_details_sheet.dart';

@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
 import 'package:metube_super/features/library/library_actions.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
 
 /// **Found by reading the code 2026-09-19**, while auditing what deleting
 /// on the server touches.

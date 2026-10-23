@@ -107,7 +107,12 @@ void main() {
       ('Settings', EmberPlace.settings),
       ('Library', EmberPlace.library),
     ]) {
-      await tester.tap(find.text(label));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(EmberSidebar),
+          matching: find.text(label),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(current(), place, reason: label);
     }

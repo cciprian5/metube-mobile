@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../home/add_flow.dart';
@@ -15,7 +16,6 @@ import '../home/network_gate.dart';
 import '../home/quick_download.dart';
 import '../home/reception.dart';
 import '../library/library_enricher.dart';
-import '../library/library_models.dart' show MediaTypeFilter;
 import '../library/library_providers.dart'
     show completionGlowProvider, libraryViewProvider;
 import '../library/quality_backfill.dart';

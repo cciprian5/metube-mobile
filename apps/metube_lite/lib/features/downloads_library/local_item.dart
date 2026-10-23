@@ -153,19 +153,8 @@ List<LocalItem> buildLocalLibraryView(
   return filtered;
 }
 
-/// Live platform counters for the filter chips, most first. The unknown
-/// platform (`other`) is placed last so it never leads the list.
-List<MapEntry<MediaPlatform, int>> platformCounts(List<LocalItem> items) {
-  final counts = <MediaPlatform, int>{};
-  for (final item in items) {
-    counts[item.platform] = (counts[item.platform] ?? 0) + 1;
-  }
-  final entries = counts.entries.toList()
-    ..sort((a, b) {
-      if ((a.key == MediaPlatform.other) != (b.key == MediaPlatform.other)) {
-        return a.key == MediaPlatform.other ? 1 : -1;
-      }
-      return b.value.compareTo(a.value);
-    });
-  return entries;
-}
+/// Live platform counters for the filter chips, most first, with the
+/// unknown platform last: the one rule every library counts with
+/// ([countPlatforms]).
+List<MapEntry<MediaPlatform, int>> platformCounts(List<LocalItem> items) =>
+    countPlatforms(items, (item) => item.platform);

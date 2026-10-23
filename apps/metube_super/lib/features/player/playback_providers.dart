@@ -6,7 +6,6 @@ import 'package:mt_media/mt_media.dart';
 
 import '../../di.dart';
 import '../library/artwork_view.dart';
-import '../library/library_models.dart';
 import '../library/library_providers.dart';
 
 /// A pending play request: the list on screen at the moment of the tap, in
@@ -69,20 +68,6 @@ final videoSessionProvider = Provider.autoDispose<MTVideoSession>((ref) {
   });
   return session;
 });
-
-/// Converts a library item into a unified playback item, keyed by
-/// canonicalUrl.
-PlaylistItem toPlaylistItem(LibraryItem item) => PlaylistItem(
-  canonicalUrl: item.canonicalUrl,
-  title: item.title,
-  uploader: item.uploader,
-  artworkUrl: item.thumbnail,
-  localPath: item.localPath,
-  serverFilename: item.serverFilename,
-  isAudio: item.isAudio,
-  duration: item.duration,
-  aspectRatio: item.aspectRatio,
-);
 
 /// The thumbnail builder for the players; remote images carry the
 /// authentication headers.

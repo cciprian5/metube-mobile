@@ -36,6 +36,7 @@ class MTLibrarySliver extends StatelessWidget {
     required this.itemCount,
     required this.itemBuilder,
     this.showLocation = false,
+    this.sort,
   });
 
   final MTLibraryLayout layout;
@@ -45,6 +46,10 @@ class MTLibrarySliver extends StatelessWidget {
   /// Whether the table has a "where is it" column. Only a library that
   /// mixes the server's files with the device's has something to say there.
   final bool showLocation;
+
+  /// Sorting from the table's header (the Windows app); null keeps plain
+  /// titles.
+  final MTTableSort? sort;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +93,9 @@ class MTLibrarySliver extends StatelessWidget {
           if (columns == null) return _rows();
           return SliverMainAxisGroup(
             slivers: [
-              SliverToBoxAdapter(child: MTMediaRowHeader(columns: columns)),
+              SliverToBoxAdapter(
+                child: MTMediaRowHeader(columns: columns, sort: sort),
+              ),
               SliverList.builder(
                 itemCount: itemCount,
                 itemBuilder: (context, index) =>

@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/app.dart';
+import 'package:metube_desktop/data/library_data.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
 import 'package:metube_desktop/shell/shell_state.dart';
 import 'package:metube_desktop/shell/window_controls.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart';
 
 /// A player that records the commands it gets and plays nothing.
@@ -82,12 +84,18 @@ class FakePlayer implements MTPlayer {
 
 /// Everything the shell reads, with nothing behind it.
 class ShellHarness {
-  ShellHarness({this.layout = const ShellLayout()});
+  ShellHarness({this.layout = const ShellLayout(), this.library, this.server});
 
   final ShellLayout layout;
+
+  /// The unified library as if merged; null leaves the real providers,
+  /// which with no server list nothing.
+  final List<LibraryItem>? library;
+  final ServerConfig? server;
   final player = FakePlayer();
   final controls = InertWindowControls();
   final store = MemoryKeyValueStore();
+  final resolver = PlaybackSourceResolver(endpoint: ServerStreamEndpoint.none);
 
   Widget app() => ProviderScope(
     overrides: [
@@ -95,6 +103,10 @@ class ShellHarness {
       playerProvider.overrideWithValue(player),
       initialShellLayoutProvider.overrideWithValue(layout),
       windowControlsProvider.overrideWithValue(controls),
+      serverConfigProvider.overrideWithValue(server),
+      playbackResolverProvider.overrideWithValue(resolver),
+      if (library case final items?)
+        libraryItemsProvider.overrideWith((ref) async => items),
     ],
     child: const EmberApp(),
   );

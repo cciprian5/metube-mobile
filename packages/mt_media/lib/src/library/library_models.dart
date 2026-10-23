@@ -1,6 +1,8 @@
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart' show MTMediaLocation;
 
+import '../models/playlist_item.dart';
+
 const _audioExtensions = {'mp3', 'm4a', 'aac', 'ogg', 'opus', 'wav', 'flac'};
 
 /// The unified library item: the server history merged with the local
@@ -149,6 +151,20 @@ class LibraryItem {
   }
 }
 
+/// Converts a library item into a unified playback item, keyed by
+/// canonicalUrl.
+PlaylistItem toPlaylistItem(LibraryItem item) => PlaylistItem(
+  canonicalUrl: item.canonicalUrl,
+  title: item.title,
+  uploader: item.uploader,
+  artworkUrl: item.thumbnail,
+  localPath: item.localPath,
+  serverFilename: item.serverFilename,
+  isAudio: item.isAudio,
+  duration: item.duration,
+  aspectRatio: item.aspectRatio,
+);
+
 /// Library filters: all, favourites, offline, server.
 enum LibraryScope { all, favorites, offline, onServer }
 
@@ -263,23 +279,10 @@ List<LibraryItem> buildLibraryView(
   return filtered;
 }
 
-/// Live platform counters, most first, with unknown last.
-///
-/// **The counterpart of `apps/metube_lite/.../local_item.dart`**: the same
-/// order and the same "unknown never leads" rule. Any change here is
-/// considered for its twin.
-List<MapEntry<MediaPlatform, int>> platformCounts(List<LibraryItem> items) {
-  final counts = <MediaPlatform, int>{};
-  for (final item in items) {
-    counts[item.platform] = (counts[item.platform] ?? 0) + 1;
-  }
-  return counts.entries.toList()..sort((a, b) {
-    if ((a.key == MediaPlatform.other) != (b.key == MediaPlatform.other)) {
-      return a.key == MediaPlatform.other ? 1 : -1;
-    }
-    return b.value.compareTo(a.value);
-  });
-}
+/// Live platform counters, most first, with unknown last: the one rule
+/// every library counts with ([countPlatforms]).
+List<MapEntry<MediaPlatform, int>> platformCounts(List<LibraryItem> items) =>
+    countPlatforms(items, (item) => item.platform);
 
 /// The folders one level below [parent] (the top when empty), each with
 /// the clips in it or below it, most clips first, as full paths. Empty when

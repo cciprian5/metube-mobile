@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'pill.dart';
 import 'shell_metrics.dart';
 
 /// The panel's three faces.
@@ -46,7 +47,7 @@ class EmberRightPanel extends StatelessWidget {
                 (PanelTab.upNext, l.upNext),
                 (PanelTab.details, l.details),
               ])
-                _TabPill(
+                EmberPill(
                   label: label,
                   selected: tab == face,
                   onTap: () => onTab(face),
@@ -70,51 +71,13 @@ class EmberRightPanel extends StatelessWidget {
               current.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
+              textDirection: mtTextDirectionOf(
+                current.title,
+                Directionality.of(context),
+              ),
               style: Theme.of(context).textTheme.titleSmall,
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _TabPill extends StatelessWidget {
-  const _TabPill({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    return Semantics(
-      selected: selected,
-      button: true,
-      child: Material(
-        color: selected ? p.ink : Colors.transparent,
-        shape: StadiumBorder(
-          side: BorderSide(color: selected ? p.ink : p.line2),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: MTSpace.md,
-              vertical: MTSpace.xs,
-            ),
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.labelMedium
-                  ?.copyWith(color: selected ? p.bg : p.ink2),
-            ),
-          ),
-        ),
       ),
     );
   }

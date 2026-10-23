@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
 import '../l10n/bidi.dart';
 import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
@@ -206,6 +208,9 @@ class MTMediaRow extends StatelessWidget {
                             icon: favorite
                                 ? Icons.favorite_rounded
                                 : Icons.favorite_border_rounded,
+                            wahaj: favorite
+                                ? MTIcons.favoriteOn
+                                : MTIcons.favorite,
                             size: 20,
                             color: favorite ? p.favorite : p.ink3,
                           ),

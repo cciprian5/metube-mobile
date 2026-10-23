@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_media/mt_media.dart' show mtFormatDuration;
 import 'package:mt_transcripts/mt_transcripts.dart' show SearchText;
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
-import '../library/library_models.dart';
 import '../player/playback_providers.dart';
 
 /// [text] with every word of [query] lit in the action colour, wherever the

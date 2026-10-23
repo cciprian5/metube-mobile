@@ -4,6 +4,8 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import '../l10n/bidi.dart';
 import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
+import '../icons/mt_icon_data.dart';
+import '../icons/mt_icons.dart';
 import '../tokens/tokens.dart';
 import 'mt_equalizer.dart';
 import 'mt_highlight_surface.dart';
@@ -224,7 +226,13 @@ class _Cover extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            child ?? Icon(Icons.music_note_rounded, size: 22, color: p.ink3),
+            child ??
+                mtCoverPlaceholder(
+                  context,
+                  size: 22,
+                  color: p.ink3,
+                  audio: audio,
+                ),
             if (playing)
               Align(
                 alignment: Alignment.center,
@@ -263,6 +271,7 @@ class _Cover extends StatelessWidget {
                       icon: favorite
                           ? Icons.favorite_rounded
                           : Icons.favorite_border_rounded,
+                      wahaj: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
                       tooltip: favorite
                           ? l10n.removeFromFavorites
                           : l10n.addToFavorites,
@@ -296,12 +305,14 @@ class _Cover extends StatelessWidget {
 class _CoverButton extends StatelessWidget {
   const _CoverButton({
     required this.icon,
+    this.wahaj,
     required this.tooltip,
     required this.color,
     required this.onTap,
   });
 
   final IconData icon;
+  final MTIconData? wahaj;
   final String tooltip;
   final Color color;
   final VoidCallback onTap;
@@ -318,6 +329,7 @@ class _CoverButton extends StatelessWidget {
         // 2026-09-04).
         child: MTIconSwap(
           icon: icon,
+          wahaj: wahaj,
           size: 17,
           color: color,
           // Icons over a thumbnail of unknown colour: a light shadow keeps

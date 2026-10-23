@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
-import '../library/library_models.dart';
 import 'transcript_moment.dart';
 import 'transcript_sheet.dart';
 import 'transcripts_state.dart';

@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
 import 'package:metube_super/features/library/library_enricher.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/library/media_probe.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:metube_super/features/shared/error_report.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
+import 'package:mt_media/library.dart';
 
 /// **Guards for the thumbnail defect (measured on a real device
 /// 2026-09-07).**

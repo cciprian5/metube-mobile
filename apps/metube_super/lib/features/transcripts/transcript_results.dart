@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart' show ImageHeaders, UrlKit;
 import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/artwork_view.dart';
-import '../library/library_models.dart';
 import '../library/library_providers.dart';
 import 'transcript_moment.dart';
 import 'transcript_openers.dart';

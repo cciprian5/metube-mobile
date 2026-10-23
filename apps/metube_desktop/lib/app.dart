@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import 'identity.dart';
+import 'features/library/library_page.dart';
 import 'router.dart';
 import 'shell/ember_shell.dart';
 
@@ -27,6 +28,8 @@ class _EmberAppState extends State<EmberApp> {
       buildEmberRouter(
         shell: (_, state, child) =>
             EmberShell(location: state.uri, child: child),
+        library: (only) =>
+            LibraryPage(key: ValueKey(only), scope: LibraryPage.scopeOf(only)),
       );
 
   @override

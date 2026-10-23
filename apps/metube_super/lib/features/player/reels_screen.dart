@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/library_actions.dart';
-import '../library/library_models.dart';
 import '../library/library_providers.dart';
 import '../library/widgets/item_details_sheet.dart';
 import '../shared/add_to_sheet.dart';

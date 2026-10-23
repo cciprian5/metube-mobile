@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/library/library_providers.dart';
 import 'package:metube_super/features/playlists/playlist_details_screen.dart';
 import 'package:metube_super/features/playlists/playlists_providers.dart';
@@ -10,6 +9,7 @@ import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import 'playback_test_doubles.dart';
 

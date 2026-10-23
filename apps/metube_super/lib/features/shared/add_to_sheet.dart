@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../library/library_actions.dart';
-import '../library/library_models.dart';
 import '../playlists/add_to_playlist_sheet.dart';
 import '../tags/item_tags_sheet.dart';
 

@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/artwork_view.dart';
-import '../home/add_flow.dart' show platformKindOf;
 import 'playlist_dialogs.dart';
 import 'playlists_providers.dart';
 

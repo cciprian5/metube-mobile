@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart' show MediaPlatform;
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../shared/platform_label.dart';
-import '../library_models.dart';
 import '../library_providers.dart';
 
 /// The sort and view sheet: one button, with both choices saved.

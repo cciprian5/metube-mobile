@@ -10,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'data/lab_server.dart';
+import 'data/library_data.dart';
 import 'di.dart';
 import 'identity.dart';
 import 'platform/error_log.dart';
@@ -82,6 +84,7 @@ Future<void> main(List<String> args) async {
         playerProvider.overrideWithValue(player),
         initialShellLayoutProvider.overrideWithValue(layout),
         windowControlsProvider.overrideWithValue(controls),
+        serverConfigProvider.overrideWithValue(labServerFrom(args)),
       ],
       child: const EmberApp(),
     ),

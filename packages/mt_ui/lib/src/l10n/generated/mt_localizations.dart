@@ -884,6 +884,18 @@ abstract class MTLocalizations {
   /// **'Channels'**
   String get desktopChannels;
 
+  /// No description provided for @desktopClearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get desktopClearFilters;
+
+  /// No description provided for @desktopEmptyLibraryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a link, and the clip appears here once the server has it.'**
+  String get desktopEmptyLibraryMessage;
+
   /// No description provided for @desktopForward.
   ///
   /// In en, this message translates to:
@@ -902,6 +914,24 @@ abstract class MTLocalizations {
   /// **'Collapse sidebar'**
   String get desktopNarrowSidebar;
 
+  /// No description provided for @desktopNoMatchMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear a filter to see more.'**
+  String get desktopNoMatchMessage;
+
+  /// No description provided for @desktopNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches these filters'**
+  String get desktopNoMatchTitle;
+
+  /// No description provided for @desktopNoServerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your MeTube server and its library appears here.'**
+  String get desktopNoServerMessage;
+
   /// No description provided for @desktopNothingPlaying.
   ///
   /// In en, this message translates to:
@@ -913,6 +943,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Play a clip and its transcript, what comes next and its details appear here.'**
   String get desktopNothingPlayingHint;
+
+  /// No description provided for @desktopOfflineCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} offline'**
+  String desktopOfflineCount(int count);
 
   /// No description provided for @desktopSearch.
   ///
@@ -926,11 +962,29 @@ abstract class MTLocalizations {
   /// **'Search titles and what was said…'**
   String get desktopSearchHint;
 
+  /// No description provided for @desktopServerPartMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The server isn\'t answering, so this is what it held last time.'**
+  String get desktopServerPartMissing;
+
   /// No description provided for @desktopShowPanel.
   ///
   /// In en, this message translates to:
   /// **'Show side panel'**
   String get desktopShowPanel;
+
+  /// No description provided for @desktopViewCompact.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact'**
+  String get desktopViewCompact;
+
+  /// No description provided for @desktopViewTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Table'**
+  String get desktopViewTable;
 
   /// No description provided for @desktopWidenSidebar.
   ///

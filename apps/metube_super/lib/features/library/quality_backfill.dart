@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
-import 'library_models.dart';
 import 'library_providers.dart';
 import 'quality_cache.dart';
 

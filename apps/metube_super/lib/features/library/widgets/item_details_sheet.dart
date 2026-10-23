@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mt_media/library.dart';
 
 import '../../shared/external_player.dart';
 import '../../shared/membership.dart';
-import '../library_models.dart';
 import '../quality_cache.dart';
 
 /// Item details, opened from the actions sheet and from the reels player

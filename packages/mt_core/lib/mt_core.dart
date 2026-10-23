@@ -57,6 +57,7 @@ export 'src/update/update_checker.dart';
 export 'src/update/update_prefs.dart';
 export 'src/update/update_release.dart';
 export 'src/update/whats_new.dart';
+export 'src/urls/platform_counts.dart';
 export 'src/urls/platform_detector.dart';
 export 'src/urls/playlist_detector.dart';
 export 'src/urls/server_path.dart';

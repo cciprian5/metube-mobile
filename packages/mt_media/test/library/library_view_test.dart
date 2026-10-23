@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart' show MTMediaLocation;
+import 'package:mt_media/library.dart';
 
 void main() {
   final items = [

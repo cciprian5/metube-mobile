@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/artwork_view.dart';
 import '../library/library_providers.dart';
-import '../player/playback_providers.dart';
 import '../shared/error_report.dart';
 import '../tags/manage_tags_sheet.dart';
 import 'playlist_dialogs.dart';

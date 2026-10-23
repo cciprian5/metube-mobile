@@ -88,6 +88,11 @@ class _NowPlaying extends StatelessWidget {
                 item?.title ?? context.mtl.desktopNothingPlaying,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                // A title keeps its own direction, so an English one cut
+                // short in an Arabic window loses its end, not its start.
+                textDirection: item == null
+                    ? null
+                    : mtTextDirectionOf(item.title, Directionality.of(context)),
                 style: text.titleSmall?.copyWith(
                   color: item == null ? p.ink3 : p.ink,
                 ),

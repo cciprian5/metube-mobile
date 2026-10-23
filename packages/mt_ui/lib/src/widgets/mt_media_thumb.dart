@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import 'mt_polish.dart';
 import 'mt_thumb_pill.dart';
 
 /// A row's thumbnail: the cover in a rounded frame, with the duration and
@@ -40,7 +41,13 @@ class MTMediaThumb extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          child ?? Icon(Icons.music_note_rounded, size: 20, color: p.ink3),
+          child ??
+              mtCoverPlaceholder(
+                context,
+                size: 20,
+                color: p.ink3,
+                audio: audio,
+              ),
           if (duration != null)
             PositionedDirectional(
               bottom: 5,

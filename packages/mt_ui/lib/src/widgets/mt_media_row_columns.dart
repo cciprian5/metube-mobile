@@ -83,11 +83,33 @@ Widget _figure(String? value, TextStyle style) => Text(
   style: style,
 );
 
+/// The table columns a header can sort by.
+enum MTTableColumn { title, size, added }
+
+/// Sorting from the table's header, for a mouse: a click on a title sorts
+/// by that column and a second click turns the order around.
+class MTTableSort {
+  const MTTableSort({
+    required this.column,
+    required this.ascending,
+    required this.onSort,
+  });
+
+  /// The column the table is sorted by now, or null for none of them.
+  final MTTableColumn? column;
+  final bool ascending;
+  final ValueChanged<MTTableColumn> onSort;
+}
+
 /// The titles over a library table.
 class MTMediaRowHeader extends StatelessWidget {
-  const MTMediaRowHeader({super.key, required this.columns});
+  const MTMediaRowHeader({super.key, required this.columns, this.sort});
 
   final MTMediaColumns columns;
+
+  /// Null keeps plain titles, as on a tablet, where sorting lives in its
+  /// own sheet.
+  final MTTableSort? sort;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +125,37 @@ class MTMediaRowHeader extends StatelessWidget {
       textAlign: align,
       style: style,
     );
+    Widget sortable(MTTableColumn column, Text text) {
+      final by = sort;
+      if (by == null) return text;
+      final current = by.column == column;
+      return Semantics(
+        button: true,
+        child: InkWell(
+          onTap: () => by.onSort(column),
+          borderRadius: BorderRadius.circular(MTCorners.desktop.box),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: text.textAlign == TextAlign.end
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
+            children: [
+              Flexible(child: text),
+              if (current)
+                Transform.flip(
+                  flipY: by.ascending,
+                  child: MTIcon(
+                    MTIcons.chevronDown,
+                    size: MTSpace.md,
+                    color: p.ink2,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.fromLTRB(
         MTSpace.xs,
@@ -116,13 +169,21 @@ class MTMediaRowHeader extends StatelessWidget {
       child: Row(
         children: [
           const SizedBox(width: MTMediaColumns.thumbWidth + MTSpace.lg),
-          Expanded(child: label(l10n.titleLabel)),
+          Expanded(
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: sortable(MTTableColumn.title, label(l10n.titleLabel)),
+            ),
+          ),
           ..._cells(
             context,
             columns,
             length: label(l10n.columnLength, align: TextAlign.end),
-            size: label(l10n.size, align: TextAlign.end),
-            added: label(l10n.columnAdded),
+            size: sortable(
+              MTTableColumn.size,
+              label(l10n.size, align: TextAlign.end),
+            ),
+            added: sortable(MTTableColumn.added, label(l10n.columnAdded)),
             location: label(l10n.source),
             actions: const SizedBox.shrink(),
           ),

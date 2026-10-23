@@ -82,11 +82,17 @@ typedef EmberShellBuilder = Widget Function(
 
 Widget _bare(BuildContext context, GoRouterState state, Widget child) => child;
 
+/// Builds a place from its query argument.
+typedef EmberPlaceBuilder = Widget Function(String? argument);
+
+Widget _pendingLibrary(String? only) => PendingPlace('library', argument: only);
+
 /// The single route table. One router per app, built once, so the shell
 /// and the player under it live through every navigation.
 GoRouter buildEmberRouter({
   String initialLocation = EmberRoutes.library,
   EmberShellBuilder shell = _bare,
+  EmberPlaceBuilder library = _pendingLibrary,
 }) => GoRouter(
   initialLocation: initialLocation,
   // An address that names no place (an old link, a typo in a protocol
@@ -99,10 +105,7 @@ GoRouter buildEmberRouter({
       routes: [
         GoRoute(
           path: EmberRoutes.library,
-          builder: (_, state) => PendingPlace(
-            'library',
-            argument: state.uri.queryParameters['only'],
-          ),
+          builder: (_, state) => library(state.uri.queryParameters['only']),
         ),
         _place(EmberRoutes.search, 'search'),
         _place(EmberRoutes.playlists, 'playlists'),

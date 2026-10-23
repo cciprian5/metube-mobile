@@ -1,0 +1,243 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:metube_desktop/features/library/library_state.dart';
+import 'package:metube_desktop/shell/pill.dart';
+import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
+import 'package:mt_ui/mt_ui.dart';
+
+import 'support/shell_harness.dart';
+
+final _library = [
+  LibraryItem(
+    canonicalUrl: 'https://youtu.be/aaaaaaaaaaa',
+    title: 'Homelab Hour - Ep. 12',
+    uploader: 'Homelab Hour',
+    onServer: true,
+    timestamp: DateTime(2026, 10, 20),
+    sizeBytes: 400,
+    tags: const ['homelab'],
+    favorite: true,
+  ),
+  LibraryItem(
+    canonicalUrl: 'https://youtu.be/bbbbbbbbbbb',
+    title: 'Amber Skies',
+    uploader: 'Lowlands',
+    onServer: true,
+    isAudio: true,
+    timestamp: DateTime(2026, 10, 21),
+    sizeBytes: 100,
+  ),
+  LibraryItem(
+    canonicalUrl: 'https://youtu.be/ccccccccccc',
+    title: 'Blue Hour',
+    onServer: true,
+    localPath: r'C:\Offline\blue.mp4',
+    timestamp: DateTime(2026, 10, 22),
+    sizeBytes: 900,
+    duration: const Duration(seconds: 40),
+    aspectRatio: 0.56,
+  ),
+  LibraryItem(
+    canonicalUrl: 'https://www.tiktok.com/@a/video/1',
+    title: 'Tidepools at Dawn',
+    onServer: true,
+    timestamp: DateTime(2026, 10, 19),
+    sizeBytes: 50,
+  ),
+];
+
+void main() {
+  Future<ShellHarness> open(
+    WidgetTester tester, {
+    List<LibraryItem>? library,
+    ServerConfig? server,
+  }) async {
+    ShellHarness.useWindow(tester, const Size(1440, 900));
+    final h = ShellHarness(library: library, server: server);
+    await tester.pumpWidget(h.app());
+    await tester.pumpAndSettle();
+    return h;
+  }
+
+  Finder titleOf(String t) => find.text(t);
+  final server = ServerConfig(baseUrl: 'http://nas:8081');
+
+  testWidgets('no server and nothing local: it says so plainly', (
+    tester,
+  ) async {
+    await open(tester);
+    expect(find.text('No server configured'), findsOneWidget);
+  });
+
+  testWidgets('the library opens in the grid, newest first', (tester) async {
+    await open(tester, library: _library, server: server);
+    expect(find.byType(MTMediaGridCard), findsNWidgets(4));
+    final titles = [
+      for (final t in ['Blue Hour', 'Amber Skies', 'Homelab Hour - Ep. 12'])
+        tester.getTopLeft(titleOf(t)).dx,
+    ];
+    // Left to right in English: the newest leads.
+    expect(titles[0], lessThan(titles[1]));
+    expect(titles[1], lessThan(titles[2]));
+    expect(find.textContaining('4 clips'), findsOneWidget);
+    expect(find.textContaining('1 offline'), findsOneWidget);
+  });
+
+  testWidgets('the kind chips filter, and a second click clears', (
+    tester,
+  ) async {
+    await open(tester, library: _library, server: server);
+    await tester.tap(find.text('Audio'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTMediaGridCard), findsOneWidget);
+    expect(titleOf('Amber Skies'), findsOneWidget);
+
+    await tester.tap(find.text('Shorts'));
+    await tester.pumpAndSettle();
+    expect(titleOf('Blue Hour'), findsOneWidget);
+    expect(find.byType(MTMediaGridCard), findsOneWidget);
+
+    await tester.tap(find.text('Shorts'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTMediaGridCard), findsNWidgets(4));
+  });
+
+  testWidgets('platform chips carry live counts, most first', (tester) async {
+    await open(tester, library: _library, server: server);
+    final youtube = find.text('YouTube · 3');
+    final tiktok = find.text('TikTok · 1');
+    expect(youtube, findsOneWidget);
+    expect(tiktok, findsOneWidget);
+    // In reading order, whichever row each chip wraps to.
+    final order = [
+      for (final pill in tester.widgetList<EmberPill>(find.byType(EmberPill)))
+        pill.label,
+    ];
+    expect(order.indexOf('YouTube · 3'), lessThan(order.indexOf('TikTok · 1')));
+    await tester.tap(tiktok);
+    await tester.pumpAndSettle();
+    expect(find.byType(MTMediaGridCard), findsOneWidget);
+    // The counts are over the whole library, not what the filter hides.
+    expect(youtube, findsOneWidget);
+  });
+
+  testWidgets('a tag chip includes, then excludes, then lets go', (
+    tester,
+  ) async {
+    await open(tester, library: _library, server: server);
+    await tester.tap(find.text('#homelab'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTMediaGridCard), findsOneWidget);
+    await tester.tap(find.text('#homelab'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTMediaGridCard), findsNWidgets(3));
+    await tester.tap(find.text('#homelab'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTMediaGridCard), findsNWidgets(4));
+  });
+
+  testWidgets('favourites is one state for its chip and its sidebar entry', (
+    tester,
+  ) async {
+    await open(tester, library: _library, server: server);
+    await tester.tap(find.widgetWithText(InkWell, 'Favorites').first);
+    await tester.pumpAndSettle();
+    expect(find.byType(MTMediaGridCard), findsOneWidget);
+    expect(find.text('Homelab Hour - Ep. 12'), findsWidgets);
+  });
+
+  testWidgets('the table sorts from its header, and the choice is kept', (
+    tester,
+  ) async {
+    final h = await open(tester, library: _library, server: server);
+    await tester.tap(find.text('Table'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTMediaRow), findsNWidgets(4));
+    expect(await h.store.getString(EmberLibraryNotifier.modeKey), 'list');
+
+    await tester.tap(find.text('Size'));
+    await tester.pumpAndSettle();
+    double y(String t) => tester.getTopLeft(titleOf(t)).dy;
+    expect(y('Blue Hour'), lessThan(y('Homelab Hour - Ep. 12')));
+    expect(y('Homelab Hour - Ep. 12'), lessThan(y('Amber Skies')));
+    expect(await h.store.getString(EmberLibraryNotifier.sortKey), 'largest');
+
+    await tester.tap(find.text('Size'));
+    await tester.pumpAndSettle();
+    expect(y('Tidepools at Dawn'), lessThan(y('Amber Skies')));
+  });
+
+  testWidgets('a click plays the list on screen from that clip', (
+    tester,
+  ) async {
+    final h = await open(tester, library: _library, server: server);
+    await tester.tap(titleOf('Amber Skies'));
+    await tester.pump();
+    expect(h.player.calls, ['playItems']);
+  });
+
+  testWidgets('filters that hide everything offer to clear them', (
+    tester,
+  ) async {
+    await open(tester, library: _library, server: server);
+    await tester.tap(find.text('Audio'));
+    await tester.tap(find.text('TikTok · 1'));
+    await tester.pumpAndSettle();
+    expect(find.text('Nothing matches these filters'), findsOneWidget);
+    await tester.tap(find.text('Clear filters'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTMediaGridCard), findsNWidgets(4));
+  });
+
+  testWidgets('**the guard**: no Material icon on screen, in any layout', (
+    tester,
+  ) async {
+    // The source check catches `Icons.` written in this app; this one
+    // catches the shared widgets it draws.
+    await open(tester, library: _library, server: server);
+    for (final mode in ['Grid', 'Table', 'Compact']) {
+      await tester.tap(find.text(mode));
+      await tester.pumpAndSettle();
+      expect(find.byType(Icon), findsNothing, reason: mode);
+    }
+  });
+
+  for (final mode in ['Grid', 'Table', 'Compact']) {
+    for (final size in [const Size(960, 600), const Size(1920, 1080)]) {
+      testWidgets('$mode fits at $size in both languages, any text size', (
+        tester,
+      ) async {
+        for (final arabic in [false, true]) {
+          for (final scale in [1.0, 1.3, 2.0]) {
+            ShellHarness.useWindow(tester, size);
+            tester.platformDispatcher.localesTestValue = [
+              Locale(arabic ? 'ar' : 'en'),
+            ];
+            tester.platformDispatcher.textScaleFactorTestValue = scale;
+            addTearDown(tester.platformDispatcher.clearAllTestValues);
+            final h = ShellHarness(library: _library, server: server);
+            await tester.pumpWidget(h.app());
+            await tester.pumpAndSettle();
+            await tester.tap(
+              find.text(switch ((mode, arabic)) {
+                ('Grid', false) => 'Grid',
+                ('Grid', true) => 'شبكة',
+                ('Table', false) => 'Table',
+                ('Table', true) => 'جدول',
+                (_, false) => 'Compact',
+                _ => 'مدمج',
+              }),
+            );
+            await tester.pumpAndSettle();
+            expect(
+              tester.takeException(),
+              isNull,
+              reason: '$mode ar=$arabic x$scale',
+            );
+          }
+        }
+      });
+    }
+  }
+}

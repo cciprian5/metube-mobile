@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
-import '../library/library_models.dart';
 import '../library/library_providers.dart';
 import '../player/playback_providers.dart';
 

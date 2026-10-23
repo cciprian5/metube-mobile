@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metube_super/features/library/library_models.dart';
-import 'package:metube_super/features/library/library_providers.dart';
+import 'package:mt_media/library.dart';
 
 /// **Filtering and searching by the channel**.
 ///

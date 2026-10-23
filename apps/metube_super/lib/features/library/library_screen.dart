@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../home/add_flow.dart';
@@ -14,7 +15,6 @@ import '../playlists/add_to_playlist_sheet.dart';
 import '../settings/settings_sections.dart';
 import '../tags/item_tags_sheet.dart';
 import '../transcripts/transcript_results.dart';
-import 'library_models.dart';
 import 'library_providers.dart';
 import 'widgets/downloads_sheet.dart';
 import 'widgets/confirm_bulk_delete.dart';

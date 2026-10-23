@@ -7,10 +7,10 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/library_actions.dart';
-import '../library/library_models.dart';
 import '../library/library_providers.dart';
 import '../shared/membership.dart';
 import '../shared/platform_label.dart';

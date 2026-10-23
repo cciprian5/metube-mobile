@@ -461,6 +461,13 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopChannels => 'Channels';
 
   @override
+  String get desktopClearFilters => 'Clear filters';
+
+  @override
+  String get desktopEmptyLibraryMessage =>
+      'Add a link, and the clip appears here once the server has it.';
+
+  @override
   String get desktopForward => 'Forward';
 
   @override
@@ -470,11 +477,26 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopNarrowSidebar => 'Collapse sidebar';
 
   @override
+  String get desktopNoMatchMessage => 'Clear a filter to see more.';
+
+  @override
+  String get desktopNoMatchTitle => 'Nothing matches these filters';
+
+  @override
+  String get desktopNoServerMessage =>
+      'Set up your MeTube server and its library appears here.';
+
+  @override
   String get desktopNothingPlaying => 'Nothing playing';
 
   @override
   String get desktopNothingPlayingHint =>
       'Play a clip and its transcript, what comes next and its details appear here.';
+
+  @override
+  String desktopOfflineCount(int count) {
+    return '$count offline';
+  }
 
   @override
   String get desktopSearch => 'Search';
@@ -483,7 +505,17 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopSearchHint => 'Search titles and what was said…';
 
   @override
+  String get desktopServerPartMissing =>
+      'The server isn\'t answering, so this is what it held last time.';
+
+  @override
   String get desktopShowPanel => 'Show side panel';
+
+  @override
+  String get desktopViewCompact => 'Compact';
+
+  @override
+  String get desktopViewTable => 'Table';
 
   @override
   String get desktopWidenSidebar => 'Expand sidebar';

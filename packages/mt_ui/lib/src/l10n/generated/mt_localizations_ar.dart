@@ -481,6 +481,13 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopChannels => 'القنوات';
 
   @override
+  String get desktopClearFilters => 'مسح المرشحات';
+
+  @override
+  String get desktopEmptyLibraryMessage =>
+      'أضِف رابطاً فيظهر المقطع هنا حين يصل إلى السيرفر.';
+
+  @override
   String get desktopForward => 'تقدّم';
 
   @override
@@ -490,11 +497,25 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
 
   @override
+  String get desktopNoMatchMessage => 'أزِل مرشحاً لترى أكثر.';
+
+  @override
+  String get desktopNoMatchTitle => 'لا شيء يطابق هذه المرشحات';
+
+  @override
+  String get desktopNoServerMessage => 'اضبط سيرفر MeTube فتظهر مكتبته هنا.';
+
+  @override
   String get desktopNothingPlaying => 'لا شيء قيد التشغيل';
 
   @override
   String get desktopNothingPlayingHint =>
       'شغّل مقطعاً فيظهر هنا نصه وما يليه وتفاصيله.';
+
+  @override
+  String desktopOfflineCount(int count) {
+    return '$count بلا اتصال';
+  }
 
   @override
   String get desktopSearch => 'البحث';
@@ -503,7 +524,17 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopSearchHint => 'ابحث في العناوين وما قيل…';
 
   @override
+  String get desktopServerPartMissing =>
+      'السيرفر لا يجيب، فهذا ما كان فيه آخر مرة.';
+
+  @override
   String get desktopShowPanel => 'إظهار اللوحة الجانبية';
+
+  @override
+  String get desktopViewCompact => 'مدمج';
+
+  @override
+  String get desktopViewTable => 'جدول';
 
   @override
   String get desktopWidenSidebar => 'توسيع الشريط الجانبي';

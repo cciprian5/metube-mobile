@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../playlists/playlists_providers.dart';
-import '../library_models.dart';
 import '../library_providers.dart';
 import 'sort_sheet.dart';
 

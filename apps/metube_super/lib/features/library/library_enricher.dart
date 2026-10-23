@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart' show ServerStreamEndpoint;
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../shared/error_report.dart';
-import 'library_models.dart';
 import 'library_providers.dart';
 import 'media_probe.dart';
 

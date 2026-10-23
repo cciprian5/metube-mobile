@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../data/library_data.dart';
 import '../di.dart';
 import '../router.dart';
 import 'content_bar.dart';
@@ -76,6 +77,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     final player = ref.watch(playerProvider);
     final controls = ref.watch(windowControlsProvider);
     final router = GoRouter.of(context);
+    ref.watch(playbackWiringProvider);
 
     return Material(
       color: p.bg,

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icon_data.dart';
+import '../icons/mt_icons.dart';
 import '../tokens/tokens.dart';
+import 'mt_desktop_app.dart';
 
 /// **Light Wahaj touches** (requested 2026-09-04: "motion on some icons,
 /// light touches, pretty and consistent and suited to both apps").
@@ -73,9 +77,14 @@ class MTIconSwap extends StatelessWidget {
     this.color,
     this.semanticLabel,
     this.shadows,
+    this.wahaj,
   });
 
   final IconData icon;
+
+  /// The same icon from the Wahaj set, drawn instead in the Windows app,
+  /// which uses no Material icons. The phones keep [icon].
+  final MTIconData? wahaj;
   final double? size;
   final Color? color;
   final String? semanticLabel;
@@ -96,16 +105,43 @@ class MTIconSwap extends StatelessWidget {
         child: child,
       ),
     ),
-    child: Icon(
-      icon,
-      key: ValueKey(icon.codePoint),
-      size: size,
-      color: color,
-      semanticLabel: semanticLabel,
-      shadows: shadows,
-    ),
+    child: switch (wahaj) {
+      final glyph? when MTDesktopApp.isDesktop(context) => MTIcon(
+        glyph,
+        key: ValueKey(glyph.name),
+        size: size,
+        color: color,
+        semanticLabel: semanticLabel,
+      ),
+      _ => Icon(
+        icon,
+        key: ValueKey(icon.codePoint),
+        size: size,
+        color: color,
+        semanticLabel: semanticLabel,
+        shadows: shadows,
+      ),
+    },
   );
 }
+
+/// What an item's thumbnail shows when it has no cover: a music note on
+/// the phones, as always; in the Windows app, which uses no Material
+/// icons, the Wahaj headphones for audio and the clip mark for video.
+Widget mtCoverPlaceholder(
+  BuildContext context, {
+  required double size,
+  required Color color,
+  bool audio = false,
+}) => MTDesktopApp.isDesktop(context)
+    ? Center(
+        child: MTIcon(
+          audio ? MTIcons.headphones : MTIcons.library,
+          size: size,
+          color: color,
+        ),
+      )
+    : Icon(Icons.music_note_rounded, size: size, color: color);
 
 /// **A "rising sheet" transition**: the screen rises whole from the bottom
 /// while the one beneath it dims slightly. For screens that expand out of a

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metube_desktop/router.dart';
+import 'package:metube_desktop/features/library/library_page.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import 'support/shell_harness.dart';
 
 void main() {
   BuildContext place(WidgetTester tester) =>
-      tester.element(find.byType(PendingPlace));
+      tester.element(find.byType(LibraryPage));
 
   testWidgets('the app starts on the Super palette', (tester) async {
     await tester.pumpWidget(ShellHarness().app());

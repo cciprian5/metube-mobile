@@ -5,12 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../settings/auto_backup.dart';
 import '../home/network_gate.dart';
 import '../transcripts/sidecar_backfill.dart';
-import 'library_models.dart';
 import 'library_providers.dart';
 import 'quality_cache.dart';
 

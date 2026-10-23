@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
 import 'package:metube_super/features/folders/folder_widgets.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/library/widgets/item_details_sheet.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 Widget _app(Widget home) => ProviderScope(
   overrides: [

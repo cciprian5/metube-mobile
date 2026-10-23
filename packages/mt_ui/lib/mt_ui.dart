@@ -4,6 +4,7 @@
 library;
 
 export 'src/gallery/gallery_screen.dart';
+export 'src/gallery/wahaj_gallery.dart';
 export 'src/icons/mt_icon.dart';
 export 'src/icons/mt_icon_data.dart';
 export 'src/icons/mt_icon_licenses.dart';
@@ -13,6 +14,7 @@ export 'src/l10n/bidi.dart';
 export 'src/l10n/file_size.dart';
 export 'src/l10n/l10n.dart';
 export 'src/l10n/language_names.dart';
+export 'src/theme/mt_desktop_theme.dart';
 export 'src/theme/mt_theme.dart';
 export 'src/tokens/tokens.dart';
 export 'src/widgets/mt_active_downloads_bar.dart';
@@ -49,3 +51,8 @@ export 'src/widgets/mt_system_bars.dart';
 export 'src/widgets/mt_text_prompt.dart';
 export 'src/widgets/mt_url_input_sheet.dart';
 export 'src/widgets/mt_whats_new_sheet.dart';
+export 'src/wahaj/mt_badge.dart';
+export 'src/wahaj/mt_boxed_settings.dart';
+export 'src/wahaj/mt_confirm_dialog.dart';
+export 'src/wahaj/mt_shortcut_tooltip.dart';
+export 'src/wahaj/mt_switch.dart';

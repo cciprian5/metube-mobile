@@ -3,13 +3,31 @@ import 'package:mt_ui/mt_ui.dart';
 
 /// A bare shell that proves the workspace builds for Windows with the
 /// shared packages; the real bootstrap (storage, player, window) replaces it.
-void main() {
+///
+/// `--gallery` opens the Wahaj component sheet for review by eye, with
+/// `--night` and `--ltr` for the other theme and direction.
+void main(List<String> args) {
   registerMTIconLicenses();
-  runApp(const EmberApp());
+  runApp(
+    EmberApp(
+      gallery: args.contains('--gallery'),
+      night: args.contains('--night'),
+      arabic: !args.contains('--ltr'),
+    ),
+  );
 }
 
 class EmberApp extends StatelessWidget {
-  const EmberApp({super.key});
+  const EmberApp({
+    super.key,
+    this.gallery = false,
+    this.night = false,
+    this.arabic = true,
+  });
+
+  final bool gallery;
+  final bool night;
+  final bool arabic;
 
   @override
   Widget build(BuildContext context) {
@@ -18,17 +36,10 @@ class EmberApp extends StatelessWidget {
     return MTDesktopApp(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: mtTheme(
-          MTVariant.superApp,
-          Brightness.light,
-          type: MTTypeScale.desktop,
-        ),
-        darkTheme: mtTheme(
-          MTVariant.superApp,
-          Brightness.dark,
-          type: MTTypeScale.desktop,
-        ),
-        home: const Scaffold(),
+        theme: mtDesktopTheme(MTVariant.superApp, Brightness.light),
+        darkTheme: mtDesktopTheme(MTVariant.superApp, Brightness.dark),
+        themeMode: night ? ThemeMode.dark : ThemeMode.light,
+        home: gallery ? MTWahajGallery(arabic: arabic) : const Scaffold(),
       ),
     );
   }

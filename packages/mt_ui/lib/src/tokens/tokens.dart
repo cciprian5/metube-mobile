@@ -114,6 +114,65 @@ abstract final class MTType {
   static const String package = 'mt_ui';
 }
 
+/// The corner scale a theme is built with.
+///
+/// The phones keep [MTRadius] exactly. The Windows app steps every corner
+/// down (sheet 20, card 12, field 10, chip 8): on a large screen at arm's
+/// length, Material's soft corners read as a phone app blown up.
+class MTCorners {
+  const MTCorners({
+    required this.sheet,
+    required this.card,
+    required this.dialog,
+    required this.field,
+    required this.thumb,
+    required this.fab,
+    required this.chip,
+    required this.iconButton,
+    required this.tooltip,
+    required this.box,
+  });
+
+  final double sheet;
+  final double card;
+  final double dialog;
+  final double field;
+  final double thumb;
+  final double fab;
+  final double chip;
+  final double iconButton;
+  final double tooltip;
+
+  /// Checkboxes and count badges.
+  final double box;
+
+  static const mobile = MTCorners(
+    sheet: MTRadius.sheet,
+    card: MTRadius.card,
+    dialog: 28,
+    field: MTRadius.field,
+    thumb: MTRadius.thumb,
+    fab: MTRadius.fab,
+    chip: MTRadius.chip,
+    iconButton: MTRadius.iconButton,
+    tooltip: 4,
+    box: 2,
+  );
+
+  static const desktop = MTCorners(
+    sheet: 20,
+    card: 12,
+    dialog: 18,
+    field: 10,
+    thumb: 10,
+    fab: 15,
+    chip: 8,
+    iconButton: 11,
+    tooltip: 9,
+    box: 6,
+  );
+}
+
 /// The three type sizes that differ between the phone and the computer.
 ///
 /// A desktop screen is read from further away but with a finer pointer, so

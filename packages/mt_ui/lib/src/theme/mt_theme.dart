@@ -31,6 +31,7 @@ ThemeData mtTheme(
   MTVariant variant,
   Brightness brightness, {
   MTTypeScale type = MTTypeScale.mobile,
+  MTCorners corners = MTCorners.mobile,
 }) {
   final p = MTPalette.of(variant, brightness);
   final isDark = brightness == Brightness.dark;
@@ -146,7 +147,7 @@ ThemeData mtTheme(
       color: p.card,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTRadius.card),
+        borderRadius: BorderRadius.circular(corners.card),
         side: BorderSide(color: p.line),
       ),
       margin: EdgeInsets.zero,
@@ -168,7 +169,7 @@ ThemeData mtTheme(
       ),
       checkmarkColor: p.bg,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTRadius.chip),
+        borderRadius: BorderRadius.circular(corners.chip),
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: MTSpace.md,
@@ -184,15 +185,15 @@ ThemeData mtTheme(
         vertical: MTSpace.md,
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(MTRadius.field),
+        borderRadius: BorderRadius.circular(corners.field),
         borderSide: BorderSide(color: p.line2),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(MTRadius.field),
+        borderRadius: BorderRadius.circular(corners.field),
         borderSide: BorderSide(color: p.line2),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(MTRadius.field),
+        borderRadius: BorderRadius.circular(corners.field),
         borderSide: BorderSide(color: p.accent, width: 1.4),
       ),
     ),
@@ -202,7 +203,7 @@ ThemeData mtTheme(
         foregroundColor: p.onAccent,
         textStyle: body(13.5, FontWeight.w700),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(MTRadius.fab),
+          borderRadius: BorderRadius.circular(corners.fab),
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: MTSpace.xl,
@@ -262,9 +263,9 @@ ThemeData mtTheme(
       showDragHandle: true,
       dragHandleColor: p.line2,
       dragHandleSize: const Size(38, 4),
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(MTRadius.sheet),
+          top: Radius.circular(corners.sheet),
         ),
       ),
     ),
@@ -273,7 +274,7 @@ ThemeData mtTheme(
       contentTextStyle: body(13.5, FontWeight.w500, color: p.miniInk),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTRadius.card),
+        borderRadius: BorderRadius.circular(corners.card),
       ),
     ),
     extensions: [MTThemeX(palette: p, variant: variant)],

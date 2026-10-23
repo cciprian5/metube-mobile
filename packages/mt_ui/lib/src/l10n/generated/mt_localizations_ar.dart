@@ -484,7 +484,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopChannels => 'القنوات';
 
   @override
-  String get desktopClearFilters => 'مسح المرشحات';
+  String get desktopClearFilters => 'إلغاء التصفية';
 
   @override
   String get desktopCopyLink => 'نسخ الرابط';
@@ -494,7 +494,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopEmptyLibraryMessage =>
-      'أضِف رابطاً فيظهر المقطع هنا حين يصل إلى السيرفر.';
+      'أضِف رابطاً فيظهر المقطع هنا بعد أن ينزّله السيرفر.';
 
   @override
   String get desktopForward => 'تقدّم';
@@ -509,17 +509,18 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
 
   @override
-  String get desktopNoMatchMessage => 'أزِل مرشحاً لترى أكثر.';
+  String get desktopNoMatchMessage => 'ألغِ أحد الاختيارات لترى أكثر.';
 
   @override
-  String get desktopNoMatchTitle => 'لا شيء يطابق هذه المرشحات';
+  String get desktopNoMatchTitle => 'لا شيء يطابق هذه التصفية';
 
   @override
-  String get desktopNoServerMessage => 'اضبط سيرفر MeTube فتظهر مكتبته هنا.';
+  String get desktopNoServerMessage =>
+      'اربط التطبيق بسيرفر MeTube فتظهر مكتبته هنا.';
 
   @override
   String get desktopNoTranscriptMessage =>
-      'يظهر هنا حين تكون ترجمة المقطع على السيرفر.';
+      'يظهر هنا حين يحفظ السيرفر ترجمة المقطع.';
 
   @override
   String get desktopNoTranscriptTitle => 'لا نص لهذا المقطع';
@@ -533,7 +534,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String desktopOfflineCount(int count) {
-    return '$count بلا اتصال';
+    return 'دون اتصال: $count';
   }
 
   @override
@@ -547,16 +548,16 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopServerPartMissing =>
-      'السيرفر لا يجيب، فهذا ما كان فيه آخر مرة.';
+      'السيرفر لا يستجيب، فهذا ما كان فيه آخر مرة.';
 
   @override
   String get desktopShowPanel => 'إظهار اللوحة الجانبية';
 
   @override
-  String get desktopTranscriptHint => 'يتبع التشغيل · انقر سطراً لتنتقل إليه';
+  String get desktopTranscriptHint => 'يتبع التشغيل · انقر سطراً ليُشغَّل منه';
 
   @override
-  String get desktopViewCompact => 'مدمج';
+  String get desktopViewCompact => 'مختصر';
 
   @override
   String get desktopViewTable => 'جدول';

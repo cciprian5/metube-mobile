@@ -265,7 +265,7 @@ void main() {
                 ('Table', false) => 'Table',
                 ('Table', true) => 'جدول',
                 (_, false) => 'Compact',
-                _ => 'مدمج',
+                _ => 'مختصر',
               }),
             );
             await tester.pumpAndSettle();

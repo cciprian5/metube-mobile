@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/features/add/add_entry.dart';
 import 'package:metube_desktop/features/add/batch_dialog.dart';
@@ -70,6 +71,39 @@ void main() {
       final more = readLinks(links(101), const []);
       expect(more.lines, hasLength(100));
       expect(more.dropped, 1);
+    });
+  });
+
+  group("the preview, asked of the clip's own site", () {
+    Future<(LinkPreview?, List<Uri>)> preview(String url) async {
+      final asked = <Uri>[];
+      final container = ProviderContainer(
+        overrides: [
+          previewFetchProvider.overrideWithValue((uri) async {
+            asked.add(uri);
+            return jsonEncode({
+              'title': 'Midnight Sun',
+              'thumbnail_url': 'https://s2.dmcdn.net/v/x/x720',
+            });
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+      return (await container.read(linkPreviewProvider(url).future), asked);
+    }
+
+    test('Dailymotion, through its own oEmbed', () async {
+      final (got, asked) = await preview(
+        'https://www.dailymotion.com/video/x7tgad0',
+      );
+      expect(got?.thumbnail, 'https://s2.dmcdn.net/v/x/x720');
+      expect(asked.single.host, 'www.dailymotion.com');
+    });
+
+    test('Instagram: nothing asked of anyone', () async {
+      final (got, asked) = await preview(_insta);
+      expect(got, isNull);
+      expect(asked, isEmpty);
     });
   });
 

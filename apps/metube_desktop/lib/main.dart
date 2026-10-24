@@ -22,6 +22,7 @@ import 'di.dart';
 import 'identity.dart';
 import 'platform/link_drop.dart';
 import 'platform/error_log.dart';
+import 'platform/frame_grab.dart';
 import 'platform/player_desktop.dart';
 import 'platform/prefs_store.dart';
 import 'platform/single_instance.dart';
@@ -121,6 +122,7 @@ Future<void> main(List<String> args) async {
         coverFolderProvider.overrideWithValue(
           Directory('${local.path}/cache/embedded'),
         ),
+        frameGrabProvider.overrideWithValue(grabFrame),
       ],
       child: const EmberApp(),
     ),

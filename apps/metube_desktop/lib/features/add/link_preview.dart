@@ -21,14 +21,17 @@ const _oembed = {
   MediaPlatform.youtube: 'https://www.youtube.com/oembed',
   MediaPlatform.soundcloud: 'https://soundcloud.com/oembed',
   MediaPlatform.vimeo: 'https://vimeo.com/api/oembed.json',
+  MediaPlatform.dailymotion: 'https://www.dailymotion.com/services/oembed',
 };
 
-/// The preview of [url], or null for a site that offers none (Instagram,
-/// TikTok and most others want a login or a key) or when it cannot be
-/// reached. **Asked of the clip's own site with a plain request**, never
-/// through the server's client, so the server's password goes nowhere
-/// else; the site learns only the link the user is about to download from
-/// it anyway.
+/// The preview of [url], or null for a site that offers none or when it
+/// cannot be reached. Instagram and Facebook want a login or a key, and
+/// TikTok's answer names no title or picture (all three measured 2026-10);
+/// a clip of theirs gets its cover from its own frames once downloaded.
+///
+/// **Asked of the clip's own site with a plain request**, never through
+/// the server's client, so the server's password goes nowhere else; the
+/// site learns only the link the user is about to download from it anyway.
 final linkPreviewProvider = FutureProvider.autoDispose
     .family<LinkPreview?, String>((ref, url) async {
       final platform = MediaPlatform.detect(url);

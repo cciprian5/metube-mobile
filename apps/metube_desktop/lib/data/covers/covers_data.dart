@@ -15,6 +15,14 @@ import 'mp4_cover.dart';
 /// embedded`. Overridden in main; null (tests) turns the search off.
 final coverFolderProvider = Provider<Directory?>((ref) => null);
 
+/// Takes one frame from a video, given where it is and the headers to
+/// read it with. Overridden in main with the engine's; null (tests) leaves
+/// videos alone.
+final frameGrabProvider =
+    Provider<
+      Future<Uint8List?> Function(String url, Map<String, String> headers)?
+    >((ref) => null);
+
 final probeFailureIndexProvider = Provider(
   (ref) => ProbeFailureIndex(
     store: ref.watch(keyValueStoreProvider),
@@ -56,9 +64,24 @@ RangeReader serverRangeReader(MeTubeApiClient api, String serverFilename) {
   };
 }
 
+/// Where a video's frame is taken from: **a copy on this computer is read
+/// in place, with no credentials**; otherwise the server's own file with
+/// the server's own headers, and nothing else.
+FrameFor videoFrameFor(
+  Future<Uint8List?> Function(String url, Map<String, String> headers) grab,
+  MeTubeApiClient api,
+) => (item) async {
+  if (item.localPath case final path? when File(path).existsSync()) {
+    return grab(path, const {});
+  }
+  final name = item.serverFilename;
+  if (!item.onServer || name == null) return null;
+  return grab(api.downloadUrl(name), api.streamingHeaders);
+};
+
 /// Looks for missing covers in the background whenever the library is
 /// read, one clip at a time so the library never waits, and shows what it
-/// found in one refresh at the end. Watched by the shell.
+/// found every few covers and at the end. Watched by the shell.
 final coverEnrichmentProvider = Provider<void>((ref) {
   final folder = ref.watch(coverFolderProvider);
   final api = ref.watch(apiClientProvider);
@@ -73,6 +96,10 @@ final coverEnrichmentProvider = Provider<void>((ref) {
           ? serverRangeReader(api, name)
           : null;
     },
+    frameFor: switch (ref.watch(frameGrabProvider)) {
+      final grab? => videoFrameFor(grab, api),
+      null => null,
+    },
   );
   var running = false;
   var stopped = false;
@@ -82,18 +109,39 @@ final coverEnrichmentProvider = Provider<void>((ref) {
     if (running) return;
     running = true;
     var found = 0;
+    var shown = 0;
+    var missed = 0;
     try {
       for (final item in await enricher.candidates(items)) {
         if (stopped) return;
-        if (await enricher.enrich(item)) found++;
+        if (await enricher.enrich(item)) {
+          found++;
+          missed = 0;
+          // Hundreds of videos take minutes: show them as they come.
+          if (found - shown >= _showEvery) {
+            shown = found;
+            ref.invalidate(libraryItemsProvider);
+          }
+        } else if (++missed >= _missesBeforeRest) {
+          // The server has likely gone away; marking every clip after this
+          // as having no cover would hide them all for a day.
+          break;
+        }
       }
     } finally {
       running = false;
     }
-    if (found > 0 && !stopped) ref.invalidate(libraryItemsProvider);
+    if (found > shown && !stopped) ref.invalidate(libraryItemsProvider);
   }
 
   ref.listen(libraryItemsProvider, (_, next) {
-    if (next.valueOrNull case final items?) unawaited(run(items));
+    // Newest first, as the library opens: hundreds of videos take minutes,
+    // and the ones on screen should not come last.
+    if (next.valueOrNull case final items?) {
+      unawaited(run(buildLibraryView(items)));
+    }
   }, fireImmediately: true);
 });
+
+const _showEvery = 12;
+const _missesBeforeRest = 6;

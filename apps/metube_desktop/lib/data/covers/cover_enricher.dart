@@ -11,8 +11,12 @@ import 'mp4_cover.dart';
 /// file, or null when the clip is not there.
 typedef ReaderFor = RangeReader? Function(LibraryItem item);
 
-/// Covers the server never names: **the picture embedded in an audio
-/// file**, read from the server by ranges and kept on this computer.
+/// A picture taken from a video clip's own frames, or null when none came.
+typedef FrameFor = Future<Uint8List?> Function(LibraryItem item);
+
+/// Covers the server never names, kept on this computer: **the picture
+/// embedded in an audio file**, read from the server by ranges, and for a
+/// video **a frame of the video itself** ([FrameFor]).
 ///
 /// The phone takes these from Android's media retriever, which Windows does
 /// not have. Measured on the owner's server: every audio download (M4A) has
@@ -29,6 +33,7 @@ class CoverEnricher {
     required this.failures,
     required this.folder,
     required this.readerFor,
+    this.frameFor,
     DateTime Function()? now,
   }) : _now = now ?? DateTime.now;
 
@@ -38,6 +43,9 @@ class CoverEnricher {
   /// Where the pictures are written: the app's own cache folder.
   final Directory folder;
   final ReaderFor readerFor;
+
+  /// null leaves videos alone.
+  final FrameFor? frameFor;
   final DateTime Function() _now;
 
   /// The clips worth asking about, in the order given (the screen's).
@@ -47,7 +55,7 @@ class CoverEnricher {
     final now = _now();
     return [
       for (final item in items)
-        if (item.isAudio &&
+        if ((item.isAudio ? readerFor(item) != null : frameFor != null) &&
             item.thumbnail == null &&
             known[item.canonicalUrl] == null &&
             !failures.isCoolingDown(failed, item.canonicalUrl, now: now))
@@ -57,13 +65,23 @@ class CoverEnricher {
 
   /// Looks for one clip's cover; true when one was found and kept.
   Future<bool> enrich(LibraryItem item) async {
-    final read = readerFor(item);
-    if (read == null) return false;
     Uint8List? picture;
-    try {
-      picture = await Mp4Cover.find(read);
-    } on Object {
-      picture = null;
+    if (item.isAudio) {
+      final read = readerFor(item);
+      if (read == null) return false;
+      try {
+        picture = await Mp4Cover.find(read);
+      } on Object {
+        picture = null;
+      }
+    } else {
+      final frame = frameFor;
+      if (frame == null) return false;
+      try {
+        picture = await frame(item);
+      } on Object {
+        picture = null;
+      }
     }
     final url = item.canonicalUrl;
     if (picture == null || picture.isEmpty) {

@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metube_desktop/data/library_data.dart';
+import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/data/covers/cover_enricher.dart';
 import 'package:metube_desktop/data/covers/covers_data.dart';
 import 'package:metube_desktop/data/covers/mp4_cover.dart';
@@ -120,21 +123,26 @@ void main() {
           serverFilename: '/audio_download/$id.m4a',
         );
 
-    CoverEnricher enricher(Map<String, Uint8List> files, {DateTime? at}) =>
-        CoverEnricher(
-          artwork: artwork,
-          failures: failures,
-          folder: Directory('${dir.path}/embedded'),
-          now: () => at ?? now,
-          readerFor: (item) => switch (files[item.title]) {
-            final bytes? => _Ranges(bytes).call,
-            null => null,
-          },
-        );
+    CoverEnricher enricher(
+      Map<String, Uint8List> files, {
+      DateTime? at,
+      FrameFor? frames,
+    }) => CoverEnricher(
+      artwork: artwork,
+      failures: failures,
+      folder: Directory('${dir.path}/embedded'),
+      now: () => at ?? now,
+      frameFor: frames,
+      readerFor: (item) => switch (files[item.title]) {
+        final bytes? => _Ranges(bytes).call,
+        null => null,
+      },
+    );
 
     test('only audio with no cover yet is asked about', () async {
       await artwork.put(clip('known').canonicalUrl, 'C:/x.jpg');
-      final e = enricher({});
+      final file = _file(moovFirst: true, cover: _jpeg);
+      final e = enricher({'new': file, 'known': file, 'youtube': file});
       final asked = await e.candidates([
         clip('new'),
         clip('known'),
@@ -173,8 +181,115 @@ void main() {
       final e = enricher({'a': _file(moovFirst: true)});
       expect(await e.enrich(clip('a')), isFalse);
       expect(await e.candidates([clip('a')]), isEmpty);
-      final tomorrow = enricher({}, at: now.add(const Duration(days: 2)));
+      final tomorrow = enricher({
+        'a': _file(moovFirst: true),
+      }, at: now.add(const Duration(days: 2)));
       expect(await tomorrow.candidates([clip('a')]), hasLength(1));
+    });
+
+    test('audio the server cannot be asked about is not a candidate, so it '
+        'never counts as a miss', () async {
+      expect(await enricher({}).candidates([clip('local')]), isEmpty);
+    });
+
+    group('a video with no cover', () {
+      final asked = <String>[];
+      setUp(asked.clear);
+      FrameFor frames(Uint8List? picture) => (item) async {
+        asked.add(item.title);
+        return picture;
+      };
+
+      test('is asked about only when frames can be taken', () async {
+        final video = clip('reel', audio: false);
+        expect(await enricher({}).candidates([video]), isEmpty);
+        final e = enricher({}, frames: frames(_jpeg));
+        expect((await e.candidates([video])).map((i) => i.title), ['reel']);
+      });
+
+      test('keeps its frame on disk and in the index', () async {
+        final e = enricher({}, frames: frames(_jpeg));
+        expect(await e.enrich(clip('reel', audio: false)), isTrue);
+        final path = await artwork.artworkOf(clip('reel').canonicalUrl);
+        expect(File(path!).readAsBytesSync(), _jpeg);
+        expect(asked, ['reel']);
+      });
+
+      test(
+        "**the guard**: YouTube's cover is never replaced by a frame",
+        () async {
+          final e = enricher({}, frames: frames(_jpeg));
+          final youtube = clip(
+            'yt',
+            audio: false,
+            thumbnail: 'https://i.ytimg.com/vi/x/hqdefault.jpg',
+          );
+          expect(await e.candidates([youtube]), isEmpty);
+        },
+      );
+
+      test('one that gives no frame is left alone for a day', () async {
+        final e = enricher({}, frames: frames(null));
+        final video = clip('broken', audio: false);
+        expect(await e.enrich(video), isFalse);
+        expect(await e.candidates([video]), isEmpty);
+      });
+    });
+  });
+
+  group("**the guard**: where a video's frame is read from", () {
+    final api = MeTubeApiClient(
+      config: ServerConfig(
+        baseUrl: 'http://127.0.0.1:9',
+        username: 'owner',
+        password: 'secret',
+      ),
+    );
+    tearDownAll(api.close);
+    final calls = <(String, Map<String, String>)>[];
+    setUp(calls.clear);
+    Future<Uint8List?> grab(String url, Map<String, String> headers) async {
+      calls.add((url, headers));
+      return _jpeg;
+    }
+
+    test("the server's file, with the server's own password", () async {
+      await videoFrameFor(grab, api)(
+        const LibraryItem(
+          canonicalUrl: 'https://www.instagram.com/reel/a/',
+          title: 'a',
+          onServer: true,
+          serverFilename: 'Kids/a.mp4',
+        ),
+      );
+      final (url, headers) = calls.single;
+      expect(url, startsWith('http://127.0.0.1:9/'));
+      expect(url, endsWith('a.mp4'));
+      expect(headers['Authorization'], startsWith('Basic '));
+    });
+
+    test('a copy on this computer, read in place with no password', () async {
+      final dir = Directory.systemTemp.createTempSync('ember_local_');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final file = File('${dir.path}/a.mp4')..writeAsBytesSync([0]);
+      await videoFrameFor(grab, api)(
+        LibraryItem(
+          canonicalUrl: 'https://www.instagram.com/reel/a/',
+          title: 'a',
+          onServer: true,
+          serverFilename: 'a.mp4',
+          localPath: file.path,
+        ),
+      );
+      expect(calls.single, (file.path, const <String, String>{}));
+    });
+
+    test('nothing for a clip neither here nor there', () async {
+      final picture = await videoFrameFor(grab, api)(
+        const LibraryItem(canonicalUrl: 'https://x.com/a', title: 'a'),
+      );
+      expect(picture, isNull);
+      expect(calls, isEmpty);
     });
   });
 
@@ -210,5 +325,44 @@ void main() {
     expect(cover, _jpeg);
     expect(seen, everyElement(startsWith('Basic ')));
     expect(ranges.first, 'bytes=0-${Mp4Cover.firstRead - 1}');
+  });
+
+  test('**the guard**: the newest clips get their frames first, as the '
+      'library opens, not the oldest', () async {
+    final dir = Directory.systemTemp.createTempSync('ember_order_');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final api = MeTubeApiClient(
+      config: ServerConfig(baseUrl: 'http://127.0.0.1:9'),
+    );
+    addTearDown(api.close);
+    LibraryItem video(String id, int day) => LibraryItem(
+      canonicalUrl: 'https://www.instagram.com/reel/$id/',
+      title: id,
+      onServer: true,
+      serverFilename: '$id.mp4',
+      timestamp: DateTime(2026, 10, day),
+    );
+    final asked = <String>[];
+    final container = ProviderContainer(
+      overrides: [
+        keyValueStoreProvider.overrideWithValue(MemoryKeyValueStore()),
+        coverFolderProvider.overrideWithValue(dir),
+        apiClientProvider.overrideWith((ref) => api),
+        libraryItemsProvider.overrideWith(
+          (ref) async => [video('old', 1), video('new', 20), video('mid', 9)],
+        ),
+        frameGrabProvider.overrideWithValue((url, headers) async {
+          asked.add(url.split('/').last);
+          return _jpeg;
+        }),
+      ],
+    );
+    addTearDown(container.dispose);
+    container.read(coverEnrichmentProvider);
+    final clock = Stopwatch()..start();
+    while (asked.length < 3 && clock.elapsed < const Duration(seconds: 5)) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
+    expect(asked, ['new.mp4', 'mid.mp4', 'old.mp4']);
   });
 }

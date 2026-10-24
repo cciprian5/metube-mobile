@@ -67,6 +67,15 @@ class EmberLibraryNotifier extends Notifier<LibraryViewOptions> {
     state = state.copyWith(tags: included, excludedTags: excluded);
   }
 
+  /// The library through one tag alone, as a tag on the lists page opens
+  /// it.
+  void showTag(String tag) => state = state.copyWith(
+    type: MediaTypeFilter.all,
+    platform: () => null,
+    tags: {tag},
+    excludedTags: const {},
+  );
+
   /// "All": every filter off but the place itself.
   void clearFilters() => state = state.copyWith(
     type: MediaTypeFilter.all,

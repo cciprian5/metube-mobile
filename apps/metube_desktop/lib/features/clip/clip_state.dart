@@ -39,19 +39,36 @@ Future<void> openFromList(
   GoRouter router,
   List<PlaylistItem> list,
   int index,
-) async {
-  final player = ref.read(playerProvider);
+) => playFromList(ref.read(playerProvider), router, list, index);
+
+/// [openFromList] for a saved list, which names itself to the player so
+/// its play mode is its own.
+Future<void> playFromList(
+  MTPlayer player,
+  GoRouter router,
+  List<PlaylistItem> list,
+  int index, {
+  String? playlistId,
+  String? playlistName,
+}) async {
   final item = list[index];
   if (item.isShortForm) {
     final lane = ShortsLane.from(list);
     await player.playItems(
       lane.items,
       startIndex: lane.laneIndexOf(item.canonicalUrl),
+      playlistId: playlistId,
+      playlistName: playlistName,
     );
     await player.setLooping(true);
   } else {
     await player.setLooping(false);
-    await player.playItems(list, startIndex: index);
+    await player.playItems(
+      list,
+      startIndex: index,
+      playlistId: playlistId,
+      playlistName: playlistName,
+    );
   }
   if (!item.isAudio) router.go(EmberRoutes.item(item.canonicalUrl));
 }

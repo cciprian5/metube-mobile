@@ -884,11 +884,35 @@ abstract class MTLocalizations {
   /// **'Channel'**
   String get desktopChannel;
 
+  /// No description provided for @desktopChannelActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get desktopChannelActive;
+
+  /// No description provided for @desktopChannelClips.
+  ///
+  /// In en, this message translates to:
+  /// **'In your library'**
+  String get desktopChannelClips;
+
   /// No description provided for @desktopChannels.
   ///
   /// In en, this message translates to:
   /// **'Channels'**
   String get desktopChannels;
+
+  /// No description provided for @desktopChannelsInLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels in your library'**
+  String get desktopChannelsInLibrary;
+
+  /// No description provided for @desktopCheckAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Check all'**
+  String get desktopCheckAll;
 
   /// No description provided for @desktopClearFilters.
   ///
@@ -926,6 +950,18 @@ abstract class MTLocalizations {
   /// **'Hide side panel'**
   String get desktopHidePanel;
 
+  /// No description provided for @desktopInLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 in your library} other{{count} in your library}}'**
+  String desktopInLibrary(int count);
+
+  /// No description provided for @desktopLastArrival.
+  ///
+  /// In en, this message translates to:
+  /// **'Last arrival {when}'**
+  String desktopLastArrival(String when);
+
   /// No description provided for @desktopLinkCopied.
   ///
   /// In en, this message translates to:
@@ -937,6 +973,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Collapse sidebar'**
   String get desktopNarrowSidebar;
+
+  /// No description provided for @desktopNoChannelNames.
+  ///
+  /// In en, this message translates to:
+  /// **'Your server\'s history doesn\'t say which channel each clip came from, so its clips can\'t be shown here.'**
+  String get desktopNoChannelNames;
 
   /// No description provided for @desktopNoMatchMessage.
   ///
@@ -956,6 +998,12 @@ abstract class MTLocalizations {
   /// **'Set up your MeTube server and its library appears here.'**
   String get desktopNoServerMessage;
 
+  /// No description provided for @desktopNoTags.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags yet. Tag a clip from its page and it appears here.'**
+  String get desktopNoTags;
+
   /// No description provided for @desktopNoTranscriptMessage.
   ///
   /// In en, this message translates to:
@@ -967,6 +1015,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'No transcript for this clip'**
   String get desktopNoTranscriptTitle;
+
+  /// No description provided for @desktopNotWatched.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 not watched} other{{count} not watched}}'**
+  String desktopNotWatched(int count);
 
   /// No description provided for @desktopNothingPlaying.
   ///
@@ -986,11 +1040,23 @@ abstract class MTLocalizations {
   /// **'{count} offline'**
   String desktopOfflineCount(int count);
 
+  /// No description provided for @desktopPinned.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get desktopPinned;
+
   /// No description provided for @desktopQueueEnd.
   ///
   /// In en, this message translates to:
   /// **'Nothing comes after this one'**
   String get desktopQueueEnd;
+
+  /// No description provided for @desktopRemoveFromList.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from the list'**
+  String get desktopRemoveFromList;
 
   /// No description provided for @desktopSearch.
   ///

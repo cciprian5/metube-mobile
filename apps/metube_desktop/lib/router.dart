@@ -41,6 +41,12 @@ abstract final class EmberRoutes {
   /// question marks, so it travels percent-encoded as one path segment.
   static String item(String canonicalUrl) =>
       '/item/${Uri.encodeComponent(canonicalUrl)}';
+
+  /// One saved list's page, by its id.
+  static String playlist(String id) => '$playlists/${Uri.encodeComponent(id)}';
+
+  /// One followed channel's page, by the server's id for it.
+  static String channel(String id) => '$channels/${Uri.encodeComponent(id)}';
 }
 
 /// The places the sidebar can show as current.
@@ -90,6 +96,10 @@ Widget _pendingLibrary(String? only) => PendingPlace('library', argument: only);
 Widget _pendingItem(String? canonicalUrl) =>
     PendingPlace('item', argument: canonicalUrl);
 
+Widget _pendingPlaylists(String? id) => PendingPlace('playlists', argument: id);
+
+Widget _pendingChannels(String? id) => PendingPlace('channels', argument: id);
+
 /// The single route table. One router per app, built once, so the shell
 /// and the player under it live through every navigation.
 GoRouter buildEmberRouter({
@@ -97,6 +107,8 @@ GoRouter buildEmberRouter({
   EmberShellBuilder shell = _bare,
   EmberPlaceBuilder library = _pendingLibrary,
   EmberPlaceBuilder item = _pendingItem,
+  EmberPlaceBuilder playlists = _pendingPlaylists,
+  EmberPlaceBuilder channels = _pendingChannels,
 }) => GoRouter(
   initialLocation: initialLocation,
   // An address that names no place (an old link, a typo in a protocol
@@ -112,8 +124,22 @@ GoRouter buildEmberRouter({
           builder: (_, state) => library(state.uri.queryParameters['only']),
         ),
         _place(EmberRoutes.search, 'search'),
-        _place(EmberRoutes.playlists, 'playlists'),
-        _place(EmberRoutes.channels, 'channels'),
+        // A null argument is the place itself; an id is one list or one
+        // channel in it.
+        for (final (path, build) in [
+          (EmberRoutes.playlists, playlists),
+          (EmberRoutes.channels, channels),
+        ])
+          GoRoute(
+            path: path,
+            builder: (_, _) => build(null),
+            routes: [
+              GoRoute(
+                path: ':id',
+                builder: (_, state) => build(state.pathParameters['id']),
+              ),
+            ],
+          ),
         GoRoute(
           path: '/item/:id',
           builder: (_, state) => item(state.pathParameters['id']),

@@ -6,6 +6,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../data/covers/covers_data.dart';
 import '../data/library_data.dart';
+import '../data/lists_data.dart';
 import '../di.dart';
 import '../features/clip/clip_state.dart';
 import '../router.dart';
@@ -31,6 +32,12 @@ class EmberShell extends ConsumerStatefulWidget {
   @override
   ConsumerState<EmberShell> createState() => _EmberShellState();
 }
+
+/// The id of the saved list whose page [location] is, if it is one.
+String? _openList(Uri location) => switch (location.pathSegments) {
+  ['playlists', final id] => id,
+  _ => null,
+};
 
 class _EmberShellState extends ConsumerState<EmberShell> {
   NavHistory? _history;
@@ -149,6 +156,8 @@ class _EmberShellState extends ConsumerState<EmberShell> {
                   EmberSidebar(
                     narrow: arranged.sidebarNarrow,
                     current: placeOf(widget.location),
+                    pinned: ref.watch(pinnedPlaylistsProvider),
+                    currentList: _openList(widget.location),
                     onGo: router.go,
                     onToggleNarrow: arranged.canWidenSidebar
                         ? () => ref

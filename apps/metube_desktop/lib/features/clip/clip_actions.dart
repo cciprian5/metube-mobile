@@ -6,6 +6,7 @@ import 'package:mt_media/mt_media.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/library_data.dart';
+import '../../data/lists_data.dart';
 import '../../di.dart';
 
 /// What can be done to one clip, as the phone's item actions do it, with
@@ -44,10 +45,10 @@ class ClipActions {
     _ref.invalidate(historyProvider);
   }
 
-  /// The phone's pruning rules: tags, cover, shape, position and offline
-  /// entry go with the clip, so backups do not carry corpses. **A clip with
-  /// a copy on this computer stays**, as local-only, with all of it; the
-  /// path is checked on disk, not trusted.
+  /// The phone's pruning rules: tags, cover, shape, position, offline
+  /// entry and list lines go with the clip, so backups do not carry
+  /// corpses. **A clip with a copy on this computer stays**, as local-only,
+  /// with all of it; the path is checked on disk, not trusted.
   Future<void> _prune(String url) async {
     final offline = _ref.read(offlineIndexProvider);
     final path = (await offline.readAll())[url];
@@ -60,6 +61,10 @@ class ClipActions {
       mutex: _ref.read(prefsMutexProvider),
     ).clear(url);
     await offline.removeKey(url);
+    // And the saved lists, or the dead line stays and is skipped as broken
+    // each time the list plays.
+    await _ref.read(playlistsStoreProvider).removeFromAll([url]);
+    _ref.invalidate(playlistsProvider);
   }
 }
 

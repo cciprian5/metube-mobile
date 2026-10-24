@@ -16,6 +16,7 @@ import '../../shell/pill.dart';
 import '../../shell/shell_metrics.dart';
 import '../../shell/shell_state.dart';
 import '../library/platform_label.dart';
+import '../lists/list_dialogs.dart';
 import 'clip_actions.dart';
 import 'clip_menu.dart';
 import 'clip_stage.dart';
@@ -293,6 +294,13 @@ class _ClipLayout extends ConsumerWidget {
                       icon: MTIcons.tags,
                       selected: false,
                       onTap: () => unawaited(showTagsDialog(context, url)),
+                    ),
+                    EmberPill(
+                      label: l.addToPlaylist,
+                      icon: MTIcons.queue,
+                      selected: false,
+                      onTap: () =>
+                          unawaited(showAddToPlaylistDialog(context, item)),
                     ),
                     if (isCurrent && !item.isAudio)
                       EmberPill(

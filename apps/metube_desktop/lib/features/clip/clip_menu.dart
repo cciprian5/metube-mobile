@@ -8,18 +8,15 @@ import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../router.dart';
+import '../../shell/context_menu.dart';
+import '../lists/list_dialogs.dart';
 import 'clip_actions.dart';
 
-enum _ClipChoice { copyLink, openOriginal, delete }
+enum _ClipChoice { addToList, copyLink, openOriginal, delete }
 
 /// The right-click menu of a clip's page: the actions that do not earn a
 /// button, in the phone's order, **deleting from the server last** and only
 /// here, behind a confirmation.
-///
-/// [globalPosition] is where the click landed in the window. The menu is
-/// laid out in the overlay, which the interface size scales, so the point
-/// is carried into the overlay's own coordinates first; used raw it lands
-/// off the pointer at any size but 100%.
 Future<void> showClipMenu(
   BuildContext context,
   WidgetRef ref,
@@ -27,56 +24,27 @@ Future<void> showClipMenu(
   PlaylistItem item,
 ) async {
   final l = context.mtl;
-  final p = MTThemeX.of(context).palette;
-  final text = Theme.of(context).textTheme;
-  final overlay = Overlay.of(context).context.findRenderObject()! as RenderBox;
-  final at = overlay.globalToLocal(globalPosition);
-
-  PopupMenuItem<_ClipChoice> row(
-    _ClipChoice value,
-    MTIconData icon,
-    String label, {
-    bool danger = false,
-  }) {
-    final color = danger ? p.err : p.ink;
-    return PopupMenuItem(
-      value: value,
-      height: MTDensity.desktop.row,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          MTIcon(icon, size: MTSpace.lg, color: danger ? p.err : p.ink2),
-          const SizedBox(width: MTSpace.sm),
-          Flexible(
-            child: Text(
-              label,
-              overflow: TextOverflow.ellipsis,
-              style: text.bodySmall?.copyWith(color: color),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  final choice = await showMenu<_ClipChoice>(
-    context: context,
-    position: RelativeRect.fromRect(at & Size.zero, Offset.zero & overlay.size),
-    color: p.card,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(MTCorners.desktop.card),
-      side: BorderSide(color: p.line2),
+  final choice = await showEmberMenu(context, globalPosition, [
+    EmberMenuEntry(_ClipChoice.addToList, MTIcons.queue, l.addToPlaylist),
+    EmberMenuEntry(_ClipChoice.copyLink, MTIcons.link, l.desktopCopyLink),
+    EmberMenuEntry(
+      _ClipChoice.openOriginal,
+      MTIcons.external,
+      l.openOriginalLink,
     ),
-    items: [
-      row(_ClipChoice.copyLink, MTIcons.link, l.desktopCopyLink),
-      row(_ClipChoice.openOriginal, MTIcons.external, l.openOriginalLink),
-      const PopupMenuDivider(),
-      row(_ClipChoice.delete, MTIcons.trash, l.deleteFromServer, danger: true),
-    ],
-  );
+    const EmberMenuEntry.divider(),
+    EmberMenuEntry(
+      _ClipChoice.delete,
+      MTIcons.trash,
+      l.deleteFromServer,
+      danger: true,
+    ),
+  ]);
   if (choice == null || !context.mounted) return;
   final actions = ref.read(clipActionsProvider);
   switch (choice) {
+    case _ClipChoice.addToList:
+      await showAddToPlaylistDialog(context, item);
     case _ClipChoice.copyLink:
       await Clipboard.setData(ClipboardData(text: item.canonicalUrl));
       if (context.mounted) showMTNotice(context, message: l.desktopLinkCopied);

@@ -461,7 +461,19 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopChannel => 'Channel';
 
   @override
+  String get desktopChannelActive => 'Active';
+
+  @override
+  String get desktopChannelClips => 'In your library';
+
+  @override
   String get desktopChannels => 'Channels';
+
+  @override
+  String get desktopChannelsInLibrary => 'Channels in your library';
+
+  @override
+  String get desktopCheckAll => 'Check all';
 
   @override
   String get desktopClearFilters => 'Clear filters';
@@ -483,10 +495,30 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopHidePanel => 'Hide side panel';
 
   @override
+  String desktopInLibrary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count in your library',
+      one: '1 in your library',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String desktopLastArrival(String when) {
+    return 'Last arrival $when';
+  }
+
+  @override
   String get desktopLinkCopied => 'Link copied';
 
   @override
   String get desktopNarrowSidebar => 'Collapse sidebar';
+
+  @override
+  String get desktopNoChannelNames =>
+      'Your server\'s history doesn\'t say which channel each clip came from, so its clips can\'t be shown here.';
 
   @override
   String get desktopNoMatchMessage => 'Clear a filter to see more.';
@@ -499,11 +531,26 @@ class MTLocalizationsEn extends MTLocalizations {
       'Set up your MeTube server and its library appears here.';
 
   @override
+  String get desktopNoTags =>
+      'No tags yet. Tag a clip from its page and it appears here.';
+
+  @override
   String get desktopNoTranscriptMessage =>
       'It shows here once the server has the clip\'s subtitles.';
 
   @override
   String get desktopNoTranscriptTitle => 'No transcript for this clip';
+
+  @override
+  String desktopNotWatched(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count not watched',
+      one: '1 not watched',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get desktopNothingPlaying => 'Nothing playing';
@@ -518,7 +565,13 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
+  String get desktopPinned => 'Pinned';
+
+  @override
   String get desktopQueueEnd => 'Nothing comes after this one';
+
+  @override
+  String get desktopRemoveFromList => 'Remove from the list';
 
   @override
   String get desktopSearch => 'Search';

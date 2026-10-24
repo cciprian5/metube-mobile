@@ -38,6 +38,20 @@
       }
     }
   },
+  "@desktopInLibrary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@desktopNotWatched": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@queueItemsCount": {
     "placeholders": {
       "count": {
@@ -232,24 +246,35 @@
   "deselectAll": "إلغاء التحديد",
   "desktopBack": "رجوع",
   "desktopChannel": "القناة",
+  "desktopChannelActive": "نشطة",
+  "desktopChannelClips": "في مكتبتك",
   "desktopChannels": "القنوات",
+  "desktopChannelsInLibrary": "قنوات في مكتبتك",
+  "desktopCheckAll": "افحص الكل",
   "desktopClearFilters": "إلغاء التصفية",
   "desktopCopyLink": "نسخ الرابط",
   "desktopDragToReorder": "اسحب لتغيير الترتيب",
   "desktopEmptyLibraryMessage": "أضِف رابطاً فيظهر المقطع هنا بعد أن ينزّله السيرفر.",
   "desktopForward": "تقدّم",
   "desktopHidePanel": "إخفاء اللوحة الجانبية",
+  "desktopInLibrary": "{count, plural, =0{لا شيء في مكتبتك} =1{مقطع في مكتبتك} =2{مقطعان في مكتبتك} few{{count} مقاطع في مكتبتك} many{{count} مقطعاً في مكتبتك} other{{count} مقطع في مكتبتك}}",
+  "desktopLastArrival": "آخر وصول {when}",
   "desktopLinkCopied": "نُسخ الرابط",
   "desktopNarrowSidebar": "تضييق الشريط الجانبي",
+  "desktopNoChannelNames": "سجل سيرفرك لا يذكر قناة كل مقطع، فلا يمكن عرض مقاطع القناة هنا.",
   "desktopNoMatchMessage": "ألغِ أحد الاختيارات لترى أكثر.",
   "desktopNoMatchTitle": "لا شيء يطابق هذه التصفية",
   "desktopNoServerMessage": "اربط التطبيق بسيرفر MeTube فتظهر مكتبته هنا.",
+  "desktopNoTags": "لا وسوم بعد. أضف وسماً لأي مقطع من صفحته فيظهر هنا.",
   "desktopNoTranscriptMessage": "يظهر هنا حين يحفظ السيرفر ترجمة المقطع.",
   "desktopNoTranscriptTitle": "لا نص لهذا المقطع",
+  "desktopNotWatched": "{count, plural, =1{واحد لم تشاهده} =2{اثنان لم تشاهدهما} few{{count} لم تشاهدها} many{{count} لم تشاهدها} other{{count} لم تشاهدها}}",
   "desktopNothingPlaying": "لا شيء قيد التشغيل",
   "desktopNothingPlayingHint": "شغّل مقطعاً فيظهر هنا نصه وما يليه وتفاصيله.",
   "desktopOfflineCount": "دون اتصال: {count}",
+  "desktopPinned": "مثبّتة",
   "desktopQueueEnd": "لا شيء بعد هذا المقطع",
+  "desktopRemoveFromList": "أزله من القائمة",
   "desktopSearch": "البحث",
   "desktopSearchHint": "ابحث في العناوين وما قيل…",
   "desktopServerPartMissing": "السيرفر لا يستجيب، فهذا ما كان فيه آخر مرة.",

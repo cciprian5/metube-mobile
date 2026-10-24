@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mt_core/mt_core.dart' show SavedPlaylist;
 import 'package:mt_ui/mt_ui.dart';
 
 import '../router.dart';
@@ -15,6 +16,8 @@ class EmberSidebar extends StatelessWidget {
     required this.onGo,
     this.onAdd,
     this.onToggleNarrow,
+    this.pinned = const [],
+    this.currentList,
   });
 
   final bool narrow;
@@ -27,16 +30,23 @@ class EmberSidebar extends StatelessWidget {
   /// null when the window is too narrow to offer the wide sidebar.
   final VoidCallback? onToggleNarrow;
 
+  /// The pinned lists, under "Playlists", each a place of its own.
+  final List<SavedPlaylist> pinned;
+
+  /// The id of the list whose page is open, if one is.
+  final String? currentList;
+
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final l = context.mtl;
+    final onPinned = pinned.any((list) => list.id == currentList);
     Widget item(EmberPlace place, MTIconData icon, String label, String to) =>
         _SidebarItem(
           icon: icon,
           label: label,
           narrow: narrow,
-          selected: current == place,
+          selected: current == place && !onPinned,
           onTap: () => onGo(to),
         );
 
@@ -54,44 +64,61 @@ class EmberSidebar extends StatelessWidget {
         children: [
           _AddButton(narrow: narrow, label: l.addLinkFab, onTap: onAdd),
           const SizedBox(height: MTSpace.lg),
-          item(
-            EmberPlace.library,
-            MTIcons.library,
-            l.navLibrary,
-            EmberRoutes.library,
+          // The places scroll, so pinned lists never push settings off a
+          // short window.
+          Expanded(
+            child: ListView(
+              children: [
+                item(
+                  EmberPlace.library,
+                  MTIcons.library,
+                  l.navLibrary,
+                  EmberRoutes.library,
+                ),
+                item(
+                  EmberPlace.favorites,
+                  MTIcons.favorite,
+                  l.favorites,
+                  EmberRoutes.favorites,
+                ),
+                item(
+                  EmberPlace.offline,
+                  MTIcons.download,
+                  l.filterOffline,
+                  EmberRoutes.offline,
+                ),
+                item(
+                  EmberPlace.search,
+                  MTIcons.search,
+                  l.desktopSearch,
+                  EmberRoutes.search,
+                ),
+                const SizedBox(height: MTSpace.lg),
+                item(
+                  EmberPlace.playlists,
+                  MTIcons.queue,
+                  l.navPlaylists,
+                  EmberRoutes.playlists,
+                ),
+                for (final list in pinned)
+                  _SidebarItem(
+                    key: ValueKey('pinned-${list.id}'),
+                    icon: MTIcons.queue,
+                    label: list.name,
+                    narrow: narrow,
+                    indent: true,
+                    selected: list.id == currentList,
+                    onTap: () => onGo(EmberRoutes.playlist(list.id)),
+                  ),
+                item(
+                  EmberPlace.channels,
+                  MTIcons.subscriptions,
+                  l.desktopChannels,
+                  EmberRoutes.channels,
+                ),
+              ],
+            ),
           ),
-          item(
-            EmberPlace.favorites,
-            MTIcons.favorite,
-            l.favorites,
-            EmberRoutes.favorites,
-          ),
-          item(
-            EmberPlace.offline,
-            MTIcons.download,
-            l.filterOffline,
-            EmberRoutes.offline,
-          ),
-          item(
-            EmberPlace.search,
-            MTIcons.search,
-            l.desktopSearch,
-            EmberRoutes.search,
-          ),
-          const SizedBox(height: MTSpace.lg),
-          item(
-            EmberPlace.playlists,
-            MTIcons.queue,
-            l.navPlaylists,
-            EmberRoutes.playlists,
-          ),
-          item(
-            EmberPlace.channels,
-            MTIcons.subscriptions,
-            l.desktopChannels,
-            EmberRoutes.channels,
-          ),
-          const Spacer(),
           if (onToggleNarrow case final toggle?)
             _SidebarItem(
               icon: MTIcons.collapse,
@@ -171,12 +198,17 @@ class _AddButton extends StatelessWidget {
 
 class _SidebarItem extends StatelessWidget {
   const _SidebarItem({
+    super.key,
     required this.icon,
     required this.label,
     required this.narrow,
     required this.selected,
     required this.onTap,
+    this.indent = false,
   });
+
+  /// A pinned list, set in under "Playlists".
+  final bool indent;
 
   final MTIconData icon;
   final String label;
@@ -203,7 +235,7 @@ class _SidebarItem extends StatelessWidget {
               ? Center(child: glyph)
               : Row(
                   children: [
-                    const SizedBox(width: MTSpace.sm),
+                    SizedBox(width: indent ? MTSpace.xl : MTSpace.sm),
                     glyph,
                     const SizedBox(width: MTSpace.sm),
                     Expanded(

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../grip.dart';
+
 /// What comes next, in play order, with the clip playing marked: drag a
 /// line by its grip to reorder, click it to play it now.
 class QueueView extends StatelessWidget {
@@ -99,7 +101,7 @@ class _QueueLine extends StatelessWidget {
                     child: SizedBox(
                       width: MTSpace.xxl,
                       height: MTDensity.desktop.row,
-                      child: CustomPaint(painter: _Grip(p.ink3)),
+                      child: const EmberGrip(),
                     ),
                   ),
                 ),
@@ -149,26 +151,4 @@ class _QueueLine extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Six small dots, the grip a line is dragged by.
-class _Grip extends CustomPainter {
-  const _Grip(this.color);
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = color;
-    final c = size.center(Offset.zero);
-    const gap = MTSpace.xxs;
-    for (final dx in [-gap / 2, gap / 2]) {
-      for (final dy in [-gap, 0.0, gap]) {
-        canvas.drawCircle(c + Offset(dx, dy), gap / 3, paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(_Grip old) => old.color != color;
 }

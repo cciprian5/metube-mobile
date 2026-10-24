@@ -481,7 +481,19 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopChannel => 'القناة';
 
   @override
+  String get desktopChannelActive => 'نشطة';
+
+  @override
+  String get desktopChannelClips => 'في مكتبتك';
+
+  @override
   String get desktopChannels => 'القنوات';
+
+  @override
+  String get desktopChannelsInLibrary => 'قنوات في مكتبتك';
+
+  @override
+  String get desktopCheckAll => 'افحص الكل';
 
   @override
   String get desktopClearFilters => 'إلغاء التصفية';
@@ -503,10 +515,34 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopHidePanel => 'إخفاء اللوحة الجانبية';
 
   @override
+  String desktopInLibrary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقطع في مكتبتك',
+      many: '$count مقطعاً في مكتبتك',
+      few: '$count مقاطع في مكتبتك',
+      two: 'مقطعان في مكتبتك',
+      one: 'مقطع في مكتبتك',
+      zero: 'لا شيء في مكتبتك',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String desktopLastArrival(String when) {
+    return 'آخر وصول $when';
+  }
+
+  @override
   String get desktopLinkCopied => 'نُسخ الرابط';
 
   @override
   String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
+
+  @override
+  String get desktopNoChannelNames =>
+      'سجل سيرفرك لا يذكر قناة كل مقطع، فلا يمكن عرض مقاطع القناة هنا.';
 
   @override
   String get desktopNoMatchMessage => 'ألغِ أحد الاختيارات لترى أكثر.';
@@ -519,11 +555,29 @@ class MTLocalizationsAr extends MTLocalizations {
       'اربط التطبيق بسيرفر MeTube فتظهر مكتبته هنا.';
 
   @override
+  String get desktopNoTags =>
+      'لا وسوم بعد. أضف وسماً لأي مقطع من صفحته فيظهر هنا.';
+
+  @override
   String get desktopNoTranscriptMessage =>
       'يظهر هنا حين يحفظ السيرفر ترجمة المقطع.';
 
   @override
   String get desktopNoTranscriptTitle => 'لا نص لهذا المقطع';
+
+  @override
+  String desktopNotWatched(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count لم تشاهدها',
+      many: '$count لم تشاهدها',
+      few: '$count لم تشاهدها',
+      two: 'اثنان لم تشاهدهما',
+      one: 'واحد لم تشاهده',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get desktopNothingPlaying => 'لا شيء قيد التشغيل';
@@ -538,7 +592,13 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String get desktopPinned => 'مثبّتة';
+
+  @override
   String get desktopQueueEnd => 'لا شيء بعد هذا المقطع';
+
+  @override
+  String get desktopRemoveFromList => 'أزله من القائمة';
 
   @override
   String get desktopSearch => 'البحث';

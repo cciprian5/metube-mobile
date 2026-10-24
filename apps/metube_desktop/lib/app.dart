@@ -3,8 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import 'identity.dart';
+import 'features/channels/channel_page.dart';
+import 'features/channels/channels_page.dart';
 import 'features/clip/clip_page.dart';
 import 'features/library/library_page.dart';
+import 'features/lists/lists_page.dart';
+import 'features/lists/playlist_page.dart';
 import 'router.dart';
 import 'shell/ember_shell.dart';
 import 'shell/zoom_frame.dart';
@@ -33,6 +37,12 @@ class _EmberAppState extends State<EmberApp> {
         library: (only) =>
             LibraryPage(key: ValueKey(only), scope: LibraryPage.scopeOf(only)),
         item: (url) => ClipPage(key: ValueKey(url), canonicalUrl: url ?? ''),
+        playlists: (id) => id == null
+            ? const ListsPage()
+            : PlaylistPage(key: ValueKey(id), id: id),
+        channels: (id) => id == null
+            ? const ChannelsPage()
+            : ChannelPage(key: ValueKey(id), id: id),
       );
 
   @override

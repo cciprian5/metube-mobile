@@ -10,6 +10,7 @@ import '../data/backup_data.dart';
 import '../data/covers/covers_data.dart';
 import '../data/library_data.dart';
 import '../data/setup_data.dart';
+import '../data/sync_runner.dart';
 import '../data/lists_data.dart';
 import '../data/saved_searches.dart';
 import '../di.dart';
@@ -122,6 +123,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     ref.watch(sessionRestoreProvider);
     ref.watch(coverEnrichmentProvider);
     ref.watch(startupBackupProvider);
+    ref.watch(syncRunnerProvider);
 
     // Theater widens a clip's picture over the side panel's column too.
     final theater =

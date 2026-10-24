@@ -53,6 +53,8 @@ export 'src/storage/secret_store.dart';
 export 'src/storage/tags_index.dart';
 export 'src/storage/title_index.dart';
 export 'src/storage/url_keyed_index.dart';
+export 'src/sync/sync_folder.dart';
+export 'src/sync/sync_local.dart';
 export 'src/sync/sync_merge.dart';
 export 'src/sync/sync_snapshot.dart';
 export 'src/update/apk_downloader.dart';

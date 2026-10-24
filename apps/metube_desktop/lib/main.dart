@@ -21,6 +21,7 @@ import 'data/setup_data.dart';
 import 'data/transcripts_data.dart';
 import 'features/add/add_entry.dart';
 import 'features/library/artwork.dart';
+import 'data/sync_runner.dart';
 import 'features/settings/whats_new.dart';
 import 'di.dart';
 import 'identity.dart';
@@ -87,9 +88,17 @@ Future<void> main(List<String> args) async {
   final layout = await ShellLayoutStore(store: store, mutex: mutex).read();
   final zooms = UiZoomStore(store: store, mutex: mutex);
   final wanted = await zooms.read();
+  // The player is saved first; then whatever the app adds, such as the
+  // sync folder's last write.
+  final closing = <Future<void> Function()>[];
   final window = await EmberWindow.open(
     placements: WindowPlacementStore(store: store, mutex: mutex),
-    beforeClose: player.persist,
+    beforeClose: () async {
+      await player.persist();
+      for (final step in [...closing]) {
+        await step();
+      }
+    },
     zoom: wanted,
   );
   // A size that did not fit this screen was stepped down; it is kept, and
@@ -135,6 +144,7 @@ Future<void> main(List<String> args) async {
         initialServerSetupProvider.overrideWithValue(setup),
         offerSetupAtStartProvider.overrideWithValue(true),
         offerWhatsNewProvider.overrideWithValue(true),
+        beforeCloseProvider.overrideWithValue(closing),
         backupFolderProvider.overrideWithValue(
           Directory('${roaming.path}/backup'),
         ),

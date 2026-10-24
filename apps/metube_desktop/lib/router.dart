@@ -15,6 +15,7 @@ enum EmberSettingsPane {
   desktop,
   transcripts,
   backup,
+  sync,
   updates,
   logs,
   about;

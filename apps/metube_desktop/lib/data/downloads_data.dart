@@ -152,7 +152,7 @@ Future<void> _transcriptFirst(Ref ref, DownloadTask task, MeTubeApi api) async {
     try {
       final result = await fetcher.fetch(url, language: language);
       if (result.transcript case final transcript?) {
-        await keepTranscript(ref, store, transcript);
+        await keepTranscript(ref, store, transcript, fetched: true);
       }
       // A server that failed once will likely fail again, and each try
       // holds the clip back.

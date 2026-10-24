@@ -94,8 +94,12 @@ class MTConfirmDialog extends StatelessWidget {
             Divider(height: 1, color: p.line),
             Padding(
               padding: const EdgeInsets.all(MTSpace.sm),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              // Wraps rather than overflows: two long labels ("Forget this
+              // device", a large text size) take a second line.
+              child: Wrap(
+                alignment: WrapAlignment.end,
+                spacing: MTSpace.xs,
+                runSpacing: MTSpace.xs,
                 children: [
                   TextButton(
                     style: TextButton.styleFrom(
@@ -105,7 +109,6 @@ class MTConfirmDialog extends StatelessWidget {
                     onPressed: () => Navigator.pop(context, false),
                     child: Text(cancelLabel),
                   ),
-                  const SizedBox(width: MTSpace.xs),
                   if (destructive)
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(

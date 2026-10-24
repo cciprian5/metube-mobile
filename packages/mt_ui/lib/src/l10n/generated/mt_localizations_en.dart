@@ -950,6 +950,74 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopStartWithWindows => 'Start with Windows';
 
   @override
+  String get desktopSync => 'Sync';
+
+  @override
+  String get desktopSyncCameBack =>
+      'This computer was away for more than 90 days, so your other devices\' data was taken first.';
+
+  @override
+  String get desktopSyncChoose => 'Choose a folder';
+
+  @override
+  String desktopSyncComputer(String name) {
+    return 'Computer $name';
+  }
+
+  @override
+  String get desktopSyncFailed =>
+      'The sync folder could not be read. Check that its drive is there.';
+
+  @override
+  String get desktopSyncFolder => 'Sync folder';
+
+  @override
+  String get desktopSyncForget => 'Forget this device';
+
+  @override
+  String desktopSyncForgetBody(String device) {
+    return '$device will no longer be read. Its transcripts move to this computer\'s folder first, so none is lost. Use this for a device that was lost or sold.';
+  }
+
+  @override
+  String desktopSyncFrom(String device, String ago) {
+    return 'Last from $device: $ago';
+  }
+
+  @override
+  String get desktopSyncHint =>
+      'Mirrors tags, favourites, lists, positions, saved searches and transcripts with your phone and other computers, through a folder a sync app keeps in step (Syncthing at home, or a cloud folder). Nothing goes to any service from here.';
+
+  @override
+  String desktopSyncLast(String ago) {
+    return 'Last synced $ago';
+  }
+
+  @override
+  String get desktopSyncNoOthers =>
+      'No other device in this folder yet. Turn sync on in MeTube Super with the same folder.';
+
+  @override
+  String get desktopSyncNotBackup =>
+      'Sync is not a backup: it mirrors a mistake as faithfully as anything else. Your dated backups stay apart from it.';
+
+  @override
+  String get desktopSyncOff => 'Off. Nothing leaves this computer.';
+
+  @override
+  String desktopSyncPhone(String name) {
+    return 'Phone $name';
+  }
+
+  @override
+  String desktopSyncThisComputer(String name) {
+    return 'This computer: $name';
+  }
+
+  @override
+  String get desktopSyncTurnOff => 'Turn off';
+
+  @override
   String get desktopTheater => 'Theater';
 
   @override

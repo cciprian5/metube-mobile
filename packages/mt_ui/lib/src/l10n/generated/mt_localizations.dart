@@ -1682,6 +1682,108 @@ abstract class MTLocalizations {
   /// **'Start with Windows'**
   String get desktopStartWithWindows;
 
+  /// No description provided for @desktopSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get desktopSync;
+
+  /// No description provided for @desktopSyncCameBack.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer was away for more than 90 days, so your other devices\' data was taken first.'**
+  String get desktopSyncCameBack;
+
+  /// No description provided for @desktopSyncChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a folder'**
+  String get desktopSyncChoose;
+
+  /// No description provided for @desktopSyncComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'Computer {name}'**
+  String desktopSyncComputer(String name);
+
+  /// No description provided for @desktopSyncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The sync folder could not be read. Check that its drive is there.'**
+  String get desktopSyncFailed;
+
+  /// No description provided for @desktopSyncFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync folder'**
+  String get desktopSyncFolder;
+
+  /// No description provided for @desktopSyncForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget this device'**
+  String get desktopSyncForget;
+
+  /// No description provided for @desktopSyncForgetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} will no longer be read. Its transcripts move to this computer\'s folder first, so none is lost. Use this for a device that was lost or sold.'**
+  String desktopSyncForgetBody(String device);
+
+  /// No description provided for @desktopSyncFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Last from {device}: {ago}'**
+  String desktopSyncFrom(String device, String ago);
+
+  /// No description provided for @desktopSyncHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirrors tags, favourites, lists, positions, saved searches and transcripts with your phone and other computers, through a folder a sync app keeps in step (Syncthing at home, or a cloud folder). Nothing goes to any service from here.'**
+  String get desktopSyncHint;
+
+  /// No description provided for @desktopSyncLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced {ago}'**
+  String desktopSyncLast(String ago);
+
+  /// No description provided for @desktopSyncNoOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'No other device in this folder yet. Turn sync on in MeTube Super with the same folder.'**
+  String get desktopSyncNoOthers;
+
+  /// No description provided for @desktopSyncNotBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync is not a backup: it mirrors a mistake as faithfully as anything else. Your dated backups stay apart from it.'**
+  String get desktopSyncNotBackup;
+
+  /// No description provided for @desktopSyncOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off. Nothing leaves this computer.'**
+  String get desktopSyncOff;
+
+  /// No description provided for @desktopSyncPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone {name}'**
+  String desktopSyncPhone(String name);
+
+  /// No description provided for @desktopSyncThisComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer: {name}'**
+  String desktopSyncThisComputer(String name);
+
+  /// No description provided for @desktopSyncTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get desktopSyncTurnOff;
+
   /// No description provided for @desktopTheater.
   ///
   /// In en, this message translates to:

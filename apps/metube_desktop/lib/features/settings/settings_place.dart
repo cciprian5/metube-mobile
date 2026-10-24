@@ -10,6 +10,7 @@ import 'cookies_pane.dart';
 import 'folders_pane.dart';
 import 'logs_pane.dart';
 import 'simple_panes.dart';
+import 'sync_pane.dart';
 
 /// Settings in two panes, the tablet's layout: the sections on one side,
 /// the chosen one open on the other. Each section has its own address
@@ -52,6 +53,7 @@ class SettingsPlace extends StatelessWidget {
         l.settingsGroupData,
         const [
           EmberSettingsPane.backup,
+          EmberSettingsPane.sync,
           EmberSettingsPane.updates,
           EmberSettingsPane.logs,
           EmberSettingsPane.about,
@@ -116,6 +118,7 @@ class SettingsPlace extends StatelessWidget {
                         EmberSettingsPane.desktop => const DesktopPane(),
                         EmberSettingsPane.backup => const BackupPane(),
                         EmberSettingsPane.cookies => const CookiesPane(),
+                        EmberSettingsPane.sync => const SyncPane(),
                         EmberSettingsPane.logs => const LogsPane(),
                         EmberSettingsPane.about => const AboutPane(),
                         _ => Text(
@@ -147,6 +150,7 @@ String paneTitle(MTLocalizations l, EmberSettingsPane pane) => switch (pane) {
   EmberSettingsPane.desktop => l.desktopDesktopSection,
   EmberSettingsPane.transcripts => l.settingsTranscripts,
   EmberSettingsPane.backup => l.settingsBackup,
+  EmberSettingsPane.sync => l.desktopSync,
   EmberSettingsPane.updates => l.updates,
   EmberSettingsPane.logs => l.diagnosticLogs,
   EmberSettingsPane.about => l.about,
@@ -164,6 +168,7 @@ MTIconData _paneIcon(EmberSettingsPane pane) => switch (pane) {
   EmberSettingsPane.desktop => MTIcons.monitor,
   EmberSettingsPane.transcripts => MTIcons.transcript,
   EmberSettingsPane.backup => MTIcons.backup,
+  EmberSettingsPane.sync => MTIcons.swap,
   EmberSettingsPane.updates => MTIcons.saveTo,
   EmberSettingsPane.logs => MTIcons.list,
   EmberSettingsPane.about => MTIcons.info,

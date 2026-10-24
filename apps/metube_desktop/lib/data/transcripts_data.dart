@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
 
 import 'library_data.dart';
+import 'sync_data.dart';
 
 /// The transcripts on this computer, in `%APPDATA%\MeTube Ember\transcripts\`
 /// and in the phone's format, so an exported bundle reads the same here.
@@ -23,15 +25,25 @@ final transcriptIndexProvider = FutureProvider<TranscriptIndex>((ref) async {
   return index;
 });
 
-/// Writes [transcript] and, when the search index is already built, adds
-/// it there too. An index still being built is started again, since it
-/// may have read the folder before this file was in it.
+/// Writes [transcript] and adds it to the search index. One this
+/// computer [fetched] from the server also goes to the sync folder, if
+/// sync is on; one read from a file or another device does not, so every
+/// transcript there stays a single copy.
 Future<void> keepTranscript(
   Ref ref,
   TranscriptStore store,
-  Transcript transcript,
-) async {
+  Transcript transcript, {
+  bool fetched = false,
+}) async {
   await store.write(transcript);
+  noteTranscript(ref, transcript);
+  if (fetched) unawaited(ref.read(emberSyncProvider).publish(transcript));
+}
+
+/// Adds a transcript already on disk to the search index when the index is
+/// built. One still being built is started again, since it may have read
+/// the folder before this file was in it.
+void noteTranscript(Ref ref, Transcript transcript) {
   if (!ref.exists(transcriptIndexProvider)) return;
   final index = ref.read(transcriptIndexProvider);
   if (index.valueOrNull case final built?) {
@@ -73,7 +85,7 @@ final transcriptForProvider = FutureProvider.family<Transcript?, TranscriptKey>(
       );
       if (result.outcome == SidecarOutcome.failed) return null;
       if (result.transcript case final found?) {
-        await keepTranscript(ref, store, found);
+        await keepTranscript(ref, store, found, fetched: true);
         return found;
       }
     }

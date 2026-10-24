@@ -980,6 +980,74 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopStartWithWindows => 'التشغيل مع بدء Windows';
 
   @override
+  String get desktopSync => 'المزامنة';
+
+  @override
+  String get desktopSyncCameBack =>
+      'غاب هذا الكمبيوتر أكثر من 90 يوماً، فأُخذت بيانات أجهزتك الأخرى أولاً.';
+
+  @override
+  String get desktopSyncChoose => 'اختر مجلداً';
+
+  @override
+  String desktopSyncComputer(String name) {
+    return 'الكمبيوتر $name';
+  }
+
+  @override
+  String get desktopSyncFailed =>
+      'تعذّرت قراءة مجلد المزامنة، فتأكد أن قرصه موجود.';
+
+  @override
+  String get desktopSyncFolder => 'مجلد المزامنة';
+
+  @override
+  String get desktopSyncForget => 'انسَ هذا الجهاز';
+
+  @override
+  String desktopSyncForgetBody(String device) {
+    return 'لن يُقرأ $device بعد الآن، وتُنقل نصوصه إلى مجلد هذا الكمبيوتر أولاً فلا يضيع منها شيء. استعمله لجهاز ضاع أو بِيع.';
+  }
+
+  @override
+  String desktopSyncFrom(String device, String ago) {
+    return 'آخر ما وصل من $device: $ago';
+  }
+
+  @override
+  String get desktopSyncHint =>
+      'تعكس الوسوم والمفضلة والقوائم ومواضع التوقف والبحوث المحفوظة والنصوص بين هذا الكمبيوتر وجوالك وأجهزتك الأخرى، عبر مجلد يزامنه برنامج تختاره (Syncthing داخل البيت، أو مجلد سحابي). ولا يُرسَل شيء من هنا إلى أي خدمة.';
+
+  @override
+  String desktopSyncLast(String ago) {
+    return 'آخر مزامنة $ago';
+  }
+
+  @override
+  String get desktopSyncNoOthers =>
+      'لا جهاز آخر في هذا المجلد بعد. شغّل المزامنة في MeTube Super بالمجلد نفسه.';
+
+  @override
+  String get desktopSyncNotBackup =>
+      'المزامنة ليست نسخاً احتياطياً: تعكس الخطأ كما تعكس الصواب، ونسخك المؤرَّخة تبقى منفصلة عنها.';
+
+  @override
+  String get desktopSyncOff => 'متوقفة، ولا يخرج شيء من هذا الكمبيوتر.';
+
+  @override
+  String desktopSyncPhone(String name) {
+    return 'الجوال $name';
+  }
+
+  @override
+  String desktopSyncThisComputer(String name) {
+    return 'هذا الكمبيوتر: $name';
+  }
+
+  @override
+  String get desktopSyncTurnOff => 'إيقاف';
+
+  @override
   String get desktopTheater => 'وضع المسرح';
 
   @override

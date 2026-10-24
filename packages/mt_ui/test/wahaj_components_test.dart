@@ -125,6 +125,33 @@ void main() {
     testWidgets('cancelling resolves false', (tester) async {
       expect(await run(tester, 'Cancel'), isFalse);
     });
+
+    testWidgets('**the guard**: two long labels at a large text size take '
+        'a second line instead of overflowing', (tester) async {
+      tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pumpWidget(
+        host(
+          Builder(
+            builder: (context) => TextButton(
+              onPressed: () => showMTConfirm(
+                context,
+                title: 'Forget this device',
+                message: 'Its transcripts move here first.',
+                confirmLabel: 'Forget this device',
+                cancelLabel: 'Keep it for now',
+                destructive: true,
+              ),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.text('Keep it for now'), findsOneWidget);
+    });
   });
 
   group('MTBoxedRow', () {

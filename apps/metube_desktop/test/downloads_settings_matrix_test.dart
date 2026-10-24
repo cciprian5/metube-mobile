@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:metube_desktop/data/addresses_data.dart';
 import 'package:metube_desktop/data/backup_data.dart';
 import 'package:metube_desktop/data/folders_data.dart';
 import 'package:metube_desktop/data/local_copies.dart';
+import 'package:metube_desktop/data/sync_data.dart';
 import 'package:metube_desktop/data/transcripts_data.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/features/downloads/downloads_button.dart';
@@ -218,6 +220,53 @@ void main() {
             ),
           ),
         );
+      },
+    );
+  });
+
+  testWidgets('settings: sync, on, with a phone and a long folder', (
+    tester,
+  ) async {
+    final root = Directory.systemTemp.createTempSync(
+      'ember matrix a folder with a rather long name, as OneDrive makes them',
+    );
+    addTearDown(() => root.deleteSync(recursive: true));
+    await expectNoOverflow(
+      tester,
+      () {
+        final h = ShellHarness(
+          library: const [],
+          overrides: [
+            loggerProvider.overrideWithValue(
+              MTLogger(filePath: '${root.path}/log.txt'),
+            ),
+            syncReportProvider.overrideWith(
+              (ref) => SyncReport(
+                at: DateTime.now(),
+                cameBack: true,
+                devices: [
+                  SyncDevice(
+                    root,
+                    SyncSnapshot(
+                      deviceId: 'phone-a1b2',
+                      deviceKind: 'phone',
+                      writtenAt: DateTime.now().millisecondsSinceEpoch,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+        unawaited(h.store.setString(SyncSettingsNotifier.folderKey, root.path));
+        unawaited(
+          h.store.setString(SyncSettingsNotifier.deviceKey, 'ember-c3d4'),
+        );
+        return h.app();
+      },
+      then: (tester) async {
+        GoRouter.of(tester.element(find.byType(EmberSidebar)))
+            .go('/settings/sync');
       },
     );
   });

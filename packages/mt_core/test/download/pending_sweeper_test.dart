@@ -377,6 +377,7 @@ class _RecordingTransfer implements Transfer {
     required String savePath,
     void Function(double progress)? onProgress,
     CancelToken? cancelToken,
+    TransferCancel? cancel,
   }) async {
     if (fail != null) throw fail!;
     pulled.add(serverFilename);

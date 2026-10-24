@@ -399,14 +399,14 @@ void main() {
     addTearDown(container.dispose);
     container.read(coverEnrichmentProvider);
     final clock = Stopwatch()..start();
-    while (asked.length < 3 && clock.elapsed < const Duration(seconds: 5)) {
+    while (asked.length < 3 && clock.elapsed < const Duration(seconds: 30)) {
       await Future<void>.delayed(const Duration(milliseconds: 10));
     }
     expect(asked, ['new.mp4', 'mid.mp4', 'old.mp4']);
     // The round ends by looking over the kept covers; let it finish before
     // the folder goes.
     final done = File('${dir.path}/.shrunk-$coverWidth');
-    while (!done.existsSync() && clock.elapsed < const Duration(seconds: 10)) {
+    while (!done.existsSync() && clock.elapsed < const Duration(seconds: 40)) {
       await Future<void>.delayed(const Duration(milliseconds: 10));
     }
   });

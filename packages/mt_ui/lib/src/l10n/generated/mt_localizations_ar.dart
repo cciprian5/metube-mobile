@@ -496,7 +496,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopAddressInUse => 'قيد الاستعمال';
 
   @override
-  String get desktopAddressInvalid => 'ليس عنواناً، أو موجود في القائمة';
+  String get desktopAddressInvalid => 'ليس عنواناً صالحاً، أو أنه في القائمة';
 
   @override
   String get desktopAddressNew => 'عنوان جديد، مثل https://metube.example.com';
@@ -751,7 +751,7 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
-  String get desktopOpenInExplorer => 'فتح في المستكشف';
+  String get desktopOpenInExplorer => 'فتح في مستكشف الملفات';
 
   @override
   String get desktopPinned => 'مثبّتة';

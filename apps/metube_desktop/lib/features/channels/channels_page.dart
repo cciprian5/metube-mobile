@@ -12,6 +12,7 @@ import '../../data/library_data.dart';
 import '../../router.dart';
 import '../../shell/error_text.dart';
 import '../../shell/pill.dart';
+import '../../shell/section_header.dart';
 import 'channel_commands.dart';
 import 'channel_match.dart';
 import 'channel_row.dart';
@@ -118,28 +119,38 @@ class ChannelsPage extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  if (supported) ...[
-                    if (subs.isNotEmpty)
-                      EmberPill(
-                        label: l.desktopCheckAll,
-                        selected: false,
-                        onTap: () => unawaited(checkChannels(context, ref)),
+                  if (supported)
+                    // The actions wrap under each other before the title
+                    // gives way, under a large font.
+                    Flexible(
+                      child: Wrap(
+                        alignment: WrapAlignment.end,
+                        spacing: MTSpace.xs,
+                        runSpacing: MTSpace.xs,
+                        children: [
+                          if (subs.isNotEmpty)
+                            EmberPill(
+                              label: l.desktopCheckAll,
+                              selected: false,
+                              onTap: () =>
+                                  unawaited(checkChannels(context, ref)),
+                            ),
+                          EmberPill(
+                            label: l.followChannel,
+                            icon: MTIcons.plus,
+                            selected: false,
+                            onTap: () => unawaited(showFollowDialog(context)),
+                          ),
+                        ],
                       ),
-                    const SizedBox(width: MTSpace.xs),
-                    EmberPill(
-                      label: l.followChannel,
-                      icon: MTIcons.plus,
-                      selected: false,
-                      onTap: () => unawaited(showFollowDialog(context)),
                     ),
-                  ],
                 ],
               ),
               const SizedBox(height: MTSpace.lg),
               body,
               if (unfollowed.isNotEmpty) ...[
                 const SizedBox(height: MTSpace.xl),
-                MTSectionHeader(title: l.desktopChannelsInLibrary),
+                EmberSectionHeader(title: l.desktopChannelsInLibrary),
                 const SizedBox(height: MTSpace.sm),
                 for (final channel in unfollowed)
                   _Unfollowed(

@@ -57,22 +57,32 @@ class EmberPill extends StatelessWidget {
               horizontal: MTSpace.md,
               vertical: MTSpace.xs,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon case final glyph?) ...[
-                  MTIcon(glyph, size: MTSpace.md, color: ink),
-                  const SizedBox(width: MTSpace.xxs),
-                ],
-                Text(
+            // A label wider than the room it is given (a long tag, a large
+            // font) shortens with an ellipsis; given unbounded room, in a
+            // row of pills, it keeps its full width.
+            child: LayoutBuilder(
+              builder: (context, box) {
+                final text = Text(
                   label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     color: ink,
                     decoration: struck ? TextDecoration.lineThrough : null,
                     decorationColor: ink,
                   ),
-                ),
-              ],
+                );
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (icon case final glyph?) ...[
+                      MTIcon(glyph, size: MTSpace.md, color: ink),
+                      const SizedBox(width: MTSpace.xxs),
+                    ],
+                    if (box.hasBoundedWidth) Flexible(child: text) else text,
+                  ],
+                );
+              },
             ),
           ),
         ),

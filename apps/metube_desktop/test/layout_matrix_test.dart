@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui' show Size;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -128,6 +129,83 @@ Future<void> _openPanel(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+/// Lists and channels with long names in both scripts, a pinned list, a
+/// line whose clip is gone, a channel that failed and one paused.
+ShellHarness _stocked({double zoom = 1.0}) {
+  final h = ShellHarness(
+    library: _library,
+    server: _server,
+    zoom: UiZoom(zoom),
+  );
+  unawaited(
+    h.store.setString(
+      PlaylistsStore.prefsKey,
+      jsonEncode([
+        for (final (i, name) in [
+          'Evening listening for the long drive home, part two',
+          'قائمة المساء الطويلة للطريق إلى البيت، الجزء الثاني',
+          'Short',
+        ].indexed)
+          {
+            'id': 'p$i',
+            'name': name,
+            'pinned': i < 2,
+            'createdAt': DateTime(2026, 10, 1 + i).toIso8601String(),
+            'items': [
+              for (final item in _library) {'canonicalUrl': item.canonicalUrl},
+              {
+                'canonicalUrl': 'https://youtu.be/gone',
+                'cachedTitle': _longTitle,
+              },
+            ],
+          },
+      ]),
+    ),
+  );
+  unawaited(
+    h.store.setString(
+      'tags_index',
+      jsonEncode({
+        _url: ['homelab', 'backups', 'a tag with quite a long name indeed'],
+      }),
+    ),
+  );
+  h.api.subscriptions = [
+    for (final (i, name) in [
+      'Homelab Hour with a rather long channel name - Videos',
+      'قناة المختبر - Videos',
+      'GAMER SNACK | جيمر سناك - Videos',
+    ].indexed)
+      ChannelSubscription(
+        id: 's$i',
+        name: name,
+        url: 'https://www.youtube.com/@channel$i/videos',
+        enabled: i != 2,
+        checkIntervalMinutes: 180,
+        quality: 'best',
+        titleRegex: i == 0 ? 'Episode|Live' : null,
+        seenCount: 55,
+        lastChecked: DateTime(2026, 10, 23),
+        error: i == 1
+            ? 'ERROR: [youtube:tab] channel0: This channel does not exist. '
+                  'HTTP Error 404: Not Found'
+            : null,
+        folder: i == 0 ? 'Homelab/Archive of long episodes' : null,
+      ),
+  ];
+  return h;
+}
+
+/// The stocked lists and channels, one place at a time.
+const _stockedPlaces = [
+  EmberRoutes.playlists,
+  '/playlists/p0',
+  '/playlists/p1',
+  EmberRoutes.channels,
+  '/channels/s0',
+  '/channels/s1',
+];
+
 void main() {
   testWidgets('nothing set up yet', (tester) async {
     await expectNoOverflow(tester, () => ShellHarness().app());
@@ -203,6 +281,18 @@ void main() {
     });
   }
 
+  for (final place in _stockedPlaces) {
+    testWidgets('stocked: $place', (tester) async {
+      await expectNoOverflow(
+        tester,
+        () => _stocked().app(),
+        then: (tester) async {
+          GoRouter.of(tester.element(find.byType(LibraryPage))).go(place);
+        },
+      );
+    });
+  }
+
   for (final (i, tab) in PanelTab.values.indexed) {
     testWidgets('playing, with the ${tab.name} tab open', (tester) async {
       late ShellHarness h;
@@ -251,6 +341,19 @@ void main() {
           unawaited(h.store.setString(EmberLibraryNotifier.modeKey, mode.name));
           return h.app();
         }, windows: [window]);
+      });
+    }
+
+    for (final place in _stockedPlaces) {
+      testWidgets('stocked: $place, ${window.name}', (tester) async {
+        await expectNoOverflow(
+          tester,
+          () => _stocked(zoom: zoom).app(),
+          windows: [window],
+          then: (tester) async {
+            GoRouter.of(tester.element(find.byType(LibraryPage))).go(place);
+          },
+        );
       });
     }
 

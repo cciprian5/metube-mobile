@@ -162,7 +162,7 @@ void main() {
     await onVideo(tester, zoom: const UiZoom(1.25));
     final at = tester.getCenter(find.byKey(InertVideoSurface.pictureKey));
     await rightClick(tester, at);
-    final menu = tester.getRect(find.text('Copy link'));
+    final menu = tester.getRect(find.text('Add to Playlist').last);
     // The first row starts just below and beside the pointer, not a
     // quarter of the window away.
     expect((menu.left - at.dx).abs(), lessThan(80));

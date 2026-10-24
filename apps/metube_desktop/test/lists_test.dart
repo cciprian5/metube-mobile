@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/data/lists_data.dart';
 import 'package:metube_desktop/features/clip/clip_page.dart';
+import 'package:metube_desktop/features/clip/clip_stage.dart';
 import 'package:metube_desktop/features/library/library_state.dart';
 import 'package:metube_desktop/features/lists/lists_page.dart';
 import 'package:metube_desktop/features/lists/playlist_line.dart';
@@ -15,6 +16,7 @@ import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
+import 'package:mt_ui/mt_ui.dart';
 
 import 'support/shell_harness.dart';
 
@@ -54,13 +56,9 @@ Map<String, Object?> _saved(
   'name': name,
   'pinned': pinned,
   'createdAt': DateTime(2026, 10, 1).toIso8601String(),
-  'videoPaths': const <String>[],
-  'entries': [
+  'items': [
     for (final url in urls)
-      {
-        'canonicalUrl': url,
-        'cachedTitle': url == _gone ? 'Gone Clip' : null,
-      },
+      {'canonicalUrl': url, 'cachedTitle': url == _gone ? 'Gone Clip' : null},
   ],
 };
 
@@ -93,19 +91,22 @@ void main() {
     return h;
   }
 
-  Future<List<SavedPlaylist>> stored(ShellHarness h) => PlaylistsStore(
-    store: h.store,
-    mutex: PrefsMutex(),
-  ).readAll();
+  Future<List<SavedPlaylist>> stored(ShellHarness h) =>
+      PlaylistsStore(store: h.store, mutex: PrefsMutex()).readAll();
 
   testWidgets('the lists page shows the smart lists, the saved and the tags', (
     tester,
   ) async {
-    await open(tester, lists: [_saved('p1', 'Evening', [_a, _b])]);
+    await open(
+      tester,
+      lists: [
+        _saved('p1', 'Evening', [_a, _b]),
+      ],
+    );
     expect(find.byType(ListsPage), findsOneWidget);
     expect(find.text('Latest additions'), findsOneWidget);
     expect(find.text('Evening'), findsOneWidget);
-    expect(find.text('2 items'), findsOneWidget);
+    expect(find.textContaining('2 items'), findsOneWidget);
     // Favourites are a tag underneath, but never offered as one.
     expect(find.text('# homelab  2'), findsOneWidget);
     expect(find.textContaining(MTConstants.favoritesSystemTag), findsNothing);
@@ -195,16 +196,19 @@ void main() {
       final h = await open(tester, lists: [evening], at: '/playlists/p1');
       await tester.tap(find.text('Remove 1 unavailable'));
       await tester.pumpAndSettle();
-      expect(
-        (await stored(h)).single.items.map((e) => e.canonicalUrl),
-        [_a, _b, _c],
-      );
+      expect((await stored(h)).single.items.map((e) => e.canonicalUrl), [
+        _a,
+        _b,
+        _c,
+      ]);
     });
 
     testWidgets('a line dragged by its grip moves', (tester) async {
       final h = await open(
         tester,
-        lists: [_saved('p1', 'Evening', [_a, _b, _c])],
+        lists: [
+          _saved('p1', 'Evening', [_a, _b, _c]),
+        ],
         at: '/playlists/p1',
       );
       final grip = find.descendant(
@@ -222,10 +226,11 @@ void main() {
       }
       await gesture.up();
       await tester.pumpAndSettle();
-      expect(
-        (await stored(h)).single.items.map((e) => e.canonicalUrl),
-        [_b, _c, _a],
-      );
+      expect((await stored(h)).single.items.map((e) => e.canonicalUrl), [
+        _b,
+        _c,
+        _a,
+      ]);
     });
 
     testWidgets('a line taken out comes back in its place with undo', (
@@ -233,7 +238,9 @@ void main() {
     ) async {
       final h = await open(
         tester,
-        lists: [_saved('p1', 'Evening', [_a, _b, _c])],
+        lists: [
+          _saved('p1', 'Evening', [_a, _b, _c]),
+        ],
         at: '/playlists/p1',
       );
       final cross = find.descendant(
@@ -242,22 +249,25 @@ void main() {
       );
       await tester.tap(cross);
       await tester.pumpAndSettle();
-      expect(
-        (await stored(h)).single.items.map((e) => e.canonicalUrl),
-        [_a, _c],
-      );
+      expect((await stored(h)).single.items.map((e) => e.canonicalUrl), [
+        _a,
+        _c,
+      ]);
       await tester.tap(find.text('Undo'));
       await tester.pumpAndSettle();
-      expect(
-        (await stored(h)).single.items.map((e) => e.canonicalUrl),
-        [_a, _b, _c],
-      );
+      expect((await stored(h)).single.items.map((e) => e.canonicalUrl), [
+        _a,
+        _b,
+        _c,
+      ]);
     });
 
     testWidgets('pinned, it has its own place in the sidebar', (tester) async {
       await open(
         tester,
-        lists: [_saved('p1', 'Evening', [_a])],
+        lists: [
+          _saved('p1', 'Evening', [_a]),
+        ],
         at: '/playlists/p1',
       );
       final sidebar = find.byType(EmberSidebar);
@@ -284,7 +294,13 @@ void main() {
       final h = await open(tester, lists: [evening], at: '/playlists/p1');
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
-      expect(find.text('Delete "Evening"?'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(MTConfirmDialog),
+          matching: find.textContaining('Evening'),
+        ),
+        findsOneWidget,
+      );
       await tester.tap(find.text('Delete').last);
       await tester.pumpAndSettle();
       expect(await stored(h), isEmpty);
@@ -295,7 +311,12 @@ void main() {
   testWidgets('a card right-clicked offers pin, rename and delete', (
     tester,
   ) async {
-    final h = await open(tester, lists: [_saved('p1', 'Evening', [_a])]);
+    final h = await open(
+      tester,
+      lists: [
+        _saved('p1', 'Evening', [_a]),
+      ],
+    );
     await tester.tapAt(
       tester.getCenter(find.text('Evening')),
       buttons: kSecondaryMouseButton,
@@ -313,7 +334,9 @@ void main() {
   ) async {
     final h = await open(
       tester,
-      lists: [_saved('p1', 'Evening', [_b])],
+      lists: [
+        _saved('p1', 'Evening', [_b]),
+      ],
       at: EmberRoutes.item(_a),
     );
     expect(find.byType(ClipPage), findsOneWidget);
@@ -321,10 +344,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Evening'));
     await tester.pumpAndSettle();
-    expect(
-      (await stored(h)).single.items.map((e) => e.canonicalUrl),
-      [_b, _a],
-    );
+    expect((await stored(h)).single.items.map((e) => e.canonicalUrl), [_b, _a]);
     await tester.tap(find.text('Evening'));
     await tester.pumpAndSettle();
     expect((await stored(h)).single.items.map((e) => e.canonicalUrl), [_b]);
@@ -341,11 +361,13 @@ void main() {
   ) async {
     final h = await open(
       tester,
-      lists: [_saved('p1', 'Evening', [_a, _b])],
+      lists: [
+        _saved('p1', 'Evening', [_a, _b]),
+      ],
       at: EmberRoutes.item(_b),
     );
     await tester.tapAt(
-      tester.getCenter(find.text('Blue Hour').first),
+      tester.getCenter(find.byType(ClipStage)),
       buttons: kSecondaryMouseButton,
       kind: PointerDeviceKind.mouse,
     );
@@ -374,6 +396,7 @@ void main() {
       window: const Size(960, 600),
     );
     expect(tester.takeException(), isNull);
-    expect(find.text('Settings'), findsOneWidget);
+    // Narrow at this width: settings is its icon, named on hover.
+    expect(byLabel('Settings'), findsOneWidget);
   });
 }

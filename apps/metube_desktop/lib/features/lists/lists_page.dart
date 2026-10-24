@@ -12,6 +12,7 @@ import '../../data/lists_data.dart';
 import '../../router.dart';
 import '../../shell/context_menu.dart';
 import '../../shell/pill.dart';
+import '../../shell/section_header.dart';
 import '../clip/clip_state.dart';
 import '../library/library_state.dart';
 import 'list_actions.dart';
@@ -93,7 +94,11 @@ class ListsPage extends ConsumerWidget {
 
     Widget section(String title, {String? trailing, Widget? action}) => Padding(
       padding: const EdgeInsets.only(top: MTSpace.xl, bottom: MTSpace.md),
-      child: MTSectionHeader(title: title, trailing: trailing, action: action),
+      child: EmberSectionHeader(
+        title: title,
+        trailing: trailing,
+        action: action,
+      ),
     );
 
     final saved = lists.valueOrNull ?? const <SavedPlaylist>[];
@@ -110,11 +115,13 @@ class ListsPage extends ConsumerWidget {
           Row(
             children: [
               Expanded(child: Text(l.navPlaylists, style: text.headlineSmall)),
-              EmberPill(
-                label: l.newPlaylistAction,
-                icon: MTIcons.plus,
-                selected: false,
-                onTap: () => unawaited(_create(context, ref)),
+              Flexible(
+                child: EmberPill(
+                  label: l.newPlaylistAction,
+                  icon: MTIcons.plus,
+                  selected: false,
+                  onTap: () => unawaited(_create(context, ref)),
+                ),
               ),
             ],
           ),

@@ -82,7 +82,8 @@ void main() {
       expect(eric.unwatched, 3);
       expect(eric.lastArrival, DateTime(2026, 10, 23));
       expect(eric.covers, [
-        for (final id in ['b', 'c', 'a']) 'https://i.ytimg.com/vi/$id/hqdefault.jpg',
+        for (final id in ['b', 'c', 'a'])
+          'https://i.ytimg.com/vi/$id/hqdefault.jpg',
       ]);
       // Nothing of the second here: no entry, so no "0 in your library".
       expect(match.stats.containsKey('s2'), isFalse);
@@ -93,30 +94,32 @@ void main() {
       expect(match.namesChannels, isTrue);
     });
 
-    test("the owner's real history names no channel, so nothing matches", () async {
-      final raw = File(
-        '../../packages/mt_core/test/fixtures/real/history_real_done.json',
-      ).readAsStringSync();
-      final history = HistoryResponse.fromJson(
-        jsonDecode(raw) as Map<String, dynamic>,
-      );
-      final items = mergeLibrary(
-        history: history,
-        offline: const {},
-        tags: const {},
-        artwork: const {},
-        shapes: const {},
-      );
-      expect(items, isNotEmpty);
-      final match = await matchChannels(
-        items,
-        {'s1': 'Eric Tech - Videos', 's2': 'ServersatHome - Videos'},
-        started: (_) async => false,
-      );
-      expect(match.stats, isEmpty);
-      expect(match.unfollowed, isEmpty);
-      expect(match.namesChannels, isFalse);
-    });
+    test(
+      "the owner's real history names no channel, so nothing matches",
+      () async {
+        final raw = File(
+          '../../packages/mt_core/test/fixtures/real/history_real_done.json',
+        ).readAsStringSync();
+        final history = HistoryResponse.fromJson(
+          jsonDecode(raw) as Map<String, dynamic>,
+        );
+        final items = mergeLibrary(
+          history: history,
+          offline: const {},
+          tags: const {},
+          artwork: const {},
+          shapes: const {},
+        );
+        expect(items, isNotEmpty);
+        final match = await matchChannels(items, {
+          's1': 'Eric Tech - Videos',
+          's2': 'ServersatHome - Videos',
+        }, started: (_) async => false);
+        expect(match.stats, isEmpty);
+        expect(match.unfollowed, isEmpty);
+        expect(match.namesChannels, isFalse);
+      },
+    );
   });
 
   Future<ShellHarness> open(
@@ -183,7 +186,10 @@ void main() {
     tester,
   ) async {
     await open(tester, subs: null);
-    expect(find.text('This MeTube is older than subscriptions'), findsOneWidget);
+    expect(
+      find.text('This MeTube is older than subscriptions'),
+      findsOneWidget,
+    );
     expect(find.text('Follow a channel'), findsNothing);
   });
 
@@ -199,7 +205,10 @@ void main() {
     final h = await open(tester, subs: [_sub('a', 'Alpha - Videos')]);
     await tester.tap(find.byType(MTSwitch));
     await tester.pumpAndSettle();
-    expect(h.api.channelCalls.single, startsWith('update a name=- enabled=false'));
+    expect(
+      h.api.channelCalls.single,
+      startsWith('update a name=- enabled=false'),
+    );
     expect(find.text('Paused'), findsOneWidget);
   });
 
@@ -228,7 +237,7 @@ void main() {
   ) async {
     final h = await open(tester);
     h.api.followFailure = const ServerErrorException(
-      detail: 'This channel is already subscribed',
+      'This channel is already subscribed',
     );
     await tester.tap(find.text('Follow a channel').first);
     await tester.pumpAndSettle();
@@ -245,9 +254,7 @@ void main() {
   ) async {
     final h = await open(
       tester,
-      subs: [
-        _sub('a', 'Alpha - Videos', checked: checked, folder: 'Tech'),
-      ],
+      subs: [_sub('a', 'Alpha - Videos', checked: checked, folder: 'Tech')],
       at: EmberRoutes.channel('a'),
     );
     expect(find.byType(ChannelPage), findsOneWidget);
@@ -293,10 +300,7 @@ void main() {
       ],
       at: EmberRoutes.channel('a'),
     );
-    expect(
-      find.textContaining("doesn't say which channel"),
-      findsOneWidget,
-    );
+    expect(find.textContaining("doesn't say which channel"), findsOneWidget);
   });
 
   testWidgets('a channel the library has and nobody follows can be followed', (

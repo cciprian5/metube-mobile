@@ -12,6 +12,7 @@ import '../../data/channels_data.dart';
 import '../../di.dart';
 import '../../router.dart';
 import '../../shell/pill.dart';
+import '../../shell/section_header.dart';
 import '../clip/clip_state.dart';
 import '../library/library_item_view.dart';
 import 'channel_commands.dart';
@@ -111,13 +112,15 @@ class _Head extends ConsumerWidget {
         : l.everyHours(sub.checkIntervalMinutes ~/ 60);
     final quality = switch (sub.quality) {
       null => null,
-      final wire => switch (Quality.values.where((q) => q.wire == wire)) {
-        [Quality.best] => l.qualityBest,
-        [Quality.q1080] => l.quality1080,
-        [Quality.q720] => l.quality720,
-        [Quality.q480] => l.quality480,
-        [Quality.audio] => l.audioOnly,
-        _ => wire,
+      final wire => switch (Quality.values
+          .where((q) => q.wire == wire)
+          .firstOrNull) {
+        Quality.best => l.qualityBest,
+        Quality.q1080 => l.quality1080,
+        Quality.q720 => l.quality720,
+        Quality.q480 => l.quality480,
+        Quality.audio => l.audioOnly,
+        null => wire,
       },
     };
     final facts = <(String, String)>[
@@ -221,7 +224,7 @@ class _Head extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: MTSpace.xl),
-        MTSectionHeader(
+        EmberSectionHeader(
           title: l.desktopChannelClips,
           trailing: switch (stats) {
             final s? => mtMetaLine([

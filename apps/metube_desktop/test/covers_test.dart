@@ -230,6 +230,43 @@ void main() {
         },
       );
 
+      test('**the guard**: an MP3, Opus or FLAC cover comes from the engine, '
+          'without reading ranges meant for MP4', () async {
+        var ranges = 0;
+        final e = CoverEnricher(
+          artwork: artwork,
+          failures: failures,
+          folder: Directory('${dir.path}/embedded'),
+          now: () => now,
+          frameFor: frames(_jpeg),
+          readerFor: (_) => (start, length) async {
+            ranges++;
+            return Uint8List(0);
+          },
+        );
+        for (final name in ['a.mp3', 'b.opus', 'c.flac']) {
+          final song = LibraryItem(
+            canonicalUrl: 'https://soundcloud.com/a/$name',
+            title: name,
+            onServer: true,
+            isAudio: true,
+            serverFilename: '/audio_download/$name',
+          );
+          expect(await e.candidates([song]), hasLength(1));
+          expect(await e.enrich(song), isTrue);
+        }
+        expect(ranges, 0);
+        expect(asked, ['a.mp3', 'b.opus', 'c.flac']);
+      });
+
+      test('an M4A with no cover inside is asked of the engine too', () async {
+        final e = enricher({
+          'a': _file(moovFirst: true),
+        }, frames: frames(_jpeg));
+        expect(await e.enrich(clip('a')), isTrue);
+        expect(asked, ['a']);
+      });
+
       test('one that gives no frame is left alone for a day', () async {
         final e = enricher({}, frames: frames(null));
         final video = clip('broken', audio: false);

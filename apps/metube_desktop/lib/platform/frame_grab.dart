@@ -7,8 +7,10 @@ import 'dart:typed_data';
 import 'package:media_kit/ffi/ffi.dart';
 import 'package:media_kit/generated/libmpv/bindings.dart';
 
-/// One picture from a video on the server, for a clip the server names no
-/// cover for (every Instagram, TikTok or X video). Windows has nothing like
+/// One picture from a clip on the server, for a clip the server names no
+/// cover for: a video's frame (every Instagram, TikTok or X video), or the
+/// cover embedded in an MP3, Opus or FLAC file, which the engine shows as
+/// the file's one frame (measured on all three, and on WebM and MKV video). Windows has nothing like
 /// Android's media retriever, so it is taken by **the libmpv the player
 /// already ships**: a bare engine, not a `Player`, with no window, no
 /// sound, no media keys and nothing shown, made for one frame and destroyed.

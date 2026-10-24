@@ -158,9 +158,16 @@ class _MTGridSliver extends StatelessWidget {
   static double _cellHeight(BuildContext context, double width) {
     final text = Theme.of(context).textTheme;
     final scaler = MediaQuery.textScalerOf(context);
+    // Measured with Latin, CJK and an emoji on each line: a character the
+    // app's font lacks is drawn in a fallback font whose taller ascent or
+    // deeper descent stretches the line, and a Japanese title overflowed a
+    // cell measured on Latin alone (seen on Windows).
     double lines(TextStyle style, int count) {
       final painter = TextPainter(
-        text: TextSpan(text: List.filled(count, 'Ag').join('\n'), style: style),
+        text: TextSpan(
+          text: List.filled(count, 'Ag国\u{1F600}').join('\n'),
+          style: style,
+        ),
         textDirection: TextDirection.ltr,
         textScaler: scaler,
         maxLines: count,

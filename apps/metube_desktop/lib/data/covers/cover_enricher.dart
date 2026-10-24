@@ -12,12 +12,14 @@ import 'mp4_cover.dart';
 /// file, or null when the clip is not there.
 typedef ReaderFor = RangeReader? Function(LibraryItem item);
 
-/// A picture taken from a video clip's own frames, or null when none came.
+/// A picture the player's engine takes from a clip's own file: a video's
+/// frame, or the cover embedded in an audio file; null when none came.
 typedef FrameFor = Future<Uint8List?> Function(LibraryItem item);
 
 /// Covers the server never names, kept on this computer: **the picture
-/// embedded in an audio file**, read from the server by ranges, and for a
-/// video **a frame of the video itself** ([FrameFor]).
+/// embedded in an audio file**, read from the server by ranges for M4A and
+/// by the engine for the rest, and for a video **a frame of the video
+/// itself** ([FrameFor]).
 ///
 /// The phone takes these from Android's media retriever, which Windows does
 /// not have. Measured on the owner's server: every audio download (M4A) has
@@ -60,7 +62,7 @@ class CoverEnricher {
     final now = _now();
     return [
       for (final item in items)
-        if ((item.isAudio ? readerFor(item) != null : frameFor != null) &&
+        if ((frameFor != null || (item.isAudio && readerFor(item) != null)) &&
             item.thumbnail == null &&
             known[item.canonicalUrl] == null &&
             !failures.isCoolingDown(failed, item.canonicalUrl, now: now))
@@ -69,21 +71,26 @@ class CoverEnricher {
   }
 
   /// Looks for one clip's cover; true when one was found and kept.
+  ///
+  /// An MP4 audio file (M4A, MeTube's usual) is read by ranges, the
+  /// cheapest way; any other audio (MP3, Opus, FLAC) and every video go
+  /// through [frameFor], whose engine shows an audio file's embedded cover
+  /// as its one frame.
   Future<bool> enrich(LibraryItem item) async {
     Uint8List? picture;
-    if (item.isAudio) {
-      final read = readerFor(item);
-      if (read == null) return false;
+    final read = item.isAudio && _isMp4(item) ? readerFor(item) : null;
+    if (read != null) {
       try {
         picture = await Mp4Cover.find(read);
       } on Object {
         picture = null;
       }
-    } else {
+    }
+    if (picture == null || picture.isEmpty) {
       final frame = frameFor;
-      if (frame == null) return false;
+      if (frame == null && read == null) return false;
       try {
-        picture = await frame(item);
+        picture = await frame?.call(item);
       } on Object {
         picture = null;
       }
@@ -102,6 +109,21 @@ class CoverEnricher {
     await file.writeAsBytes(picture, flush: true);
     await artwork.put(url, file.path);
     return true;
+  }
+
+  /// Whether the clip's file is an MP4 container, by its name; a name not
+  /// known is tried as one.
+  static bool _isMp4(LibraryItem item) {
+    final name = (item.serverFilename ?? item.localPath ?? '').toLowerCase();
+    final dot = name.lastIndexOf('.');
+    if (dot < 0) return true;
+    return const {
+      '.m4a',
+      '.mp4',
+      '.m4v',
+      '.mov',
+      '.m4b',
+    }.contains(name.substring(dot));
   }
 
   /// A stable name from the canonical URL, which holds characters no file

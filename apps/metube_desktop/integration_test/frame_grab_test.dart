@@ -101,6 +101,15 @@ void main() {
     expect(asked, isNotEmpty);
   });
 
+  // A second of tone with a test pattern as its cover, a few kilobytes each.
+  for (final name in ['cover.mp3', 'cover.opus']) {
+    testWidgets('the cover embedded in $name', (tester) async {
+      final file = File('integration_test/fixtures/$name').absolute;
+      final picture = await tester.runAsync(() => grabFrame(file.path, {}));
+      expect(_isJpeg(picture), isTrue);
+    });
+  }
+
   testWidgets('a frame from a copy on this computer', (tester) async {
     final dir = Directory.systemTemp.createTempSync('ember_frame_test_');
     addTearDown(() => dir.deleteSync(recursive: true));

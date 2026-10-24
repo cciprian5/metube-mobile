@@ -9,6 +9,7 @@ import 'package:mt_media/library.dart';
 import '../../di.dart';
 import '../library_data.dart';
 import 'cover_enricher.dart';
+import 'cover_shrink.dart';
 import 'mp4_cover.dart';
 
 /// Where found covers are kept: `%LOCALAPPDATA%\MeTube Ember\cache\
@@ -128,6 +129,8 @@ final coverEnrichmentProvider = Provider<void>((ref) {
           break;
         }
       }
+      // Covers kept before they were made card-sized, once.
+      if (!stopped) await shrinkKeptCovers(folder);
     } finally {
       running = false;
     }

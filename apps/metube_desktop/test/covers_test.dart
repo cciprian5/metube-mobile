@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/data/library_data.dart';
 import 'package:metube_desktop/di.dart';
+import 'package:image/image.dart' as img;
 import 'package:metube_desktop/data/covers/cover_enricher.dart';
+import 'package:metube_desktop/data/covers/cover_shrink.dart';
 import 'package:metube_desktop/data/covers/covers_data.dart';
 import 'package:metube_desktop/data/covers/mp4_cover.dart';
 import 'package:mt_core/mt_core.dart';
@@ -364,5 +366,67 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 10));
     }
     expect(asked, ['new.mp4', 'mid.mp4', 'old.mp4']);
+    // The round ends by looking over the kept covers; let it finish before
+    // the folder goes.
+    final done = File('${dir.path}/.shrunk-$coverWidth');
+    while (!done.existsSync() && clock.elapsed < const Duration(seconds: 10)) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
+  });
+
+  group('**the guard**: covers are kept card-sized', () {
+    // A phone video's frame, as the engine writes it.
+    Uint8List frame(int w, int h) =>
+        img.encodeJpg(img.Image(width: w, height: h), quality: 60);
+    int widthOf(Uint8List bytes) => img.decodeImage(bytes)!.width;
+
+    test('a large frame is made no wider than a card', () async {
+      final small = await shrinkCover(frame(1080, 1920));
+      expect(widthOf(small), coverWidth);
+      expect(img.decodeImage(small)!.height, inInclusiveRange(1137, 1138));
+    });
+
+    test('a small one, or one that cannot be read, is left alone', () async {
+      final small = frame(320, 180);
+      expect(await shrinkCover(small), same(small));
+      expect(await shrinkCover(_jpeg), same(_jpeg));
+    });
+
+    test('the enricher keeps the small one', () async {
+      final dir = Directory.systemTemp.createTempSync('ember_shrink_');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final store = MemoryKeyValueStore();
+      final artwork = ArtworkIndex(store: store, mutex: PrefsMutex());
+      final enricher = CoverEnricher(
+        artwork: artwork,
+        failures: ProbeFailureIndex(store: store, mutex: PrefsMutex()),
+        folder: dir,
+        readerFor: (_) => null,
+        frameFor: (_) async => frame(1440, 2560),
+      );
+      const reel = LibraryItem(
+        canonicalUrl: 'https://www.instagram.com/reel/a/',
+        title: 'a',
+        onServer: true,
+      );
+      expect(await enricher.enrich(reel), isTrue);
+      final path = await artwork.artworkOf(reel.canonicalUrl);
+      expect(widthOf(File(path!).readAsBytesSync()), coverWidth);
+    });
+
+    test('covers kept before are shrunk once, in place', () async {
+      final dir = Directory.systemTemp.createTempSync('ember_kept_');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final big = File('${dir.path}/big.jpg')
+        ..writeAsBytesSync(frame(1080, 1920));
+      final small = File('${dir.path}/small.jpg')
+        ..writeAsBytesSync(frame(500, 500));
+      final smallBytes = small.readAsBytesSync();
+      expect(await shrinkKeptCovers(dir), 1);
+      expect(widthOf(big.readAsBytesSync()), coverWidth);
+      expect(small.readAsBytesSync(), smallBytes);
+      big.writeAsBytesSync(frame(1080, 1920));
+      expect(await shrinkKeptCovers(dir), 0, reason: 'done once');
+    });
   });
 }

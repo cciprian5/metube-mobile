@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 
+import 'cover_shrink.dart';
 import 'mp4_cover.dart';
 
 /// Where a clip's bytes are read from: a range reader on the server's own
@@ -34,6 +35,7 @@ class CoverEnricher {
     required this.folder,
     required this.readerFor,
     this.frameFor,
+    this.shrink = shrinkCover,
     DateTime Function()? now,
   }) : _now = now ?? DateTime.now;
 
@@ -46,6 +48,9 @@ class CoverEnricher {
 
   /// null leaves videos alone.
   final FrameFor? frameFor;
+
+  /// Makes a found picture card-sized before it is kept.
+  final Future<Uint8List> Function(Uint8List picture) shrink;
   final DateTime Function() _now;
 
   /// The clips worth asking about, in the order given (the screen's).
@@ -88,6 +93,7 @@ class CoverEnricher {
       await failures.put(url, _now());
       return false;
     }
+    picture = await shrink(picture);
     // Checked again just before writing: a cover may have arrived from
     // elsewhere while this one was being read.
     if (await artwork.artworkOf(url) != null) return false;

@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/data/addresses_data.dart';
+import 'package:metube_desktop/data/backup_data.dart';
 import 'package:metube_desktop/data/folders_data.dart';
 import 'package:metube_desktop/data/local_copies.dart';
 import 'package:metube_desktop/features/downloads/downloads_button.dart';
+import 'package:metube_desktop/features/setup/setup_dialog.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 
@@ -108,6 +112,23 @@ void main() {
       },
       then: (tester) async {
         await tester.tap(find.byType(DownloadsButton));
+      },
+    );
+  });
+
+  testWidgets('the first-run setup, with servers found', (tester) async {
+    await expectNoOverflow(
+      tester,
+      () => ShellHarness(
+        library: const [],
+        overrides: [
+          setupHintProvider.overrideWith(
+            (ref) => ['https://metube.a-rather-long-domain-name.example.com'],
+          ),
+        ],
+      ).app(),
+      then: (tester) async {
+        unawaited(showSetupDialog(tester.element(find.byType(EmberSidebar))));
       },
     );
   });

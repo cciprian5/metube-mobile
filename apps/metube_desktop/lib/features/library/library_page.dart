@@ -11,6 +11,7 @@ import '../../data/library_data.dart';
 import '../../di.dart';
 import '../../shell/pill.dart';
 import '../clip/clip_state.dart';
+import '../setup/setup_dialog.dart';
 import 'library_chips.dart';
 import 'library_item_view.dart';
 import 'library_state.dart';
@@ -104,6 +105,9 @@ class LibraryPage extends ConsumerWidget {
           MTEmptyFrame(
             title: l.serverStatusUnconfigured,
             message: l.desktopNoServerMessage,
+            actionLabel: l.desktopSetupConnect,
+            actionIcon: MTIcons.server,
+            onAction: () => unawaited(showSetupDialog(context)),
           ),
         ),
       ];

@@ -18,6 +18,10 @@ abstract class DesktopFolders {
   /// Windows' folder dialog; null when it is closed without a choice.
   Future<String?> pick({String? initial});
 
+  /// Windows' open dialog for one file of [extensions], read as text;
+  /// null when it is closed or the file cannot be read.
+  Future<String?> openText({required List<String> extensions});
+
   /// Opens Explorer on [path]'s folder with the file selected.
   Future<void> reveal(String path);
 
@@ -36,6 +40,9 @@ class NoFolders extends DesktopFolders {
 
   @override
   Future<String?> pick({String? initial}) async => null;
+
+  @override
+  Future<String?> openText({required List<String> extensions}) async => null;
 
   @override
   Future<void> reveal(String path) async {}

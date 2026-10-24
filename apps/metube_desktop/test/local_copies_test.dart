@@ -34,6 +34,9 @@ class _Folders extends DesktopFolders {
   }
 
   @override
+  Future<String?> openText({required List<String> extensions}) async => null;
+
+  @override
   Future<void> reveal(String path) async {}
 
   @override

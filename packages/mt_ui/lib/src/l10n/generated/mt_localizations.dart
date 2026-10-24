@@ -968,6 +968,24 @@ abstract class MTLocalizations {
   /// **'Back'**
   String get desktopBack;
 
+  /// No description provided for @desktopBackUpNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get desktopBackUpNow;
+
+  /// No description provided for @desktopBackupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer keeps its last seven backups, at least an hour apart, in its own folder.'**
+  String get desktopBackupHint;
+
+  /// No description provided for @desktopBackupsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup yet'**
+  String get desktopBackupsNone;
+
   /// No description provided for @desktopChangeFolder.
   ///
   /// In en, this message translates to:
@@ -1100,6 +1118,18 @@ abstract class MTLocalizations {
   /// **'Add a link, and the clip appears here once the server has it.'**
   String get desktopEmptyLibraryMessage;
 
+  /// No description provided for @desktopExportForPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Export for the phone'**
+  String get desktopExportForPhone;
+
+  /// No description provided for @desktopExportForPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Saves this computer\'s tags, lists and resume points, and its transcripts, as two files the phone restores. Restoring on the phone replaces its own tags and lists.'**
+  String get desktopExportForPhoneHint;
+
   /// No description provided for @desktopFolderUnavailable.
   ///
   /// In en, this message translates to:
@@ -1129,6 +1159,36 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Hide side panel'**
   String get desktopHidePanel;
+
+  /// No description provided for @desktopImportFromPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from the phone…'**
+  String get desktopImportFromPhone;
+
+  /// No description provided for @desktopImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A backup or transcripts file from MeTube Super or Lite, chosen here or dropped on the window. It is added to what is here; nothing is replaced.'**
+  String get desktopImportHint;
+
+  /// No description provided for @desktopImportedBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Added from the phone. Tags: {tagged} · lists: {lists} · resume points: {positions}'**
+  String desktopImportedBackup(int tagged, int lists, int positions);
+
+  /// No description provided for @desktopImportedNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing new: this computer already had all of it.'**
+  String get desktopImportedNothing;
+
+  /// No description provided for @desktopImportedTranscripts.
+  ///
+  /// In en, this message translates to:
+  /// **'Transcripts added: {count}'**
+  String desktopImportedTranscripts(int count);
 
   /// No description provided for @desktopInLibrary.
   ///
@@ -1250,6 +1310,12 @@ abstract class MTLocalizations {
   /// **'No transcript for this clip'**
   String get desktopNoTranscriptTitle;
 
+  /// No description provided for @desktopNotABackup.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a MeTube backup or transcripts file.'**
+  String get desktopNotABackup;
+
   /// No description provided for @desktopNotWatched.
   ///
   /// In en, this message translates to:
@@ -1322,6 +1388,30 @@ abstract class MTLocalizations {
   /// **'Remove from the list'**
   String get desktopRemoveFromList;
 
+  /// No description provided for @desktopRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get desktopRestore;
+
+  /// No description provided for @desktopRestoreBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer\'s tags, lists and settings become what the backup holds. The server is not touched.'**
+  String get desktopRestoreBody;
+
+  /// No description provided for @desktopRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this backup?'**
+  String get desktopRestoreTitle;
+
+  /// No description provided for @desktopRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored'**
+  String get desktopRestored;
+
   /// No description provided for @desktopSavedIn.
   ///
   /// In en, this message translates to:
@@ -1375,6 +1465,102 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'This section comes in a later step of the Windows app.'**
   String get desktopSettingsLater;
+
+  /// No description provided for @desktopSetupAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up again'**
+  String get desktopSetupAgain;
+
+  /// No description provided for @desktopSetupChooseFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file…'**
+  String get desktopSetupChooseFile;
+
+  /// No description provided for @desktopSetupConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get desktopSetupConnect;
+
+  /// No description provided for @desktopSetupEnter.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the address'**
+  String get desktopSetupEnter;
+
+  /// No description provided for @desktopSetupFoundNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No MeTube server answered on these ports.'**
+  String get desktopSetupFoundNone;
+
+  /// No description provided for @desktopSetupHttpWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'An http:// address outside your home network sends the password unencrypted.'**
+  String get desktopSetupHttpWarning;
+
+  /// No description provided for @desktopSetupImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from the phone'**
+  String get desktopSetupImport;
+
+  /// No description provided for @desktopSetupImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a MeTube Super backup: its server address is offered here, and its tags and lists are added.'**
+  String get desktopSetupImportHint;
+
+  /// No description provided for @desktopSetupLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get desktopSetupLater;
+
+  /// No description provided for @desktopSetupNeedsPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a password'**
+  String get desktopSetupNeedsPassword;
+
+  /// No description provided for @desktopSetupNoServer.
+  ///
+  /// In en, this message translates to:
+  /// **'No server yet?'**
+  String get desktopSetupNoServer;
+
+  /// No description provided for @desktopSetupPorts.
+  ///
+  /// In en, this message translates to:
+  /// **'Ports'**
+  String get desktopSetupPorts;
+
+  /// No description provided for @desktopSetupSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search my network'**
+  String get desktopSetupSearch;
+
+  /// No description provided for @desktopSetupSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks for MeTube on this computer\'s network, only when you click.'**
+  String get desktopSetupSearchHint;
+
+  /// No description provided for @desktopSetupSearching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching… {percent}%'**
+  String desktopSetupSearching(int percent);
+
+  /// No description provided for @desktopSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to your MeTube server'**
+  String get desktopSetupTitle;
 
   /// No description provided for @desktopShortsHint.
   ///

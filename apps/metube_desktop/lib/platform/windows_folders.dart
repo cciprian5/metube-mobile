@@ -30,6 +30,19 @@ class WindowsFolders extends DesktopFolders {
     canCreateDirectories: true,
   );
 
+  @override
+  Future<String?> openText({required List<String> extensions}) async {
+    final file = await selector.openFile(
+      acceptedTypeGroups: [selector.XTypeGroup(extensions: extensions)],
+    );
+    if (file == null) return null;
+    try {
+      return await File(file.path).readAsString();
+    } on Object {
+      return null;
+    }
+  }
+
   // Explorer is started with its arguments as a list, never through a
   // shell, so a name with spaces or an ampersand stays one argument.
   @override

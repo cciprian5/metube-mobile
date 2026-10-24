@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/data/addresses_data.dart';
+import 'package:metube_desktop/data/setup_data.dart';
 import 'package:metube_desktop/data/downloads_data.dart';
 import 'package:metube_desktop/data/folders_data.dart';
 import 'package:metube_desktop/data/library_data.dart';
@@ -183,7 +184,7 @@ void main() {
       final c = ProviderContainer(
         overrides: [
           keyValueStoreProvider.overrideWithValue(store),
-          serverSetupProvider.overrideWithValue(
+          initialServerSetupProvider.overrideWithValue(
             ServerConfig(
               baseUrl: 'http://192.168.1.10:8081',
               username: 'me',

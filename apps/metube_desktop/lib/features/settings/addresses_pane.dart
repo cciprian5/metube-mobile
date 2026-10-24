@@ -130,15 +130,16 @@ class _AddressLine extends StatelessWidget {
     return SettingLine(
       title: url,
       hint: checking ? l.serverStatusChecking : addressStatusText(l, status),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
+      // Wraps, so two buttons at a large text size go under each other.
+      trailing: Wrap(
+        spacing: MTSpace.xs,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Container(
             width: MTSpace.sm,
             height: MTSpace.sm,
             decoration: BoxDecoration(color: dot, shape: BoxShape.circle),
           ),
-          const SizedBox(width: MTSpace.sm),
           if (inUse)
             Text(
               l.desktopAddressInUse,

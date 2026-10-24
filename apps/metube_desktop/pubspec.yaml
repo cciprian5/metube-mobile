@@ -25,6 +25,9 @@ dependencies:
   file: ^7.0.1
   flutter_cache_manager: ^3.4.1
   flutter_riverpod: ^2.6.1
+  # The server password, encrypted for this Windows user (DPAPI); the
+  # phones' own range.
+  flutter_secure_storage: ^9.2.2
   go_router: ^16.2.0
   # Already in the shared resolution at this version; makes the covers
   # taken from video frames card-sized.

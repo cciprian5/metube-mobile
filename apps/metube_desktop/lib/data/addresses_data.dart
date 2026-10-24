@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 
 import '../di.dart';
+import 'setup_data.dart';
 
 /// The server's addresses (at home, through a tunnel) and the one in use.
 ///
@@ -47,11 +48,6 @@ class AddressesStore {
     }
   });
 }
-
-/// The account to sign in with and the address it was set up on. From the
-/// lab file in a debug build until the first-run setup asks for one;
-/// overridden in main.
-final serverSetupProvider = Provider<ServerConfig?>((ref) => null);
 
 /// The addresses as saved, read before the first frame so the first
 /// request already goes to the chosen one. Overridden in main.

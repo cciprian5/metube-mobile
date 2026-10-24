@@ -515,6 +515,16 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopBack => 'Back';
 
   @override
+  String get desktopBackUpNow => 'Back up now';
+
+  @override
+  String get desktopBackupHint =>
+      'This computer keeps its last seven backups, at least an hour apart, in its own folder.';
+
+  @override
+  String get desktopBackupsNone => 'No backup yet';
+
+  @override
   String get desktopChangeFolder => 'Change…';
 
   @override
@@ -586,6 +596,13 @@ class MTLocalizationsEn extends MTLocalizations {
       'Add a link, and the clip appears here once the server has it.';
 
   @override
+  String get desktopExportForPhone => 'Export for the phone';
+
+  @override
+  String get desktopExportForPhoneHint =>
+      'Saves this computer\'s tags, lists and resume points, and its transcripts, as two files the phone restores. Restoring on the phone replaces its own tags and lists.';
+
+  @override
   String get desktopFolderUnavailable => 'No folder available';
 
   @override
@@ -599,6 +616,27 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopHidePanel => 'Hide side panel';
+
+  @override
+  String get desktopImportFromPhone => 'Import from the phone…';
+
+  @override
+  String get desktopImportHint =>
+      'A backup or transcripts file from MeTube Super or Lite, chosen here or dropped on the window. It is added to what is here; nothing is replaced.';
+
+  @override
+  String desktopImportedBackup(int tagged, int lists, int positions) {
+    return 'Added from the phone. Tags: $tagged · lists: $lists · resume points: $positions';
+  }
+
+  @override
+  String get desktopImportedNothing =>
+      'Nothing new: this computer already had all of it.';
+
+  @override
+  String desktopImportedTranscripts(int count) {
+    return 'Transcripts added: $count';
+  }
 
   @override
   String desktopInLibrary(int count) {
@@ -685,6 +723,10 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopNoTranscriptTitle => 'No transcript for this clip';
 
   @override
+  String get desktopNotABackup =>
+      'This file is not a MeTube backup or transcripts file.';
+
+  @override
   String desktopNotWatched(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -735,6 +777,19 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopRemoveFromList => 'Remove from the list';
 
   @override
+  String get desktopRestore => 'Restore';
+
+  @override
+  String get desktopRestoreBody =>
+      'This computer\'s tags, lists and settings become what the backup holds. The server is not touched.';
+
+  @override
+  String get desktopRestoreTitle => 'Restore this backup?';
+
+  @override
+  String get desktopRestored => 'Backup restored';
+
+  @override
   String desktopSavedIn(String folder) {
     return 'Saved in $folder';
   }
@@ -769,6 +824,60 @@ class MTLocalizationsEn extends MTLocalizations {
   @override
   String get desktopSettingsLater =>
       'This section comes in a later step of the Windows app.';
+
+  @override
+  String get desktopSetupAgain => 'Set up again';
+
+  @override
+  String get desktopSetupChooseFile => 'Choose a file…';
+
+  @override
+  String get desktopSetupConnect => 'Connect';
+
+  @override
+  String get desktopSetupEnter => 'Enter the address';
+
+  @override
+  String get desktopSetupFoundNone =>
+      'No MeTube server answered on these ports.';
+
+  @override
+  String get desktopSetupHttpWarning =>
+      'An http:// address outside your home network sends the password unencrypted.';
+
+  @override
+  String get desktopSetupImport => 'Import from the phone';
+
+  @override
+  String get desktopSetupImportHint =>
+      'Choose a MeTube Super backup: its server address is offered here, and its tags and lists are added.';
+
+  @override
+  String get desktopSetupLater => 'Later';
+
+  @override
+  String get desktopSetupNeedsPassword => 'Needs a password';
+
+  @override
+  String get desktopSetupNoServer => 'No server yet?';
+
+  @override
+  String get desktopSetupPorts => 'Ports';
+
+  @override
+  String get desktopSetupSearch => 'Search my network';
+
+  @override
+  String get desktopSetupSearchHint =>
+      'Looks for MeTube on this computer\'s network, only when you click.';
+
+  @override
+  String desktopSetupSearching(int percent) {
+    return 'Searching… $percent%';
+  }
+
+  @override
+  String get desktopSetupTitle => 'Connect to your MeTube server';
 
   @override
   String get desktopShortsHint =>

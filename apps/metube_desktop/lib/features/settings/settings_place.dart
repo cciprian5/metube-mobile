@@ -4,6 +4,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../router.dart';
 import 'addresses_pane.dart';
+import 'backup_pane.dart';
 import 'folders_pane.dart';
 import 'simple_panes.dart';
 
@@ -110,6 +111,7 @@ class SettingsPlace extends StatelessWidget {
                         EmberSettingsPane.downloads => const DownloadsPane(),
                         EmberSettingsPane.folders => const FoldersPane(),
                         EmberSettingsPane.desktop => const DesktopPane(),
+                        EmberSettingsPane.backup => const BackupPane(),
                         _ => Text(
                           l.desktopSettingsLater,
                           style: text.bodyMedium?.copyWith(color: p.ink2),

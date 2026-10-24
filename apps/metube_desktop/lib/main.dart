@@ -13,9 +13,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'data/addresses_data.dart';
+import 'data/backup_data.dart';
 import 'data/covers/covers_data.dart';
 import 'data/folders_data.dart';
 import 'data/lab_server.dart';
+import 'data/setup_data.dart';
 import 'data/transcripts_data.dart';
 import 'features/add/add_entry.dart';
 import 'features/library/artwork.dart';
@@ -25,6 +27,7 @@ import 'platform/link_drop.dart';
 import 'platform/error_log.dart';
 import 'platform/frame_grab.dart';
 import 'platform/player_desktop.dart';
+import 'platform/secret_store_windows.dart';
 import 'platform/prefs_store.dart';
 import 'platform/single_instance.dart';
 import 'platform/video_surface_windows.dart';
@@ -93,10 +96,20 @@ Future<void> main(List<String> args) async {
   final lowered = window.zoom < wanted;
   if (lowered) await zooms.write(window.zoom);
   final controls = await WindowManagerControls.create();
+  // The lab file (debug builds) stands in for the first-run setup;
+  // otherwise the server set up before, if any.
+  const secrets = WindowsSecretStore();
+  final setup =
+      labServerFrom(args) ??
+      await ServerSetupStore(
+        store: store,
+        secrets: secrets,
+        mutex: mutex,
+      ).read();
   final addresses = await AddressesStore(
     store: store,
     mutex: mutex,
-  ).read(seed: labAddressesFrom(args));
+  ).read(seed: [...labAddressesFrom(args), ?setup?.baseUrl]);
   unawaited(logger.log('app started (ember)', tag: 'app'));
 
   runApp(
@@ -118,7 +131,12 @@ Future<void> main(List<String> args) async {
           UiZoom(window.zoom, lowered: lowered),
         ),
         windowControlsProvider.overrideWithValue(controls),
-        serverSetupProvider.overrideWithValue(labServerFrom(args)),
+        initialServerSetupProvider.overrideWithValue(setup),
+        offerSetupAtStartProvider.overrideWithValue(true),
+        backupFolderProvider.overrideWithValue(
+          Directory('${roaming.path}/backup'),
+        ),
+        secretStoreProvider.overrideWithValue(secrets),
         initialAddressesProvider.overrideWithValue(addresses),
         desktopFoldersProvider.overrideWithValue(const WindowsFolders()),
         transcriptStoreProvider.overrideWithValue(

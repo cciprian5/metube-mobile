@@ -5,6 +5,7 @@ import 'package:mt_media/mt_media.dart';
 
 import '../di.dart';
 import 'addresses_data.dart';
+import 'setup_data.dart';
 
 /// The server to talk to: the set-up account at the address chosen in
 /// Settings › Addresses; null until one is set up.

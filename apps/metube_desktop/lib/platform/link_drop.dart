@@ -54,14 +54,21 @@ class _LinkDropAreaState extends State<LinkDropArea> {
     return done.future;
   }
 
-  /// A dropped file is read only when it is a small text file: a list of
-  /// links, not a video someone meant to play.
+  /// A dropped file is read only when it is a small text file (a list of
+  /// links) or a phone's backup or transcripts file, never a video someone
+  /// meant to play.
   static Future<String> _readFile(Uri? uri) async {
     if (uri == null || !uri.isScheme('file')) return '';
     final file = File.fromUri(uri);
-    if (!file.path.toLowerCase().endsWith('.txt')) return '';
+    final name = file.path.toLowerCase();
+    final limit = name.endsWith('.txt')
+        ? MTConstants.maxTextFileBytes
+        : name.endsWith('.json')
+        ? _maxBackupBytes
+        : 0;
+    if (limit == 0) return '';
     try {
-      if (await file.length() > MTConstants.maxTextFileBytes) return '';
+      if (await file.length() > limit) return '';
       return await file.readAsString();
     } on Object {
       return '';
@@ -111,4 +118,7 @@ class _LinkDropAreaState extends State<LinkDropArea> {
       ),
     );
   }
+
+  /// A transcripts file of a large library runs to tens of megabytes.
+  static const _maxBackupBytes = 64 * 1024 * 1024;
 }

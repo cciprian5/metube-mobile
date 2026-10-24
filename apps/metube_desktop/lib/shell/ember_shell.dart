@@ -6,8 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../data/backup_data.dart';
 import '../data/covers/covers_data.dart';
 import '../data/library_data.dart';
+import '../data/setup_data.dart';
 import '../data/lists_data.dart';
 import '../di.dart';
 import '../features/add/add_dialog.dart';
@@ -16,6 +18,8 @@ import '../features/clip/clip_state.dart';
 import '../features/downloads/downloads_button.dart';
 import '../features/folders/folder_tree.dart';
 import '../features/library/library_state.dart';
+import '../features/settings/backup_actions.dart';
+import '../features/setup/setup_dialog.dart';
 import '../router.dart';
 import 'content_bar.dart';
 import 'nav_history.dart';
@@ -53,6 +57,19 @@ class _EmberShellState extends ConsumerState<EmberShell> {
   /// The panel as a layer over the content, in a narrow window only. Not
   /// saved: a layer left open would cover the content on the next start.
   bool _overlayOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // The first start with no server opens the setup, once; "Later" leaves
+    // the library's own button to open it again.
+    if (ref.read(offerSetupAtStartProvider) &&
+        ref.read(serverSetupProvider) == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(showSetupDialog(context));
+      });
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -96,6 +113,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     ref.watch(playbackWiringProvider);
     ref.watch(sessionRestoreProvider);
     ref.watch(coverEnrichmentProvider);
+    ref.watch(startupBackupProvider);
 
     // Theater widens a clip's picture over the side panel's column too.
     final theater =
@@ -129,12 +147,19 @@ class _EmberShellState extends ConsumerState<EmberShell> {
       ),
     );
     // Links reach the add dialog three ways: the button, Ctrl+V anywhere
-    // but a text field, and a drop on the window.
-    return AddShortcut(onLinks: _openAdd, child: drop(scaffold, _openAdd));
+    // but a text field, and a drop on the window, where a phone's backup
+    // goes to the import instead.
+    return AddShortcut(onLinks: _openAdd, child: drop(scaffold, _onDrop));
   }
 
   void _openAdd([String text = '']) =>
       unawaited(openAddDialog(context, text: text));
+
+  /// A dropped phone backup or transcripts file is imported; anything
+  /// else is links for the add dialog.
+  void _onDrop(String text) => isBackupText(text)
+      ? unawaited(importFromPhone(context, ref, text))
+      : _openAdd(text);
 
   /// The button offers what the clipboard holds, as the phone's does.
   Future<void> _addFromButton() async {

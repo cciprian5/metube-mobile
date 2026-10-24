@@ -7,6 +7,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/downloads_data.dart';
 import '../../data/library_data.dart';
+import '../setup/setup_dialog.dart';
 
 /// One setting: its name, a line saying what it does, and its control.
 class SettingLine extends StatelessWidget {
@@ -51,7 +52,9 @@ class SettingLine extends StatelessWidget {
           ),
           if (trailing case final trailing?) ...[
             const SizedBox(width: MTSpace.md),
-            trailing,
+            // Shares the line rather than taking what it likes: a long
+            // label at a large text size shrinks instead of spilling.
+            Flexible(child: trailing),
           ],
         ],
       ),
@@ -91,8 +94,12 @@ class ServerPane extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.mtl;
     final config = ref.watch(serverConfigProvider);
+    final again = MTLinkButton(
+      label: config == null ? l.desktopSetupConnect : l.desktopSetupAgain,
+      onPressed: () => unawaited(showSetupDialog(context)),
+    );
     if (config == null) {
-      return SettingLine(title: l.serverStatusUnconfigured);
+      return SettingLine(title: l.serverStatusUnconfigured, trailing: again);
     }
     final history = ref.watch(historyProvider);
     final status = switch (history) {
@@ -103,7 +110,12 @@ class ServerPane extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SettingLine(title: l.serverUrl, value: config.baseUrl, hint: status),
+        SettingLine(
+          title: l.serverUrl,
+          value: config.baseUrl,
+          hint: status,
+          trailing: again,
+        ),
         if (config.username case final user? when user.isNotEmpty)
           SettingLine(title: l.username, value: user),
       ],

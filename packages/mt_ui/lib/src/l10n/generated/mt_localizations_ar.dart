@@ -536,6 +536,16 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopBack => 'رجوع';
 
   @override
+  String get desktopBackUpNow => 'انسخ الآن';
+
+  @override
+  String get desktopBackupHint =>
+      'يحتفظ هذا الكمبيوتر بآخر سبع نسخ احتياطية، بين كل نسخة والتي تليها ساعة على الأقل، في مجلده الخاص.';
+
+  @override
+  String get desktopBackupsNone => 'لا نسخة بعد';
+
+  @override
   String get desktopChangeFolder => 'تغيير…';
 
   @override
@@ -607,6 +617,13 @@ class MTLocalizationsAr extends MTLocalizations {
       'أضِف رابطاً فيظهر المقطع هنا بعد أن ينزّله السيرفر.';
 
   @override
+  String get desktopExportForPhone => 'تصدير للجوال';
+
+  @override
+  String get desktopExportForPhoneHint =>
+      'يحفظ وسوم هذا الكمبيوتر وقوائمه ومواضع الاستئناف ونصوصه في ملفين يستعيدهما الجوال. والاستعادة في الجوال تستبدل وسومه وقوائمه.';
+
+  @override
   String get desktopFolderUnavailable => 'لا مجلد متاح';
 
   @override
@@ -620,6 +637,26 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopHidePanel => 'إخفاء اللوحة الجانبية';
+
+  @override
+  String get desktopImportFromPhone => 'استيراد من الجوال…';
+
+  @override
+  String get desktopImportHint =>
+      'نسخة احتياطية أو ملف نصوص من MeTube Super أو Lite، تختاره هنا أو تُفلته على النافذة. يُضاف إلى ما هنا ولا يستبدل شيئاً.';
+
+  @override
+  String desktopImportedBackup(int tagged, int lists, int positions) {
+    return 'أُضيف من الجوال. وسوم: $tagged · قوائم: $lists · مواضع استئناف: $positions';
+  }
+
+  @override
+  String get desktopImportedNothing => 'لا جديد: كل ما فيها موجود هنا.';
+
+  @override
+  String desktopImportedTranscripts(int count) {
+    return 'نصوص أُضيفت: $count';
+  }
 
   @override
   String desktopInLibrary(int count) {
@@ -713,6 +750,10 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopNoTranscriptTitle => 'لا نص لهذا المقطع';
 
   @override
+  String get desktopNotABackup =>
+      'هذا الملف ليس نسخة احتياطية ولا ملف نصوص من MeTube.';
+
+  @override
   String desktopNotWatched(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -766,6 +807,19 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopRemoveFromList => 'أزله من القائمة';
 
   @override
+  String get desktopRestore => 'استعادة';
+
+  @override
+  String get desktopRestoreBody =>
+      'تصبح وسوم هذا الكمبيوتر وقوائمه وإعداداته كما في النسخة، ولا يُمسّ السيرفر.';
+
+  @override
+  String get desktopRestoreTitle => 'استعادة هذه النسخة؟';
+
+  @override
+  String get desktopRestored => 'استُعيدت النسخة';
+
+  @override
   String desktopSavedIn(String folder) {
     return 'حُفظ في $folder';
   }
@@ -800,6 +854,60 @@ class MTLocalizationsAr extends MTLocalizations {
   @override
   String get desktopSettingsLater =>
       'يأتي هذا القسم في خطوة لاحقة من نسخة Windows.';
+
+  @override
+  String get desktopSetupAgain => 'إعداد من جديد';
+
+  @override
+  String get desktopSetupChooseFile => 'اختر ملفاً…';
+
+  @override
+  String get desktopSetupConnect => 'اتصل';
+
+  @override
+  String get desktopSetupEnter => 'أدخل العنوان';
+
+  @override
+  String get desktopSetupFoundNone =>
+      'لم يستجب أي سيرفر MeTube على هذه المنافذ.';
+
+  @override
+  String get desktopSetupHttpWarning =>
+      'العنوان الذي يبدأ بـ http:// خارج شبكة البيت يُرسل كلمة المرور دون تشفير.';
+
+  @override
+  String get desktopSetupImport => 'استيراد من الجوال';
+
+  @override
+  String get desktopSetupImportHint =>
+      'اختر نسخة احتياطية من MeTube Super: يُقترح عنوان سيرفرها هنا، وتُضاف وسومها وقوائمها.';
+
+  @override
+  String get desktopSetupLater => 'لاحقاً';
+
+  @override
+  String get desktopSetupNeedsPassword => 'يحتاج كلمة مرور';
+
+  @override
+  String get desktopSetupNoServer => 'ليس عندك سيرفر؟';
+
+  @override
+  String get desktopSetupPorts => 'المنافذ';
+
+  @override
+  String get desktopSetupSearch => 'ابحث في شبكتي';
+
+  @override
+  String get desktopSetupSearchHint =>
+      'يبحث عن MeTube في شبكة هذا الكمبيوتر، حين تنقر فقط.';
+
+  @override
+  String desktopSetupSearching(int percent) {
+    return 'جارٍ البحث… $percent٪';
+  }
+
+  @override
+  String get desktopSetupTitle => 'اربط البرنامج بسيرفر MeTube';
 
   @override
   String get desktopShortsHint =>

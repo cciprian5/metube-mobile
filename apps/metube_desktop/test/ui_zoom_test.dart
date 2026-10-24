@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/platform/window_placement.dart';
@@ -8,6 +9,7 @@ import 'package:metube_desktop/shell/shell_metrics.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:metube_desktop/shell/ui_zoom.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_ui/mt_ui.dart';
 
 import 'support/shell_harness.dart';
 
@@ -132,6 +134,19 @@ void main() {
       await ctrl(tester, LogicalKeyboardKey.equal);
       await ctrl(tester, LogicalKeyboardKey.digit0);
       expect(tester.state(find.byType(EmberShell)), same(before));
+    });
+
+    testWidgets('**the guard**: at 125% the focus ring lands on its control', (
+      tester,
+    ) async {
+      // The ring is drawn outside the zoom, in the window's coordinates;
+      // inside it, it would be scaled a second time and drift away.
+      await open(tester, zoom: const UiZoom(1.25));
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pumpAndSettle();
+      final focused = FocusManager.instance.primaryFocus!.rect;
+      final ring = tester.getRect(find.byKey(MTFocusRingLayer.ringKey));
+      expect(ring, focused.inflate(MTDensity.desktop.focusRing));
     });
 
     testWidgets('the shortcuts go by key, so an Arabic keyboard works', (

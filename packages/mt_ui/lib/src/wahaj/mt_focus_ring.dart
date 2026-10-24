@@ -1,7 +1,7 @@
-import 'dart:async';
-
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
@@ -15,59 +15,102 @@ import '../tokens/tokens.dart';
 /// the shared widgets stay as the phones have them. It sits outside any
 /// zoom, in window coordinates, which is where focus reports its rect.
 ///
-/// The ring follows the focused control while it scrolls or moves; it
-/// listens only while it is shown.
+/// **Not [FocusManager.highlightMode]**: on a computer Flutter counts the
+/// mouse as "traditional" input too, so that mode stays on after a click.
+/// The layer watches for itself instead: a navigation key shows the ring,
+/// any press of a pointer hides it.
+///
+/// The ring follows the focused control while it scrolls or moves, by
+/// looking again after each frame the app draws anyway; it never asks for
+/// a frame of its own, so an idle window stays idle.
 class MTFocusRingLayer extends StatefulWidget {
   const MTFocusRingLayer({super.key, required this.child});
 
   final Widget child;
 
+  /// The ring itself, for finding it in a test.
+  static const ringKey = ValueKey('mt focus ring');
+
   @override
   State<MTFocusRingLayer> createState() => _MTFocusRingLayerState();
 }
 
-class _MTFocusRingLayerState extends State<MTFocusRingLayer>
-    with SingleTickerProviderStateMixin {
-  late final Ticker _follow = createTicker((_) => _measure());
+class _MTFocusRingLayerState extends State<MTFocusRingLayer> {
   Rect? _rect;
+  bool _watching = false;
+
+  /// The last thing the user did was move focus with the keyboard.
+  bool _keyboard = false;
 
   FocusManager get _focus => FocusManager.instance;
+
+  /// The keys that move focus around; typing in a field does not.
+  static final _navigation = {
+    LogicalKeyboardKey.tab,
+    LogicalKeyboardKey.arrowUp,
+    LogicalKeyboardKey.arrowDown,
+    LogicalKeyboardKey.arrowLeft,
+    LogicalKeyboardKey.arrowRight,
+  };
 
   @override
   void initState() {
     super.initState();
     _focus.addListener(_changed);
-    _focus.addHighlightModeListener(_modeChanged);
+    HardwareKeyboard.instance.addHandler(_onKey);
+    GestureBinding.instance.pointerRouter.addGlobalRoute(_onPointer);
   }
 
   @override
   void dispose() {
     _focus.removeListener(_changed);
-    _focus.removeHighlightModeListener(_modeChanged);
-    _follow.dispose();
+    HardwareKeyboard.instance.removeHandler(_onKey);
+    GestureBinding.instance.pointerRouter.removeGlobalRoute(_onPointer);
     super.dispose();
   }
 
-  void _modeChanged(FocusHighlightMode _) => _changed();
+  bool _onKey(KeyEvent event) {
+    if (event is KeyDownEvent && _navigation.contains(event.logicalKey)) {
+      _keyboard = true;
+      _changed();
+    }
+    return false;
+  }
+
+  void _onPointer(PointerEvent event) {
+    if (event is PointerDownEvent && _keyboard) {
+      _keyboard = false;
+      _changed();
+    }
+  }
 
   /// The ring shows for keyboard use and a real control, not for a scope
   /// (the window itself holding focus).
   bool get _wanted {
     final node = _focus.primaryFocus;
-    return _focus.highlightMode == FocusHighlightMode.traditional &&
+    return _keyboard &&
         node != null &&
         node is! FocusScopeNode &&
         node.context != null;
   }
 
   void _changed() {
-    if (_wanted) {
-      if (!_follow.isActive) unawaited(_follow.start());
-      _measure();
-    } else {
-      if (_follow.isActive) _follow.stop();
-      if (_rect != null && mounted) setState(() => _rect = null);
+    _measure();
+    if (_wanted && !_watching) {
+      _watching = true;
+      _watch();
     }
+  }
+
+  /// After every frame while the ring shows: the control may have moved.
+  void _watch() {
+    if (!mounted || !_wanted) {
+      _watching = false;
+      _measure();
+      return;
+    }
+    _measure();
+    SchedulerBinding.instance.addPostFrameCallback((_) => _watch());
   }
 
   void _measure() {
@@ -85,6 +128,7 @@ class _MTFocusRingLayerState extends State<MTFocusRingLayer>
         widget.child,
         if (rect != null)
           Positioned.fromRect(
+            key: MTFocusRingLayer.ringKey,
             rect: rect.inflate(MTDensity.desktop.focusRing),
             child: IgnorePointer(child: _Ring(size: rect.size)),
           ),

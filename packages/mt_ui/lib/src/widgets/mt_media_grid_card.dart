@@ -11,7 +11,6 @@ import 'mt_media_grid_cover.dart';
 import 'mt_location_badge.dart';
 import 'mt_media_card.dart' show MTMediaLocation;
 import 'mt_platform_chip.dart';
-import 'mt_polish.dart';
 
 /// The library card **led by its cover**: a 16:9 thumbnail first, with two
 /// lines of title underneath. It serves two modes:

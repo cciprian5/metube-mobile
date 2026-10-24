@@ -12,8 +12,9 @@ import 'ui_zoom.dart';
 /// and tooltips grow with the pages. Text stays sharp because the pixel
 /// ratio is scaled with it, as measured on Windows at 100% and 150%.
 ///
-/// Also owns Ctrl+= / Ctrl+- / Ctrl+0, as in a browser, and says once when
-/// Ember had to choose a smaller size for this screen.
+/// Also owns Ctrl+= / Ctrl+- / Ctrl+0, as in a browser, says once when
+/// Ember had to choose a smaller size for this screen, and draws the
+/// keyboard focus ring over everything.
 class EmberZoomFrame extends ConsumerStatefulWidget {
   const EmberZoomFrame({
     super.key,
@@ -85,6 +86,12 @@ class _EmberZoomFrameState extends ConsumerState<EmberZoomFrame> {
   @override
   Widget build(BuildContext context) {
     final scale = ref.watch(uiZoomProvider).value;
+    // The focus ring sits outside the zoom: focus reports where a control
+    // is in the window's own coordinates.
+    return MTFocusRingLayer(child: _zoomed(context, scale));
+  }
+
+  Widget _zoomed(BuildContext context, double scale) {
     // The app keeps its state across this switch: the router's navigator
     // has a global key, so it moves rather than starting over.
     if (scale == 1.0) return widget.child;

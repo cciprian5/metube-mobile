@@ -7,6 +7,7 @@ import '../icons/mt_icons.dart';
 import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import 'mt_desktop_app.dart';
 import 'mt_equalizer.dart';
 import 'mt_polish.dart';
 import 'mt_thumb_pill.dart';
@@ -77,16 +78,19 @@ class MTMediaGridCover extends StatelessWidget {
                   ),
                 ),
               ),
-            // Under the mouse, a play mark says what a click does. Not over
-            // the playing clip, which already shows its equalizer there.
-            if (!playing)
+            // Under the mouse, a play mark says what a click does: Windows
+            // only, and not over the playing clip, which already shows its
+            // equalizer there.
+            if (!playing && MTDesktopApp.isDesktop(context))
               Align(
                 child: AnimatedOpacity(
                   opacity: hovered ? 1 : 0,
                   duration: mtMotionDuration(context, MTMotion.fast),
+                  // Dark in day and night alike, like the cover buttons:
+                  // the theme's ink turns pale at night, under a white mark.
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: p.ink.withValues(alpha: 0.55),
+                      color: MTPalette.fullscreenScrim.withValues(alpha: 0.6),
                       shape: BoxShape.circle,
                     ),
                     child: const Padding(

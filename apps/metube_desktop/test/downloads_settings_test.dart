@@ -174,7 +174,7 @@ void main() {
     testWidgets('a section not built yet says so instead of an empty page', (
       tester,
     ) async {
-      await open(tester, to: '/settings/backup');
+      await open(tester, to: '/settings/subscriptions');
       expect(find.textContaining('later step'), findsOneWidget);
     });
   });

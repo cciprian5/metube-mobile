@@ -9,7 +9,6 @@ import 'package:metube_super/di.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:metube_super/features/settings/widgets/settings_fields.dart';
 import 'package:metube_super/features/subscriptions/subscription_sheet.dart';
-import 'package:metube_super/features/subscriptions/subscriptions_providers.dart';
 import 'package:metube_super/features/subscriptions/subscriptions_screen.dart';
 import 'package:metube_super/features/subscriptions/widgets/subscription_card.dart';
 import 'package:mt_core/mt_core.dart';

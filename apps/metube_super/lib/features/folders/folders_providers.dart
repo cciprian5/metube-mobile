@@ -14,65 +14,14 @@ final serverFoldersProvider = FutureProvider.autoDispose<ServerFolders?>((
   return api?.fetchFolders();
 });
 
-/// **Every folder the picker can offer**, for video or for audio: what the
-/// server lists, and the folders the library's clips sit in, with each
-/// one's parents, so a server that does not list its folders still offers
-/// the ones in use. In tree order, a parent before what is inside it.
-List<String> pickableFolders(
-  ServerFolders? server,
-  Iterable<String> fromLibrary, {
-  required bool audio,
-}) {
-  final all = <String>{};
-  void add(String path) {
-    final parts = ServerPath.cleanFolder(path).split('/');
-    for (var i = 1; i <= parts.length; i++) {
-      final prefix = parts.take(i).join('/');
-      if (prefix.isNotEmpty) all.add(prefix);
-    }
-  }
-
-  for (final path in server?.of(audio: audio) ?? const <String>[]) {
-    add(path);
-  }
-  fromLibrary.forEach(add);
-  int byTree(String a, String b) {
-    final x = a.toLowerCase().split('/');
-    final y = b.toLowerCase().split('/');
-    for (var i = 0; i < x.length && i < y.length; i++) {
-      final c = x[i].compareTo(y[i]);
-      if (c != 0) return c;
-    }
-    return x.length.compareTo(y.length);
-  }
-
-  return all.toList()..sort(byTree);
-}
-
 /// The folders the library's clips sit in.
 final libraryFolderPathsProvider = Provider<Set<String>>((ref) {
   final items = ref.watch(libraryItemsProvider).valueOrNull ?? const [];
   return {for (final item in items) ?item.folderPath};
 });
 
-/// **True when the server ignores the chosen folder** and saves at the
-/// top: an absolute `outtmpl` in its `YTDL_OPTIONS` overrides the folder,
-/// and MeTube then reports the file as `Folder/../name`. The picker says
-/// so rather than let a choice look as if it worked.
-///
-/// **Only the newest download into a folder counts**: older ones, made
-/// before the server's settings were corrected, stay in the history as
-/// they were and must not keep the warning up once folders work.
-final foldersIgnoredProvider = Provider<bool>((ref) {
-  final done = ref.watch(historyProvider).valueOrNull?.done ?? const [];
-  HistoryItem? newest;
-  for (final item in done) {
-    if (!(item.folder?.isNotEmpty ?? false)) continue;
-    final at = item.timestamp;
-    if (newest == null ||
-        (at != null && at.isAfter(newest.timestamp ?? DateTime(0)))) {
-      newest = item;
-    }
-  }
-  return newest?.filename?.startsWith('../') ?? false;
-});
+/// Whether the server ignores the chosen folder ([foldersIgnored]).
+final foldersIgnoredProvider = Provider<bool>(
+  (ref) =>
+      foldersIgnored(ref.watch(historyProvider).valueOrNull?.done ?? const []),
+);

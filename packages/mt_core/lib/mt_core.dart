@@ -24,6 +24,7 @@ export 'src/download/pending_sweeper.dart';
 export 'src/download/local_filename.dart';
 export 'src/download/trashcan_probe.dart';
 export 'src/download/transfer.dart';
+export 'src/folders/folder_choice.dart';
 export 'src/logging/mt_logger.dart';
 export 'src/models/channel_subscription.dart';
 export 'src/models/download_task.dart';

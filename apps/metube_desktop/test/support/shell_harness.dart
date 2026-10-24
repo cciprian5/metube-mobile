@@ -5,6 +5,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/app.dart';
+import 'package:metube_desktop/data/downloads_data.dart';
 import 'package:metube_desktop/data/library_data.dart';
 import 'package:metube_desktop/data/transcripts_data.dart';
 import 'package:metube_desktop/features/library/artwork.dart';
@@ -21,8 +22,10 @@ import 'package:mt_media/mt_media.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
 
 import 'fake_api.dart';
+import 'fake_engine.dart';
 
 export 'fake_api.dart';
+export 'fake_engine.dart';
 
 /// A player that records the commands it gets and plays nothing.
 class FakePlayer implements MTPlayer {
@@ -133,7 +136,11 @@ class ShellHarness {
     this.serverError,
     this.zoom = const UiZoom(1.0),
     this.workArea,
+    this.overrides = const [],
   });
+
+  /// More of the app's providers, as a test needs them.
+  final List<Override> overrides;
 
   /// The interface size the app opens at.
   final UiZoom zoom;
@@ -144,6 +151,9 @@ class ShellHarness {
   /// Stands in for the server, so a test that deletes reaches nothing.
   late final api = FakeApi(server ?? ServerConfig(baseUrl: 'http://nas:8081'));
   final video = InertVideoSurface();
+
+  /// Stands in for the download engine: records what is added.
+  final engine = FakeEngine();
 
   /// Why the server part of the library is missing, as if it stopped
   /// answering after the library was last read.
@@ -187,6 +197,10 @@ class ShellHarness {
       apiClientProvider.overrideWith(
         (ref) => ref.watch(serverConfigProvider) == null ? null : api,
       ),
+      downloadEngineProvider.overrideWith(
+        (ref) => ref.watch(serverConfigProvider) == null ? null : engine,
+      ),
+      ...overrides,
       if (serverError case final error?)
         libraryServerErrorProvider.overrideWithValue(error),
     ],

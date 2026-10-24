@@ -16,9 +16,11 @@ import 'data/covers/covers_data.dart';
 import 'data/lab_server.dart';
 import 'data/library_data.dart';
 import 'data/transcripts_data.dart';
+import 'features/add/add_entry.dart';
 import 'features/library/artwork.dart';
 import 'di.dart';
 import 'identity.dart';
+import 'platform/link_drop.dart';
 import 'platform/error_log.dart';
 import 'platform/player_desktop.dart';
 import 'platform/prefs_store.dart';
@@ -100,6 +102,9 @@ Future<void> main(List<String> args) async {
         playerProvider.overrideWithValue(player),
         videoSurfaceProvider.overrideWithValue(
           MediaKitVideoSurface(desktop.port.player),
+        ),
+        linkDropProvider.overrideWithValue(
+          (child, onText) => LinkDropArea(onText: onText, child: child),
         ),
         initialShellLayoutProvider.overrideWithValue(layout),
         initialUiZoomProvider.overrideWithValue(

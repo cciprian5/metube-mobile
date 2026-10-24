@@ -29,6 +29,7 @@ class LibraryChips extends ConsumerWidget {
     final noFilter =
         options.type == MediaTypeFilter.all &&
         options.platform == null &&
+        options.folder == null &&
         options.tags.isEmpty &&
         options.excludedTags.isEmpty;
 
@@ -66,6 +67,15 @@ class LibraryChips extends ConsumerWidget {
             label: label,
             selected: options.type == t,
             onTap: () => type(t),
+          ),
+        // The folder chosen in the sidebar, here too so it can be seen
+        // and taken off where the clips are.
+        if (options.folder case final folder?)
+          EmberPill(
+            label: mtName(folder),
+            icon: MTIcons.folder,
+            selected: true,
+            onTap: () => view.setFolder(null),
           ),
         // A single platform is no choice at all, as in Lite.
         if (platforms.length > 1)

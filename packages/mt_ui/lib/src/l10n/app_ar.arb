@@ -38,7 +38,21 @@
       }
     }
   },
+  "@desktopAddLinks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@desktopInLibrary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@desktopLinksFound": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -244,6 +258,7 @@
   "deletedFromServer": "حُذف من السيرفر",
   "deletedTitle": "تم الحذف: {title}",
   "deselectAll": "إلغاء التحديد",
+  "desktopAddLinks": "{count, plural, =0{لا شيء لإضافته} =1{أضف رابطاً واحداً} =2{أضف الرابطين} few{أضف {count} روابط} many{أضف {count} رابطاً} other{أضف {count} رابط}}",
   "desktopBack": "رجوع",
   "desktopChannel": "القناة",
   "desktopChannelActive": "نشطة",
@@ -254,12 +269,20 @@
   "desktopClearFilters": "إلغاء التصفية",
   "desktopCopyLink": "نسخ الرابط",
   "desktopDragToReorder": "اسحب لتغيير الترتيب",
+  "desktopDropLinks": "أفلِته لإضافته",
   "desktopEmptyLibraryMessage": "أضِف رابطاً فيظهر المقطع هنا بعد أن ينزّله السيرفر.",
   "desktopForward": "تقدّم",
   "desktopHidePanel": "إخفاء اللوحة الجانبية",
   "desktopInLibrary": "{count, plural, =0{لا شيء في مكتبتك} =1{مقطع في مكتبتك} =2{مقطعان في مكتبتك} few{{count} مقاطع في مكتبتك} many{{count} مقطعاً في مكتبتك} other{{count} مقطع في مكتبتك}}",
   "desktopLastArrival": "آخر وصول {when}",
   "desktopLinkCopied": "نُسخ الرابط",
+  "desktopLinkDuplicate": "مكرّر أعلاه",
+  "desktopLinkInLibrary": "موجود في مكتبتك",
+  "desktopLinkPlaylist": "قائمة تشغيل: اختر مقاطعها",
+  "desktopLinkReady": "جاهز",
+  "desktopLinkUnsupported": "موقع لا يعرفه التطبيق",
+  "desktopLinksDropped": "تُؤخذ أول {limit} رابط فقط، وتُرك الباقي: {count}.",
+  "desktopLinksFound": "{count, plural, =1{رابط واحد} =2{رابطان} few{{count} روابط} many{{count} رابطاً} other{{count} رابط}}",
   "desktopNarrowSidebar": "تضييق الشريط الجانبي",
   "desktopNoChannelNames": "سجل سيرفرك لا يذكر قناة كل مقطع، فلا يمكن عرض مقاطع القناة هنا.",
   "desktopNoMatchMessage": "ألغِ أحد الاختيارات لترى أكثر.",
@@ -281,6 +304,7 @@
   "desktopShortsHint": "↑ ↓ أو العجلة للقصير التالي · نقرتان للمفضلة",
   "desktopShowPanel": "إظهار اللوحة الجانبية",
   "desktopTheater": "وضع المسرح",
+  "desktopTranscriptFirst": "اجلب نصّه أولاً",
   "desktopTranscriptHint": "يتبع التشغيل · انقر سطراً ليُشغَّل منه",
   "desktopViewCompact": "مختصر",
   "desktopViewTable": "جدول",

@@ -68,7 +68,7 @@ class ChannelMatch {
   final bool namesChannels;
 }
 
-/// Matches the library to the followed channels by name.
+/// Matches the library to the followed channels, by name and by folder.
 final channelMatchProvider = FutureProvider<ChannelMatch>((ref) async {
   final items = await ref.watch(libraryItemsProvider.future);
   final subs = (await ref.watch(channelsProvider.future)).subscriptions ?? [];
@@ -77,15 +77,22 @@ final channelMatchProvider = FutureProvider<ChannelMatch>((ref) async {
     mutex: ref.watch(prefsMutexProvider),
   );
   return matchChannels(items, {
-    for (final s in subs) s.id: s.name,
+    for (final s in subs) s.id: (name: s.name, folder: s.folder),
   }, started: (url) async => await positions.stampOf(url) != null);
 });
 
-/// The matching itself, apart from storage: [subscriptions] maps an
-/// id to its name, and [started] says whether a clip was ever played here.
+/// A followed channel as matching needs it.
+typedef FollowedChannel = ({String name, String? folder});
+
+/// The matching itself, apart from storage: [subscriptions] by id, and
+/// [started] says whether a clip was ever played here.
+///
+/// A channel's clips are those whose uploader is its name, **and those in
+/// its own folder** when it saves into one: the server's history may name
+/// no uploader at all, but it always says where each file went.
 Future<ChannelMatch> matchChannels(
   List<LibraryItem> items,
-  Map<String, String> subscriptions, {
+  Map<String, FollowedChannel> subscriptions, {
   required Future<bool> Function(String canonicalUrl) started,
 }) async {
   final byKey = <String, List<LibraryItem>>{};
@@ -99,11 +106,21 @@ Future<ChannelMatch> matchChannels(
   }
   final followed = <String>{};
   final stats = <String, ChannelStats>{};
-  for (final MapEntry(key: id, value: name) in subscriptions.entries) {
-    final key = channelKey(name);
+  for (final MapEntry(key: id, value: sub) in subscriptions.entries) {
+    final key = channelKey(sub.name);
     followed.add(key);
-    final mine = byKey[key];
-    if (mine == null) continue;
+    final folder = sub.folder;
+    final seen = <String>{};
+    final mine = [
+      for (final item in [
+        ...?byKey[key],
+        if (folder != null && folder.isNotEmpty)
+          for (final item in items)
+            if (item.isIn(folder)) item,
+      ])
+        if (seen.add(item.canonicalUrl)) item,
+    ];
+    if (mine.isEmpty) continue;
     mine.sort(
       (a, b) =>
           (b.timestamp ?? DateTime(0)).compareTo(a.timestamp ?? DateTime(0)),

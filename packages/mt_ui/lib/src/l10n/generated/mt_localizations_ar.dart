@@ -475,6 +475,21 @@ class MTLocalizationsAr extends MTLocalizations {
   String get deselectAll => 'إلغاء التحديد';
 
   @override
+  String desktopAddLinks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'أضف $count رابط',
+      many: 'أضف $count رابطاً',
+      few: 'أضف $count روابط',
+      two: 'أضف الرابطين',
+      one: 'أضف رابطاً واحداً',
+      zero: 'لا شيء لإضافته',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get desktopBack => 'رجوع';
 
   @override
@@ -503,6 +518,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopDragToReorder => 'اسحب لتغيير الترتيب';
+
+  @override
+  String get desktopDropLinks => 'أفلِته لإضافته';
 
   @override
   String get desktopEmptyLibraryMessage =>
@@ -536,6 +554,40 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopLinkCopied => 'نُسخ الرابط';
+
+  @override
+  String get desktopLinkDuplicate => 'مكرّر أعلاه';
+
+  @override
+  String get desktopLinkInLibrary => 'موجود في مكتبتك';
+
+  @override
+  String get desktopLinkPlaylist => 'قائمة تشغيل: اختر مقاطعها';
+
+  @override
+  String get desktopLinkReady => 'جاهز';
+
+  @override
+  String get desktopLinkUnsupported => 'موقع لا يعرفه التطبيق';
+
+  @override
+  String desktopLinksDropped(int count, int limit) {
+    return 'تُؤخذ أول $limit رابط فقط، وتُرك الباقي: $count.';
+  }
+
+  @override
+  String desktopLinksFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count رابط',
+      many: '$count رابطاً',
+      few: '$count روابط',
+      two: 'رابطان',
+      one: 'رابط واحد',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
@@ -619,6 +671,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopTheater => 'وضع المسرح';
+
+  @override
+  String get desktopTranscriptFirst => 'اجلب نصّه أولاً';
 
   @override
   String get desktopTranscriptHint => 'يتبع التشغيل · انقر سطراً ليُشغَّل منه';

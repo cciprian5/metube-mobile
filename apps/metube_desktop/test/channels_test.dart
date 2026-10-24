@@ -74,7 +74,10 @@ void main() {
           _clip('f', 'Lowlands', day: 18),
           _clip('g', 'Harbour', day: 17),
         ],
-        {'s1': 'Eric Tech - Videos', 's2': 'Rakan Saud - Videos'},
+        {
+          's1': (name: 'Eric Tech - Videos', folder: null),
+          's2': (name: 'Rakan Saud - Videos', folder: null),
+        },
         started: (url) async => url.endsWith('/b'),
       );
       final eric = match.stats['s1']!;
@@ -92,6 +95,35 @@ void main() {
         ('Harbour', 1),
       ]);
       expect(match.namesChannels, isTrue);
+    });
+
+    test('a channel saving into its own folder owns the clips there', () async {
+      LibraryItem inFolder(String id, String folder, {String? uploader}) =>
+          LibraryItem(
+            canonicalUrl: 'https://youtu.be/$id',
+            title: 'Clip $id',
+            uploader: uploader,
+            serverFilename: '$folder/Clip $id.mp4',
+            onServer: true,
+            timestamp: DateTime(2026, 10, 20),
+          );
+      final match = await matchChannels(
+        [
+          inFolder('a', 'Tech Ai 1'),
+          inFolder('b', 'Tech Ai 1/Older'),
+          // Named and in the folder: counted once.
+          inFolder('c', 'Tech Ai 1', uploader: 'Eric Tech'),
+          inFolder('d', 'Games'),
+        ],
+        {'s1': (name: 'Eric Tech - Videos', folder: 'Tech Ai 1')},
+        started: (_) async => false,
+      );
+      expect(
+        match.stats['s1']!.items.map((i) => i.canonicalUrl),
+        unorderedEquals([
+          for (final id in ['a', 'b', 'c']) 'https://youtu.be/$id',
+        ]),
+      );
     });
 
     test(
@@ -112,8 +144,8 @@ void main() {
         );
         expect(items, isNotEmpty);
         final match = await matchChannels(items, {
-          's1': 'Eric Tech - Videos',
-          's2': 'ServersatHome - Videos',
+          's1': (name: 'Eric Tech - Videos', folder: null),
+          's2': (name: 'ServersatHome - Videos', folder: null),
         }, started: (_) async => false);
         expect(match.stats, isEmpty);
         expect(match.unfollowed, isEmpty);
@@ -226,7 +258,8 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Follow'));
     await tester.pumpAndSettle();
     expect(h.api.channelCalls, [
-      'subscribe https://www.youtube.com/@fieldnotes best 60 - compat=false',
+      'subscribe https://www.youtube.com/@fieldnotes best 60 - compat=false '
+          'folder=-',
     ]);
     expect(find.textContaining('Now following'), findsOneWidget);
     expect(find.byType(ChannelRow), findsOneWidget);

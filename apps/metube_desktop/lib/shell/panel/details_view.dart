@@ -16,8 +16,13 @@ class DetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = context.mtl;
+    final folder = switch (item.serverFilename) {
+      final name? => ServerPath.folderOf(name),
+      null => '',
+    };
     final rows = [
       if (item.uploader case final who?) (l.desktopChannel, who),
+      if (folder.isNotEmpty) (l.folder, mtName(folder)),
       (l.platform, platformLabel(l, MediaPlatform.detect(item.canonicalUrl))),
       if (item.duration case final length?)
         (l.columnLength, mtLtrRun(mtFormatDuration(length))),

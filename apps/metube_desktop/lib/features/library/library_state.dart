@@ -72,14 +72,20 @@ class EmberLibraryNotifier extends Notifier<LibraryViewOptions> {
   void showTag(String tag) => state = state.copyWith(
     type: MediaTypeFilter.all,
     platform: () => null,
+    folder: () => null,
     tags: {tag},
     excludedTags: const {},
   );
+
+  /// One server folder and everything below it; null is every folder.
+  void setFolder(String? folder) =>
+      state = state.copyWith(folder: () => folder);
 
   /// "All": every filter off but the place itself.
   void clearFilters() => state = state.copyWith(
     type: MediaTypeFilter.all,
     platform: () => null,
+    folder: () => null,
     tags: const {},
     excludedTags: const {},
   );
@@ -123,6 +129,7 @@ final visibleLibraryProvider =
           tags: options.tags,
           excludedTags: options.excludedTags,
           platform: options.platform,
+          folder: options.folder,
           sort: options.sort,
         ),
       );

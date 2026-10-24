@@ -70,15 +70,28 @@ class ChannelsController {
     required Quality quality,
     required int checkIntervalMinutes,
     String? titleRegex,
+    bool ownFolder = false,
+    String folder = '',
   }) async {
     final api = _api;
     if (api == null) throw const NoApiException();
+    final named = ownFolder ? ServerPath.cleanFolder(folder) : '';
     final created = await api.subscribe(
       url,
       quality,
       checkIntervalMinutes: checkIntervalMinutes,
       titleRegex: titleRegex,
+      folder: named.isEmpty ? null : named,
     );
+    // **An empty name means the channel's own**, which only the server
+    // knows once it has resolved the link. Set straight after: nothing is
+    // downloaded in between, since following marks what is there as seen.
+    if (ownFolder && named.isEmpty && created != null) {
+      final fromChannel = channelFolderName(created.name);
+      if (fromChannel.isNotEmpty) {
+        await api.updateSubscription(created.id, folder: fromChannel);
+      }
+    }
     _reload();
     return created?.name;
   }
@@ -88,12 +101,13 @@ class ChannelsController {
     _reload();
   }
 
-  /// The folder is left as it is: choosing one comes with the folders.
+  /// [folder] null leaves it as it is; empty sends new clips to the top.
   Future<void> edit(
     ChannelSubscription sub, {
     required String name,
     required int checkIntervalMinutes,
     required String titleRegex,
+    String? folder,
   }) async {
     await _api?.updateSubscription(
       sub.id,
@@ -105,6 +119,7 @@ class ChannelsController {
       // An emptied field is a deletion, and the server reads only the
       // keys it is sent.
       clearTitleRegex: titleRegex.isEmpty && sub.titleRegex != null,
+      folder: folder,
     );
     _reload();
   }

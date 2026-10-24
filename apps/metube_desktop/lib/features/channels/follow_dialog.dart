@@ -7,7 +7,10 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/channels_data.dart';
 import '../../shell/error_text.dart';
+import '../../shell/choice_menu.dart';
 import '../../shell/shell_metrics.dart';
+import '../folders/folder_widgets.dart';
+import '../folders/own_folder_field.dart';
 
 /// Following a channel, or editing one already followed: one dialog,
 /// since the fields are the same. The link cannot change on an edit (it
@@ -46,6 +49,11 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
     widget.editing?.checkIntervalMinutes ?? 60,
   );
   Quality _quality = Quality.best;
+  late bool _ownFolder = widget.editing?.folder != null;
+  late FolderChoice _folder = switch (widget.editing?.folder) {
+    final folder? => FolderChoice(folder),
+    null => FolderChoice.channel,
+  };
   bool _busy = false;
   String? _failure;
 
@@ -57,6 +65,17 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
     _name.dispose();
     _filter.dispose();
     super.dispose();
+  }
+
+  /// The folder to send on an edit, or null when it has not changed. Off
+  /// is the top of the downloads; an empty name is the channel's.
+  String? _folderChange(ChannelSubscription sub) {
+    final wanted = !_ownFolder
+        ? ''
+        : _folder.channelName
+        ? channelFolderName(sub.name)
+        : _folder.path;
+    return wanted == (sub.folder ?? '') ? null : wanted;
   }
 
   Future<void> _submit() async {
@@ -76,6 +95,7 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
           name: name.isEmpty ? sub.name : name,
           checkIntervalMinutes: _interval,
           titleRegex: filter,
+          folder: _folderChange(sub),
         );
         message = l.done;
       } else {
@@ -85,6 +105,8 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
           quality: _quality,
           checkIntervalMinutes: _interval,
           titleRegex: filter.isEmpty ? null : filter,
+          ownFolder: _ownFolder,
+          folder: _folder.path,
         );
         // The title the server resolved is the proof the right channel
         // was followed.
@@ -101,23 +123,6 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
       });
     }
   }
-
-  Future<void> _help(String title, String body) => showDialog<void>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title),
-      content: SizedBox(
-        width: EmberShellSize.formDialog,
-        child: SingleChildScrollView(child: Text(body)),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(context.mtl.done),
-        ),
-      ],
-    ),
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +164,7 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
                   ),
                 ),
               gap,
-              _Choice<int>(
+              EmberChoice<int>(
                 label: l.checkEvery,
                 value: _interval,
                 onChanged: (v) => setState(() => _interval = v),
@@ -172,7 +177,7 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
               ),
               if (!_isEdit) ...[
                 gap,
-                _Choice<Quality>(
+                EmberChoice<Quality>(
                   label: l.subscriptionQuality,
                   helper: l.subscriptionQualityNote,
                   value: _quality,
@@ -190,7 +195,11 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
                   child: MTLinkButton(
                     label: l.helpAboutField,
                     onPressed: () => unawaited(
-                      _help(l.subscriptionQuality, l.subscriptionQualityHelp),
+                      showFolderHelp(
+                        context,
+                        l.subscriptionQuality,
+                        l.subscriptionQualityHelp,
+                      ),
                     ),
                   ),
                 ),
@@ -209,9 +218,20 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
                 alignment: AlignmentDirectional.centerStart,
                 child: MTLinkButton(
                   label: l.helpAboutField,
-                  onPressed: () =>
-                      unawaited(_help(l.titleFilter, l.titleFilterHelp)),
+                  onPressed: () => unawaited(
+                    showFolderHelp(context, l.titleFilter, l.titleFilterHelp),
+                  ),
                 ),
+              ),
+              gap,
+              OwnFolderField(
+                on: _ownFolder,
+                choice: _folder,
+                audio: _isEdit
+                    ? widget.editing!.quality == Quality.audio.wire
+                    : _quality == Quality.audio,
+                onToggle: (on) => setState(() => _ownFolder = on),
+                onPicked: (folder) => setState(() => _folder = folder),
               ),
               // The sentence that decides whether someone dares press the
               // button: nothing already on the channel is downloaded.
@@ -241,49 +261,6 @@ class _FollowDialogState extends ConsumerState<_FollowDialog> {
               ? const MTSpinner(size: MTSpace.lg)
               : Text(_isEdit ? l.saveSettings : l.follow),
         ),
-      ],
-    );
-  }
-}
-
-/// A closed list to pick from, with the Wahaj chevron rather than
-/// Material's arrow.
-class _Choice<T> extends StatelessWidget {
-  const _Choice({
-    required this.label,
-    required this.value,
-    required this.onChanged,
-    required this.choices,
-    this.helper,
-  });
-
-  final String label;
-  final String? helper;
-  final T value;
-  final ValueChanged<T> onChanged;
-  final Map<T, String> choices;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final chevron = MTIcon(
-      MTIcons.chevronDown,
-      size: MTSpace.lg,
-      color: p.ink2,
-    );
-    return DropdownMenu<T>(
-      initialSelection: value,
-      label: Text(label),
-      helperText: helper,
-      expandedInsets: EdgeInsets.zero,
-      trailingIcon: chevron,
-      selectedTrailingIcon: chevron,
-      onSelected: (picked) {
-        if (picked != null) onChanged(picked);
-      },
-      dropdownMenuEntries: [
-        for (final MapEntry(:key, :value) in choices.entries)
-          DropdownMenuEntry(value: key, label: value),
       ],
     );
   }

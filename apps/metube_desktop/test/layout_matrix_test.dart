@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui' show Size;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart' show FilledButton, TextField;
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/features/add/batch_dialog.dart';
 import 'package:metube_desktop/features/library/library_page.dart';
 import 'package:metube_desktop/features/library/library_state.dart';
 import 'package:metube_desktop/router.dart';
@@ -136,6 +138,25 @@ ShellHarness _stocked({double zoom = 1.0}) {
     library: _library,
     server: _server,
     zoom: UiZoom(zoom),
+    overrides: [
+      playlistReaderProvider.overrideWithValue(
+        (url) async => PlaylistPreview(
+          kind: PlaylistKind.youtube,
+          title: _longTitle,
+          tracks: [
+            for (final (i, title) in [_longTitle, _arabicTitle].indexed)
+              PlaylistTrack(
+                url: 'https://www.youtube.com/watch?v=${'$i'.padLeft(11, 'x')}',
+                title: title,
+                duration: const Duration(hours: 1, minutes: 2, seconds: 3),
+              ),
+          ],
+        ),
+      ),
+    ],
+  );
+  h.api.folders = const ServerFolders(
+    video: ['Homelab/Archive of long episodes', 'قناة المختبر الطويلة'],
   );
   unawaited(
     h.store.setString(
@@ -205,6 +226,20 @@ const _stockedPlaces = [
   '/channels/s0',
   '/channels/s1',
 ];
+
+/// The clipboard as empty: the add button reads it, and a test has none.
+void _emptyClipboard(WidgetTester tester) {
+  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+    SystemChannels.platform,
+    (call) async => null,
+  );
+  addTearDown(
+    () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      null,
+    ),
+  );
+}
 
 void main() {
   testWidgets('nothing set up yet', (tester) async {
@@ -288,6 +323,39 @@ void main() {
         () => _stocked().app(),
         then: (tester) async {
           GoRouter.of(tester.element(find.byType(LibraryPage))).go(place);
+        },
+      );
+    });
+  }
+
+  // The add dialogs, opened as a user would, over the library.
+  for (final (name, text) in [
+    ('one link', _url),
+    (
+      'several links',
+      '$_url\nhttps://www.instagram.com/reel/Cxyz/\nhttps://example.org/a',
+    ),
+    ('a playlist', 'https://www.youtube.com/playlist?list=PLabcdefghijklmn'),
+  ]) {
+    testWidgets('adding: $name', (tester) async {
+      _emptyClipboard(tester);
+      await expectNoOverflow(
+        tester,
+        () => _stocked().app(),
+        then: (tester) async {
+          await tester.tap(
+            find.byWidgetPredicate(
+              (w) =>
+                  w is MTShortcutTooltip &&
+                  (w.message == 'Add link' || w.message == 'إضافة رابط'),
+            ),
+          );
+          await tester.pumpAndSettle();
+          await tester.enterText(find.byType(TextField).first, text);
+          await tester.pumpAndSettle();
+          if (name == 'a playlist') {
+            await tester.tap(find.byType(FilledButton).last);
+          }
         },
       );
     });

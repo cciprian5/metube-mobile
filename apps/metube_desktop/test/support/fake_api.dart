@@ -13,6 +13,13 @@ class FakeApi extends MeTubeApiClient {
     String where = 'done',
   }) async => deleted.add(canonicalUrls);
 
+  /// The server's folders, as its socket would list them; null is a
+  /// server too old to say.
+  ServerFolders? folders = const ServerFolders();
+
+  @override
+  Future<ServerFolders?> fetchFolders({Duration? timeout}) async => folders;
+
   /// The followed channels; null is a server older than subscriptions.
   List<ChannelSubscription>? subscriptions = [];
 
@@ -38,7 +45,7 @@ class FakeApi extends MeTubeApiClient {
   }) async {
     channelCalls.add(
       'subscribe $url ${quality.wire} $checkIntervalMinutes '
-      '${titleRegex ?? '-'} compat=$compatibleVideo',
+      '${titleRegex ?? '-'} compat=$compatibleVideo folder=${folder ?? '-'}',
     );
     if (followFailure case final failure?) throw failure;
     final made = ChannelSubscription(

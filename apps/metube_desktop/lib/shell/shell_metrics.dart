@@ -30,6 +30,12 @@ abstract final class EmberShellSize {
   /// A dialog of several fields: following a channel.
   static const double formDialog = 440;
 
+  /// Adding one link: the link, its preview and the choices.
+  static const double addDialog = 560;
+
+  /// A dialog of many lines: several links, a playlist's clips.
+  static const double wideDialog = 720;
+
   /// A list's card: a cover a little smaller than the library's widest
   /// cell, so the cards wrap like a shelf.
   static const double listCard = 200;

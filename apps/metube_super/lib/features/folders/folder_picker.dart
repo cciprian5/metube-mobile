@@ -1,25 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../settings/widgets/help_button.dart';
 import 'folder_widgets.dart';
 import 'folders_providers.dart';
-
-/// A folder chosen in the picker. An empty [path] is the top of the
-/// downloads, unless [channelName] says "named after the channel", which
-/// only the server can resolve.
-class FolderChoice {
-  const FolderChoice(this.path, {this.channelName = false});
-
-  static const top = FolderChoice('');
-  static const channel = FolderChoice('', channelName: true);
-
-  final String path;
-  final bool channelName;
-
-  bool get isTop => path.isEmpty && !channelName;
-}
 
 /// **The server folder row**, shared by the add sheet and the follow sheet:
 /// what is chosen, and a tap to choose again.

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +10,11 @@ import '../data/covers/covers_data.dart';
 import '../data/library_data.dart';
 import '../data/lists_data.dart';
 import '../di.dart';
+import '../features/add/add_dialog.dart';
+import '../features/add/add_entry.dart';
 import '../features/clip/clip_state.dart';
+import '../features/folders/folder_tree.dart';
+import '../features/library/library_state.dart';
 import '../router.dart';
 import 'content_bar.dart';
 import 'nav_history.dart';
@@ -102,9 +108,10 @@ class _EmberShellState extends ConsumerState<EmberShell> {
       onOpen: (url) => router.go(EmberRoutes.item(url)),
     );
 
+    final drop = ref.watch(linkDropProvider);
     // A Scaffold underneath, so notices (`showMTNotice`) have somewhere to
     // appear, above the player bar.
-    return Scaffold(
+    final scaffold = Scaffold(
       backgroundColor: p.bg,
       body: ValueListenableBuilder<bool>(
         valueListenable: controls.fullScreen,
@@ -120,6 +127,18 @@ class _EmberShellState extends ConsumerState<EmberShell> {
             : _framed(context, layout, theater, playerBar),
       ),
     );
+    // Links reach the add dialog three ways: the button, Ctrl+V anywhere
+    // but a text field, and a drop on the window.
+    return AddShortcut(onLinks: _openAdd, child: drop(scaffold, _openAdd));
+  }
+
+  void _openAdd([String text = '']) =>
+      unawaited(openAddDialog(context, text: text));
+
+  /// The button offers what the clipboard holds, as the phone's does.
+  Future<void> _addFromButton() async {
+    final text = await clipboardLinks();
+    if (mounted) _openAdd(text);
   }
 
   Widget _framed(
@@ -134,6 +153,8 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     return LayoutBuilder(
       builder: (context, box) {
         final arranged = arrangeShell(box.maxWidth, layout);
+        final place = placeOf(widget.location);
+        final folder = ref.watch(libraryViewProvider).folder;
         final panelShown =
             !theater &&
             (arranged.panelBeside ? !layout.panelHidden : _overlayOpen);
@@ -155,10 +176,26 @@ class _EmberShellState extends ConsumerState<EmberShell> {
                 children: [
                   EmberSidebar(
                     narrow: arranged.sidebarNarrow,
-                    current: placeOf(widget.location),
+                    current: place,
                     pinned: ref.watch(pinnedPlaylistsProvider),
                     currentList: _openList(widget.location),
+                    folders: sidebarFolders(
+                      ref.watch(libraryItemsProvider).valueOrNull ?? const [],
+                      folder,
+                    ),
+                    currentFolder: place == EmberPlace.library ? folder : null,
+                    onFolder: (path) {
+                      // The chosen folder again goes up a level.
+                      final view = ref.read(libraryViewProvider.notifier);
+                      view.setFolder(
+                        path == folder && place == EmberPlace.library
+                            ? parentFolder(path)
+                            : path,
+                      );
+                      router.go(EmberRoutes.library);
+                    },
                     onGo: router.go,
+                    onAdd: () => unawaited(_addFromButton()),
                     onToggleNarrow: arranged.canWidenSidebar
                         ? () => ref
                               .read(shellLayoutProvider.notifier)

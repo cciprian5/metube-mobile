@@ -75,6 +75,11 @@ abstract final class MTConstants {
   // The queue (§3).
   static const int maxConcurrentDownloads = 1;
 
+  /// The most links one paste or drop sends together. A page of text can
+  /// hold hundreds; past this the rest are left out, and the user is told
+  /// how many, rather than a queue no one meant to make.
+  static const int maxLinksPerAdd = 100;
+
   // Qualities (§2.2).
   static const List<String> qualityWireValues = [
     'best',

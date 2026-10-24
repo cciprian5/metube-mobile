@@ -872,6 +872,12 @@ abstract class MTLocalizations {
   /// **'Deselect All'**
   String get deselectAll;
 
+  /// No description provided for @desktopAddLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing to add} =1{Add 1 link} other{Add {count} links}}'**
+  String desktopAddLinks(int count);
+
   /// No description provided for @desktopBack.
   ///
   /// In en, this message translates to:
@@ -932,6 +938,12 @@ abstract class MTLocalizations {
   /// **'Drag to reorder'**
   String get desktopDragToReorder;
 
+  /// No description provided for @desktopDropLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to add'**
+  String get desktopDropLinks;
+
   /// No description provided for @desktopEmptyLibraryMessage.
   ///
   /// In en, this message translates to:
@@ -967,6 +979,48 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Link copied'**
   String get desktopLinkCopied;
+
+  /// No description provided for @desktopLinkDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeated above'**
+  String get desktopLinkDuplicate;
+
+  /// No description provided for @desktopLinkInLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Already in your library'**
+  String get desktopLinkInLibrary;
+
+  /// No description provided for @desktopLinkPlaylist.
+  ///
+  /// In en, this message translates to:
+  /// **'A playlist: choose its clips'**
+  String get desktopLinkPlaylist;
+
+  /// No description provided for @desktopLinkReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get desktopLinkReady;
+
+  /// No description provided for @desktopLinkUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'A site this app doesn\'t know'**
+  String get desktopLinkUnsupported;
+
+  /// No description provided for @desktopLinksDropped.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the first {limit} links are taken; {count} more were left out.'**
+  String desktopLinksDropped(int count, int limit);
+
+  /// No description provided for @desktopLinksFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 link} other{{count} links}}'**
+  String desktopLinksFound(int count);
 
   /// No description provided for @desktopNarrowSidebar.
   ///
@@ -1093,6 +1147,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Theater'**
   String get desktopTheater;
+
+  /// No description provided for @desktopTranscriptFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetch its transcript first'**
+  String get desktopTranscriptFirst;
 
   /// No description provided for @desktopTranscriptHint.
   ///

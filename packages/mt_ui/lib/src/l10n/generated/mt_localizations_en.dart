@@ -455,6 +455,18 @@ class MTLocalizationsEn extends MTLocalizations {
   String get deselectAll => 'Deselect All';
 
   @override
+  String desktopAddLinks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add $count links',
+      one: 'Add 1 link',
+      zero: 'Nothing to add',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get desktopBack => 'Back';
 
   @override
@@ -485,6 +497,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopDragToReorder => 'Drag to reorder';
 
   @override
+  String get desktopDropLinks => 'Drop to add';
+
+  @override
   String get desktopEmptyLibraryMessage =>
       'Add a link, and the clip appears here once the server has it.';
 
@@ -512,6 +527,37 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopLinkCopied => 'Link copied';
+
+  @override
+  String get desktopLinkDuplicate => 'Repeated above';
+
+  @override
+  String get desktopLinkInLibrary => 'Already in your library';
+
+  @override
+  String get desktopLinkPlaylist => 'A playlist: choose its clips';
+
+  @override
+  String get desktopLinkReady => 'Ready';
+
+  @override
+  String get desktopLinkUnsupported => 'A site this app doesn\'t know';
+
+  @override
+  String desktopLinksDropped(int count, int limit) {
+    return 'Only the first $limit links are taken; $count more were left out.';
+  }
+
+  @override
+  String desktopLinksFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count links',
+      one: '1 link',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get desktopNarrowSidebar => 'Collapse sidebar';
@@ -592,6 +638,9 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopTheater => 'Theater';
+
+  @override
+  String get desktopTranscriptFirst => 'Fetch its transcript first';
 
   @override
   String get desktopTranscriptHint => 'Follows playback · click a line to jump';

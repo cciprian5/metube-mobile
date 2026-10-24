@@ -8,6 +8,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   media_kit_video
   screen_retriever_windows
   super_native_extensions
+  url_launcher_windows
   window_manager
   windows_single_instance
 )

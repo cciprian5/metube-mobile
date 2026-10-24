@@ -173,9 +173,12 @@ void main() {
     tester,
   ) async {
     final h = await open(tester, library: _library, server: server);
+    // Audio: it plays from the bar and the list stays on screen. (Any
+    // shorts loop left on is let go first.)
     await tester.tap(titleOf('Amber Skies'));
-    await tester.pump();
-    expect(h.player.calls, ['playItems']);
+    await tester.pumpAndSettle();
+    expect(h.player.calls, ['loop false', 'playItems']);
+    expect(find.byType(MTMediaGridCard), findsNWidgets(4));
   });
 
   testWidgets('filters that hide everything offer to clear them', (

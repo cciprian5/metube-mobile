@@ -551,7 +551,14 @@ class MTLocalizationsAr extends MTLocalizations {
       'السيرفر لا يستجيب، فهذا ما كان فيه آخر مرة.';
 
   @override
+  String get desktopShortsHint =>
+      '↑ ↓ أو العجلة للقصير التالي · نقرتان للمفضلة';
+
+  @override
   String get desktopShowPanel => 'إظهار اللوحة الجانبية';
+
+  @override
+  String get desktopTheater => 'وضع المسرح';
 
   @override
   String get desktopTranscriptHint => 'يتبع التشغيل · انقر سطراً ليُشغَّل منه';

@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../data/covers/covers_data.dart';
 import '../data/library_data.dart';
 import '../di.dart';
+import '../features/clip/clip_state.dart';
 import '../router.dart';
 import 'content_bar.dart';
 import 'nav_history.dart';
@@ -78,96 +80,133 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     final controls = ref.watch(windowControlsProvider);
     final router = GoRouter.of(context);
     ref.watch(playbackWiringProvider);
+    ref.watch(sessionRestoreProvider);
+    ref.watch(coverEnrichmentProvider);
+
+    // Theater widens a clip's picture over the side panel's column too.
+    final theater =
+        ref.watch(theaterProvider) &&
+        placeOf(widget.location) == EmberPlace.item;
+    EmberPlayerBar playerBar(ShellArrangement? arranged) => EmberPlayerBar(
+      player: player,
+      onShowQueue: () => arranged == null
+          ? controls.setFullScreen(false)
+          : _showTab(PanelTab.upNext, arranged),
+      onOpen: (url) => router.go(EmberRoutes.item(url)),
+    );
 
     // A Scaffold underneath, so notices (`showMTNotice`) have somewhere to
     // appear, above the player bar.
     return Scaffold(
       backgroundColor: p.bg,
-      body: LayoutBuilder(
-        builder: (context, box) {
-          final arranged = arrangeShell(box.maxWidth, layout);
-          final panelShown = arranged.panelBeside
-              ? !layout.panelHidden
-              : _overlayOpen;
-          final panel = StreamBuilder<MTPlayerState>(
-            stream: player.states,
-            initialData: player.state,
-            builder: (context, snap) => EmberRightPanel(
-              tab: _tab,
-              onTab: (tab) => setState(() => _tab = tab),
-              state: snap.data ?? player.state,
-              player: player,
-            ),
-          );
-          return Column(
-            children: [
-              EmberTitleBar(controls: controls),
-              Expanded(
-                child: Row(
-                  children: [
-                    EmberSidebar(
-                      narrow: arranged.sidebarNarrow,
-                      current: placeOf(widget.location),
-                      onGo: router.go,
-                      onToggleNarrow: arranged.canWidenSidebar
-                          ? () => ref
-                                .read(shellLayoutProvider.notifier)
-                                .setSidebarNarrow(!layout.sidebarNarrow)
-                          : null,
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          EmberContentBar(
-                            history: _history!,
-                            onSearch: () => router.go(EmberRoutes.search),
-                            panelShown: panelShown,
-                            onTogglePanel: () => _togglePanel(arranged, layout),
-                          ),
-                          // The layer opens over the content only, so the
-                          // bar with its own toggle stays reachable.
-                          Expanded(
-                            child: Stack(
-                              children: [
-                                Positioned.fill(child: widget.child),
-                                if (!arranged.panelBeside && _overlayOpen) ...[
-                                  Positioned.fill(
-                                    child: GestureDetector(
-                                      behavior: HitTestBehavior.opaque,
-                                      onTap: () =>
-                                          setState(() => _overlayOpen = false),
-                                    ),
-                                  ),
-                                  PositionedDirectional(
-                                    top: 0,
-                                    bottom: 0,
-                                    end: 0,
-                                    child: DecoratedBox(
-                                      decoration: const BoxDecoration(
-                                        boxShadow: MTShadow.card,
-                                      ),
-                                      child: panel,
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (arranged.panelBeside && !layout.panelHidden) panel,
-                  ],
-                ),
-              ),
-              EmberPlayerBar(
-                player: player,
-                onShowQueue: () => _showTab(PanelTab.upNext, arranged),
-              ),
-            ],
-          );
-        },
+      body: ValueListenableBuilder<bool>(
+        valueListenable: controls.fullScreen,
+        builder: (context, full, _) => full
+            // The whole screen for the picture; the player bar stays, so
+            // the clip can still be paused and sought.
+            ? Column(
+                children: [
+                  Expanded(child: widget.child),
+                  playerBar(null),
+                ],
+              )
+            : _framed(context, layout, theater, playerBar),
       ),
+    );
+  }
+
+  Widget _framed(
+    BuildContext context,
+    ShellLayout layout,
+    bool theater,
+    EmberPlayerBar Function(ShellArrangement) playerBar,
+  ) {
+    final player = ref.read(playerProvider);
+    final controls = ref.read(windowControlsProvider);
+    final router = GoRouter.of(context);
+    return LayoutBuilder(
+      builder: (context, box) {
+        final arranged = arrangeShell(box.maxWidth, layout);
+        final panelShown =
+            !theater &&
+            (arranged.panelBeside ? !layout.panelHidden : _overlayOpen);
+        final panel = StreamBuilder<MTPlayerState>(
+          stream: player.states,
+          initialData: player.state,
+          builder: (context, snap) => EmberRightPanel(
+            tab: _tab,
+            onTab: (tab) => setState(() => _tab = tab),
+            state: snap.data ?? player.state,
+            player: player,
+          ),
+        );
+        return Column(
+          children: [
+            EmberTitleBar(controls: controls),
+            Expanded(
+              child: Row(
+                children: [
+                  EmberSidebar(
+                    narrow: arranged.sidebarNarrow,
+                    current: placeOf(widget.location),
+                    onGo: router.go,
+                    onToggleNarrow: arranged.canWidenSidebar
+                        ? () => ref
+                              .read(shellLayoutProvider.notifier)
+                              .setSidebarNarrow(!layout.sidebarNarrow)
+                        : null,
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        EmberContentBar(
+                          history: _history!,
+                          onSearch: () => router.go(EmberRoutes.search),
+                          panelShown: panelShown,
+                          onTogglePanel: () => _togglePanel(arranged, layout),
+                        ),
+                        // The layer opens over the content only, so the
+                        // bar with its own toggle stays reachable.
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              Positioned.fill(child: widget.child),
+                              if (!arranged.panelBeside &&
+                                  _overlayOpen &&
+                                  !theater) ...[
+                                Positioned.fill(
+                                  child: GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () =>
+                                        setState(() => _overlayOpen = false),
+                                  ),
+                                ),
+                                PositionedDirectional(
+                                  top: 0,
+                                  bottom: 0,
+                                  end: 0,
+                                  child: DecoratedBox(
+                                    decoration: const BoxDecoration(
+                                      boxShadow: MTShadow.card,
+                                    ),
+                                    child: panel,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (arranged.panelBeside && panelShown) panel,
+                ],
+              ),
+            ),
+            playerBar(arranged),
+          ],
+        );
+      },
     );
   }
 }

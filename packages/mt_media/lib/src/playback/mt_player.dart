@@ -83,6 +83,11 @@ abstract interface class MTPlayer {
   Future<void> setPlayMode(PlayMode mode);
   Future<void> setShuffle(bool value);
 
+  /// Plays the current item over and over, saving no position, without
+  /// touching the saved repeat mode: the shorts lane. Moving to another
+  /// item by hand still works.
+  Future<void> setLooping(bool on);
+
   /// Ends the session and forgets it.
   Future<void> stop();
 

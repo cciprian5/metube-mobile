@@ -33,6 +33,11 @@ abstract interface class WindowControls {
   /// The smallest the user may make the window, in logical pixels; it
   /// follows the interface size. A window already smaller grows to it.
   void setMinimumSize(Size logical);
+
+  /// Whether the window covers the whole screen, taskbar included (F11).
+  ValueListenable<bool> get fullScreen;
+
+  void setFullScreen(bool on);
 }
 
 /// A window that does nothing: tests, previews and the component sheet.
@@ -59,6 +64,15 @@ class InertWindowControls implements WindowControls {
   /// Set by a test to stand for a screen.
   @override
   final ValueNotifier<Size?> workArea = ValueNotifier(null);
+
+  @override
+  final ValueNotifier<bool> fullScreen = ValueNotifier(false);
+
+  @override
+  void setFullScreen(bool on) {
+    calls.add('fullScreen $on');
+    fullScreen.value = on;
+  }
 
   @override
   void setMinimumSize(Size logical) =>

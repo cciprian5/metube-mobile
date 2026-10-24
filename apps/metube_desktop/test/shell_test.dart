@@ -10,6 +10,7 @@ import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:metube_desktop/shell/title_bar.dart';
 
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/mt_media.dart';
 
 import 'support/shell_harness.dart';
 
@@ -265,4 +266,26 @@ void main() {
       });
     }
   }
+
+  testWidgets('**the guard**: the last session comes back once, after the '
+      'server is wired', (tester) async {
+    // Restored before, every clip on the server had no address, was
+    // skipped as broken, and the queue emptied itself at start-up.
+    ShellHarness.useWindow(tester, const Size(1440, 900));
+    final h = ShellHarness(server: ServerConfig(baseUrl: 'http://nas:8081'));
+    String? address;
+    h.player.onRestore = () {
+      try {
+        address = h.resolver.endpoint.buildUrl('clip.mp4');
+      } on UnsafeFilenameException {
+        address = null; // no server yet: nothing would play
+      }
+    };
+    await tester.pumpWidget(h.app());
+    await tester.pumpAndSettle();
+    expect(address, 'http://nas:8081/download/clip.mp4');
+    await tester.tap(find.text('Search'));
+    await tester.pumpAndSettle();
+    expect(h.player.restores, 1);
+  });
 }

@@ -87,12 +87,16 @@ typedef EmberPlaceBuilder = Widget Function(String? argument);
 
 Widget _pendingLibrary(String? only) => PendingPlace('library', argument: only);
 
+Widget _pendingItem(String? canonicalUrl) =>
+    PendingPlace('item', argument: canonicalUrl);
+
 /// The single route table. One router per app, built once, so the shell
 /// and the player under it live through every navigation.
 GoRouter buildEmberRouter({
   String initialLocation = EmberRoutes.library,
   EmberShellBuilder shell = _bare,
   EmberPlaceBuilder library = _pendingLibrary,
+  EmberPlaceBuilder item = _pendingItem,
 }) => GoRouter(
   initialLocation: initialLocation,
   // An address that names no place (an old link, a typo in a protocol
@@ -112,8 +116,7 @@ GoRouter buildEmberRouter({
         _place(EmberRoutes.channels, 'channels'),
         GoRoute(
           path: '/item/:id',
-          builder: (_, state) =>
-              PendingPlace('item', argument: state.pathParameters['id']),
+          builder: (_, state) => item(state.pathParameters['id']),
         ),
         GoRoute(
           path: EmberRoutes.settings,

@@ -70,6 +70,26 @@ class WindowManagerControls with WindowListener implements WindowControls {
   final ValueNotifier<Size?> workArea = ValueNotifier(null);
 
   @override
+  final ValueNotifier<bool> fullScreen = ValueNotifier(false);
+
+  @override
+  void setFullScreen(bool on) => unawaited(_setFullScreen(on));
+
+  /// The state is set here, not left to the window's events: on Windows
+  /// window_manager sends none for full screen (measured: the window
+  /// filled the screen while the app still drew its frame, and Esc, which
+  /// asks this state, could not bring it back).
+  Future<void> _setFullScreen(bool on) async {
+    await windowManager.setFullScreen(on);
+    fullScreen.value = on;
+  }
+
+  @override
+  void onWindowEnterFullScreen() => fullScreen.value = true;
+  @override
+  void onWindowLeaveFullScreen() => fullScreen.value = false;
+
+  @override
   void setMinimumSize(Size logical) => unawaited(_setMinimum(logical));
 
   Future<void> _setMinimum(Size logical) async {

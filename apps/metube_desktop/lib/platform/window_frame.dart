@@ -88,7 +88,11 @@ class EmberWindow with WindowListener {
     final maximized = await windowManager.isMaximized();
     // While maximized the window reports the screen's bounds; the normal
     // ones from before are what un-maximizing should return to.
-    if (!maximized && !await windowManager.isMinimized()) {
+    // Nor full screen: those bounds are the screen's, and the next start
+    // would open a window the size of it.
+    if (!maximized &&
+        !await windowManager.isMinimized() &&
+        !await windowManager.isFullScreen()) {
       _normal = await windowManager.getBounds();
     }
     final normal = _normal;

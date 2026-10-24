@@ -76,6 +76,7 @@ class MTSessionPlayer implements MTPlayer {
   final _states = StreamController<MTPlayerState>.broadcast();
   PlaybackQueue _queue = PlaybackQueue(items: const []);
   PlayMode _playMode = PlayMode.autoNext;
+  bool _looping = false;
   String? _playlistId;
   String? _playlistName;
   int _consecutiveErrors = 0;
@@ -207,6 +208,9 @@ class MTSessionPlayer implements MTPlayer {
     await prefs.setPlayMode(mode, playlistId: _playlistId);
     _broadcast();
   }
+
+  @override
+  Future<void> setLooping(bool on) async => _looping = on;
 
   @override
   Future<void> setShuffle(bool value) async {

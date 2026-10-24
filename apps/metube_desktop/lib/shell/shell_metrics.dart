@@ -23,6 +23,13 @@ abstract final class EmberShellSize {
   /// Below this the panel no longer fits beside the content and slides
   /// over it instead.
   static const double panelBeside = 1100;
+
+  /// A small dialog: a list to tick, a field.
+  static const double smallDialog = 360;
+
+  /// The widest a clip's picture grows, so a maximized 2560 window does
+  /// not stretch a 1080p picture past its own pixels.
+  static const double clipMax = 1280;
 }
 
 /// How the columns share a given window width.

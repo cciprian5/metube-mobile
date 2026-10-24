@@ -1010,11 +1010,23 @@ abstract class MTLocalizations {
   /// **'The server isn\'t answering, so this is what it held last time.'**
   String get desktopServerPartMissing;
 
+  /// No description provided for @desktopShortsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'↑ ↓ or the wheel for the next short · double-click to favorite'**
+  String get desktopShortsHint;
+
   /// No description provided for @desktopShowPanel.
   ///
   /// In en, this message translates to:
   /// **'Show side panel'**
   String get desktopShowPanel;
+
+  /// No description provided for @desktopTheater.
+  ///
+  /// In en, this message translates to:
+  /// **'Theater'**
+  String get desktopTheater;
 
   /// No description provided for @desktopTranscriptHint.
   ///

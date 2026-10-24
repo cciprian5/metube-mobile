@@ -89,6 +89,18 @@ final libraryServerErrorProvider = Provider<Object?>((ref) {
   return history.hasError ? history.error : null;
 });
 
+/// The last session, back paused, as on the phone: opening the app never
+/// starts sound by itself. Watched by the shell once.
+///
+/// **Only after the player knows the server** ([playbackWiringProvider]):
+/// restored before it, every clip not on this computer had no address, was
+/// skipped as broken, and the whole queue emptied itself at start-up
+/// (measured on the real window).
+final sessionRestoreProvider = FutureProvider<bool>((ref) {
+  ref.read(playbackWiringProvider);
+  return ref.read(playerProvider).restoreSession();
+});
+
 /// Points the player at the current server, so a clip that is not on this
 /// computer streams from it, with its credentials.
 final playbackWiringProvider = Provider<void>((ref) {

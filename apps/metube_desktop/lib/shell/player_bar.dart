@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'now_playing.dart';
 import 'seek_bar.dart';
 import 'shell_metrics.dart';
 
@@ -13,10 +14,14 @@ class EmberPlayerBar extends StatelessWidget {
     super.key,
     required this.player,
     required this.onShowQueue,
+    required this.onOpen,
   });
 
   final MTPlayer player;
   final VoidCallback onShowQueue;
+
+  /// Opens the playing clip's page, from a click on its title.
+  final ValueChanged<String> onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +40,9 @@ class EmberPlayerBar extends StatelessWidget {
           final state = snap.data ?? player.state;
           return Row(
             children: [
-              Expanded(child: _NowPlaying(state: state)),
+              Expanded(
+                child: EmberNowPlaying(state: state, onOpen: onOpen),
+              ),
               Expanded(
                 flex: 2,
                 child: _Transport(player: player, state: state),
@@ -51,63 +58,6 @@ class EmberPlayerBar extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-}
-
-class _NowPlaying extends StatelessWidget {
-  const _NowPlaying({required this.state});
-
-  final MTPlayerState state;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final text = Theme.of(context).textTheme;
-    final item = state.current;
-    final side = EmberShellSize.playerBar - MTSpace.xxl;
-    return Row(
-      children: [
-        Container(
-          width: side,
-          height: side,
-          decoration: BoxDecoration(
-            color: p.cardAlt,
-            borderRadius: BorderRadius.circular(MTCorners.desktop.thumb),
-          ),
-          alignment: Alignment.center,
-          child: MTIcon(MTIcons.headphones, size: MTSpace.xl, color: p.ink3),
-        ),
-        const SizedBox(width: MTSpace.md),
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item?.title ?? context.mtl.desktopNothingPlaying,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                // A title keeps its own direction, so an English one cut
-                // short in an Arabic window loses its end, not its start.
-                textDirection: item == null
-                    ? null
-                    : mtTextDirectionOf(item.title, Directionality.of(context)),
-                style: text.titleSmall?.copyWith(
-                  color: item == null ? p.ink3 : p.ink,
-                ),
-              ),
-              if (item?.uploader case final who?)
-                Text(
-                  who,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: text.bodySmall?.copyWith(color: p.ink3),
-                ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

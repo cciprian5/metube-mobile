@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'data/covers/covers_data.dart';
 import 'data/lab_server.dart';
 import 'data/library_data.dart';
 import 'data/transcripts_data.dart';
@@ -22,12 +23,14 @@ import 'platform/error_log.dart';
 import 'platform/player_desktop.dart';
 import 'platform/prefs_store.dart';
 import 'platform/single_instance.dart';
+import 'platform/video_surface_windows.dart';
 import 'platform/window_controls_windows.dart';
 import 'platform/window_frame.dart';
 import 'platform/window_placement.dart';
 import 'shell/shell_layout.dart';
 import 'shell/shell_state.dart';
 import 'shell/ui_zoom.dart';
+import 'shell/video_surface.dart';
 
 /// Bootstrap only: one copy, storage, the player, the window, runApp.
 ///
@@ -62,15 +65,15 @@ Future<void> main(List<String> args) async {
   logEveryError(logger);
 
   final resolver = PlaybackSourceResolver(endpoint: ServerStreamEndpoint.none);
-  final player = DesktopPlayer.create(
+  final desktop = DesktopPlayer.create(
     resolver: resolver,
     store: store,
     mutex: mutex,
-  ).session;
+  );
+  final player = desktop.session;
   await player.loadPreferences();
-  // The last queue comes back paused, as on the phone: opening the app
-  // never starts sound by itself.
-  unawaited(player.restoreSession());
+  // The last queue comes back once the shell has wired the server in
+  // (sessionRestoreProvider), not here.
 
   final layout = await ShellLayoutStore(store: store, mutex: mutex).read();
   final zooms = UiZoomStore(store: store, mutex: mutex);
@@ -95,6 +98,9 @@ Future<void> main(List<String> args) async {
         loggerProvider.overrideWithValue(logger),
         playbackResolverProvider.overrideWithValue(resolver),
         playerProvider.overrideWithValue(player),
+        videoSurfaceProvider.overrideWithValue(
+          MediaKitVideoSurface(desktop.port.player),
+        ),
         initialShellLayoutProvider.overrideWithValue(layout),
         initialUiZoomProvider.overrideWithValue(
           UiZoom(window.zoom, lowered: lowered),
@@ -106,6 +112,9 @@ Future<void> main(List<String> args) async {
         ),
         artworkCacheProvider.overrideWithValue(
           artworkCacheIn('${local.path}/cache'),
+        ),
+        coverFolderProvider.overrideWithValue(
+          Directory('${local.path}/cache/embedded'),
         ),
       ],
       child: const EmberApp(),

@@ -106,6 +106,35 @@ void main() {
       expect(port.calls.last, 'play');
     });
 
+    test('looping replays the item and keeps the saved mode', () async {
+      await player.playItems([_item('a'), _item('b')]);
+      await player.setLooping(true);
+      port.emitCompleted();
+      await pumpEventQueue();
+      expect(player.state.current!.title, 'a');
+      expect(port.calls.last, 'play');
+      expect(await prefs.playMode(), PlayMode.autoNext);
+
+      // By hand it still moves on.
+      await player.skipToNext();
+      expect(player.state.current!.title, 'b');
+    });
+
+    test('**the guard**: a looping item saves no position', () async {
+      await player.playItems([_item('a')]);
+      await player.setLooping(true);
+      port.position = const Duration(seconds: 40);
+      await player.persist();
+      expect(await positions.positionOf(_item('a').canonicalUrl), isNull);
+
+      await player.setLooping(false);
+      await player.persist();
+      expect(
+        await positions.positionOf(_item('a').canonicalUrl),
+        const Duration(seconds: 40),
+      );
+    });
+
     test('repeat-all wraps from the last item to the first', () async {
       await player.playItems([_item('a'), _item('b')], startIndex: 1);
       await player.setPlayMode(PlayMode.repeatAll);

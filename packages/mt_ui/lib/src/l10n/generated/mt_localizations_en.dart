@@ -531,7 +531,14 @@ class MTLocalizationsEn extends MTLocalizations {
       'The server isn\'t answering, so this is what it held last time.';
 
   @override
+  String get desktopShortsHint =>
+      '↑ ↓ or the wheel for the next short · double-click to favorite';
+
+  @override
   String get desktopShowPanel => 'Show side panel';
+
+  @override
+  String get desktopTheater => 'Theater';
 
   @override
   String get desktopTranscriptHint => 'Follows playback · click a line to jump';

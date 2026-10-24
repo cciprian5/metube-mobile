@@ -9,7 +9,7 @@ extension _MTSessionFlow on MTSessionPlayer {
   Future<void> _onCompleted() async {
     final url = _queue.current?.canonicalUrl;
     if (url != null) await positions.clear(url);
-    if (_playMode == PlayMode.repeatOne) {
+    if (_looping || _playMode == PlayMode.repeatOne) {
       await port.seek(Duration.zero);
       return port.play();
     }
@@ -76,7 +76,9 @@ extension _MTSessionFlow on MTSessionPlayer {
 
   Future<void> _savePosition() async {
     final item = _queue.current;
-    if (item == null) return;
+    // A looping short starts over each time; a position would only spoil
+    // the next one.
+    if (item == null || _looping) return;
     await positions.save(
       item.canonicalUrl,
       port.position,

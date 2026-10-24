@@ -28,6 +28,7 @@ dependencies:
   go_router: ^16.2.0
   path_provider: ^2.1.5
   shared_preferences: ^2.3.3
+  url_launcher: ^6.3.1
   # No audio_service, just_audio, video_player, flutter_background or
   # receive_sharing_intent: they are the phones' playback and share paths,
   # and Windows has its own (media_kit, SMTC, drag and drop).

@@ -51,6 +51,8 @@ class StillPlayer implements MTPlayer {
   @override
   Future<void> setShuffle(bool value) async {}
   @override
+  Future<void> setLooping(bool on) async {}
+  @override
   Future<void> stop() async {}
   @override
   Future<void> persist() async {}

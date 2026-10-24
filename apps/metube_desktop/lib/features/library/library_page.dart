@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -9,6 +10,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/library_data.dart';
 import '../../di.dart';
 import '../../shell/pill.dart';
+import '../clip/clip_state.dart';
 import 'library_chips.dart';
 import 'library_item_view.dart';
 import 'library_state.dart';
@@ -189,11 +191,12 @@ class _Items extends ConsumerWidget {
               playing: isCurrent,
               paused: isCurrent && !state.playing,
               // The list on screen becomes the queue, from the clip
-              // clicked, as on the phone.
+              // clicked, as on the phone; a video opens its page and a
+              // short its lane.
               onPlay: () => unawaited(
-                player.playItems([
+                openFromList(ref, GoRouter.of(context), [
                   for (final i in items) toPlaylistItem(i),
-                ], startIndex: index),
+                ], index),
               ),
             );
           },

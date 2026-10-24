@@ -12,6 +12,7 @@ import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
 import 'package:metube_desktop/shell/shell_state.dart';
 import 'package:metube_desktop/shell/ui_zoom.dart';
+import 'package:metube_desktop/shell/video_surface.dart';
 import 'package:metube_desktop/shell/window_controls.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_core/mt_core.dart';
@@ -65,8 +66,19 @@ class FakePlayer implements MTPlayer {
     String? playlistName,
     bool autoPlay = true,
   }) => _note('playItems');
+
+  /// Called when the app asks for the last session back, and how many
+  /// times it did (apart from [calls], which tests read as the user's).
+  void Function()? onRestore;
+  int restores = 0;
+
   @override
-  Future<bool> restoreSession() async => false;
+  Future<bool> restoreSession() async {
+    onRestore?.call();
+    restores++;
+    return false;
+  }
+
   @override
   Future<void> play() => _note('play');
   @override
@@ -87,6 +99,8 @@ class FakePlayer implements MTPlayer {
   Future<void> setPlayMode(PlayMode mode) => _note('mode ${mode.name}');
   @override
   Future<void> setShuffle(bool value) => _note('shuffle $value');
+  @override
+  Future<void> setLooping(bool on) => _note('loop $on');
   @override
   Future<void> stop() => _note('stop');
   @override
@@ -112,6 +126,10 @@ class ShellHarness {
 
   /// The screen the window is on, minus the taskbar; null is unknown.
   final Size? workArea;
+
+  /// Stands in for the server, so a test that deletes reaches nothing.
+  late final api = FakeApi(server ?? ServerConfig(baseUrl: 'http://nas:8081'));
+  final video = InertVideoSurface();
 
   /// Why the server part of the library is missing, as if it stopped
   /// answering after the library was last read.
@@ -151,6 +169,10 @@ class ShellHarness {
       ),
       if (library case final items?)
         libraryItemsProvider.overrideWith((ref) async => items),
+      videoSurfaceProvider.overrideWithValue(video),
+      apiClientProvider.overrideWith(
+        (ref) => ref.watch(serverConfigProvider) == null ? null : api,
+      ),
       if (serverError case final error?)
         libraryServerErrorProvider.overrideWithValue(error),
     ],
@@ -194,4 +216,18 @@ class NoCovers extends Fake implements BaseCacheManager {
     Map<String, String>? headers,
     bool withProgress = false,
   }) => const Stream.empty();
+}
+
+/// The real client for a server that is never reached: only deleting is
+/// replaced, recorded instead of sent.
+class FakeApi extends MeTubeApiClient {
+  FakeApi(ServerConfig config) : super(config: config);
+
+  final List<List<String>> deleted = [];
+
+  @override
+  Future<void> delete(
+    List<String> canonicalUrls, {
+    String where = 'done',
+  }) async => deleted.add(canonicalUrls);
 }

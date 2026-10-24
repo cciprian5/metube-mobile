@@ -10,7 +10,6 @@ import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:metube_desktop/shell/title_bar.dart';
 
 import 'package:mt_core/mt_core.dart';
-import 'package:mt_media/mt_media.dart';
 
 import 'support/shell_harness.dart';
 

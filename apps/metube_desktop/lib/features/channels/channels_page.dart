@@ -123,25 +123,28 @@ class ChannelsPage extends ConsumerWidget {
                     // The actions wrap under each other before the title
                     // gives way, under a large font.
                     Flexible(
-                      child: Wrap(
-                        alignment: WrapAlignment.end,
-                        spacing: MTSpace.xs,
-                        runSpacing: MTSpace.xs,
-                        children: [
-                          if (subs.isNotEmpty)
+                      child: Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: Wrap(
+                          alignment: WrapAlignment.end,
+                          spacing: MTSpace.xs,
+                          runSpacing: MTSpace.xs,
+                          children: [
+                            if (subs.isNotEmpty)
+                              EmberPill(
+                                label: l.desktopCheckAll,
+                                selected: false,
+                                onTap: () =>
+                                    unawaited(checkChannels(context, ref)),
+                              ),
                             EmberPill(
-                              label: l.desktopCheckAll,
+                              label: l.followChannel,
+                              icon: MTIcons.plus,
                               selected: false,
-                              onTap: () =>
-                                  unawaited(checkChannels(context, ref)),
+                              onTap: () => unawaited(showFollowDialog(context)),
                             ),
-                          EmberPill(
-                            label: l.followChannel,
-                            icon: MTIcons.plus,
-                            selected: false,
-                            onTap: () => unawaited(showFollowDialog(context)),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                 ],

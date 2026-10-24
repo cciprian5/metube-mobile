@@ -116,11 +116,14 @@ class ListsPage extends ConsumerWidget {
             children: [
               Expanded(child: Text(l.navPlaylists, style: text.headlineSmall)),
               Flexible(
-                child: EmberPill(
-                  label: l.newPlaylistAction,
-                  icon: MTIcons.plus,
-                  selected: false,
-                  onTap: () => unawaited(_create(context, ref)),
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: EmberPill(
+                    label: l.newPlaylistAction,
+                    icon: MTIcons.plus,
+                    selected: false,
+                    onTap: () => unawaited(_create(context, ref)),
+                  ),
                 ),
               ),
             ],

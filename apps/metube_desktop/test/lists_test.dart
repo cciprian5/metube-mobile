@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:metube_desktop/data/lists_data.dart';
 import 'package:metube_desktop/features/clip/clip_page.dart';
 import 'package:metube_desktop/features/clip/clip_stage.dart';
 import 'package:metube_desktop/features/library/library_state.dart';

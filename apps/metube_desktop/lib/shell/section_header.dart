@@ -44,12 +44,15 @@ class EmberSectionHeader extends StatelessWidget {
           ),
           if (trailing case final line?)
             Flexible(
-              child: Text(
-                line,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.end,
-                style: text.bodySmall?.copyWith(color: p.ink3),
+              // Filling its share, so the line sits at the row's end.
+              child: Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: Text(
+                  line,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.bodySmall?.copyWith(color: p.ink3),
+                ),
               ),
             ),
           // A button keeps its size; the two texts are what give way.

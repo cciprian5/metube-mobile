@@ -13,6 +13,7 @@ import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/features/settings/backup_actions.dart';
 import 'package:metube_desktop/features/setup/setup_dialog.dart';
 import 'package:metube_desktop/features/setup/setup_sections.dart';
+import 'package:metube_desktop/shell/pill.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
@@ -258,6 +259,15 @@ void main() {
       );
       await tester.tap(find.text('Search my network').last);
       await tester.pumpAndSettle();
+      // **The guard**: the server found stands apart from the ports field.
+      final found = find.ancestor(
+        of: find.textContaining('2026.10.09'),
+        matching: find.byType(EmberPill),
+      );
+      expect(
+        tester.getRect(found).top - tester.getRect(field('Ports')).bottom,
+        MTSpace.sm,
+      );
       await tester.tap(find.textContaining('2026.10.09'));
       await tester.pumpAndSettle();
       expect(

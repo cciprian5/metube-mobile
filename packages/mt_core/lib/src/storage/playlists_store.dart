@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import '../models/saved_playlist.dart';
 import 'key_value_store.dart';
+import 'playlist_removals.dart';
 
 /// The saved playlists store, under the `saved_playlists` key (§5.1).
 /// Every edit runs inside [PrefsMutex], and the old Lite format
@@ -168,13 +169,46 @@ class PlaylistsStore {
         final all = await readAll();
         final before = clock == null ? null : _fingerprints(all);
         apply(all);
-        if (before != null) _stamp(all, before, clock!());
+        if (before != null) {
+          final now = clock!();
+          _stamp(all, before, now);
+          await _recordRemovals(before, all, now);
+        }
         await store.setString(
           prefsKey,
           json.encode(all.map((p) => p.toJson()).toList()),
         );
         onChanged?.call();
       });
+
+  /// The lists and members taken away so far, for a merge.
+  Future<PlaylistRemovals> removals() async =>
+      PlaylistRemovals.decode(await store.getString(PlaylistRemovals.prefsKey));
+
+  /// Forgets removals older than [cutoff], once no device can still hold
+  /// what they removed.
+  Future<void> forgetRemovalsBefore(DateTime cutoff) => mutex.run(() async {
+    final gone = await removals();
+    if (gone.forgetBefore(cutoff.millisecondsSinceEpoch)) {
+      await store.setString(PlaylistRemovals.prefsKey, gone.encode());
+    }
+  });
+
+  Future<void> _recordRemovals(
+    Map<String, ({String print, Set<String> members})> before,
+    List<SavedPlaylist> after,
+    DateTime now,
+  ) async {
+    final gone = await removals();
+    final changed = gone.record(
+      {for (final MapEntry(:key, :value) in before.entries) key: value.members},
+      {for (final p in after) p.id: _fingerprint(p).members},
+      now.millisecondsSinceEpoch,
+    );
+    if (changed) {
+      await store.setString(PlaylistRemovals.prefsKey, gone.encode());
+    }
+  }
 
   /// What an edit can change, per playlist, and who was in it. The
   /// last-played time is left out: playing a playlist is use, not an edit,

@@ -60,6 +60,24 @@ final class TagsIndex extends UrlKeyedIndex<List<String>> {
       },
   };
 
+  /// Forgets when pairs were taken off, for those taken off before
+  /// [cutoff]: once no device can still hold them, the record has nothing
+  /// left to stop. The stamps of pairs still on are kept.
+  Future<void> forgetRemovalsBefore(DateTime cutoff) => mutex.run(() async {
+    final limit = cutoff.millisecondsSinceEpoch;
+    final current = await readAll();
+    final stamps = await _readStamps();
+    var changed = false;
+    for (final MapEntry(key: url, value: tags) in stamps.entries) {
+      final on = current[url] ?? const [];
+      final before = tags.length;
+      tags.removeWhere((tag, at) => at < limit && !on.contains(tag));
+      if (tags.length != before) changed = true;
+    }
+    stamps.removeWhere((_, tags) => tags.isEmpty);
+    if (changed) await store.setString(stampsKey, json.encode(stamps));
+  });
+
   Future<Map<String, Map<String, int>>> _readStamps() async {
     final raw = await store.getString(stampsKey);
     if (raw == null || raw.isEmpty) return {};

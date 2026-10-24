@@ -97,6 +97,7 @@ class _SearchSectionState extends ConsumerState<SearchSection> {
   final _ports = TextEditingController(text: '8081, 8086');
 
   static const double _portsWidth = 140;
+  static const double _belowPorts = MTSpace.sm;
   final _found = <LanHit>[];
   StreamSubscription<LanHit>? _scan;
   var _stop = false;
@@ -179,6 +180,10 @@ class _SearchSectionState extends ConsumerState<SearchSection> {
               ),
             ],
           ),
+          // Room under the ports field, whose border would otherwise touch
+          // the line or the servers found below it.
+          if (searching || percent == 100 || _found.isNotEmpty)
+            const SizedBox(height: _belowPorts),
           if (searching)
             Text(
               l.desktopSetupSearching(percent),

@@ -3,8 +3,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'nav_history.dart';
 
-/// Above the content: back and forward, the search box, and the button
-/// that shows or hides the side panel.
+/// Above the content: back and forward, the search box, the downloads,
+/// and the button that shows or hides the side panel.
 class EmberContentBar extends StatelessWidget {
   const EmberContentBar({
     super.key,
@@ -12,12 +12,16 @@ class EmberContentBar extends StatelessWidget {
     required this.onSearch,
     required this.panelShown,
     required this.onTogglePanel,
+    this.downloads,
   });
 
   final NavHistory history;
   final VoidCallback onSearch;
   final bool panelShown;
   final VoidCallback onTogglePanel;
+
+  /// The downloads button, before the panel toggle.
+  final Widget? downloads;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,7 @@ class EmberContentBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: MTSpace.sm),
+          ?downloads,
           _BarButton(
             icon: MTIcons.transcript,
             label: panelShown ? l.desktopHidePanel : l.desktopShowPanel,

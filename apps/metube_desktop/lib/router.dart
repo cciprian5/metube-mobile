@@ -100,6 +100,9 @@ Widget _pendingPlaylists(String? id) => PendingPlace('playlists', argument: id);
 
 Widget _pendingChannels(String? id) => PendingPlace('channels', argument: id);
 
+Widget _pendingSettings(String? pane) =>
+    PendingPlace('settings', argument: pane);
+
 /// The single route table. One router per app, built once, so the shell
 /// and the player under it live through every navigation.
 GoRouter buildEmberRouter({
@@ -109,6 +112,7 @@ GoRouter buildEmberRouter({
   EmberPlaceBuilder item = _pendingItem,
   EmberPlaceBuilder playlists = _pendingPlaylists,
   EmberPlaceBuilder channels = _pendingChannels,
+  EmberPlaceBuilder settings = _pendingSettings,
 }) => GoRouter(
   initialLocation: initialLocation,
   // An address that names no place (an old link, a typo in a protocol
@@ -146,14 +150,10 @@ GoRouter buildEmberRouter({
         ),
         GoRoute(
           path: EmberRoutes.settings,
-          builder: (_, _) => const PendingPlace('settings'),
+          builder: (_, _) => settings(null),
           routes: [
             for (final pane in EmberSettingsPane.values)
-              GoRoute(
-                path: pane.name,
-                builder: (_, _) =>
-                    PendingPlace('settings', argument: pane.name),
-              ),
+              GoRoute(path: pane.name, builder: (_, _) => settings(pane.name)),
           ],
         ),
       ],

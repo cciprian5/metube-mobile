@@ -80,7 +80,16 @@ class _MTLinkButtonState extends State<MTLinkButton> {
                       MTIcon(widget.icon!, size: 16, color: p.accentInk),
                       const SizedBox(width: MTSpace.xxs),
                     ],
-                    Text(widget.label, style: style),
+                    // Ellipsized when the space is narrower than the label
+                    // (a large text size in a narrow pane), never spilled.
+                    Flexible(
+                      child: Text(
+                        widget.label,
+                        style: style,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               ),

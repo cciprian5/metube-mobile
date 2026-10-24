@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mt_core/mt_core.dart';
 
 /// The real client for a server that is never reached: only deleting is
@@ -16,6 +18,30 @@ class FakeApi extends MeTubeApiClient {
   /// The server's folders, as its socket would list them; null is a
   /// server too old to say.
   ServerFolders? folders = const ServerFolders();
+
+  /// The files the server would send, by their server path; asking for
+  /// any other fails as a dropped connection would.
+  final Map<String, List<int>> files = {};
+
+  /// What was pulled, in order.
+  final List<String> pulled = [];
+
+  // The cancel token's type is the network client's own; left to inference
+  // so the tests need not import it.
+  @override
+  Future<void> downloadTo(
+    String serverFilename,
+    String savePath, {
+    void Function(int received, int total)? onProgress,
+    cancelToken,
+  }) async {
+    pulled.add(serverFilename);
+    final bytes = files[serverFilename];
+    if (bytes == null) throw const NetworkException('not on the server');
+    onProgress?.call(bytes.length ~/ 2, bytes.length);
+    await File(savePath).writeAsBytes(bytes);
+    onProgress?.call(bytes.length, bytes.length);
+  }
 
   @override
   Future<ServerFolders?> fetchFolders({Duration? timeout}) async => folders;

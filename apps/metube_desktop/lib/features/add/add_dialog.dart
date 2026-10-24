@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/downloads_data.dart';
 import '../../data/library_data.dart';
+import '../../data/local_copies.dart';
 import '../../shell/shell_metrics.dart';
 import '../library/platform_label.dart';
 import 'add_options.dart';
@@ -38,6 +39,10 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
   /// The links sent, each with its task, so its line follows it.
   Map<String, String> _tasks = const {};
 
+  /// The folder picked for "then download it to this computer", or null
+  /// for the download folder.
+  String? _pullInto;
+
   bool get _sent => _tasks.isNotEmpty;
 
   @override
@@ -63,6 +68,36 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
     if (mounted) showMTNotice(context, message: message, kind: kind);
   }
 
+  /// The folder for "then download it to this computer", **asked now**
+  /// when the user wants to be asked: the server may take minutes, and a
+  /// dialog then would come from nowhere. False when it was closed.
+  Future<bool> _askPullFolder() async {
+    if (!_choice.pullAfter) return true;
+    final chosen = await ref
+        .read(localCopiesProvider.notifier)
+        .chooseDownloadFolder();
+    if (chosen.asked && chosen.into == null) return false;
+    _pullInto = chosen.asked ? chosen.into : null;
+    return true;
+  }
+
+  void _markPull(Iterable<String> taskIds) {
+    if (!_choice.pullAfter) return;
+    final pulls = ref.read(pullAfterProvider);
+    for (final id in taskIds) {
+      pulls[id] = _pullInto;
+    }
+  }
+
+  /// Several links, sent together with the one choice for all.
+  Future<void> _submitMany(ReadLinks read) async {
+    final engine = ref.read(downloadEngineProvider);
+    if (engine == null) return _notice(context.mtl.noServerTitle);
+    if (!await _askPullFolder() || !mounted) return;
+    setState(() => _tasks = LinksView.submit(engine, read, _choice));
+    _markPull(_tasks.values);
+  }
+
   /// One link: a playlist goes to its own dialog, anything else is added.
   Future<void> _submitOne(String url) async {
     final l = context.mtl;
@@ -75,11 +110,13 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
       navigator.pop();
       return showBatchDialog(navigator.context, resolved);
     }
-    engine.submit(
+    if (!await _askPullFolder() || !mounted) return;
+    final task = engine.submit(
       url,
       _choice.qualityFor(resolved),
       folder: _choice.folderPath,
     );
+    _markPull([task.id]);
     navigator.pop();
     _notice(l.downloadStarted, kind: MTNoticeKind.done);
   }
@@ -128,8 +165,10 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
                   choice: _choice,
                   tasks: _tasks,
                   onRemove: (line) => setState(() => _removed.add(line.url)),
-                  onRetry: (url, id) =>
-                      setState(() => _tasks = {..._tasks, url: id}),
+                  onRetry: (url, id) {
+                    _markPull([id]);
+                    setState(() => _tasks = {..._tasks, url: id});
+                  },
                 )
               else if (single case final line?)
                 switch (line.state) {
@@ -161,11 +200,7 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
               ? null
               : () {
                   if (many) {
-                    final engine = ref.read(downloadEngineProvider);
-                    if (engine == null) return _notice(l.noServerTitle);
-                    setState(
-                      () => _tasks = LinksView.submit(engine, read, _choice),
-                    );
+                    unawaited(_submitMany(read));
                   } else {
                     unawaited(_submitOne(url!));
                   }

@@ -7,6 +7,7 @@ import 'package:mt_transcripts/mt_transcripts.dart';
 import '../di.dart';
 import '../platform/desktop_policy.dart';
 import 'library_data.dart';
+import 'local_copies.dart';
 import 'lists_data.dart';
 import 'transcripts_data.dart';
 
@@ -71,6 +72,11 @@ final downloadEngineProvider = Provider<DownloadEngine?>((ref) {
     onCompleted: (task) {
       collector.onFinished(task);
       ref.invalidate(historyProvider);
+      pullAfterFinished(
+        pulls: ref.read(pullAfterProvider),
+        copies: ref.read(localCopiesProvider.notifier),
+        task: task,
+      );
     },
     beforeAdd: (task) => _transcriptFirst(ref, task, api),
   );
@@ -84,6 +90,50 @@ final downloadEngineProvider = Provider<DownloadEngine?>((ref) {
     engine.dispose();
   });
   return engine;
+});
+
+/// The tasks whose file is to be saved on this computer once the server
+/// has it ("then download it to this computer" in the add dialog), each
+/// with the folder picked for it, or null for the download folder.
+final pullAfterProvider = Provider<Map<String, String?>>((ref) => {});
+
+/// A finished task asked to come to this computer goes to the copies; the
+/// server keeps its own, as always here. Anything else is left alone.
+void pullAfterFinished({
+  required Map<String, String?> pulls,
+  required LocalCopies copies,
+  required DownloadTask task,
+}) {
+  if (!pulls.containsKey(task.id)) return;
+  final into = pulls.remove(task.id);
+  final path = task.serverFilename;
+  final url = task.canonicalUrl;
+  if (path == null || url == null) return;
+  copies.download((
+    canonicalUrl: url,
+    title: task.title ?? ServerPath.basename(path),
+    serverPath: path,
+    thumbnail: task.thumbnail,
+  ), into: into).ignore();
+}
+
+/// The engine's tasks, first as they are, then at each change.
+final engineTasksProvider = StreamProvider<List<DownloadTask>>((ref) async* {
+  final engine = ref.watch(downloadEngineProvider);
+  if (engine == null) {
+    yield const [];
+    return;
+  }
+  yield engine.tasks;
+  yield* engine.updates.map((_) => engine.tasks);
+});
+
+/// What the downloads button counts: clips the server is still fetching,
+/// and copies coming to this computer.
+final activeDownloadsProvider = Provider<int>((ref) {
+  final tasks = ref.watch(engineTasksProvider).valueOrNull ?? const [];
+  return tasks.where((t) => !t.isFinished).length +
+      ref.watch(activeCopiesProvider);
 });
 
 /// The engine's hook, run before each clip is added: the transcript of a

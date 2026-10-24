@@ -21,6 +21,7 @@ import 'clip_actions.dart';
 import 'clip_menu.dart';
 import 'clip_stage.dart';
 import 'clip_state.dart';
+import 'copy_pills.dart';
 import 'tags_dialog.dart';
 
 /// One clip: its picture in the content (a 16:9 stage, or a 9:16 column
@@ -281,6 +282,8 @@ class _ClipLayout extends ConsumerWidget {
                   spacing: MTSpace.sm,
                   runSpacing: MTSpace.sm,
                   children: [
+                    if (entry case final entry?)
+                      ...copyPills(context, ref, entry),
                     EmberPill(
                       label: favorite
                           ? l.removeFromFavorites

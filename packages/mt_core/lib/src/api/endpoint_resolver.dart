@@ -92,19 +92,31 @@ class EndpointResolver {
   /// the same probing round, so the caller can say *why* it found nothing
   /// without probing twice.
   Future<({String? url, Map<String, MTEndpointStatus> statuses})>
+  ///
+  /// [fixed] is an address chosen by hand (the desktop app, which never
+  /// switches by itself): every candidate is still probed for its status,
+  /// but only [fixed] is ever chosen, and nothing when it does not answer.
+  /// Null, as on the phones, keeps the first usable one.
   resolveDetailed({
     String? localUrl,
     List<String> externalUrls = const [],
+    String? fixed,
   }) async {
     final candidates = [
       if (localUrl != null && localUrl.trim().isNotEmpty) localUrl,
       ...externalUrls.where((u) => u.trim().isNotEmpty),
+      if (fixed != null && fixed != localUrl && !externalUrls.contains(fixed))
+        fixed,
     ];
     if (candidates.isEmpty) {
       return (url: null, statuses: const <String, MTEndpointStatus>{});
     }
 
     final statuses = await probeAll(candidates);
+    if (fixed != null) {
+      final usable = statuses[fixed]?.isUsable ?? false;
+      return (url: usable ? fixed : null, statuses: statuses);
+    }
     for (final url in candidates) {
       if (statuses[url]?.isUsable ?? false) {
         return (url: url, statuses: statuses);

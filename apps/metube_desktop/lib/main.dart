@@ -12,9 +12,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'data/addresses_data.dart';
 import 'data/covers/covers_data.dart';
+import 'data/folders_data.dart';
 import 'data/lab_server.dart';
-import 'data/library_data.dart';
 import 'data/transcripts_data.dart';
 import 'features/add/add_entry.dart';
 import 'features/library/artwork.dart';
@@ -29,6 +30,7 @@ import 'platform/single_instance.dart';
 import 'platform/video_surface_windows.dart';
 import 'platform/window_controls_windows.dart';
 import 'platform/window_frame.dart';
+import 'platform/windows_folders.dart';
 import 'platform/window_placement.dart';
 import 'shell/shell_layout.dart';
 import 'shell/shell_state.dart';
@@ -91,6 +93,10 @@ Future<void> main(List<String> args) async {
   final lowered = window.zoom < wanted;
   if (lowered) await zooms.write(window.zoom);
   final controls = await WindowManagerControls.create();
+  final addresses = await AddressesStore(
+    store: store,
+    mutex: mutex,
+  ).read(seed: labAddressesFrom(args));
   unawaited(logger.log('app started (ember)', tag: 'app'));
 
   runApp(
@@ -112,7 +118,9 @@ Future<void> main(List<String> args) async {
           UiZoom(window.zoom, lowered: lowered),
         ),
         windowControlsProvider.overrideWithValue(controls),
-        serverConfigProvider.overrideWithValue(labServerFrom(args)),
+        serverSetupProvider.overrideWithValue(labServerFrom(args)),
+        initialAddressesProvider.overrideWithValue(addresses),
+        desktopFoldersProvider.overrideWithValue(const WindowsFolders()),
         transcriptStoreProvider.overrideWithValue(
           TranscriptStore(Directory('${roaming.path}/transcripts')),
         ),

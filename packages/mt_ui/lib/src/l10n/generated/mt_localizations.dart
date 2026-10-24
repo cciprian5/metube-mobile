@@ -878,11 +878,101 @@ abstract class MTLocalizations {
   /// **'{count, plural, =0{Nothing to add} =1{Add 1 link} other{Add {count} links}}'**
   String desktopAddLinks(int count);
 
+  /// No description provided for @desktopAddressAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get desktopAddressAdd;
+
+  /// No description provided for @desktopAddressInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'In use'**
+  String get desktopAddressInUse;
+
+  /// No description provided for @desktopAddressInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Not an address, or already in the list'**
+  String get desktopAddressInvalid;
+
+  /// No description provided for @desktopAddressNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New address, e.g. https://metube.example.com'**
+  String get desktopAddressNew;
+
+  /// No description provided for @desktopAddressStatusNotMeTube.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a MeTube server'**
+  String get desktopAddressStatusNotMeTube;
+
+  /// No description provided for @desktopAddressStatusOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers'**
+  String get desktopAddressStatusOk;
+
+  /// No description provided for @desktopAddressStatusRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Refuses the password'**
+  String get desktopAddressStatusRefused;
+
+  /// No description provided for @desktopAddressStatusUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not reachable'**
+  String get desktopAddressStatusUnreachable;
+
+  /// No description provided for @desktopAddressTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get desktopAddressTest;
+
+  /// No description provided for @desktopAddressUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get desktopAddressUse;
+
+  /// No description provided for @desktopAddresses.
+  ///
+  /// In en, this message translates to:
+  /// **'Addresses'**
+  String get desktopAddresses;
+
+  /// No description provided for @desktopAddressesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The app uses the address you choose and never switches by itself.'**
+  String get desktopAddressesHint;
+
+  /// No description provided for @desktopAskEachTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me every time'**
+  String get desktopAskEachTime;
+
+  /// No description provided for @desktopAskEachTimeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows asks for a folder at each download.'**
+  String get desktopAskEachTimeHint;
+
   /// No description provided for @desktopBack.
   ///
   /// In en, this message translates to:
   /// **'Back'**
   String get desktopBack;
+
+  /// No description provided for @desktopChangeFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Change…'**
+  String get desktopChangeFolder;
 
   /// No description provided for @desktopChannel.
   ///
@@ -926,11 +1016,71 @@ abstract class MTLocalizations {
   /// **'Clear filters'**
   String get desktopClearFilters;
 
+  /// No description provided for @desktopClearFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear finished'**
+  String get desktopClearFinished;
+
+  /// No description provided for @desktopCopyCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get desktopCopyCancelled;
+
   /// No description provided for @desktopCopyLink.
   ///
   /// In en, this message translates to:
   /// **'Copy link'**
   String get desktopCopyLink;
+
+  /// No description provided for @desktopCopyQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting its turn'**
+  String get desktopCopyQueued;
+
+  /// No description provided for @desktopDesktopSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop'**
+  String get desktopDesktopSection;
+
+  /// No description provided for @desktopDownloadFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Download folder'**
+  String get desktopDownloadFolder;
+
+  /// No description provided for @desktopDownloadFolderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own files: saved here, then the app leaves them alone.'**
+  String get desktopDownloadFolderHint;
+
+  /// No description provided for @desktopDownloadTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Download…'**
+  String get desktopDownloadTo;
+
+  /// No description provided for @desktopDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading · {percent}%'**
+  String desktopDownloading(int percent);
+
+  /// No description provided for @desktopDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads'**
+  String get desktopDownloads;
+
+  /// No description provided for @desktopDownloadsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is downloading. Add a link, or make a clip available offline.'**
+  String get desktopDownloadsEmpty;
 
   /// No description provided for @desktopDragToReorder.
   ///
@@ -950,11 +1100,29 @@ abstract class MTLocalizations {
   /// **'Add a link, and the clip appears here once the server has it.'**
   String get desktopEmptyLibraryMessage;
 
+  /// No description provided for @desktopFolderUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No folder available'**
+  String get desktopFolderUnavailable;
+
+  /// No description provided for @desktopFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders'**
+  String get desktopFolders;
+
   /// No description provided for @desktopForward.
   ///
   /// In en, this message translates to:
   /// **'Forward'**
   String get desktopForward;
+
+  /// No description provided for @desktopGlobalShortcut.
+  ///
+  /// In en, this message translates to:
+  /// **'Play and pause from any app'**
+  String get desktopGlobalShortcut;
 
   /// No description provided for @desktopHidePanel.
   ///
@@ -973,6 +1141,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Last arrival {when}'**
   String desktopLastArrival(String when);
+
+  /// No description provided for @desktopLaterStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Comes in a later update'**
+  String get desktopLaterStep;
 
   /// No description provided for @desktopLinkCopied.
   ///
@@ -1021,6 +1195,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 link} other{{count} links}}'**
   String desktopLinksFound(int count);
+
+  /// No description provided for @desktopLocalCopyRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Local copy removed'**
+  String get desktopLocalCopyRemoved;
 
   /// No description provided for @desktopNarrowSidebar.
   ///
@@ -1094,11 +1274,41 @@ abstract class MTLocalizations {
   /// **'{count} offline'**
   String desktopOfflineCount(int count);
 
+  /// No description provided for @desktopOfflineFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline folder'**
+  String get desktopOfflineFolder;
+
+  /// No description provided for @desktopOfflineFolderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Copies the app knows and plays without the server; \"Remove local copy\" deletes them.'**
+  String get desktopOfflineFolderHint;
+
+  /// No description provided for @desktopOfflineProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · {percent}%'**
+  String desktopOfflineProgress(int percent);
+
+  /// No description provided for @desktopOpenInExplorer.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Explorer'**
+  String get desktopOpenInExplorer;
+
   /// No description provided for @desktopPinned.
   ///
   /// In en, this message translates to:
   /// **'Pinned'**
   String get desktopPinned;
+
+  /// No description provided for @desktopPullAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Then download it to this computer'**
+  String get desktopPullAfter;
 
   /// No description provided for @desktopQueueEnd.
   ///
@@ -1112,6 +1322,24 @@ abstract class MTLocalizations {
   /// **'Remove from the list'**
   String get desktopRemoveFromList;
 
+  /// No description provided for @desktopSavedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved in {folder}'**
+  String desktopSavedIn(String folder);
+
+  /// No description provided for @desktopSavingOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving offline · {percent}%'**
+  String desktopSavingOffline(int percent);
+
+  /// No description provided for @desktopSavingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving to {folder}'**
+  String desktopSavingTo(String folder);
+
   /// No description provided for @desktopSearch.
   ///
   /// In en, this message translates to:
@@ -1124,11 +1352,29 @@ abstract class MTLocalizations {
   /// **'Search titles and what was said…'**
   String get desktopSearchHint;
 
+  /// No description provided for @desktopServerFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Same folders as on the server'**
+  String get desktopServerFolders;
+
+  /// No description provided for @desktopServerFoldersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A clip in the server\'s Kids folder is saved in Kids here too.'**
+  String get desktopServerFoldersHint;
+
   /// No description provided for @desktopServerPartMissing.
   ///
   /// In en, this message translates to:
   /// **'The server isn\'t answering, so this is what it held last time.'**
   String get desktopServerPartMissing;
+
+  /// No description provided for @desktopSettingsLater.
+  ///
+  /// In en, this message translates to:
+  /// **'This section comes in a later step of the Windows app.'**
+  String get desktopSettingsLater;
 
   /// No description provided for @desktopShortsHint.
   ///
@@ -1136,17 +1382,35 @@ abstract class MTLocalizations {
   /// **'↑ ↓ or the wheel for the next short · double-click to favorite'**
   String get desktopShortsHint;
 
+  /// No description provided for @desktopShowInFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in folder'**
+  String get desktopShowInFolder;
+
   /// No description provided for @desktopShowPanel.
   ///
   /// In en, this message translates to:
   /// **'Show side panel'**
   String get desktopShowPanel;
 
+  /// No description provided for @desktopStartWithWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with Windows'**
+  String get desktopStartWithWindows;
+
   /// No description provided for @desktopTheater.
   ///
   /// In en, this message translates to:
   /// **'Theater'**
   String get desktopTheater;
+
+  /// No description provided for @desktopToThisComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'To this computer'**
+  String get desktopToThisComputer;
 
   /// No description provided for @desktopTranscriptFirst.
   ///
@@ -1159,6 +1423,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Follows playback · click a line to jump'**
   String get desktopTranscriptHint;
+
+  /// No description provided for @desktopTrayOnClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep playing in the tray when the window closes'**
+  String get desktopTrayOnClose;
 
   /// No description provided for @desktopViewCompact.
   ///

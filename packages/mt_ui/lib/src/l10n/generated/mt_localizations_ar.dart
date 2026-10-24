@@ -490,7 +490,53 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String get desktopAddressAdd => 'أضف';
+
+  @override
+  String get desktopAddressInUse => 'قيد الاستعمال';
+
+  @override
+  String get desktopAddressInvalid => 'ليس عنواناً، أو موجود في القائمة';
+
+  @override
+  String get desktopAddressNew => 'عنوان جديد، مثل https://metube.example.com';
+
+  @override
+  String get desktopAddressStatusNotMeTube => 'ليس سيرفر MeTube';
+
+  @override
+  String get desktopAddressStatusOk => 'يستجيب';
+
+  @override
+  String get desktopAddressStatusRefused => 'يرفض كلمة المرور';
+
+  @override
+  String get desktopAddressStatusUnreachable => 'لا يمكن الوصول إليه';
+
+  @override
+  String get desktopAddressTest => 'اختبار';
+
+  @override
+  String get desktopAddressUse => 'استعمل';
+
+  @override
+  String get desktopAddresses => 'العناوين';
+
+  @override
+  String get desktopAddressesHint =>
+      'يستعمل التطبيق العنوان الذي تختاره، ولا يبدّله من تلقاء نفسه.';
+
+  @override
+  String get desktopAskEachTime => 'اسألني كل مرة';
+
+  @override
+  String get desktopAskEachTimeHint => 'يسألك Windows عن المجلد عند كل تنزيل.';
+
+  @override
   String get desktopBack => 'رجوع';
+
+  @override
+  String get desktopChangeFolder => 'تغيير…';
 
   @override
   String get desktopChannel => 'القناة';
@@ -514,7 +560,41 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopClearFilters => 'إلغاء التصفية';
 
   @override
+  String get desktopClearFinished => 'مسح المنتهية';
+
+  @override
+  String get desktopCopyCancelled => 'أُلغي';
+
+  @override
   String get desktopCopyLink => 'نسخ الرابط';
+
+  @override
+  String get desktopCopyQueued => 'ينتظر دوره';
+
+  @override
+  String get desktopDesktopSection => 'سطح المكتب';
+
+  @override
+  String get desktopDownloadFolder => 'مجلد التنزيل';
+
+  @override
+  String get desktopDownloadFolderHint =>
+      'ملفاتك الخاصة: تُحفظ هنا، ثم لا يتدخل فيها التطبيق.';
+
+  @override
+  String get desktopDownloadTo => 'تنزيل…';
+
+  @override
+  String desktopDownloading(int percent) {
+    return 'يُنزَّل · $percent٪';
+  }
+
+  @override
+  String get desktopDownloads => 'التحميلات';
+
+  @override
+  String get desktopDownloadsEmpty =>
+      'لا شيء قيد التحميل. أضف رابطاً، أو أتِح مقطعاً دون اتصال.';
 
   @override
   String get desktopDragToReorder => 'اسحب لتغيير الترتيب';
@@ -527,7 +607,16 @@ class MTLocalizationsAr extends MTLocalizations {
       'أضِف رابطاً فيظهر المقطع هنا بعد أن ينزّله السيرفر.';
 
   @override
+  String get desktopFolderUnavailable => 'لا مجلد متاح';
+
+  @override
+  String get desktopFolders => 'المجلدات';
+
+  @override
   String get desktopForward => 'تقدّم';
+
+  @override
+  String get desktopGlobalShortcut => 'التشغيل والإيقاف من أي تطبيق';
 
   @override
   String get desktopHidePanel => 'إخفاء اللوحة الجانبية';
@@ -551,6 +640,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String desktopLastArrival(String when) {
     return 'آخر وصول $when';
   }
+
+  @override
+  String get desktopLaterStep => 'يأتي في تحديث لاحق';
 
   @override
   String get desktopLinkCopied => 'نُسخ الرابط';
@@ -588,6 +680,9 @@ class MTLocalizationsAr extends MTLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get desktopLocalCopyRemoved => 'أُزيلت النسخة المحلية';
 
   @override
   String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
@@ -644,7 +739,25 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String get desktopOfflineFolder => 'مجلد «دون اتصال»';
+
+  @override
+  String get desktopOfflineFolderHint =>
+      'نسخ يعرفها التطبيق ويشغّلها دون السيرفر، ويحذفها «إزالة النسخة المحلية».';
+
+  @override
+  String desktopOfflineProgress(int percent) {
+    return 'دون اتصال · $percent٪';
+  }
+
+  @override
+  String get desktopOpenInExplorer => 'فتح في المستكشف';
+
+  @override
   String get desktopPinned => 'مثبّتة';
+
+  @override
+  String get desktopPullAfter => 'ثم نزّله إلى هذا الكمبيوتر';
 
   @override
   String get desktopQueueEnd => 'لا شيء بعد هذا المقطع';
@@ -653,30 +766,68 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopRemoveFromList => 'أزله من القائمة';
 
   @override
+  String desktopSavedIn(String folder) {
+    return 'حُفظ في $folder';
+  }
+
+  @override
+  String desktopSavingOffline(int percent) {
+    return 'يُحفظ دون اتصال · $percent٪';
+  }
+
+  @override
+  String desktopSavingTo(String folder) {
+    return 'يُحفظ في $folder';
+  }
+
+  @override
   String get desktopSearch => 'البحث';
 
   @override
   String get desktopSearchHint => 'ابحث في العناوين وما قيل…';
 
   @override
+  String get desktopServerFolders => 'بالمجلدات نفسها التي على السيرفر';
+
+  @override
+  String get desktopServerFoldersHint =>
+      'المقطع الذي في مجلد Kids على السيرفر يُحفظ في Kids هنا أيضاً.';
+
+  @override
   String get desktopServerPartMissing =>
       'السيرفر لا يستجيب، فهذا ما كان فيه آخر مرة.';
+
+  @override
+  String get desktopSettingsLater =>
+      'يأتي هذا القسم في خطوة لاحقة من نسخة Windows.';
 
   @override
   String get desktopShortsHint =>
       '↑ ↓ أو العجلة للقصير التالي · نقرتان للمفضلة';
 
   @override
+  String get desktopShowInFolder => 'إظهار في المجلد';
+
+  @override
   String get desktopShowPanel => 'إظهار اللوحة الجانبية';
 
   @override
+  String get desktopStartWithWindows => 'التشغيل مع بدء Windows';
+
+  @override
   String get desktopTheater => 'وضع المسرح';
+
+  @override
+  String get desktopToThisComputer => 'إلى هذا الكمبيوتر';
 
   @override
   String get desktopTranscriptFirst => 'اجلب نصّه أولاً';
 
   @override
   String get desktopTranscriptHint => 'يتبع التشغيل · انقر سطراً ليُشغَّل منه';
+
+  @override
+  String get desktopTrayOnClose => 'يبقى التشغيل في الدرج عند إغلاق النافذة';
 
   @override
   String get desktopViewCompact => 'مختصر';

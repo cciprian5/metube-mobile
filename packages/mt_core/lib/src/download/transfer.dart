@@ -40,7 +40,9 @@ class Transfer {
     required String savePath,
     void Function(double progress)? onProgress,
     CancelToken? cancelToken,
+    TransferCancel? cancel,
   }) async {
+    cancelToken ??= cancel?._token;
     final partPath = '$savePath$partSuffix';
     for (var attempt = 0; attempt < retries; attempt++) {
       await _deletePartial(partPath);
@@ -103,4 +105,15 @@ class Transfer {
       // A temporarily locked file. The next attempt will write over it.
     }
   }
+}
+
+/// Stops a [Transfer.pull] in flight, for an app that never touches the
+/// network client itself: the pull then throws [CancelledException] and
+/// leaves no partial file.
+class TransferCancel {
+  final CancelToken _token = CancelToken();
+
+  bool get isCancelled => _token.isCancelled;
+
+  void cancel() => _token.cancel();
 }

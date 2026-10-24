@@ -39,6 +39,25 @@ class FakeEngine extends Fake implements DownloadEngine {
   void finish(DownloadTask task) =>
       _put(task.copyWith(phase: TaskPhase.completed));
 
+  /// What was cancelled and forgotten, by task id.
+  final List<String> cancelled = [];
+  final List<String> forgotten = [];
+
+  @override
+  void cancel(String taskId) {
+    cancelled.add(taskId);
+    if (_tasks[taskId] case final task?) {
+      _put(task.copyWith(phase: TaskPhase.cancelled));
+    }
+  }
+
+  @override
+  void forget(String taskId) {
+    forgotten.add(taskId);
+    _tasks.remove(taskId);
+    _updates.add(DownloadTask(inputUrl: '', quality: Quality.best));
+  }
+
   @override
   Stream<DownloadTask> get updates => _updates.stream;
 

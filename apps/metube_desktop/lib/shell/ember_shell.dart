@@ -13,6 +13,7 @@ import '../di.dart';
 import '../features/add/add_dialog.dart';
 import '../features/add/add_entry.dart';
 import '../features/clip/clip_state.dart';
+import '../features/downloads/downloads_button.dart';
 import '../features/folders/folder_tree.dart';
 import '../features/library/library_state.dart';
 import '../router.dart';
@@ -210,6 +211,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
                           onSearch: () => router.go(EmberRoutes.search),
                           panelShown: panelShown,
                           onTogglePanel: () => _togglePanel(arranged, layout),
+                          downloads: const DownloadsButton(),
                         ),
                         // The layer opens over the content only, so the
                         // bar with its own toggle stays reachable.

@@ -1,0 +1,163 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_core/mt_core.dart';
+
+import '../di.dart';
+
+/// What this computer offers for folders: where they are by default, a
+/// folder dialog, and Explorer. The Windows one is put in by main; the
+/// default knows no folder and opens nothing, for tests.
+abstract class DesktopFolders {
+  const DesktopFolders();
+
+  /// The user's Videos folder (moved by OneDrive or not).
+  Future<String?> videos();
+
+  /// The user's Downloads folder.
+  Future<String?> downloads();
+
+  /// Windows' folder dialog; null when it is closed without a choice.
+  Future<String?> pick({String? initial});
+
+  /// Opens Explorer on [path]'s folder with the file selected.
+  Future<void> reveal(String path);
+
+  /// Opens Explorer on the folder [path].
+  Future<void> open(String path);
+}
+
+class NoFolders extends DesktopFolders {
+  const NoFolders();
+
+  @override
+  Future<String?> videos() async => null;
+
+  @override
+  Future<String?> downloads() async => null;
+
+  @override
+  Future<String?> pick({String? initial}) async => null;
+
+  @override
+  Future<void> reveal(String path) async {}
+
+  @override
+  Future<void> open(String path) async {}
+}
+
+final desktopFoldersProvider = Provider<DesktopFolders>(
+  (ref) => const NoFolders(),
+);
+
+/// The two folders of 07 §3‑b, saved on this computer only (a backup does
+/// not carry them: another computer has other folders).
+///
+/// **Offline** is a copy the app knows and plays; **download** is a file
+/// the user owns, which the app forgets once saved. Both stay on the
+/// server.
+class FolderSettings {
+  const FolderSettings({
+    this.offline,
+    this.download,
+    this.askEachTime = false,
+    this.serverFolders = true,
+  });
+
+  /// Chosen by the user; null is the default below Videos.
+  final String? offline;
+
+  /// Chosen by the user; null is the default below Downloads.
+  final String? download;
+
+  /// Windows' folder dialog at each download instead of [download].
+  final bool askEachTime;
+
+  /// A download goes into the same folder it has on the server
+  /// (`Downloads\MeTube\Kids\clip.mp4`), so both are arranged alike.
+  final bool serverFolders;
+
+  FolderSettings copyWith({
+    String? offline,
+    String? download,
+    bool? askEachTime,
+    bool? serverFolders,
+  }) => FolderSettings(
+    offline: offline ?? this.offline,
+    download: download ?? this.download,
+    askEachTime: askEachTime ?? this.askEachTime,
+    serverFolders: serverFolders ?? this.serverFolders,
+  );
+}
+
+const _offlineKey = 'ember_offline_folder';
+const _downloadKey = 'ember_download_folder';
+const _askKey = 'ember_download_ask';
+const _serverFoldersKey = 'ember_download_server_folders';
+
+final folderSettingsProvider =
+    NotifierProvider<FolderSettingsNotifier, FolderSettings>(
+      FolderSettingsNotifier.new,
+    );
+
+class FolderSettingsNotifier extends Notifier<FolderSettings> {
+  @override
+  FolderSettings build() {
+    _load();
+    return const FolderSettings();
+  }
+
+  Future<void> _load() async {
+    final store = ref.read(keyValueStoreProvider);
+    try {
+      final offline = await store.getString(_offlineKey);
+      final download = await store.getString(_downloadKey);
+      state = FolderSettings(
+        offline: (offline?.isEmpty ?? true) ? null : offline,
+        download: (download?.isEmpty ?? true) ? null : download,
+        askEachTime: await store.getBool(_askKey) ?? false,
+        serverFolders: await store.getBool(_serverFoldersKey) ?? true,
+      );
+    } on Object {
+      // Unreadable settings are the defaults, never a failed start.
+    }
+  }
+
+  Future<void> setOffline(String path) {
+    state = state.copyWith(offline: path);
+    return _save((s) => s.setString(_offlineKey, path));
+  }
+
+  Future<void> setDownload(String path) {
+    state = state.copyWith(download: path);
+    return _save((s) => s.setString(_downloadKey, path));
+  }
+
+  Future<void> setAskEachTime(bool on) {
+    state = state.copyWith(askEachTime: on);
+    return _save((s) => s.setBool(_askKey, on));
+  }
+
+  Future<void> setServerFolders(bool on) {
+    state = state.copyWith(serverFolders: on);
+    return _save((s) => s.setBool(_serverFoldersKey, on));
+  }
+
+  Future<void> _save(Future<void> Function(KeyValueStore store) write) => ref
+      .read(prefsMutexProvider)
+      .run(() => write(ref.read(keyValueStoreProvider)));
+}
+
+/// The offline folder in use: the chosen one, or `Videos\MeTube\Offline`.
+final offlineFolderProvider = FutureProvider<String?>((ref) async {
+  final chosen = ref.watch(folderSettingsProvider.select((s) => s.offline));
+  if (chosen != null) return chosen;
+  final videos = await ref.watch(desktopFoldersProvider).videos();
+  return videos == null ? null : '$videos\\MeTube\\Offline';
+});
+
+/// The download folder in use: the chosen one, or `Downloads\MeTube`.
+final downloadFolderProvider = FutureProvider<String?>((ref) async {
+  final chosen = ref.watch(folderSettingsProvider.select((s) => s.download));
+  if (chosen != null) return chosen;
+  final downloads = await ref.watch(desktopFoldersProvider).downloads();
+  return downloads == null ? null : '$downloads\\MeTube';
+});

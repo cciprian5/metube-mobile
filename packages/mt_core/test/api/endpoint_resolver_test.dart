@@ -55,6 +55,43 @@ void main() {
       );
     });
 
+    test(
+      'a fixed address is the only one chosen, though all are probed',
+      () async {
+        final resolver = makeResolver({
+          'http://192.168.1.10:8081': () async => true,
+          'https://tunnel.example.com': () async => true,
+        });
+        final chosen = await resolver.resolveDetailed(
+          localUrl: 'http://192.168.1.10:8081',
+          externalUrls: ['https://tunnel.example.com'],
+          fixed: 'https://tunnel.example.com',
+        );
+        expect(chosen.url, 'https://tunnel.example.com');
+        expect(chosen.statuses, hasLength(2));
+      },
+    );
+
+    test(
+      'a fixed address that does not answer gives null, no fallback',
+      () async {
+        final resolver = makeResolver({
+          'http://192.168.1.10:8081': () async => true,
+          'https://tunnel.example.com': () async => false,
+        });
+        final chosen = await resolver.resolveDetailed(
+          localUrl: 'http://192.168.1.10:8081',
+          externalUrls: ['https://tunnel.example.com'],
+          fixed: 'https://tunnel.example.com',
+        );
+        expect(chosen.url, isNull);
+        expect(
+          chosen.statuses['http://192.168.1.10:8081'],
+          MTEndpointStatus.ok,
+        );
+      },
+    );
+
     test('nothing responds gives null', () async {
       final resolver = makeResolver({});
       expect(

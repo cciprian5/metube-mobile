@@ -18,6 +18,7 @@ class AddChoice {
     this.audio = false,
     this.quality = Quality.best,
     this.folder = FolderChoice.top,
+    this.pullAfter = false,
   });
 
   final bool audio;
@@ -26,6 +27,10 @@ class AddChoice {
   final Quality quality;
   final FolderChoice folder;
 
+  /// Once the server has it, a copy comes to this computer too (the Lite
+  /// habit, without its delete).
+  final bool pullAfter;
+
   /// What is sent for [url]: sound, or the video quality after the rule
   /// that numbers are for YouTube alone.
   Quality qualityFor(String url) =>
@@ -33,17 +38,22 @@ class AddChoice {
 
   String? get folderPath => folder.isTop ? null : folder.path;
 
-  AddChoice copyWith({bool? audio, Quality? quality, FolderChoice? folder}) =>
-      AddChoice(
-        audio: audio ?? this.audio,
-        quality: quality ?? this.quality,
-        folder: folder ?? this.folder,
-      );
+  AddChoice copyWith({
+    bool? audio,
+    Quality? quality,
+    FolderChoice? folder,
+    bool? pullAfter,
+  }) => AddChoice(
+    audio: audio ?? this.audio,
+    quality: quality ?? this.quality,
+    folder: folder ?? this.folder,
+    pullAfter: pullAfter ?? this.pullAfter,
+  );
 }
 
 /// The choices under the link(s): video or audio, the video's quality
-/// (the numbers for YouTube only), the folder, and, for one YouTube clip,
-/// "fetch its transcript first".
+/// (the numbers for YouTube only), the folder, for one YouTube clip "fetch
+/// its transcript first", and "then download it to this computer".
 class AddOptions extends ConsumerWidget {
   const AddOptions({
     super.key,
@@ -152,6 +162,17 @@ class AddOptions extends ConsumerWidget {
               ),
             ),
           ),
+        CheckboxListTile(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          controlAffinity: ListTileControlAffinity.leading,
+          value: choice.pullAfter,
+          onChanged: (on) => onChanged(choice.copyWith(pullAfter: on ?? false)),
+          title: Text(
+            l.desktopPullAfter,
+            style: text.bodySmall?.copyWith(color: p.ink),
+          ),
+        ),
       ],
     );
   }

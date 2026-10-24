@@ -4,9 +4,20 @@ import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart';
 
 import '../di.dart';
+import 'addresses_data.dart';
 
-/// The server to talk to; null until one is set up. Overridden in main.
-final serverConfigProvider = Provider<ServerConfig?>((ref) => null);
+/// The server to talk to: the set-up account at the address chosen in
+/// Settings › Addresses; null until one is set up.
+final serverConfigProvider = Provider<ServerConfig?>((ref) {
+  final setup = ref.watch(serverSetupProvider);
+  if (setup == null) return null;
+  return ServerConfig(
+    baseUrl:
+        ref.watch(addressesProvider.select((a) => a.active)) ?? setup.baseUrl,
+    username: setup.username,
+    password: setup.password,
+  );
+});
 
 /// The one HTTP client, rebuilt only when the server changes.
 final apiClientProvider = Provider<MeTubeApiClient?>((ref) {

@@ -467,7 +467,55 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
+  String get desktopAddressAdd => 'Add';
+
+  @override
+  String get desktopAddressInUse => 'In use';
+
+  @override
+  String get desktopAddressInvalid => 'Not an address, or already in the list';
+
+  @override
+  String get desktopAddressNew =>
+      'New address, e.g. https://metube.example.com';
+
+  @override
+  String get desktopAddressStatusNotMeTube => 'Not a MeTube server';
+
+  @override
+  String get desktopAddressStatusOk => 'Answers';
+
+  @override
+  String get desktopAddressStatusRefused => 'Refuses the password';
+
+  @override
+  String get desktopAddressStatusUnreachable => 'Not reachable';
+
+  @override
+  String get desktopAddressTest => 'Test';
+
+  @override
+  String get desktopAddressUse => 'Use';
+
+  @override
+  String get desktopAddresses => 'Addresses';
+
+  @override
+  String get desktopAddressesHint =>
+      'The app uses the address you choose and never switches by itself.';
+
+  @override
+  String get desktopAskEachTime => 'Ask me every time';
+
+  @override
+  String get desktopAskEachTimeHint =>
+      'Windows asks for a folder at each download.';
+
+  @override
   String get desktopBack => 'Back';
+
+  @override
+  String get desktopChangeFolder => 'Change…';
 
   @override
   String get desktopChannel => 'Channel';
@@ -491,7 +539,41 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopClearFilters => 'Clear filters';
 
   @override
+  String get desktopClearFinished => 'Clear finished';
+
+  @override
+  String get desktopCopyCancelled => 'Cancelled';
+
+  @override
   String get desktopCopyLink => 'Copy link';
+
+  @override
+  String get desktopCopyQueued => 'Waiting its turn';
+
+  @override
+  String get desktopDesktopSection => 'Desktop';
+
+  @override
+  String get desktopDownloadFolder => 'Download folder';
+
+  @override
+  String get desktopDownloadFolderHint =>
+      'Your own files: saved here, then the app leaves them alone.';
+
+  @override
+  String get desktopDownloadTo => 'Download…';
+
+  @override
+  String desktopDownloading(int percent) {
+    return 'Downloading · $percent%';
+  }
+
+  @override
+  String get desktopDownloads => 'Downloads';
+
+  @override
+  String get desktopDownloadsEmpty =>
+      'Nothing is downloading. Add a link, or make a clip available offline.';
 
   @override
   String get desktopDragToReorder => 'Drag to reorder';
@@ -504,7 +586,16 @@ class MTLocalizationsEn extends MTLocalizations {
       'Add a link, and the clip appears here once the server has it.';
 
   @override
+  String get desktopFolderUnavailable => 'No folder available';
+
+  @override
+  String get desktopFolders => 'Folders';
+
+  @override
   String get desktopForward => 'Forward';
+
+  @override
+  String get desktopGlobalShortcut => 'Play and pause from any app';
 
   @override
   String get desktopHidePanel => 'Hide side panel';
@@ -524,6 +615,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String desktopLastArrival(String when) {
     return 'Last arrival $when';
   }
+
+  @override
+  String get desktopLaterStep => 'Comes in a later update';
 
   @override
   String get desktopLinkCopied => 'Link copied';
@@ -558,6 +652,9 @@ class MTLocalizationsEn extends MTLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get desktopLocalCopyRemoved => 'Local copy removed';
 
   @override
   String get desktopNarrowSidebar => 'Collapse sidebar';
@@ -611,7 +708,25 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
+  String get desktopOfflineFolder => 'Offline folder';
+
+  @override
+  String get desktopOfflineFolderHint =>
+      'Copies the app knows and plays without the server; \"Remove local copy\" deletes them.';
+
+  @override
+  String desktopOfflineProgress(int percent) {
+    return 'Offline · $percent%';
+  }
+
+  @override
+  String get desktopOpenInExplorer => 'Open in Explorer';
+
+  @override
   String get desktopPinned => 'Pinned';
+
+  @override
+  String get desktopPullAfter => 'Then download it to this computer';
 
   @override
   String get desktopQueueEnd => 'Nothing comes after this one';
@@ -620,30 +735,69 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopRemoveFromList => 'Remove from the list';
 
   @override
+  String desktopSavedIn(String folder) {
+    return 'Saved in $folder';
+  }
+
+  @override
+  String desktopSavingOffline(int percent) {
+    return 'Saving offline · $percent%';
+  }
+
+  @override
+  String desktopSavingTo(String folder) {
+    return 'Saving to $folder';
+  }
+
+  @override
   String get desktopSearch => 'Search';
 
   @override
   String get desktopSearchHint => 'Search titles and what was said…';
 
   @override
+  String get desktopServerFolders => 'Same folders as on the server';
+
+  @override
+  String get desktopServerFoldersHint =>
+      'A clip in the server\'s Kids folder is saved in Kids here too.';
+
+  @override
   String get desktopServerPartMissing =>
       'The server isn\'t answering, so this is what it held last time.';
+
+  @override
+  String get desktopSettingsLater =>
+      'This section comes in a later step of the Windows app.';
 
   @override
   String get desktopShortsHint =>
       '↑ ↓ or the wheel for the next short · double-click to favorite';
 
   @override
+  String get desktopShowInFolder => 'Show in folder';
+
+  @override
   String get desktopShowPanel => 'Show side panel';
 
   @override
+  String get desktopStartWithWindows => 'Start with Windows';
+
+  @override
   String get desktopTheater => 'Theater';
+
+  @override
+  String get desktopToThisComputer => 'To this computer';
 
   @override
   String get desktopTranscriptFirst => 'Fetch its transcript first';
 
   @override
   String get desktopTranscriptHint => 'Follows playback · click a line to jump';
+
+  @override
+  String get desktopTrayOnClose =>
+      'Keep playing in the tray when the window closes';
 
   @override
   String get desktopViewCompact => 'Compact';

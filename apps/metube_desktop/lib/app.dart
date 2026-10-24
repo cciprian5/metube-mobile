@@ -9,6 +9,7 @@ import 'features/clip/clip_page.dart';
 import 'features/library/library_page.dart';
 import 'features/lists/lists_page.dart';
 import 'features/lists/playlist_page.dart';
+import 'features/settings/settings_place.dart';
 import 'router.dart';
 import 'shell/ember_shell.dart';
 import 'shell/zoom_frame.dart';
@@ -43,6 +44,11 @@ class _EmberAppState extends State<EmberApp> {
         channels: (id) => id == null
             ? const ChannelsPage()
             : ChannelPage(key: ValueKey(id), id: id),
+        settings: (pane) => SettingsPlace(
+          pane:
+              EmberSettingsPane.values.asNameMap()[pane] ??
+              EmberSettingsPane.server,
+        ),
       );
 
   @override

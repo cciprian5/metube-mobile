@@ -38,3 +38,26 @@ ServerConfig? labServerFrom(List<String> args) {
     return null;
   }
 }
+
+/// Every address in the lab file, the chosen one first, to seed the
+/// address list the first time; empty outside a debug build.
+List<String> labAddressesFrom(List<String> args) {
+  final first = labServerFrom(args)?.baseUrl;
+  if (first == null) return const [];
+  String? path;
+  for (final a in args) {
+    if (a.startsWith('--lab-config=')) path = a.substring(13);
+  }
+  try {
+    final json = jsonDecode(File(path!).readAsStringSync());
+    final targets = json is Map ? json['targets'] : null;
+    return [
+      first,
+      if (targets is Map)
+        for (final url in targets.values)
+          if (url is String && url.isNotEmpty && url != first) url,
+    ];
+  } on Object {
+    return [first];
+  }
+}

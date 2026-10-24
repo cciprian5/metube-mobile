@@ -30,6 +30,12 @@ dependencies:
   # taken from video frames card-sized.
   image: ^4.9.2
   path_provider: ^2.1.5
+  # Windows' own folder dialog, for the offline and download folders and
+  # "ask me every time".
+  file_selector: 1.1.0
+  # The Videos known folder (the default offline folder), which
+  # path_provider does not name; the version already in the resolution.
+  path_provider_windows: 2.3.0
   shared_preferences: ^2.3.3
   url_launcher: ^6.3.1
   # No audio_service, just_audio, video_player, flutter_background or

@@ -46,6 +46,27 @@ class FakeApi extends MeTubeApiClient {
   @override
   Future<ServerFolders?> fetchFolders({Duration? timeout}) async => folders;
 
+  /// Whether the server holds cookies; null is a server too old to say.
+  bool? cookies = false;
+
+  /// Each cookies file sent, by name and contents.
+  final List<(String, List<int>)> cookieUploads = [];
+
+  @override
+  Future<bool?> hasCookies({Duration? timeout}) async => cookies;
+
+  @override
+  Future<void> uploadCookies(
+    List<int> bytes, {
+    String filename = 'cookies.txt',
+  }) async {
+    cookieUploads.add((filename, bytes));
+    cookies = true;
+  }
+
+  @override
+  Future<void> deleteCookies() async => cookies = false;
+
   /// The followed channels; null is a server older than subscriptions.
   List<ChannelSubscription>? subscriptions = [];
 

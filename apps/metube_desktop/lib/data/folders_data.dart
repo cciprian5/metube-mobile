@@ -22,6 +22,16 @@ abstract class DesktopFolders {
   /// null when it is closed or the file cannot be read.
   Future<String?> openText({required List<String> extensions});
 
+  /// Windows' open dialog for several files of [extensions], each with its
+  /// name and bytes; empty when it is closed or nothing could be read.
+  Future<List<(String, List<int>)>> openFiles({
+    required List<String> extensions,
+  });
+
+  /// Windows' save dialog, offering [name]; writes [text] where the user
+  /// chose and returns that path, or null when it is closed.
+  Future<String?> saveText({required String name, required String text});
+
   /// Opens Explorer on [path]'s folder with the file selected.
   Future<void> reveal(String path);
 
@@ -43,6 +53,17 @@ class NoFolders extends DesktopFolders {
 
   @override
   Future<String?> openText({required List<String> extensions}) async => null;
+
+  @override
+  Future<List<(String, List<int>)>> openFiles({
+    required List<String> extensions,
+  }) async => const [];
+
+  @override
+  Future<String?> saveText({
+    required String name,
+    required String text,
+  }) async => null;
 
   @override
   Future<void> reveal(String path) async {}

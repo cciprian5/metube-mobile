@@ -552,6 +552,14 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopClearFinished => 'Hide finished';
 
   @override
+  String get desktopCookiesPrivacy =>
+      'The files go straight to your server and are never kept on this computer. They are your accounts\' sign-in material, so only ever send them to a server you own.';
+
+  @override
+  String get desktopCookiesReplaceNote =>
+      'Each upload replaces the server\'s whole cookies file. To keep several platforms, choose all their files together every time, the ones you sent before too. Hold Ctrl to choose more than one.';
+
+  @override
   String get desktopCopyCancelled => 'Cancelled';
 
   @override
@@ -695,6 +703,15 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopLocalCopyRemoved => 'Local copy removed';
 
   @override
+  String get desktopLogsCopied => 'Log copied, without links or addresses';
+
+  @override
+  String get desktopLogsCopy => 'Copy';
+
+  @override
+  String get desktopLogsSave => 'Save to a file';
+
+  @override
   String get desktopNarrowSidebar => 'Collapse sidebar';
 
   @override
@@ -765,6 +782,35 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopOpenInExplorer => 'Open in Explorer';
 
   @override
+  String get desktopPaletteCommands => 'Commands';
+
+  @override
+  String get desktopPaletteHint =>
+      'Search titles and what was said, or type > for commands';
+
+  @override
+  String get desktopPaletteKeys => '↑↓ to move · Enter to open · Esc to close';
+
+  @override
+  String desktopPaletteList(String name) {
+    return 'List: $name';
+  }
+
+  @override
+  String get desktopPaletteSaid => 'Said inside clips';
+
+  @override
+  String get desktopPaletteSave => 'Save this search';
+
+  @override
+  String desktopPaletteSettings(String section) {
+    return 'Settings: $section';
+  }
+
+  @override
+  String get desktopPaletteTitles => 'Titles';
+
+  @override
   String get desktopPinned => 'Pinned';
 
   @override
@@ -795,6 +841,14 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
+  String desktopSavedSearchDelete(String name) {
+    return 'Delete the saved search “$name”? Nothing in the library changes.';
+  }
+
+  @override
+  String get desktopSavedSearchName => 'Search name';
+
+  @override
   String desktopSavingOffline(int percent) {
     return 'Saving offline · $percent%';
   }
@@ -809,6 +863,9 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopSearchHint => 'Search titles and what was said…';
+
+  @override
+  String get desktopSearchSaved => 'Saved in the sidebar';
 
   @override
   String get desktopServerFolders => 'Same folders as on the server';

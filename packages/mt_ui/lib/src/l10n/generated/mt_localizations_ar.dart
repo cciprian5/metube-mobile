@@ -573,6 +573,14 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopClearFinished => 'إخفاء المنتهية';
 
   @override
+  String get desktopCookiesPrivacy =>
+      'تُرسَل الملفات إلى سيرفرك مباشرة ولا تُحفظ على هذا الكمبيوتر أبداً. ولأنها بمثابة مفاتيح لحساباتك، فلا ترسلها إلا إلى سيرفر تملكه.';
+
+  @override
+  String get desktopCookiesReplaceNote =>
+      'كل رفع جديد يحلّ محل ملف الكوكيز على السيرفر بالكامل، فإن أردت الإبقاء على عدة منصات فاختر ملفاتها كلها معاً في كل مرة، ومنها ما رفعته من قبل. ولاختيار أكثر من ملف، اضغط Ctrl أثناء النقر.';
+
+  @override
   String get desktopCopyCancelled => 'أُلغي';
 
   @override
@@ -722,6 +730,15 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopLocalCopyRemoved => 'أُزيلت النسخة المحلية';
 
   @override
+  String get desktopLogsCopied => 'نُسخ السجل بلا روابط ولا عناوين';
+
+  @override
+  String get desktopLogsCopy => 'نسخ';
+
+  @override
+  String get desktopLogsSave => 'حفظ في ملف';
+
+  @override
   String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
 
   @override
@@ -795,6 +812,35 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopOpenInExplorer => 'فتح في مستكشف الملفات';
 
   @override
+  String get desktopPaletteCommands => 'الأوامر';
+
+  @override
+  String get desktopPaletteHint =>
+      'ابحث في العناوين وما قيل، أو اكتب > للأوامر';
+
+  @override
+  String get desktopPaletteKeys => '↑↓ للتنقل · Enter للفتح · Esc للإغلاق';
+
+  @override
+  String desktopPaletteList(String name) {
+    return 'قائمة: $name';
+  }
+
+  @override
+  String get desktopPaletteSaid => 'قيل داخل المقاطع';
+
+  @override
+  String get desktopPaletteSave => 'احفظ هذا البحث';
+
+  @override
+  String desktopPaletteSettings(String section) {
+    return 'الإعدادات: $section';
+  }
+
+  @override
+  String get desktopPaletteTitles => 'العناوين';
+
+  @override
   String get desktopPinned => 'مثبّتة';
 
   @override
@@ -825,6 +871,14 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String desktopSavedSearchDelete(String name) {
+    return 'حذف البحث المحفوظ «$name»؟ لا يتغير شيء في المكتبة.';
+  }
+
+  @override
+  String get desktopSavedSearchName => 'اسم البحث';
+
+  @override
   String desktopSavingOffline(int percent) {
     return 'يُحفظ دون اتصال · $percent٪';
   }
@@ -839,6 +893,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopSearchHint => 'ابحث في العناوين وما قيل…';
+
+  @override
+  String get desktopSearchSaved => 'حُفظ في الشريط الجانبي';
 
   @override
   String get desktopServerFolders => 'بالمجلدات نفسها التي على السيرفر';

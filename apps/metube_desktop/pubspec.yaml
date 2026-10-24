@@ -29,6 +29,9 @@ dependencies:
   # phones' own range.
   flutter_secure_storage: ^9.2.2
   go_router: ^16.2.0
+  # The running version, for About and "what's new"; the phones' range,
+  # already in the shared resolution.
+  package_info_plus: ^9.0.0
   # Already in the shared resolution at this version; makes the covers
   # taken from video frames card-sized.
   image: ^4.9.2

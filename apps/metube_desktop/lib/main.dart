@@ -21,6 +21,7 @@ import 'data/setup_data.dart';
 import 'data/transcripts_data.dart';
 import 'features/add/add_entry.dart';
 import 'features/library/artwork.dart';
+import 'features/settings/whats_new.dart';
 import 'di.dart';
 import 'identity.dart';
 import 'platform/link_drop.dart';
@@ -133,6 +134,7 @@ Future<void> main(List<String> args) async {
         windowControlsProvider.overrideWithValue(controls),
         initialServerSetupProvider.overrideWithValue(setup),
         offerSetupAtStartProvider.overrideWithValue(true),
+        offerWhatsNewProvider.overrideWithValue(true),
         backupFolderProvider.overrideWithValue(
           Directory('${roaming.path}/backup'),
         ),

@@ -14,7 +14,7 @@ import 'support/fake_api.dart';
 
 /// Windows' folders inside a test folder, and a dialog that answers
 /// [picked].
-class _Folders extends DesktopFolders {
+class _Folders extends NoFolders {
   _Folders(this.root);
 
   final Directory root;

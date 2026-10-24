@@ -101,7 +101,6 @@ void main() {
     for (final (label, place) in [
       ('Favorites', EmberPlace.favorites),
       ('Offline', EmberPlace.offline),
-      ('Search', EmberPlace.search),
       ('Playlists', EmberPlace.playlists),
       ('Channels', EmberPlace.channels),
       ('Settings', EmberPlace.settings),
@@ -116,26 +115,40 @@ void main() {
       await tester.pumpAndSettle();
       expect(current(), place, reason: label);
     }
+
+    // Search is not a place: it opens the palette over the current one.
+    await tester.tap(
+      find.descendant(
+        of: find.byType(EmberSidebar),
+        matching: find.text('Search'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Search titles and what was said, or type > for commands'),
+      findsOneWidget,
+    );
+    expect(current(), EmberPlace.library);
   });
 
   testWidgets('back and forward walk the places visited', (tester) async {
     await open(tester, const Size(1440, 900));
     EmberPlace current() =>
         tester.widget<EmberSidebar>(find.byType(EmberSidebar)).current;
-    await tester.tap(find.text('Search'));
+    await tester.tap(find.text('Playlists'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Settings'));
     await tester.pumpAndSettle();
 
     await tester.tap(byLabel('Back'));
     await tester.pumpAndSettle();
-    expect(current(), EmberPlace.search);
+    expect(current(), EmberPlace.playlists);
     await tester.tap(byLabel('Back'));
     await tester.pumpAndSettle();
     expect(current(), EmberPlace.library);
     await tester.tap(byLabel('Forward'));
     await tester.pumpAndSettle();
-    expect(current(), EmberPlace.search);
+    expect(current(), EmberPlace.playlists);
   });
 
   testWidgets('**the gate**: moving around never touches the playback', (
@@ -145,7 +158,7 @@ void main() {
     h.player.showPlaying([clip('Night Drive'), clip('Blue Hour')]);
     await tester.pumpAndSettle();
     final bar = tester.element(find.byType(EmberPlayerBar));
-    for (final label in ['Search', 'Playlists', 'Settings', 'Library']) {
+    for (final label in ['Channels', 'Playlists', 'Settings', 'Library']) {
       await tester.tap(find.text(label));
       await tester.pumpAndSettle();
     }
@@ -283,7 +296,7 @@ void main() {
     await tester.pumpWidget(h.app());
     await tester.pumpAndSettle();
     expect(address, 'http://nas:8081/download/clip.mp4');
-    await tester.tap(find.text('Search'));
+    await tester.tap(find.text('Playlists'));
     await tester.pumpAndSettle();
     expect(h.player.restores, 1);
   });

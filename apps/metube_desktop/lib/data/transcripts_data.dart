@@ -10,6 +10,37 @@ import 'library_data.dart';
 /// Overridden in main; null (tests) means none.
 final transcriptStoreProvider = Provider<TranscriptStore?>((ref) => null);
 
+/// Every transcript on this computer, searchable by what was said. Built
+/// from the files the first time a search asks for it, then kept current
+/// by [keepTranscript], so a search never reads the whole folder twice.
+final transcriptIndexProvider = FutureProvider<TranscriptIndex>((ref) async {
+  final index = TranscriptIndex();
+  final store = ref.watch(transcriptStoreProvider);
+  if (store == null) return index;
+  await for (final transcript in store.readAll()) {
+    index.add(transcript);
+  }
+  return index;
+});
+
+/// Writes [transcript] and, when the search index is already built, adds
+/// it there too. An index still being built is started again, since it
+/// may have read the folder before this file was in it.
+Future<void> keepTranscript(
+  Ref ref,
+  TranscriptStore store,
+  Transcript transcript,
+) async {
+  await store.write(transcript);
+  if (!ref.exists(transcriptIndexProvider)) return;
+  final index = ref.read(transcriptIndexProvider);
+  if (index.valueOrNull case final built?) {
+    built.add(transcript);
+  } else {
+    ref.invalidate(transcriptIndexProvider);
+  }
+}
+
 /// Which clip's transcript to show: its key, and its file on the server,
 /// beside which the server keeps the subtitles it downloaded.
 typedef TranscriptKey = ({String canonicalUrl, String? serverFilename});
@@ -42,7 +73,7 @@ final transcriptForProvider = FutureProvider.family<Transcript?, TranscriptKey>(
       );
       if (result.outcome == SidecarOutcome.failed) return null;
       if (result.transcript case final found?) {
-        await store.write(found);
+        await keepTranscript(ref, store, found);
         return found;
       }
     }

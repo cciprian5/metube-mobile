@@ -105,7 +105,7 @@ class EmberBackups {
     for (final t in transcripts) {
       final mine = await store.read(t.canonicalUrl, t.language);
       if (mine != null && !t.fetchedAt.isAfter(mine.fetchedAt)) continue;
-      await store.write(t);
+      await keepTranscript(_ref, store, t);
       added++;
     }
     return MergedTranscripts(added);

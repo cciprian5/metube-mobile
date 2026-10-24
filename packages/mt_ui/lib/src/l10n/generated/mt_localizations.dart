@@ -1040,6 +1040,18 @@ abstract class MTLocalizations {
   /// **'Hide finished'**
   String get desktopClearFinished;
 
+  /// No description provided for @desktopCookiesPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'The files go straight to your server and are never kept on this computer. They are your accounts\' sign-in material, so only ever send them to a server you own.'**
+  String get desktopCookiesPrivacy;
+
+  /// No description provided for @desktopCookiesReplaceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Each upload replaces the server\'s whole cookies file. To keep several platforms, choose all their files together every time, the ones you sent before too. Hold Ctrl to choose more than one.'**
+  String get desktopCookiesReplaceNote;
+
   /// No description provided for @desktopCopyCancelled.
   ///
   /// In en, this message translates to:
@@ -1262,6 +1274,24 @@ abstract class MTLocalizations {
   /// **'Local copy removed'**
   String get desktopLocalCopyRemoved;
 
+  /// No description provided for @desktopLogsCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Log copied, without links or addresses'**
+  String get desktopLogsCopied;
+
+  /// No description provided for @desktopLogsCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get desktopLogsCopy;
+
+  /// No description provided for @desktopLogsSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to a file'**
+  String get desktopLogsSave;
+
   /// No description provided for @desktopNarrowSidebar.
   ///
   /// In en, this message translates to:
@@ -1364,6 +1394,54 @@ abstract class MTLocalizations {
   /// **'Open in Explorer'**
   String get desktopOpenInExplorer;
 
+  /// No description provided for @desktopPaletteCommands.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get desktopPaletteCommands;
+
+  /// No description provided for @desktopPaletteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search titles and what was said, or type > for commands'**
+  String get desktopPaletteHint;
+
+  /// No description provided for @desktopPaletteKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'↑↓ to move · Enter to open · Esc to close'**
+  String get desktopPaletteKeys;
+
+  /// No description provided for @desktopPaletteList.
+  ///
+  /// In en, this message translates to:
+  /// **'List: {name}'**
+  String desktopPaletteList(String name);
+
+  /// No description provided for @desktopPaletteSaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Said inside clips'**
+  String get desktopPaletteSaid;
+
+  /// No description provided for @desktopPaletteSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this search'**
+  String get desktopPaletteSave;
+
+  /// No description provided for @desktopPaletteSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings: {section}'**
+  String desktopPaletteSettings(String section);
+
+  /// No description provided for @desktopPaletteTitles.
+  ///
+  /// In en, this message translates to:
+  /// **'Titles'**
+  String get desktopPaletteTitles;
+
   /// No description provided for @desktopPinned.
   ///
   /// In en, this message translates to:
@@ -1418,6 +1496,18 @@ abstract class MTLocalizations {
   /// **'Saved in {folder}'**
   String desktopSavedIn(String folder);
 
+  /// No description provided for @desktopSavedSearchDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the saved search “{name}”? Nothing in the library changes.'**
+  String desktopSavedSearchDelete(String name);
+
+  /// No description provided for @desktopSavedSearchName.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name'**
+  String get desktopSavedSearchName;
+
   /// No description provided for @desktopSavingOffline.
   ///
   /// In en, this message translates to:
@@ -1441,6 +1531,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Search titles and what was said…'**
   String get desktopSearchHint;
+
+  /// No description provided for @desktopSearchSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved in the sidebar'**
+  String get desktopSearchSaved;
 
   /// No description provided for @desktopServerFolders.
   ///

@@ -24,6 +24,10 @@ final connectionTestProvider = Provider<Future<void> Function(ServerConfig)>(
   },
 );
 
+/// Room between the address, user name and password fields, so a floating
+/// label never sits on the border of the field above it.
+const double _fieldGap = MTSpace.md;
+
 /// The setup guide, for "No server yet?".
 const _serverGuide =
     'https://github.com/sagheerys/metube-mobile/blob/main/docs/SERVER-SETUP.md';
@@ -153,11 +157,13 @@ class _SetupDialogState extends ConsumerState<_SetupDialog> {
                       onChanged: (_) => setState(() => _error = null),
                       decoration: InputDecoration(labelText: l.serverUrl),
                     ),
+                    const SizedBox(height: _fieldGap),
                     TextField(
                       controller: _user,
                       textDirection: TextDirection.ltr,
                       decoration: InputDecoration(labelText: l.username),
                     ),
+                    const SizedBox(height: _fieldGap),
                     TextField(
                       controller: _password,
                       focusNode: _passwordFocus,

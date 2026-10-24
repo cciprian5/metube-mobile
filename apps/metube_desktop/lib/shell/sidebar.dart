@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_core/mt_core.dart' show SavedPlaylist;
 import 'package:mt_ui/mt_ui.dart';
 
+import '../data/saved_searches.dart';
 import '../features/folders/folder_tree.dart';
 import '../router.dart';
 import 'shell_metrics.dart';
@@ -23,7 +24,16 @@ class EmberSidebar extends StatelessWidget {
     this.folders = const [],
     this.currentFolder,
     this.onFolder,
+    this.searches = const [],
+    this.onSavedSearch,
+    this.onSavedSearchMenu,
   });
+
+  /// The saved searches, under "Search", each opening the palette on its
+  /// query.
+  final List<SavedSearch> searches;
+  final ValueChanged<SavedSearch>? onSavedSearch;
+  final void Function(SavedSearch search, Offset at)? onSavedSearchMenu;
 
   final bool narrow;
   final EmberPlace current;
@@ -106,6 +116,19 @@ class EmberSidebar extends StatelessWidget {
                   l.desktopSearch,
                   EmberRoutes.search,
                 ),
+                for (final search in searches)
+                  SidebarItem(
+                    key: ValueKey('search-${search.id}'),
+                    icon: MTIcons.search,
+                    label: search.name,
+                    narrow: narrow,
+                    indent: true,
+                    selected: false,
+                    onTap: () => onSavedSearch?.call(search),
+                    onMenu: onSavedSearchMenu == null
+                        ? null
+                        : (at) => onSavedSearchMenu!(search, at),
+                  ),
                 const SizedBox(height: MTSpace.lg),
                 item(
                   EmberPlace.playlists,

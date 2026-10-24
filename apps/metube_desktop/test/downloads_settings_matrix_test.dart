@@ -1,15 +1,22 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/data/addresses_data.dart';
 import 'package:metube_desktop/data/backup_data.dart';
 import 'package:metube_desktop/data/folders_data.dart';
 import 'package:metube_desktop/data/local_copies.dart';
+import 'package:metube_desktop/data/transcripts_data.dart';
+import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/features/downloads/downloads_button.dart';
+import 'package:metube_desktop/features/settings/whats_new.dart';
 import 'package:metube_desktop/features/setup/setup_dialog.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
+import 'package:mt_transcripts/mt_transcripts.dart';
 
 import 'desktop_matrix.dart';
 import 'support/shell_harness.dart';
@@ -52,8 +59,48 @@ class _Copies extends LocalCopies {
   ];
 }
 
-ShellHarness _harness() => ShellHarness(
-  library: const [],
+/// Long on purpose, in both scripts.
+const _longTitle =
+    'A very long title about replicating snapshots to a second box every '
+    'single night, and why a snapshot on the same pool is not a backup';
+
+final _library = [
+  LibraryItem(
+    canonicalUrl: 'https://youtu.be/aaaaaaaaaaa',
+    title: _longTitle,
+    uploader: 'A channel with a rather long name of its own',
+    onServer: true,
+    timestamp: DateTime(2026, 10, 20),
+  ),
+  LibraryItem(
+    canonicalUrl: 'https://youtu.be/bbbbbbbbbbb',
+    title: 'نسخ اللقطات إلى صندوق ثانٍ كل ليلة، ولماذا لا تكفي اللقطة وحدها',
+    onServer: true,
+    timestamp: DateTime(2026, 10, 21),
+  ),
+];
+
+TranscriptIndex _index() => TranscriptIndex()
+  ..add(
+    Transcript(
+      canonicalUrl: 'https://youtu.be/aaaaaaaaaaa',
+      language: 'en',
+      source: 'sidecar',
+      fetchedAt: DateTime(2026, 10, 24),
+      segments: [
+        TranscriptSegment(
+          start: const Duration(hours: 1, minutes: 2, seconds: 3),
+          end: const Duration(hours: 1, minutes: 2, seconds: 9),
+          text:
+              'So we replicate the snapshots to a second box every night, '
+              'because a snapshot on the same pool goes down with the pool.',
+        ),
+      ],
+    ),
+  );
+
+ShellHarness _harness({List<LibraryItem> library = const []}) => ShellHarness(
+  library: library,
   server: ServerConfig(baseUrl: 'http://nas:8081'),
   overrides: [
     desktopFoldersProvider.overrideWithValue(const _Folders()),
@@ -70,6 +117,10 @@ ShellHarness _harness() => ShellHarness(
     endpointResolverProvider.overrideWithValue(
       EndpointResolver(probe: (url) async => MTEndpointStatus.unauthorized),
     ),
+    // A log that is never written: the pane shows its empty state.
+    loggerProvider.overrideWithValue(MTLogger(filePath: 'no-such-log.txt')),
+    installedVersionProvider.overrideWith((ref) async => '0.12.10'),
+    transcriptIndexProvider.overrideWith((ref) async => _index()),
   ],
 );
 
@@ -81,6 +132,9 @@ void main() {
     'folders',
     'desktop',
     'backup',
+    'cookies',
+    'logs',
+    'about',
   ]) {
     testWidgets('settings: $pane', (tester) async {
       await expectNoOverflow(
@@ -129,6 +183,41 @@ void main() {
       ).app(),
       then: (tester) async {
         unawaited(showSetupDialog(tester.element(find.byType(EmberSidebar))));
+      },
+    );
+  });
+
+  testWidgets('the palette, with every kind of result', (tester) async {
+    await expectNoOverflow(
+      tester,
+      () => _harness(library: _library).app(),
+      then: (tester) async {
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+        await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+        await tester.pumpAndSettle();
+        // The commands were drawn on opening; now a title, a moment with
+        // an hour in its time, and saving.
+        await tester.enterText(find.byType(TextField).last, 'snapshot');
+      },
+    );
+  });
+
+  testWidgets("what's new, in the middle of the window", (tester) async {
+    await expectNoOverflow(
+      tester,
+      () => _harness().app(),
+      then: (tester) async {
+        unawaited(
+          showWhatsNewDialog(
+            tester.element(find.byType(EmberSidebar)),
+            const WhatsNew(
+              version: '0.12.10',
+              notes: '## Fixed\n- $_longTitle\n- $_longTitle',
+              pageUrl: 'https://example.com/releases/tag/v0.12.10',
+            ),
+          ),
+        );
       },
     );
   });

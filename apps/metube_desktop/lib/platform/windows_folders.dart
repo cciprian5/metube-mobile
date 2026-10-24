@@ -43,6 +43,35 @@ class WindowsFolders extends DesktopFolders {
     }
   }
 
+  @override
+  Future<List<(String, List<int>)>> openFiles({
+    required List<String> extensions,
+  }) async {
+    final files = await selector.openFiles(
+      acceptedTypeGroups: [selector.XTypeGroup(extensions: extensions)],
+    );
+    return [
+      for (final file in files)
+        if (await _bytes(file.path) case final bytes?) (file.name, bytes),
+    ];
+  }
+
+  static Future<List<int>?> _bytes(String path) async {
+    try {
+      return await File(path).readAsBytes();
+    } on Object {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> saveText({required String name, required String text}) async {
+    final place = await selector.getSaveLocation(suggestedName: name);
+    if (place == null) return null;
+    await File(place.path).writeAsString(text, flush: true);
+    return place.path;
+  }
+
   // Explorer is started with its arguments as a list, never through a
   // shell, so a name with spaces or an ampersand stays one argument.
   @override

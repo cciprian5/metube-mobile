@@ -16,6 +16,7 @@ import 'package:metube_desktop/features/setup/setup_sections.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
+import 'package:mt_ui/mt_ui.dart';
 
 import 'support/shell_harness.dart';
 
@@ -219,6 +220,18 @@ void main() {
         expect('${await h.store.get(key)}', isNot(contains('secret')));
       }
       expect(find.text('Connect to your MeTube server'), findsNothing);
+    });
+
+    testWidgets('**the guard**: the address, user name and password fields '
+        'stand apart, so no label sits on the field above', (tester) async {
+      await open(tester);
+      final rects = [
+        for (final label in ['Server URL (MeTube)', 'Username', 'Password'])
+          tester.getRect(field(label)),
+      ];
+      for (var i = 1; i < rects.length; i++) {
+        expect(rects[i].top - rects[i - 1].bottom, MTSpace.md);
+      }
     });
 
     testWidgets('a refused password says so and keeps nothing', (tester) async {

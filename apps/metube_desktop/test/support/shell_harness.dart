@@ -101,7 +101,13 @@ class FakePlayer implements MTPlayer {
   @override
   Future<void> pause() => _note('pause');
   @override
-  Future<void> seek(Duration position) => _note('seek');
+  Future<void> seek(Duration position) {
+    sought = position;
+    return _note('seek');
+  }
+
+  /// Where the last [seek] went.
+  Duration? sought;
   @override
   Future<void> skipToNext() => _note('next');
   @override

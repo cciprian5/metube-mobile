@@ -3,9 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../router.dart';
+import 'about_pane.dart';
 import 'addresses_pane.dart';
 import 'backup_pane.dart';
+import 'cookies_pane.dart';
 import 'folders_pane.dart';
+import 'logs_pane.dart';
 import 'simple_panes.dart';
 
 /// Settings in two panes, the tablet's layout: the sections on one side,
@@ -112,6 +115,9 @@ class SettingsPlace extends StatelessWidget {
                         EmberSettingsPane.folders => const FoldersPane(),
                         EmberSettingsPane.desktop => const DesktopPane(),
                         EmberSettingsPane.backup => const BackupPane(),
+                        EmberSettingsPane.cookies => const CookiesPane(),
+                        EmberSettingsPane.logs => const LogsPane(),
+                        EmberSettingsPane.about => const AboutPane(),
                         _ => Text(
                           l.desktopSettingsLater,
                           style: text.bodyMedium?.copyWith(color: p.ink2),

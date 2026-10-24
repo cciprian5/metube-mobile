@@ -73,7 +73,11 @@ class SidebarItem extends StatelessWidget {
     this.indent = false,
     this.depth = 0,
     this.trailing,
+    this.onMenu,
   });
+
+  /// A right click, at where it landed; null when the place has no menu.
+  final ValueChanged<Offset>? onMenu;
 
   /// A pinned list, set in under "Playlists".
   final bool indent;
@@ -103,6 +107,9 @@ class SidebarItem extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
+        onSecondaryTapUp: onMenu == null
+            ? null
+            : (d) => onMenu!(d.globalPosition),
         child: SizedBox(
           height: MTDensity.desktop.row,
           child: narrow

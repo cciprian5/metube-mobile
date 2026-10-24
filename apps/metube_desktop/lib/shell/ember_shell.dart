@@ -11,6 +11,7 @@ import '../data/covers/covers_data.dart';
 import '../data/library_data.dart';
 import '../data/setup_data.dart';
 import '../data/lists_data.dart';
+import '../data/saved_searches.dart';
 import '../di.dart';
 import '../features/add/add_dialog.dart';
 import '../features/add/add_entry.dart';
@@ -18,7 +19,9 @@ import '../features/clip/clip_state.dart';
 import '../features/downloads/downloads_button.dart';
 import '../features/folders/folder_tree.dart';
 import '../features/library/library_state.dart';
+import '../features/palette/palette_entry.dart';
 import '../features/settings/backup_actions.dart';
+import '../features/settings/whats_new.dart';
 import '../features/setup/setup_dialog.dart';
 import '../router.dart';
 import 'content_bar.dart';
@@ -67,6 +70,11 @@ class _EmberShellState extends ConsumerState<EmberShell> {
         ref.read(serverSetupProvider) == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) unawaited(showSetupDialog(context));
+      });
+    } else if (ref.read(offerWhatsNewProvider)) {
+      // Not over the setup: a first start has nothing new to tell.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(maybeShowWhatsNew(context, ref));
       });
     }
   }
@@ -149,8 +157,22 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     // Links reach the add dialog three ways: the button, Ctrl+V anywhere
     // but a text field, and a drop on the window, where a phone's backup
     // goes to the import instead.
-    return AddShortcut(onLinks: _openAdd, child: drop(scaffold, _onDrop));
+    return PaletteShortcut(
+      onOpen: _openPalette,
+      child: AddShortcut(onLinks: _openAdd, child: drop(scaffold, _onDrop)),
+    );
   }
+
+  /// The palette is the search: Ctrl+K, the search box and the sidebar's
+  /// Search all open it, and a saved search opens it on its query.
+  void _openPalette([String initial = '']) => unawaited(
+    openPalette(
+      context,
+      ref,
+      onAdd: () => unawaited(_addFromButton()),
+      initial: initial,
+    ),
+  );
 
   void _openAdd([String text = '']) =>
       unawaited(openAddDialog(context, text: text));
@@ -220,7 +242,15 @@ class _EmberShellState extends ConsumerState<EmberShell> {
                       );
                       router.go(EmberRoutes.library);
                     },
-                    onGo: router.go,
+                    onGo: (to) => to == EmberRoutes.search
+                        ? _openPalette()
+                        : router.go(to),
+                    searches:
+                        ref.watch(savedSearchesProvider).valueOrNull ??
+                        const [],
+                    onSavedSearch: (search) => _openPalette(search.query),
+                    onSavedSearchMenu: (search, at) =>
+                        unawaited(savedSearchMenu(context, ref, search, at)),
                     onAdd: () => unawaited(_addFromButton()),
                     onToggleNarrow: arranged.canWidenSidebar
                         ? () => ref
@@ -233,7 +263,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
                       children: [
                         EmberContentBar(
                           history: _history!,
-                          onSearch: () => router.go(EmberRoutes.search),
+                          onSearch: _openPalette,
                           panelShown: panelShown,
                           onTogglePanel: () => _togglePanel(arranged, layout),
                           downloads: const DownloadsButton(),

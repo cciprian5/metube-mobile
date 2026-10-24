@@ -113,6 +113,9 @@ final coverEnrichmentProvider = Provider<void>((ref) {
     var shown = 0;
     var missed = 0;
     try {
+      // Black covers taken before frames were checked, once: forgotten
+      // here, they are taken again below from further in.
+      await forgetDarkCovers(folder, ref.read(artworkIndexProvider));
       for (final item in await enricher.candidates(items)) {
         if (stopped) return;
         if (await enricher.enrich(item)) {

@@ -466,4 +466,43 @@ void main() {
       expect(await shrinkKeptCovers(dir), 0, reason: 'done once');
     });
   });
+
+  group('**the guard**: a black frame is not a cover', () {
+    Uint8List shade(int v) => img.encodeJpg(
+      img.Image(width: 1080, height: 1920)..clear(img.ColorRgb8(v, v, v)),
+      quality: 60,
+    );
+
+    test('black reads as dark, a lit frame does not, nor does garbage', () {
+      expect(isDarkPicture(shade(4)), isTrue);
+      expect(isDarkPicture(shade(120)), isFalse);
+      expect(isDarkPicture(_jpeg), isFalse);
+    });
+
+    test('black covers kept before are forgotten once, files and all, so '
+        'they are taken again', () async {
+      final dir = Directory.systemTemp.createTempSync('ember_dark_');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final artwork = ArtworkIndex(
+        store: MemoryKeyValueStore(),
+        mutex: PrefsMutex(),
+      );
+      final black = File('${dir.path}/black.jpg')..writeAsBytesSync(shade(3));
+      final lit = File('${dir.path}/lit.jpg')..writeAsBytesSync(shade(150));
+      await artwork.put('https://www.instagram.com/reel/black/', black.path);
+      await artwork.put('https://www.instagram.com/reel/lit/', lit.path);
+      // A YouTube cover is an address, never a file here: left alone.
+      await artwork.put('https://youtu.be/x', 'https://i.ytimg.com/vi/x.jpg');
+
+      expect(await forgetDarkCovers(dir, artwork), 1);
+      expect(black.existsSync(), isFalse);
+      expect(lit.existsSync(), isTrue);
+      expect((await artwork.readAll()).keys, [
+        'https://www.instagram.com/reel/lit/',
+        'https://youtu.be/x',
+      ]);
+      await artwork.put('https://www.instagram.com/reel/black/', lit.path);
+      expect(await forgetDarkCovers(dir, artwork), 0, reason: 'done once');
+    });
+  });
 }

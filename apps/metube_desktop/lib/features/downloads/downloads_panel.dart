@@ -50,12 +50,14 @@ class DownloadsPanel extends ConsumerWidget {
       for (final t in tasks)
         if (t.phase == TaskPhase.failed) t,
     ];
-    final finished =
-        copies.any((c) => !c.isActive) ||
-        tasks.any((t) => t.isFinished && t.phase != TaskPhase.failed);
+    // Only lines the panel shows: a clip the server finished has no line
+    // here, so it never offers to hide what cannot be seen.
+    final finished = copies.any((c) => !c.isActive);
     final empty =
         working.isEmpty && waiting.isEmpty && failed.isEmpty && copies.isEmpty;
 
+    // Hides finished lines from this panel; nothing is deleted, here or on
+    // the server.
     void clearFinished() {
       ref.read(localCopiesProvider.notifier).clearFinished();
       for (final t in tasks) {

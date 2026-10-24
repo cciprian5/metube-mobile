@@ -560,7 +560,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopClearFilters => 'إلغاء التصفية';
 
   @override
-  String get desktopClearFinished => 'مسح المنتهية';
+  String get desktopClearFinished => 'إخفاء المنتهية';
 
   @override
   String get desktopCopyCancelled => 'أُلغي';

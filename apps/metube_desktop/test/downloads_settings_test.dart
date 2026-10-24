@@ -98,11 +98,15 @@ void main() {
       expect(h.engine.forgotten, [task.id]);
     });
 
-    testWidgets('empty, it says how downloads begin', (tester) async {
-      await open(tester);
+    testWidgets('empty, it says how downloads begin, and offers nothing to '
+        'hide even after the server finished a clip', (tester) async {
+      final h = await open(tester);
+      h.engine.finish(h.engine.submit(_reel, Quality.best));
+      await tester.pumpAndSettle();
       await tester.tap(byLabel('Downloads'));
       await tester.pumpAndSettle();
       expect(find.textContaining('Nothing is downloading'), findsOneWidget);
+      expect(find.text('Hide finished'), findsNothing);
     });
   });
 

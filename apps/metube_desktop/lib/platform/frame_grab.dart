@@ -7,6 +7,8 @@ import 'dart:typed_data';
 import 'package:media_kit/ffi/ffi.dart';
 import 'package:media_kit/generated/libmpv/bindings.dart';
 
+import '../data/covers/cover_shrink.dart';
+
 /// One picture from a clip on the server, for a clip the server names no
 /// cover for: a video's frame (every Instagram, TikTok or X video), or the
 /// cover embedded in an MP3, Opus or FLAC file, which the engine shows as
@@ -35,17 +37,25 @@ Future<Uint8List?> grabFrame(String url, Map<String, String> headers) async {
   final out = await Directory.systemTemp.createTemp('ember_frame_');
   try {
     final dir = out.path;
-    // One second in skips a black first frame; a clip shorter than that is
-    // asked again from its start.
-    for (final start in const ['1', '0']) {
+    // One second in skips a black first frame; a clip that is still black
+    // there (a fade-in) is asked five seconds in, and one shorter than
+    // that from its start. A black frame is kept only when nothing better
+    // came.
+    Uint8List? dark;
+    for (final start in const ['1', '5', '0']) {
+      for (final old in out.listSync().whereType<File>()) {
+        old.deleteSync();
+      }
       await Isolate.run(() => _grab(url, header, dir, start))
           .timeout(_wait + const Duration(seconds: 15));
       final pictures = out.listSync().whereType<File>().toList();
       if (pictures.isEmpty) continue;
       final bytes = await pictures.first.readAsBytes();
-      return bytes.isEmpty ? null : bytes;
+      if (bytes.isEmpty) continue;
+      if (!await Isolate.run(() => isDarkPicture(bytes))) return bytes;
+      dark ??= bytes;
     }
-    return null;
+    return dark;
   } on Object {
     return null;
   } finally {

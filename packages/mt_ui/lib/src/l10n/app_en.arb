@@ -548,7 +548,7 @@
   "desktopChannelsInLibrary": "Channels in your library",
   "desktopCheckAll": "Check all",
   "desktopClearFilters": "Clear filters",
-  "desktopClearFinished": "Clear finished",
+  "desktopClearFinished": "Hide finished",
   "desktopCopyCancelled": "Cancelled",
   "desktopCopyLink": "Copy link",
   "desktopCopyQueued": "Waiting its turn",

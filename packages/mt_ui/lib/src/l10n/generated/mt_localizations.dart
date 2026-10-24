@@ -1019,7 +1019,7 @@ abstract class MTLocalizations {
   /// No description provided for @desktopClearFinished.
   ///
   /// In en, this message translates to:
-  /// **'Clear finished'**
+  /// **'Hide finished'**
   String get desktopClearFinished;
 
   /// No description provided for @desktopCopyCancelled.

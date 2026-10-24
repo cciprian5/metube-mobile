@@ -539,7 +539,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopClearFilters => 'Clear filters';
 
   @override
-  String get desktopClearFinished => 'Clear finished';
+  String get desktopClearFinished => 'Hide finished';
 
   @override
   String get desktopCopyCancelled => 'Cancelled';

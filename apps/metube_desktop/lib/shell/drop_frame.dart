@@ -18,7 +18,7 @@ class DropFrame extends StatelessWidget {
       padding: const EdgeInsets.all(MTSpace.lg),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: p.accentSoft.withValues(alpha: 0.85),
+          color: dropWash(p),
           borderRadius: BorderRadius.circular(radius),
         ),
         child: CustomPaint(
@@ -36,6 +36,13 @@ class DropFrame extends StatelessWidget {
     );
   }
 }
+
+/// The wash over the window: the soft accent as it looks on the ground,
+/// then let through a little. The night's soft accent is itself see-through,
+/// so giving it an opacity of its own, as the day's takes, turned the whole
+/// window a glaring orange with the words lost in it.
+Color dropWash(MTPalette p) =>
+    Color.alphaBlend(p.accentSoft, p.bg).withValues(alpha: 0.9);
 
 /// A rounded edge dashed [dash] on [gap].
 class DashedEdge extends CustomPainter {

@@ -113,7 +113,7 @@ void main() {
       artwork = ArtworkIndex(store: store, mutex: PrefsMutex());
       failures = ProbeFailureIndex(store: store, mutex: PrefsMutex());
     });
-    tearDown(() => dir.deleteSync(recursive: true));
+    tearDown(() => _remove(dir));
 
     LibraryItem clip(String id, {bool audio = true, String? thumbnail}) =>
         LibraryItem(
@@ -309,7 +309,7 @@ void main() {
 
     test('a copy on this computer, read in place with no password', () async {
       final dir = Directory.systemTemp.createTempSync('ember_local_');
-      addTearDown(() => dir.deleteSync(recursive: true));
+      addTearDown(() => _remove(dir));
       final file = File('${dir.path}/a.mp4')..writeAsBytesSync([0]);
       await videoFrameFor(grab, api)(
         LibraryItem(
@@ -369,7 +369,7 @@ void main() {
   test('**the guard**: the newest clips get their frames first, as the '
       'library opens, not the oldest', () async {
     final dir = Directory.systemTemp.createTempSync('ember_order_');
-    addTearDown(() => dir.deleteSync(recursive: true));
+    addTearDown(() => _remove(dir));
     final api = MeTubeApiClient(
       config: ServerConfig(baseUrl: 'http://127.0.0.1:9'),
     );
@@ -431,7 +431,7 @@ void main() {
 
     test('the enricher keeps the small one', () async {
       final dir = Directory.systemTemp.createTempSync('ember_shrink_');
-      addTearDown(() => dir.deleteSync(recursive: true));
+      addTearDown(() => _remove(dir));
       final store = MemoryKeyValueStore();
       final artwork = ArtworkIndex(store: store, mutex: PrefsMutex());
       final enricher = CoverEnricher(
@@ -453,7 +453,7 @@ void main() {
 
     test('covers kept before are shrunk once, in place', () async {
       final dir = Directory.systemTemp.createTempSync('ember_kept_');
-      addTearDown(() => dir.deleteSync(recursive: true));
+      addTearDown(() => _remove(dir));
       final big = File('${dir.path}/big.jpg')
         ..writeAsBytesSync(frame(1080, 1920));
       final small = File('${dir.path}/small.jpg')
@@ -482,7 +482,7 @@ void main() {
     test('black covers kept before are forgotten once, files and all, so '
         'they are taken again', () async {
       final dir = Directory.systemTemp.createTempSync('ember_dark_');
-      addTearDown(() => dir.deleteSync(recursive: true));
+      addTearDown(() => _remove(dir));
       final artwork = ArtworkIndex(
         store: MemoryKeyValueStore(),
         mutex: PrefsMutex(),
@@ -505,4 +505,20 @@ void main() {
       expect(await forgetDarkCovers(dir, artwork), 0, reason: 'done once');
     });
   });
+}
+
+/// Deletes a test's cover folder once nothing holds it. A round of the
+/// enrichment stopped by the container's disposal may still be closing a
+/// cover, and Windows refuses to delete an open file; under the load of the
+/// whole suite that window was wide enough to fail the test now and then.
+Future<void> _remove(Directory dir) async {
+  for (var tries = 0; ; tries++) {
+    try {
+      if (dir.existsSync()) dir.deleteSync(recursive: true);
+      return;
+    } on FileSystemException {
+      if (tries == 40) rethrow;
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
+  }
 }

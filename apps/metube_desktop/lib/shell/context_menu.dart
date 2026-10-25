@@ -36,9 +36,22 @@ Future<T?> showEmberMenu<T>(
   final text = Theme.of(context).textTheme;
   final overlay = Overlay.of(context).context.findRenderObject()! as RenderBox;
   final at = overlay.globalToLocal(globalPosition);
+  final size = overlay.size;
   return showMenu<T>(
     context: context,
-    position: RelativeRect.fromRect(at & Size.zero, Offset.zero & overlay.size),
+    // The menu opens on the reading side of the pointer, as Windows' own
+    // do: rightwards in English, leftwards in Arabic, and only turns back
+    // at the window's edge. Given a point, Flutter opens it towards the
+    // wider half instead; insets that do not mirror each other tell it
+    // which edge to align.
+    position: Directionality.of(context) == TextDirection.rtl
+        ? RelativeRect.fromLTRB(
+            size.width,
+            at.dy,
+            size.width - at.dx,
+            size.height - at.dy,
+          )
+        : RelativeRect.fromLTRB(at.dx, at.dy, size.width, size.height - at.dy),
     color: p.card,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(MTCorners.desktop.card),

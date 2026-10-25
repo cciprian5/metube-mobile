@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/data/clip_handover.dart';
 import 'package:metube_desktop/features/library/item_menu.dart';
+import 'package:metube_desktop/features/library/library_item_view.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -78,6 +79,7 @@ void main() {
     Future<ShellHarness> open(
       WidgetTester tester, {
       List<LibraryItem>? dragged,
+      List<LibraryItem>? library,
     }) async {
       ShellHarness.useWindow(tester, const Size(1440, 900));
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -93,7 +95,7 @@ void main() {
         ),
       );
       final h = ShellHarness(
-        library: [_clip()],
+        library: library ?? [_clip()],
         server: ServerConfig(baseUrl: 'http://nas:8081'),
         overrides: [
           if (dragged != null)
@@ -140,6 +142,52 @@ void main() {
         ['https://youtu.be/aaaaaaaaaaa'],
       ]);
     });
+
+    for (final arabic in [false, true]) {
+      testWidgets('**the guard**: the menu opens on the reading side of the '
+          'pointer (${arabic ? 'left, in Arabic' : 'right, in English'})', (
+        tester,
+      ) async {
+        if (arabic) ShellHarness.useArabic(tester);
+        // A row of cards across the window; the pointer goes on the one in
+        // the half where Flutter alone would open the menu the wrong way.
+        await open(
+          tester,
+          library: [
+            for (var i = 0; i < 4; i++)
+              LibraryItem(
+                canonicalUrl: 'https://youtu.be/clip$i',
+                title: 'Clip $i',
+                onServer: true,
+                serverFilename: 'Clip $i.mp4',
+                timestamp: DateTime(2026, 10, 20),
+              ),
+          ],
+        );
+        final cards = [
+          for (final e in find.byType(LibraryItemView).evaluate())
+            tester.getRect(find.byWidget(e.widget)),
+        ]..sort((a, b) => a.left.compareTo(b.left));
+        // The second card from the far edge: in the half where Flutter
+        // alone would open the menu backwards, yet with room for it before
+        // the content's edge turns it back.
+        final at = (arabic ? cards[1] : cards[cards.length - 2]).center;
+        await tester.tapAt(
+          at,
+          buttons: kSecondaryMouseButton,
+          kind: PointerDeviceKind.mouse,
+        );
+        await tester.pumpAndSettle();
+        final menu = tester.getRect(
+          find.byType(PopupMenuItem<ItemChoice>).first,
+        );
+        if (arabic) {
+          expect(menu.right, lessThanOrEqualTo(at.dx + 1));
+        } else {
+          expect(menu.left, greaterThanOrEqualTo(at.dx - 1));
+        }
+      });
+    }
 
     testWidgets('**the guard**: every clip in the library can be dragged out', (
       tester,

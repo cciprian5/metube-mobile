@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import '../widgets/mt_polish.dart';
 
 /// The Wahaj switch: a hairline track whose knob is an empty ring when off
 /// and **the ember itself** when on, glowing in the accent. The only
@@ -59,7 +60,7 @@ class _MTSwitchState extends State<MTSwitch> {
           child: Opacity(
             opacity: enabled ? 1 : 0.45,
             child: AnimatedContainer(
-              duration: MTMotion.fast,
+              duration: mtMotionDuration(context, MTMotion.fast),
               curve: MTMotion.ease,
               width: _width,
               height: _height,
@@ -73,13 +74,13 @@ class _MTSwitchState extends State<MTSwitch> {
                     : null,
               ),
               child: AnimatedAlign(
-                duration: MTMotion.fast,
+                duration: mtMotionDuration(context, MTMotion.fast),
                 curve: MTMotion.ease,
                 alignment: on
                     ? AlignmentDirectional.centerEnd
                     : AlignmentDirectional.centerStart,
                 child: AnimatedContainer(
-                  duration: MTMotion.fast,
+                  duration: mtMotionDuration(context, MTMotion.fast),
                   width: _knob,
                   height: _knob,
                   decoration: BoxDecoration(

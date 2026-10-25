@@ -38,7 +38,10 @@ class MTBoxedGroup extends StatelessWidget {
         DecoratedBox(
           decoration: BoxDecoration(
             color: p.card,
-            border: Border.all(color: p.line),
+            border: Border.all(
+              color: p.line,
+              width: MTThemeX.of(context).hairline,
+            ),
             borderRadius: BorderRadius.circular(corners.card),
           ),
           child: ClipRRect(

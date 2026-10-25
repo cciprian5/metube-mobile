@@ -15,7 +15,10 @@ class KeyCap extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          border: Border.all(color: p.line2),
+          border: Border.all(
+            color: p.line2,
+            width: MTThemeX.of(context).hairline,
+          ),
           borderRadius: BorderRadius.circular(MTCorners.desktop.box),
         ),
         child: Padding(

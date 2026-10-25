@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../di.dart';
 import '../features/clip/clip_state.dart';
 import '../features/library/artwork.dart';
+import 'shell_state.dart';
 import 'video_surface.dart';
 import 'window_controls.dart';
 
@@ -14,6 +16,21 @@ import 'window_controls.dart';
 abstract final class EmberMiniSize {
   static const audio = Size(360, 96);
   static const video = Size(360, 203);
+}
+
+/// Ctrl+M and the player bar's button: the small card above every window,
+/// sized for what plays, or the full window again.
+void toggleMiniWindow(WidgetRef ref) {
+  final controls = ref.read(windowControlsProvider);
+  if (controls.mini.value) {
+    controls.setMini(null);
+    return;
+  }
+  final picture = miniShowsPicture(
+    ref.read(playerProvider).state,
+    audioOnly: ref.read(audioOnlyProvider),
+  );
+  controls.setMini(picture ? EmberMiniSize.video : EmberMiniSize.audio);
 }
 
 /// Whether the card shows a picture: a video playing with its picture on.

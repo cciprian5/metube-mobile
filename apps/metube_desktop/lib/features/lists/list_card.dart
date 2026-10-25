@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../shell/context_menu.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
 
@@ -41,84 +44,90 @@ class ListCard extends ConsumerWidget {
     final l = context.mtl;
     final radius = BorderRadius.circular(MTCorners.desktop.card);
     const width = EmberShellSize.listCard;
-    return SizedBox(
-      width: width,
-      child: MTHoverLift(
-        borderRadius: radius,
-        builder: (context, hovered) => Material(
-          color: p.card,
-          shape: RoundedRectangleBorder(
-            borderRadius: radius,
-            side: BorderSide(color: pinned ? p.accent : p.line),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onOpen,
-            onSecondaryTapUp: onMenu == null
-                ? null
-                : (d) => onMenu!(d.globalPosition),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      _Mosaic(covers: covers, icon: icon, width: width),
-                      if (onPlay != null && hovered)
-                        Center(
-                          child: MTShortcutTooltip(
-                            message: l.playAll,
-                            child: Material(
-                              color: p.accent,
-                              shape: const CircleBorder(),
-                              child: InkWell(
-                                customBorder: const CircleBorder(),
-                                onTap: onPlay,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(MTSpace.sm),
-                                  child: MTIcon(
-                                    MTIcons.playFill,
-                                    size: MTSpace.xl,
-                                    color: p.onAccent,
+    return MenuKey(
+      onMenu: onMenu,
+      child: SizedBox(
+        width: width,
+        child: MTHoverLift(
+          borderRadius: radius,
+          builder: (context, hovered) => Material(
+            color: p.card,
+            shape: RoundedRectangleBorder(
+              borderRadius: radius,
+              side: BorderSide(
+                color: pinned ? p.accent : p.line,
+                width: MTThemeX.of(context).hairline,
+              ),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onOpen,
+              onSecondaryTapUp: onMenu == null
+                  ? null
+                  : (d) => onMenu!(d.globalPosition),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        _Mosaic(covers: covers, icon: icon, width: width),
+                        if (onPlay != null && hovered)
+                          Center(
+                            child: MTShortcutTooltip(
+                              message: l.playAll,
+                              child: Material(
+                                color: p.accent,
+                                shape: const CircleBorder(),
+                                child: InkWell(
+                                  customBorder: const CircleBorder(),
+                                  onTap: onPlay,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(MTSpace.sm),
+                                    child: MTIcon(
+                                      MTIcons.playFill,
+                                      size: MTSpace.xl,
+                                      color: p.onAccent,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(MTSpace.sm),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        textDirection: mtTextDirectionOf(
+                  Padding(
+                    padding: const EdgeInsets.all(MTSpace.sm),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
                           title,
-                          Directionality.of(context),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textDirection: mtTextDirectionOf(
+                            title,
+                            Directionality.of(context),
+                          ),
+                          style: text.titleSmall?.copyWith(color: p.ink),
                         ),
-                        style: text.titleSmall?.copyWith(color: p.ink),
-                      ),
-                      const SizedBox(height: MTSpace.xxs),
-                      Text(
-                        mtMetaLine([subtitle, if (pinned) l.desktopPinned]),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: text.labelSmall?.copyWith(
-                          color: pinned ? p.accentInk : p.ink3,
+                        const SizedBox(height: MTSpace.xxs),
+                        Text(
+                          mtMetaLine([subtitle, if (pinned) l.desktopPinned]),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.labelSmall?.copyWith(
+                            color: pinned ? p.accentInk : p.ink3,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -71,12 +71,14 @@ class EmberSidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     return AnimatedContainer(
-      duration: MTMotion.medium,
+      duration: mtMotionDuration(context, MTMotion.medium),
       curve: MTMotion.ease,
       width: narrow ? EmberShellSize.sidebarNarrow : EmberShellSize.sidebarWide,
       decoration: BoxDecoration(
         color: p.bg,
-        border: BorderDirectional(end: BorderSide(color: p.line)),
+        border: BorderDirectional(
+          end: BorderSide(color: p.line, width: MTThemeX.of(context).hairline),
+        ),
       ),
       padding: const EdgeInsets.all(_pad),
       // Widening, the places keep their narrow form until the sidebar has

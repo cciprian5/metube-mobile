@@ -52,7 +52,10 @@ class MTActiveDownloadsBar extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(MTRadius.card),
-            border: Border.all(color: p.accent.withValues(alpha: 0.3)),
+            border: Border.all(
+              color: p.accent.withValues(alpha: 0.3),
+              width: MTThemeX.of(context).hairline,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

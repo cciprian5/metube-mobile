@@ -36,7 +36,12 @@ class EmberRightPanel extends StatelessWidget {
       width: EmberShellSize.panel,
       decoration: BoxDecoration(
         color: p.bg,
-        border: BorderDirectional(start: BorderSide(color: p.line)),
+        border: BorderDirectional(
+          start: BorderSide(
+            color: p.line,
+            width: MTThemeX.of(context).hairline,
+          ),
+        ),
       ),
       padding: const EdgeInsets.all(MTSpace.lg),
       child: Column(

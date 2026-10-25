@@ -65,6 +65,17 @@ class _EmberAppState extends State<EmberApp> {
         debugShowCheckedModeBanner: false,
         theme: mtDesktopTheme(MTVariant.superApp, Brightness.light),
         darkTheme: mtDesktopTheme(MTVariant.superApp, Brightness.dark),
+        // Chosen by Flutter itself while Windows' high contrast is on.
+        highContrastTheme: mtDesktopTheme(
+          MTVariant.superApp,
+          Brightness.light,
+          highContrast: true,
+        ),
+        highContrastDarkTheme: mtDesktopTheme(
+          MTVariant.superApp,
+          Brightness.dark,
+          highContrast: true,
+        ),
         themeMode: ThemeMode.system,
         locale: widget.locale,
         localizationsDelegates: MTLocalizations.localizationsDelegates,

@@ -164,7 +164,12 @@ class MTMediaRowHeader extends StatelessWidget {
         MTSpace.sm,
       ),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: p.line2)),
+        border: Border(
+          bottom: BorderSide(
+            color: p.line2,
+            width: MTThemeX.of(context).hairline,
+          ),
+        ),
       ),
       child: Row(
         children: [

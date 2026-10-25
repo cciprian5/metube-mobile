@@ -78,6 +78,9 @@ class ClipMenuArea extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => GestureDetector(
     behavior: HitTestBehavior.translucent,
+    // Only the right click is caught here; left in, Flutter would offer a
+    // screen reader a "tap" on the whole area that does nothing.
+    excludeFromSemantics: true,
     onSecondaryTapUp: (d) =>
         unawaited(showClipMenu(context, ref, d.globalPosition, item)),
     child: child,

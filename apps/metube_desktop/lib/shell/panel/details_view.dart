@@ -57,7 +57,12 @@ class _Row extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: MTSpace.sm),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: p.line)),
+        border: Border(
+          bottom: BorderSide(
+            color: p.line,
+            width: MTThemeX.of(context).hairline,
+          ),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -6,18 +6,31 @@ import '../widgets/mt_motion.dart';
 /// Theme extension: carries the Wahaj palette to every widget through
 /// `MTThemeX.of(context)` instead of any literal colour (rule 5).
 class MTThemeX extends ThemeExtension<MTThemeX> {
-  const MTThemeX({required this.palette, required this.variant});
+  const MTThemeX({
+    required this.palette,
+    required this.variant,
+    this.hairline = 1,
+  });
 
   final MTPalette palette;
   final MTVariant variant;
+
+  /// How thick a hairline (a border, a rule) is drawn: one pixel, or more
+  /// where the user asked the system for high contrast.
+  final double hairline;
 
   static MTThemeX of(BuildContext context) =>
       Theme.of(context).extension<MTThemeX>()!;
 
   @override
-  MTThemeX copyWith({MTPalette? palette, MTVariant? variant}) => MTThemeX(
+  MTThemeX copyWith({
+    MTPalette? palette,
+    MTVariant? variant,
+    double? hairline,
+  }) => MTThemeX(
     palette: palette ?? this.palette,
     variant: variant ?? this.variant,
+    hairline: hairline ?? this.hairline,
   );
 
   @override
@@ -32,6 +45,7 @@ ThemeData mtTheme(
   Brightness brightness, {
   MTTypeScale type = MTTypeScale.mobile,
   MTCorners corners = MTCorners.mobile,
+  double hairline = 1,
 }) {
   final p = MTPalette.of(variant, brightness);
   final isDark = brightness == Brightness.dark;
@@ -121,7 +135,11 @@ ThemeData mtTheme(
     // instead of the default vertical rise that says nothing about how the
     // two screens relate.
     pageTransitionsTheme: mtPageTransitionsTheme,
-    dividerTheme: DividerThemeData(color: p.line, thickness: 1, space: 1),
+    dividerTheme: DividerThemeData(
+      color: p.line,
+      thickness: hairline,
+      space: 1,
+    ),
     textTheme: TextTheme(
       headlineLarge: display(type.headline, FontWeight.w700),
       headlineMedium: display(20, FontWeight.w700),
@@ -148,14 +166,14 @@ ThemeData mtTheme(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(corners.card),
-        side: BorderSide(color: p.line),
+        side: BorderSide(color: p.line, width: hairline),
       ),
       margin: EdgeInsets.zero,
     ),
     chipTheme: ChipThemeData(
       backgroundColor: Colors.transparent,
       selectedColor: p.ink,
-      side: BorderSide(color: p.line2),
+      side: BorderSide(color: p.line2, width: hairline),
       // **Label colour follows the state** (full review 2026-09-02): a
       // selected chip is painted with `p.ink` as its background and its
       // label was `p.ink2`, dark ink on dark ink, so **a selected tag could
@@ -186,15 +204,15 @@ ThemeData mtTheme(
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(corners.field),
-        borderSide: BorderSide(color: p.line2),
+        borderSide: BorderSide(color: p.line2, width: hairline),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(corners.field),
-        borderSide: BorderSide(color: p.line2),
+        borderSide: BorderSide(color: p.line2, width: hairline),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(corners.field),
-        borderSide: BorderSide(color: p.accent, width: 1.4),
+        borderSide: BorderSide(color: p.accent, width: 1.4 * hairline),
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
@@ -225,7 +243,9 @@ ThemeData mtTheme(
           (states) =>
               states.contains(WidgetState.selected) ? p.accentInk : p.ink2,
         ),
-        side: WidgetStatePropertyAll(BorderSide(color: p.line2)),
+        side: WidgetStatePropertyAll(
+          BorderSide(color: p.line2, width: hairline),
+        ),
         textStyle: WidgetStatePropertyAll(body(13, FontWeight.w500)),
       ),
     ),
@@ -277,6 +297,6 @@ ThemeData mtTheme(
         borderRadius: BorderRadius.circular(corners.card),
       ),
     ),
-    extensions: [MTThemeX(palette: p, variant: variant)],
+    extensions: [MTThemeX(palette: p, variant: variant, hairline: hairline)],
   );
 }

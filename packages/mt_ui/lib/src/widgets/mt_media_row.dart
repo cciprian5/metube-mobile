@@ -113,7 +113,12 @@ class MTMediaRow extends StatelessWidget {
               horizontal: MTSpace.xs,
             ),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: p.line)),
+              border: Border(
+                bottom: BorderSide(
+                  color: p.line,
+                  width: MTThemeX.of(context).hairline,
+                ),
+              ),
             ),
             child: Row(
               children: [
@@ -253,7 +258,10 @@ class _Tag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: MTSpace.xs - 1),
       decoration: BoxDecoration(
-        border: Border.all(color: p.line2),
+        border: Border.all(
+          color: p.line2,
+          width: MTThemeX.of(context).hairline,
+        ),
         borderRadius: BorderRadius.circular(MTRadius.thumb),
       ),
       child: Text(

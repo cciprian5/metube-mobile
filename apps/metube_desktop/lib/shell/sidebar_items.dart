@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'context_menu.dart';
+
 /// The sidebar's add button: the ember, with the label when wide.
 class SidebarAddButton extends StatelessWidget {
   const SidebarAddButton({
@@ -155,7 +157,10 @@ class SidebarItem extends StatelessWidget {
       selected: selected,
       button: true,
       label: narrow ? label : null,
-      child: narrow ? MTShortcutTooltip(message: label, child: row) : row,
+      child: MenuKey(
+        onMenu: onMenu,
+        child: narrow ? MTShortcutTooltip(message: label, child: row) : row,
+      ),
     );
   }
 }

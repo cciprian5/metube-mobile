@@ -29,7 +29,12 @@ class EmberSectionHeader extends StatelessWidget {
         MTSpace.sm,
       ),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: p.line)),
+        border: Border(
+          bottom: BorderSide(
+            color: p.line,
+            width: MTThemeX.of(context).hairline,
+          ),
+        ),
       ),
       child: Row(
         children: [

@@ -174,7 +174,7 @@ class _Line extends StatelessWidget {
         onTap: onTap,
         borderRadius: corner,
         child: AnimatedContainer(
-          duration: MTMotion.fast,
+          duration: mtMotionDuration(context, MTMotion.fast),
           padding: const EdgeInsets.symmetric(
             horizontal: MTSpace.sm,
             vertical: MTSpace.xs,

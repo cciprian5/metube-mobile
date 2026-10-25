@@ -52,7 +52,10 @@ class MTMediaGridCover extends StatelessWidget {
         decoration: BoxDecoration(
           color: p.cardAlt,
           borderRadius: BorderRadius.circular(MTRadius.thumb),
-          border: Border.all(color: p.line),
+          border: Border.all(
+            color: p.line,
+            width: MTThemeX.of(context).hairline,
+          ),
         ),
         child: Stack(
           fit: StackFit.expand,

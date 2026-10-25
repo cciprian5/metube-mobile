@@ -37,7 +37,10 @@ class MTShortcutTooltip extends StatelessWidget {
                 margin: const EdgeInsetsDirectional.only(start: MTSpace.sm),
                 padding: const EdgeInsets.symmetric(horizontal: MTSpace.xxs),
                 decoration: BoxDecoration(
-                  border: Border.all(color: p.miniInk.withValues(alpha: 0.3)),
+                  border: Border.all(
+                    color: p.miniInk.withValues(alpha: 0.3),
+                    width: MTThemeX.of(context).hairline,
+                  ),
                   borderRadius: BorderRadius.circular(MTCorners.desktop.box),
                 ),
                 child: Text(

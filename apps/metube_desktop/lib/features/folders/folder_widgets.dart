@@ -174,7 +174,12 @@ class _PulsingHelpState extends State<PulsingHelp>
           return Transform.scale(scale: 1 + 0.25 * swell, child: child);
         },
         child: Material(
-          shape: CircleBorder(side: BorderSide(color: p.accent)),
+          shape: CircleBorder(
+            side: BorderSide(
+              color: p.accent,
+              width: MTThemeX.of(context).hairline,
+            ),
+          ),
           color: p.accentSoft,
           child: InkWell(
             customBorder: const CircleBorder(),

@@ -126,7 +126,7 @@ class _PaletteState extends ConsumerState<_Palette> {
       unawaited(
         Scrollable.ensureVisible(
           row,
-          duration: MTMotion.fast,
+          duration: mtMotionDuration(context, MTMotion.fast),
           alignmentPolicy: by > 0
               ? ScrollPositionAlignmentPolicy.keepVisibleAtEnd
               : ScrollPositionAlignmentPolicy.keepVisibleAtStart,
@@ -178,7 +178,10 @@ class _PaletteState extends ConsumerState<_Palette> {
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(MTCorners.desktop.card),
-              side: BorderSide(color: p.line2),
+              side: BorderSide(
+                color: p.line2,
+                width: MTThemeX.of(context).hairline,
+              ),
             ),
             clipBehavior: Clip.antiAlias,
             child: Column(

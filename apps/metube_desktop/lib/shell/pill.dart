@@ -33,6 +33,7 @@ class EmberPill extends StatelessWidget {
         shape: StadiumBorder(
           side: BorderSide(
             color: selected ? p.ink : (struck ? p.err : p.line2),
+            width: MTThemeX.of(context).hairline,
           ),
         ),
         clipBehavior: Clip.antiAlias,

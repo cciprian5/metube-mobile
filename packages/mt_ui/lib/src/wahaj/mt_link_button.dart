@@ -4,6 +4,7 @@ import '../icons/mt_icon.dart';
 import '../icons/mt_icon_data.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import '../widgets/mt_polish.dart';
 
 /// An action written as a link rather than a filled button: bold text in
 /// the accent, and **a line drawn beneath it while pressed or hovered**,
@@ -60,7 +61,7 @@ class _MTLinkButtonState extends State<MTLinkButton> {
             padding: const EdgeInsets.symmetric(vertical: MTSpace.xs),
             child: TweenAnimationBuilder<double>(
               tween: Tween(end: _hot ? 1 : 0),
-              duration: MTMotion.fast,
+              duration: mtMotionDuration(context, MTMotion.fast),
               curve: MTMotion.ease,
               builder: (context, drawn, child) => CustomPaint(
                 key: const ValueKey('underline'),

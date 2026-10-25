@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import 'mt_polish.dart';
 
 /// A live Wahaj download card: a soft accent ground, a progress bar and a
 /// cancel. The status text, whether a phase or an error, arrives already
@@ -41,7 +42,10 @@ class MTDownloadProgressCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: isError ? p.err.withValues(alpha: 0.08) : p.accentSoft,
         borderRadius: BorderRadius.circular(MTRadius.card),
-        border: Border.all(color: tint.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: tint.withValues(alpha: 0.3),
+          width: MTThemeX.of(context).hairline,
+        ),
       ),
       child: Row(
         children: [
@@ -52,7 +56,10 @@ class MTDownloadProgressCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: p.card,
               borderRadius: BorderRadius.circular(MTRadius.thumb),
-              border: Border.all(color: tint.withValues(alpha: 0.25)),
+              border: Border.all(
+                color: tint.withValues(alpha: 0.25),
+                width: MTThemeX.of(context).hairline,
+              ),
             ),
             child:
                 thumbnail ??
@@ -71,7 +78,10 @@ class MTDownloadProgressCard extends StatelessWidget {
             // that arrives in steps still reads as a count.
             child: TweenAnimationBuilder<double>(
               tween: Tween(end: progress?.clamp(0, 1).toDouble() ?? 0),
-              duration: const Duration(milliseconds: 450),
+              duration: mtMotionDuration(
+                context,
+                const Duration(milliseconds: 450),
+              ),
               curve: Curves.easeOut,
               builder: (context, shown, _) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

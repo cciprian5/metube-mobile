@@ -193,7 +193,7 @@ class _CaptionButtonState extends State<_CaptionButton> {
           child: GestureDetector(
             onTap: widget.onTap,
             child: AnimatedContainer(
-              duration: MTMotion.fast,
+              duration: mtMotionDuration(context, MTMotion.fast),
               width: EmberShellSize.captionButton,
               height: EmberShellSize.titleBar,
               color: fill ?? p.bg,

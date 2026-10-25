@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import '../../shell/context_menu.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
@@ -43,82 +45,88 @@ class ChannelRow extends ConsumerWidget {
       ]),
       null => channelServerLine(context, sub),
     };
-    return Padding(
-      padding: const EdgeInsets.only(bottom: MTSpace.sm),
-      child: Material(
-        color: p.card,
-        shape: RoundedRectangleBorder(
-          borderRadius: radius,
-          side: BorderSide(color: sub.hasError ? p.err : p.line),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onOpen,
-          onSecondaryTapUp: (d) =>
-              unawaited(showChannelMenu(context, ref, sub, d.globalPosition)),
-          child: Container(
-            decoration: sub.hasError
-                ? BoxDecoration(
-                    border: BorderDirectional(
-                      start: BorderSide(color: p.err, width: MTSpace.xxs),
-                    ),
-                  )
-                : null,
-            padding: const EdgeInsets.all(MTSpace.md),
-            child: Row(
-              children: [
-                Opacity(
-                  opacity: sub.enabled ? 1 : 0.55,
-                  child: _Covers(name: sub.name, covers: stats?.covers ?? []),
-                ),
-                const SizedBox(width: MTSpace.md),
-                Expanded(
-                  child: Opacity(
+    return MenuKey(
+      onMenu: (at) => unawaited(showChannelMenu(context, ref, sub, at)),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: MTSpace.sm),
+        child: Material(
+          color: p.card,
+          shape: RoundedRectangleBorder(
+            borderRadius: radius,
+            side: BorderSide(
+              color: sub.hasError ? p.err : p.line,
+              width: MTThemeX.of(context).hairline,
+            ),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onOpen,
+            onSecondaryTapUp: (d) =>
+                unawaited(showChannelMenu(context, ref, sub, d.globalPosition)),
+            child: Container(
+              decoration: sub.hasError
+                  ? BoxDecoration(
+                      border: BorderDirectional(
+                        start: BorderSide(color: p.err, width: MTSpace.xxs),
+                      ),
+                    )
+                  : null,
+              padding: const EdgeInsets.all(MTSpace.md),
+              child: Row(
+                children: [
+                  Opacity(
                     opacity: sub.enabled ? 1 : 0.55,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          sub.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textDirection: mtTextDirectionOf(
-                            sub.name,
-                            Directionality.of(context),
-                          ),
-                          style: text.titleSmall?.copyWith(color: p.ink),
-                        ),
-                        const SizedBox(height: MTSpace.xxs),
-                        Text(
-                          meta,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: text.labelSmall?.copyWith(color: p.ink3),
-                        ),
-                        if (sub.error case final why? when why.isNotEmpty)
+                    child: _Covers(name: sub.name, covers: stats?.covers ?? []),
+                  ),
+                  const SizedBox(width: MTSpace.md),
+                  Expanded(
+                    child: Opacity(
+                      opacity: sub.enabled ? 1 : 0.55,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            why,
+                            sub.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textDirection: mtTextDirectionOf(
+                              sub.name,
+                              Directionality.of(context),
+                            ),
+                            style: text.titleSmall?.copyWith(color: p.ink),
+                          ),
+                          const SizedBox(height: MTSpace.xxs),
+                          Text(
+                            meta,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            textDirection: TextDirection.ltr,
-                            style: text.labelSmall?.copyWith(color: p.err),
+                            style: text.labelSmall?.copyWith(color: p.ink3),
                           ),
-                      ],
+                          if (sub.error case final why? when why.isNotEmpty)
+                            Text(
+                              why,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textDirection: TextDirection.ltr,
+                              style: text.labelSmall?.copyWith(color: p.err),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: MTSpace.md),
-                ChannelState(enabled: sub.enabled),
-                const SizedBox(width: MTSpace.sm),
-                MTSwitch(
-                  value: sub.enabled,
-                  semanticLabel: sub.enabled
-                      ? l.pauseSubscription
-                      : l.resumeSubscription,
-                  onChanged: (on) =>
-                      unawaited(setChannelEnabled(context, ref, sub, on)),
-                ),
-              ],
+                  const SizedBox(width: MTSpace.md),
+                  ChannelState(enabled: sub.enabled),
+                  const SizedBox(width: MTSpace.sm),
+                  MTSwitch(
+                    value: sub.enabled,
+                    semanticLabel: sub.enabled
+                        ? l.pauseSubscription
+                        : l.resumeSubscription,
+                    onChanged: (on) =>
+                        unawaited(setChannelEnabled(context, ref, sub, on)),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -154,7 +162,10 @@ class ChannelState extends StatelessWidget {
     return DecoratedBox(
       decoration: ShapeDecoration(
         shape: StadiumBorder(
-          side: BorderSide(color: enabled ? p.accent : p.line2),
+          side: BorderSide(
+            color: enabled ? p.accent : p.line2,
+            width: MTThemeX.of(context).hairline,
+          ),
         ),
       ),
       child: Padding(

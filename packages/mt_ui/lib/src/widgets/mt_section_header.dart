@@ -31,7 +31,12 @@ class MTSectionHeader extends StatelessWidget {
         MTSpace.sm,
       ),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: x.palette.line)),
+        border: Border(
+          bottom: BorderSide(
+            color: x.palette.line,
+            width: MTThemeX.of(context).hairline,
+          ),
+        ),
       ),
       child: Row(
         // A button has no baseline to sit on, so a header with one centres

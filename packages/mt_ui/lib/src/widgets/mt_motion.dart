@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/tokens.dart';
+import 'mt_polish.dart';
 
 /// **Wahaj motion.** Every duration and distance comes from [MTMotion] in
 /// `tokens.dart`; no literal values here.
@@ -115,7 +116,7 @@ class MTAnimatedSwap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnimatedSwitcher(
-    duration: MTMotion.tap,
+    duration: mtMotionDuration(context, MTMotion.tap),
     switchInCurve: MTMotion.entrance,
     switchOutCurve: MTMotion.exit,
     child: child,

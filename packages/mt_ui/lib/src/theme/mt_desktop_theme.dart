@@ -9,16 +9,24 @@ import 'mt_theme.dart';
 /// **A separate entry point, not options on [mtTheme]**: the phone apps
 /// call [mtTheme] and get exactly what they had; nothing here can reach
 /// them.
-ThemeData mtDesktopTheme(MTVariant variant, Brightness brightness) {
+ThemeData mtDesktopTheme(
+  MTVariant variant,
+  Brightness brightness, {
+  bool highContrast = false,
+}) {
   const corners = MTCorners.desktop;
+  // With Windows' high contrast on, every rule and border is drawn twice
+  // as thick: thin lines are the first thing such eyes lose.
+  final line = highContrast ? 2.0 : 1.0;
   final base = mtTheme(
     variant,
     brightness,
     type: MTTypeScale.desktop,
     corners: corners,
+    hairline: line,
   );
   final p = MTPalette.of(variant, brightness);
-  final hairline = BorderSide(color: p.line2, width: 1.6);
+  final hairline = BorderSide(color: p.line2, width: 1.6 * line);
 
   return base.copyWith(
     // "Warmth" instead of Material's sparkle: a press fills with the soft
@@ -72,7 +80,7 @@ ThemeData mtDesktopTheme(MTVariant variant, Brightness brightness) {
       ),
       side: WidgetStateBorderSide.resolveWith(
         (states) => states.contains(WidgetState.selected)
-            ? BorderSide(color: p.accent, width: 1.6)
+            ? BorderSide(color: p.accent, width: 1.6 * line)
             : hairline,
       ),
       fillColor: WidgetStateProperty.resolveWith(
@@ -115,7 +123,7 @@ ThemeData mtDesktopTheme(MTVariant variant, Brightness brightness) {
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(corners.dialog),
-        side: BorderSide(color: p.line2),
+        side: BorderSide(color: p.line2, width: line),
       ),
     ),
   );

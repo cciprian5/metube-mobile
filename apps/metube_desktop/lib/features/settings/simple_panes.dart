@@ -79,10 +79,14 @@ class SwitchLine extends StatelessWidget {
   final ValueChanged<bool>? onChanged;
 
   @override
-  Widget build(BuildContext context) => SettingLine(
-    title: title,
-    hint: hint,
-    trailing: Switch(value: value, onChanged: onChanged),
+  /// One control for a screen reader: the switch is read with its title
+  /// and hint, not as a nameless toggle beside them.
+  Widget build(BuildContext context) => MergeSemantics(
+    child: SettingLine(
+      title: title,
+      hint: hint,
+      trailing: Switch(value: value, onChanged: onChanged),
+    ),
   );
 }
 

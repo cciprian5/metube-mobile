@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 /// One line of a right-click menu; null [value] draws a divider.
@@ -55,7 +56,7 @@ Future<T?> showEmberMenu<T>(
     color: p.card,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(MTCorners.desktop.card),
-      side: BorderSide(color: p.line2),
+      side: BorderSide(color: p.line2, width: MTThemeX.of(context).hairline),
     ),
     items: [
       for (final entry in entries)
@@ -90,4 +91,33 @@ Future<T?> showEmberMenu<T>(
           const PopupMenuDivider(),
     ],
   );
+}
+
+/// The keyboard's way to a right-click menu: the menu key, or Shift+F10,
+/// pressed on whatever has focus inside [child] opens [onMenu] at the
+/// middle of [child], as Windows' own lists do.
+class MenuKey extends StatelessWidget {
+  const MenuKey({super.key, required this.onMenu, required this.child});
+
+  final ValueChanged<Offset>? onMenu;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final onMenu = this.onMenu;
+    if (onMenu == null) return child;
+    void open() {
+      final box = context.findRenderObject();
+      if (box is! RenderBox || !box.attached) return;
+      onMenu(box.localToGlobal(box.size.center(Offset.zero)));
+    }
+
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.contextMenu): open,
+        const SingleActivator(LogicalKeyboardKey.f10, shift: true): open,
+      },
+      child: child,
+    );
+  }
 }

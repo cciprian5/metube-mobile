@@ -25,10 +25,21 @@ class _MTEqualizerState extends State<MTEqualizer>
   static const _heights = [6.0, 13.0, 9.0, 12.0];
   static const _delays = [0.0, 0.2, 0.4, 0.1];
 
+  /// Sways while playing, unless the system asks for no animation: then
+  /// the bars stand still at their own heights, which still say "this
+  /// one".
+  void _drive() {
+    if (widget.animate && !MediaQuery.disableAnimationsOf(context)) {
+      if (!_controller.isAnimating) _controller.repeat(reverse: true);
+    } else {
+      _controller.stop();
+    }
+  }
+
   @override
-  void initState() {
-    super.initState();
-    if (widget.animate) _controller.repeat(reverse: true);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _drive();
   }
 
   /// **It actually stops when playback pauses** (field report 2026-09-04:
@@ -39,12 +50,7 @@ class _MTEqualizerState extends State<MTEqualizer>
   @override
   void didUpdateWidget(MTEqualizer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.animate == oldWidget.animate) return;
-    if (widget.animate) {
-      _controller.repeat(reverse: true);
-    } else {
-      _controller.stop();
-    }
+    if (widget.animate != oldWidget.animate) _drive();
   }
 
   @override

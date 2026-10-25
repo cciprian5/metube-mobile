@@ -204,7 +204,12 @@ class _Arrow extends StatelessWidget {
         ),
         child: Material(
           color: p.card,
-          shape: CircleBorder(side: BorderSide(color: p.line2)),
+          shape: CircleBorder(
+            side: BorderSide(
+              color: p.line2,
+              width: MTThemeX.of(context).hairline,
+            ),
+          ),
           child: InkWell(
             customBorder: const CircleBorder(),
             onTap: onTap,

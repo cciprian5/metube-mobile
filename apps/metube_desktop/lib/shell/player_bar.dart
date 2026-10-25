@@ -34,7 +34,9 @@ class EmberPlayerBar extends StatelessWidget {
       height: EmberShellSize.playerBar,
       decoration: BoxDecoration(
         color: p.bg,
-        border: Border(top: BorderSide(color: p.line)),
+        border: Border(
+          top: BorderSide(color: p.line, width: MTThemeX.of(context).hairline),
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: MTSpace.xl),
       child: StreamBuilder<MTPlayerState>(

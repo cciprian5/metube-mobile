@@ -149,7 +149,10 @@ class _SearchBox extends StatelessWidget {
         color: p.card,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(corners.field),
-          side: BorderSide(color: p.line2),
+          side: BorderSide(
+            color: p.line2,
+            width: MTThemeX.of(context).hairline,
+          ),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(

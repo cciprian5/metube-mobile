@@ -3,7 +3,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
@@ -44,7 +43,6 @@ class ClipPage extends ConsumerStatefulWidget {
 
 class _ClipPageState extends ConsumerState<ClipPage> {
   late final MTPlayer _player = ref.read(playerProvider);
-  final _focus = FocusNode(debugLabel: 'clip page');
   DateTime _lastWheel = DateTime.fromMillisecondsSinceEpoch(0);
 
   /// One wheel notch is one short; a flick of the wheel sends a burst.
@@ -55,30 +53,11 @@ class _ClipPageState extends ConsumerState<ClipPage> {
     // The loop belongs to watching shorts here; left playing in the bar,
     // the lane moves on by itself.
     unawaited(_player.setLooping(false));
-    _focus.dispose();
     super.dispose();
   }
 
   void _fullScreen(bool on) =>
       ref.read(windowControlsProvider).setFullScreen(on);
-
-  KeyEventResult _onKey(FocusNode _, KeyEvent event, {required bool short}) {
-    if (event is! KeyDownEvent) return KeyEventResult.ignored;
-    final controls = ref.read(windowControlsProvider);
-    switch (event.logicalKey) {
-      case LogicalKeyboardKey.f11:
-        _fullScreen(!controls.fullScreen.value);
-      case LogicalKeyboardKey.escape when controls.fullScreen.value:
-        _fullScreen(false);
-      case LogicalKeyboardKey.arrowDown when short:
-        unawaited(_player.skipToNext());
-      case LogicalKeyboardKey.arrowUp when short:
-        unawaited(_player.skipToPrevious());
-      default:
-        return KeyEventResult.ignored;
-    }
-    return KeyEventResult.handled;
-  }
 
   void _onWheel(PointerSignalEvent event) {
     if (event is! PointerScrollEvent) return;
@@ -137,27 +116,24 @@ class _ClipPageState extends ConsumerState<ClipPage> {
             onPlay: () => unawaited(_player.playItems([item])),
           ),
         );
-        return Focus(
-          focusNode: _focus,
-          autofocus: true,
-          onKeyEvent: (node, event) => _onKey(node, event, short: short),
-          child: ValueListenableBuilder<bool>(
-            valueListenable: controls.fullScreen,
-            builder: (context, full, _) => full
-                ? _Shorts.wrap(short, stage, this)
-                : short
-                ? _ShortsLayout(
-                    stage: _Shorts.wrap(true, stage, this),
-                    item: item,
-                  )
-                : _ClipLayout(
-                    stage: stage,
-                    item: item,
-                    entry: entry,
-                    isCurrent: isCurrent,
-                    onFullScreen: () => _fullScreen(true),
-                  ),
-          ),
+        // Its keys (F11, Esc, and ↑/↓ between shorts) are the window's:
+        // see EmberKeyboard.
+        return ValueListenableBuilder<bool>(
+          valueListenable: controls.fullScreen,
+          builder: (context, full, _) => full
+              ? _Shorts.wrap(short, stage, this)
+              : short
+              ? _ShortsLayout(
+                  stage: _Shorts.wrap(true, stage, this),
+                  item: item,
+                )
+              : _ClipLayout(
+                  stage: stage,
+                  item: item,
+                  entry: entry,
+                  isCurrent: isCurrent,
+                  onFullScreen: () => _fullScreen(true),
+                ),
         );
       },
     );

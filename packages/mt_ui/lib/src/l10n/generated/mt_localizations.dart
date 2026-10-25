@@ -1166,6 +1166,18 @@ abstract class MTLocalizations {
   /// **'Play and pause from any app'**
   String get desktopGlobalShortcut;
 
+  /// No description provided for @desktopGlobalShortcutHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{keys} plays and pauses while the window is behind other apps.'**
+  String desktopGlobalShortcutHint(String keys);
+
+  /// No description provided for @desktopGlobalShortcutTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Another app already uses {keys}.'**
+  String desktopGlobalShortcutTaken(String keys);
+
   /// No description provided for @desktopHidePanel.
   ///
   /// In en, this message translates to:
@@ -1208,17 +1220,71 @@ abstract class MTLocalizations {
   /// **'{count, plural, =1{1 in your library} other{{count} in your library}}'**
   String desktopInLibrary(int count);
 
+  /// No description provided for @desktopKeyAddLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the link you copied'**
+  String get desktopKeyAddLink;
+
+  /// No description provided for @desktopKeyPlayPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Play or pause'**
+  String get desktopKeyPlayPause;
+
+  /// No description provided for @desktopKeyRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Change repeat'**
+  String get desktopKeyRepeat;
+
+  /// No description provided for @desktopKeySearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search titles and what was said'**
+  String get desktopKeySearch;
+
+  /// No description provided for @desktopKeySeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Back or forward 10 seconds'**
+  String get desktopKeySeek;
+
+  /// No description provided for @desktopKeyShortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'This list'**
+  String get desktopKeyShortcuts;
+
+  /// No description provided for @desktopKeyVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Louder or quieter; in shorts, the previous or next one'**
+  String get desktopKeyVolume;
+
+  /// No description provided for @desktopKeyZoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Larger interface'**
+  String get desktopKeyZoomIn;
+
+  /// No description provided for @desktopKeyZoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller interface'**
+  String get desktopKeyZoomOut;
+
+  /// No description provided for @desktopKeyZoomReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface at its usual size'**
+  String get desktopKeyZoomReset;
+
   /// No description provided for @desktopLastArrival.
   ///
   /// In en, this message translates to:
   /// **'Last arrival {when}'**
   String desktopLastArrival(String when);
-
-  /// No description provided for @desktopLaterStep.
-  ///
-  /// In en, this message translates to:
-  /// **'Comes in a later update'**
-  String get desktopLaterStep;
 
   /// No description provided for @desktopLinkCopied.
   ///
@@ -1363,6 +1429,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Play a clip and its transcript, what comes next and its details appear here.'**
   String get desktopNothingPlayingHint;
+
+  /// No description provided for @desktopNoticeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to this computer'**
+  String get desktopNoticeSaved;
 
   /// No description provided for @desktopOfflineCount.
   ///
@@ -1658,6 +1730,30 @@ abstract class MTLocalizations {
   /// **'Connect to your MeTube server'**
   String get desktopSetupTitle;
 
+  /// No description provided for @desktopShortcutsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get desktopShortcutsApp;
+
+  /// No description provided for @desktopShortcutsPlayback.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing'**
+  String get desktopShortcutsPlayback;
+
+  /// No description provided for @desktopShortcutsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard shortcuts'**
+  String get desktopShortcutsTitle;
+
+  /// No description provided for @desktopShortcutsWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Window'**
+  String get desktopShortcutsWindow;
+
   /// No description provided for @desktopShortsHint.
   ///
   /// In en, this message translates to:
@@ -1681,6 +1777,18 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Start with Windows'**
   String get desktopStartWithWindows;
+
+  /// No description provided for @desktopStartWithWindowsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens when you sign in: in the tray when it keeps playing there, otherwise minimized.'**
+  String get desktopStartWithWindowsHint;
+
+  /// No description provided for @desktopStartWithWindowsRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows did not let the app start with it.'**
+  String get desktopStartWithWindowsRefused;
 
   /// No description provided for @desktopSync.
   ///
@@ -1843,6 +1951,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Table'**
   String get desktopViewTable;
+
+  /// No description provided for @desktopVolumeLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume {percent}%'**
+  String desktopVolumeLevel(int percent);
 
   /// No description provided for @desktopWidenSidebar.
   ///

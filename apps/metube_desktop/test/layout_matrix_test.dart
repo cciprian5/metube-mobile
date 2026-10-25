@@ -11,6 +11,7 @@ import 'package:metube_desktop/features/library/library_page.dart';
 import 'package:metube_desktop/features/library/library_state.dart';
 import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/ember_shell.dart';
+import 'package:metube_desktop/shell/key_cap.dart';
 import 'package:metube_desktop/shell/pill.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
@@ -327,6 +328,21 @@ void main() {
       );
     });
   }
+
+  testWidgets('the shortcuts sheet, opened with "?"', (tester) async {
+    _emptyClipboard(tester);
+    await expectNoOverflow(
+      tester,
+      () => _stocked().app(),
+      then: (tester) async {
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+        await tester.sendKeyEvent(LogicalKeyboardKey.slash);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+        await tester.pumpAndSettle();
+        expect(find.byType(KeyCap), findsWidgets);
+      },
+    );
+  });
 
   // The add dialogs, opened as a user would, over the library.
   for (final (name, text) in [

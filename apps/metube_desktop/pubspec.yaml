@@ -71,6 +71,17 @@ dependencies:
   # Download progress on the taskbar button, its count, and the preview's
   # play buttons.
   windows_taskbar: 1.1.2
+  # Windows notifications (a download done or failed, a new arrival),
+  # clicked to open what they name.
+  local_notifier: 0.1.6
+  # The optional play/pause key that works with the window behind others;
+  # off until chosen.
+  hotkey_manager: 0.2.3
+  # The optional start with Windows, into the tray; off until chosen.
+  launch_at_startup: 0.5.1
+  # Asks Windows whether the play key's combination is free, which
+  # hotkey_manager does not report; the version already in the resolution.
+  win32: 5.15.0
 
 dev_dependencies:
   flutter_test:

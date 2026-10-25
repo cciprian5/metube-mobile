@@ -141,8 +141,8 @@ class DownloadsPane extends ConsumerWidget {
   }
 }
 
-/// The computer's own habits: all off, and each arrives with its own step
-/// (the tray, starting with Windows, the shortcut from any app).
+/// The computer's own habits, all off until chosen: the tray, starting
+/// with Windows, and the play key from any app.
 class DesktopPane extends ConsumerWidget {
   const DesktopPane({super.key});
 
@@ -159,19 +159,43 @@ class DesktopPane extends ConsumerWidget {
           onChanged: (on) =>
               unawaited(ref.read(closeToTrayProvider.notifier).set(on)),
         ),
-        for (final title in [
-          l.desktopStartWithWindows,
-          l.desktopGlobalShortcut,
-        ])
-          SwitchLine(
-            title: title,
-            hint: l.desktopLaterStep,
-            value: false,
-            onChanged: null,
+        SwitchLine(
+          title: l.desktopStartWithWindows,
+          hint: l.desktopStartWithWindowsHint,
+          value: ref.watch(startWithWindowsProvider),
+          onChanged: (on) => unawaited(
+            _ask(
+              context,
+              ref.read(startWithWindowsProvider.notifier).set(on),
+              l.desktopStartWithWindowsRefused,
+            ),
           ),
+        ),
+        SwitchLine(
+          title: l.desktopGlobalShortcut,
+          hint: l.desktopGlobalShortcutHint(GlobalPlayKey.label),
+          value: ref.watch(globalPlayKeyProvider),
+          onChanged: (on) => unawaited(
+            _ask(
+              context,
+              ref.read(globalPlayKeyProvider.notifier).set(on),
+              l.desktopGlobalShortcutTaken(GlobalPlayKey.label),
+            ),
+          ),
+        ),
       ],
     );
   }
+}
+
+/// Says so when Windows refused what a switch asked.
+Future<void> _ask(
+  BuildContext context,
+  Future<bool> asked,
+  String refused,
+) async {
+  if (await asked || !context.mounted) return;
+  showMTNotice(context, message: refused, kind: MTNoticeKind.failed);
 }
 
 /// Whether an address answers, in words.

@@ -38,6 +38,7 @@ class EmberWindow with WindowListener {
     required Future<void> Function() beforeClose,
     required double zoom,
     bool Function()? hideOnClose,
+    WindowStart start = WindowStart.shown,
   }) async {
     await windowManager.ensureInitialized();
     final window = EmberWindow._(
@@ -74,8 +75,18 @@ class EmberWindow with WindowListener {
       () async {
         await windowManager.setBounds(bounds);
         if (saved?.maximized ?? false) await windowManager.maximize();
-        await windowManager.show();
-        await windowManager.focus();
+        switch (start) {
+          case WindowStart.shown:
+            await windowManager.show();
+            await windowManager.focus();
+          case WindowStart.minimized:
+            await windowManager.show(inactive: true);
+            await windowManager.minimize();
+          case WindowStart.hidden:
+            // Left hidden: the icon by the clock or a second start brings
+            // it back.
+            break;
+        }
       },
     );
     await windowManager.setPreventClose(true);
@@ -139,6 +150,13 @@ class EmberWindow with WindowListener {
     await windowManager.focus();
   }
 
+  /// Whether the window is shown, not minimized, and the one the user is
+  /// working in.
+  static Future<bool> inFront() async =>
+      await windowManager.isVisible() &&
+      !await windowManager.isMinimized() &&
+      await windowManager.isFocused();
+
   /// **Closes the app**: what the window's close does when it does not go
   /// to the tray, and what the tray's "Quit" does.
   Future<void> quit() async {
@@ -167,3 +185,7 @@ Rect workAreaOf(Display display) {
   final size = display.visibleSize ?? display.size;
   return origin & size;
 }
+
+/// How the window first appears: as usual, or, started with Windows, out of
+/// the way (hidden in the tray when it keeps playing there).
+enum WindowStart { shown, minimized, hidden }

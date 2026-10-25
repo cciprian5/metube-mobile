@@ -623,6 +623,16 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopGlobalShortcut => 'Play and pause from any app';
 
   @override
+  String desktopGlobalShortcutHint(String keys) {
+    return '$keys plays and pauses while the window is behind other apps.';
+  }
+
+  @override
+  String desktopGlobalShortcutTaken(String keys) {
+    return 'Another app already uses $keys.';
+  }
+
+  @override
   String get desktopHidePanel => 'Hide side panel';
 
   @override
@@ -658,12 +668,40 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
+  String get desktopKeyAddLink => 'Add the link you copied';
+
+  @override
+  String get desktopKeyPlayPause => 'Play or pause';
+
+  @override
+  String get desktopKeyRepeat => 'Change repeat';
+
+  @override
+  String get desktopKeySearch => 'Search titles and what was said';
+
+  @override
+  String get desktopKeySeek => 'Back or forward 10 seconds';
+
+  @override
+  String get desktopKeyShortcuts => 'This list';
+
+  @override
+  String get desktopKeyVolume =>
+      'Louder or quieter; in shorts, the previous or next one';
+
+  @override
+  String get desktopKeyZoomIn => 'Larger interface';
+
+  @override
+  String get desktopKeyZoomOut => 'Smaller interface';
+
+  @override
+  String get desktopKeyZoomReset => 'Interface at its usual size';
+
+  @override
   String desktopLastArrival(String when) {
     return 'Last arrival $when';
   }
-
-  @override
-  String get desktopLaterStep => 'Comes in a later update';
 
   @override
   String get desktopLinkCopied => 'Link copied';
@@ -760,6 +798,9 @@ class MTLocalizationsEn extends MTLocalizations {
   @override
   String get desktopNothingPlayingHint =>
       'Play a clip and its transcript, what comes next and its details appear here.';
+
+  @override
+  String get desktopNoticeSaved => 'Saved to this computer';
 
   @override
   String desktopOfflineCount(int count) {
@@ -937,6 +978,18 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopSetupTitle => 'Connect to your MeTube server';
 
   @override
+  String get desktopShortcutsApp => 'App';
+
+  @override
+  String get desktopShortcutsPlayback => 'Playing';
+
+  @override
+  String get desktopShortcutsTitle => 'Keyboard shortcuts';
+
+  @override
+  String get desktopShortcutsWindow => 'Window';
+
+  @override
   String get desktopShortsHint =>
       '↑ ↓ or the wheel for the next short · double-click to favorite';
 
@@ -948,6 +1001,14 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopStartWithWindows => 'Start with Windows';
+
+  @override
+  String get desktopStartWithWindowsHint =>
+      'Opens when you sign in: in the tray when it keeps playing there, otherwise minimized.';
+
+  @override
+  String get desktopStartWithWindowsRefused =>
+      'Windows did not let the app start with it.';
 
   @override
   String get desktopSync => 'Sync';
@@ -1048,6 +1109,11 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopViewTable => 'Table';
+
+  @override
+  String desktopVolumeLevel(int percent) {
+    return 'Volume $percent%';
+  }
 
   @override
   String get desktopWidenSidebar => 'Expand sidebar';

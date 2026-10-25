@@ -113,7 +113,7 @@ class _Transport extends StatelessWidget {
                 icon: MTIcons.repeat,
                 label: mtPlayModeLabel(context, state.mode),
                 selected: state.mode != PlayMode.autoNext,
-                onTap: when(() => player.setPlayMode(_nextMode(state.mode))),
+                onTap: when(() => player.setPlayMode(nextPlayMode(state.mode))),
               ),
             ],
           ),
@@ -122,9 +122,6 @@ class _Transport extends StatelessWidget {
       ),
     );
   }
-
-  static PlayMode _nextMode(PlayMode mode) =>
-      PlayMode.values[(mode.index + 1) % PlayMode.values.length];
 }
 
 class _Extras extends StatelessWidget {
@@ -239,3 +236,7 @@ class _PlayButton extends StatelessWidget {
     );
   }
 }
+
+/// The repeat button's next mode, and R's: round the four in order.
+PlayMode nextPlayMode(PlayMode mode) =>
+    PlayMode.values[(mode.index + 1) % PlayMode.values.length];

@@ -21,12 +21,14 @@ import '../features/clip/clip_state.dart';
 import '../features/downloads/downloads_button.dart';
 import '../features/folders/folder_tree.dart';
 import '../features/library/library_state.dart';
+import '../features/notices/notices_wiring.dart';
 import '../features/palette/palette_entry.dart';
 import '../features/settings/backup_actions.dart';
 import '../features/settings/whats_new.dart';
 import '../features/setup/setup_dialog.dart';
 import '../router.dart';
 import 'content_bar.dart';
+import 'keyboard.dart';
 import 'nav_history.dart';
 import 'player_bar.dart';
 import 'right_panel.dart';
@@ -163,7 +165,15 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     // goes to the import instead.
     return PaletteShortcut(
       onOpen: _openPalette,
-      child: AddShortcut(onLinks: _openAdd, child: drop(scaffold, _onDrop)),
+      child: EmberKeyboard(
+        onSearch: _openPalette,
+        inShortsLane: () =>
+            placeOf(widget.location) == EmberPlace.item &&
+            (player.state.current?.isShortForm ?? false),
+        child: NoticesWiring(
+          child: AddShortcut(onLinks: _openAdd, child: drop(scaffold, _onDrop)),
+        ),
+      ),
     );
   }
 

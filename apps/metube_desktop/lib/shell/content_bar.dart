@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'key_cap.dart';
 import 'nav_history.dart';
 
 /// Above the content: back and forward, the search box, the downloads,
@@ -168,41 +169,10 @@ class _SearchBox extends StatelessWidget {
                     style: text.bodyMedium?.copyWith(color: p.ink3),
                   ),
                 ),
-                _KeyCap(label: 'Ctrl K'),
+                const KeyCap(label: 'Ctrl K'),
                 const SizedBox(width: MTSpace.sm),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _KeyCap extends StatelessWidget {
-  const _KeyCap({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: p.line2),
-          borderRadius: BorderRadius.circular(MTCorners.desktop.box),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: MTSpace.xs,
-            vertical: MTSpace.xxs / 2,
-          ),
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.labelSmall
-                ?.copyWith(color: p.ink3),
           ),
         ),
       ),

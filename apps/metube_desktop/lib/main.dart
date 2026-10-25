@@ -22,15 +22,19 @@ import 'data/transcripts_data.dart';
 import 'features/add/add_entry.dart';
 import 'features/library/artwork.dart';
 import 'data/desktop_habits.dart';
+import 'data/notices.dart';
 import 'data/sync_runner.dart';
 import 'data/system_media.dart';
 import 'data/taskbar_data.dart';
+import 'data/volume.dart';
 import 'features/settings/whats_new.dart';
 import 'di.dart';
 import 'identity.dart';
 import 'platform/link_drop.dart';
+import 'platform/notifications.dart';
 import 'platform/error_log.dart';
 import 'platform/frame_grab.dart';
+import 'platform/hotkeys.dart';
 import 'platform/player_desktop.dart';
 import 'platform/secret_store_windows.dart';
 import 'platform/prefs_store.dart';
@@ -40,8 +44,10 @@ import 'platform/window_controls_windows.dart';
 import 'platform/window_frame.dart';
 import 'platform/windows_folders.dart';
 import 'platform/smtc.dart';
+import 'platform/startup.dart';
 import 'platform/taskbar.dart';
 import 'platform/tray.dart';
+import 'platform/volume_windows.dart';
 import 'platform/window_placement.dart';
 import 'shell/shell_layout.dart';
 import 'shell/shell_state.dart';
@@ -113,12 +119,23 @@ Future<void> main(List<String> args) async {
     },
     hideOnClose: () => toTray,
     zoom: wanted,
+    // Started with Windows, the app keeps out of the way.
+    start: !args.contains(WindowsStartup.arg)
+        ? WindowStart.shown
+        : toTray
+        ? WindowStart.hidden
+        : WindowStart.minimized,
   );
   // A size that did not fit this screen was stepped down; it is kept, and
   // the shell says so once.
   final lowered = window.zoom < wanted;
   if (lowered) await zooms.write(window.zoom);
   final controls = await WindowManagerControls.create();
+  final notices = await WindowsNotices.start();
+  // The app's own level, as it was left.
+  final volume = MediaKitVolume(desktop.port.player);
+  final keptVolume = await store.getInt(VolumeLevel.key);
+  if (keptVolume != null) await volume.setLevel(keptVolume.toDouble());
 
   // Windows' places for the clip playing: the media keys and flyout, the
   // icon by the clock, the taskbar button. All read the player and command
@@ -144,7 +161,19 @@ Future<void> main(List<String> args) async {
     next: words.next,
     downloads: words.activeDownloadsCount,
   ));
-  SystemMediaBridge(player, [?await SmtcSurface.start(), tray, taskbar]);
+  final bridge = SystemMediaBridge(player, [
+    ?await SmtcSurface.start(),
+    tray,
+    taskbar,
+  ]);
+  final startup = WindowsStartup();
+  final startsWithWindows = await startup.isOn();
+  final playKey = GlobalPlayHotKey(
+    () => unawaited(bridge.press(SystemMediaButton.toggle)),
+  );
+  final playKeyOn = await store.getBool(GlobalPlayKey.key) ?? false
+      ? await playKey.set(true)
+      : false;
   // The lab file (debug builds) stands in for the first-run setup;
   // otherwise the server set up before, if any.
   const secrets = WindowsSecretStore();
@@ -190,6 +219,14 @@ Future<void> main(List<String> args) async {
           unawaited(tray.setOn(on));
         }),
         taskbarPortProvider.overrideWithValue(taskbar),
+        volumeControlProvider.overrideWithValue(volume),
+        noticePortProvider.overrideWithValue(notices ?? const NoNotices()),
+        windowInFrontProvider.overrideWithValue(EmberWindow.inFront),
+        bringWindowBackProvider.overrideWithValue(EmberWindow.bringBack),
+        initialStartWithWindowsProvider.overrideWithValue(startsWithWindows),
+        startWithWindowsHookProvider.overrideWithValue(startup.set),
+        initialGlobalPlayKeyProvider.overrideWithValue(playKeyOn),
+        globalPlayKeyHookProvider.overrideWithValue(playKey.set),
         backupFolderProvider.overrideWithValue(
           Directory('${roaming.path}/backup'),
         ),

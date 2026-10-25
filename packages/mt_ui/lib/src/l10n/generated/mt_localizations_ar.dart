@@ -644,6 +644,16 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopGlobalShortcut => 'التشغيل والإيقاف من أي تطبيق';
 
   @override
+  String desktopGlobalShortcutHint(String keys) {
+    return '$keys يشغّل ويوقف والنافذة خلف البرامج الأخرى.';
+  }
+
+  @override
+  String desktopGlobalShortcutTaken(String keys) {
+    return 'برنامج آخر يستعمل $keys من قبل.';
+  }
+
+  @override
   String get desktopHidePanel => 'إخفاء اللوحة الجانبية';
 
   @override
@@ -682,12 +692,40 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String get desktopKeyAddLink => 'إضافة الرابط المنسوخ';
+
+  @override
+  String get desktopKeyPlayPause => 'تشغيل أو إيقاف مؤقت';
+
+  @override
+  String get desktopKeyRepeat => 'تغيير التكرار';
+
+  @override
+  String get desktopKeySearch => 'البحث في العناوين وما قيل';
+
+  @override
+  String get desktopKeySeek => 'رجوع أو تقدّم 10 ثوانٍ';
+
+  @override
+  String get desktopKeyShortcuts => 'هذه القائمة';
+
+  @override
+  String get desktopKeyVolume =>
+      'رفع الصوت أو خفضه، وفي المقاطع القصيرة: السابق أو التالي';
+
+  @override
+  String get desktopKeyZoomIn => 'تكبير الواجهة';
+
+  @override
+  String get desktopKeyZoomOut => 'تصغير الواجهة';
+
+  @override
+  String get desktopKeyZoomReset => 'الواجهة بحجمها المعتاد';
+
+  @override
   String desktopLastArrival(String when) {
     return 'آخر وصول $when';
   }
-
-  @override
-  String get desktopLaterStep => 'يأتي في تحديث لاحق';
 
   @override
   String get desktopLinkCopied => 'نُسخ الرابط';
@@ -790,6 +828,9 @@ class MTLocalizationsAr extends MTLocalizations {
   @override
   String get desktopNothingPlayingHint =>
       'شغّل مقطعاً فيظهر هنا نصه وما يليه وتفاصيله.';
+
+  @override
+  String get desktopNoticeSaved => 'حُفظ على هذا الكمبيوتر';
 
   @override
   String desktopOfflineCount(int count) {
@@ -967,6 +1008,18 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopSetupTitle => 'اربط البرنامج بسيرفر MeTube';
 
   @override
+  String get desktopShortcutsApp => 'التطبيق';
+
+  @override
+  String get desktopShortcutsPlayback => 'التشغيل';
+
+  @override
+  String get desktopShortcutsTitle => 'اختصارات لوحة المفاتيح';
+
+  @override
+  String get desktopShortcutsWindow => 'النافذة';
+
+  @override
   String get desktopShortsHint =>
       '↑ ↓ أو العجلة للقصير التالي · نقرتان للمفضلة';
 
@@ -978,6 +1031,14 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopStartWithWindows => 'التشغيل مع بدء Windows';
+
+  @override
+  String get desktopStartWithWindowsHint =>
+      'يفتح عند تسجيل الدخول: في الدرج إن كان يستمر في التشغيل هناك، وإلا مصغَّراً.';
+
+  @override
+  String get desktopStartWithWindowsRefused =>
+      'لم يسمح Windows للتطبيق بالبدء معه.';
 
   @override
   String get desktopSync => 'المزامنة';
@@ -1077,6 +1138,11 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopViewTable => 'جدول';
+
+  @override
+  String desktopVolumeLevel(int percent) {
+    return 'الصوت $percent٪';
+  }
 
   @override
   String get desktopWidenSidebar => 'توسيع الشريط الجانبي';

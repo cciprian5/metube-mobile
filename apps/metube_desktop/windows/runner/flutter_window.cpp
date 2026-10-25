@@ -4,6 +4,7 @@
 #include <windowsx.h>
 
 #include <optional>
+#include <string>
 
 #include "flutter/generated_plugin_registrant.h"
 
@@ -87,8 +88,13 @@ bool FlutterWindow::OnCreate() {
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
     // The Dart side shows the window itself, where it was left and
     // maximized if it was; showing it "normal" here would undo that. This
-    // stays only as a fallback for a start that failed before showing it.
-    if (!::IsWindowVisible(GetHandle())) {
+    // stays only as a fallback for a start that failed before showing it,
+    // and not for a start with Windows, which keeps the window in the tray
+    // on purpose.
+    const bool with_windows =
+        std::wstring(::GetCommandLineW()).find(L"--startup") !=
+        std::wstring::npos;
+    if (!with_windows && !::IsWindowVisible(GetHandle())) {
       this->Show();
     }
   });

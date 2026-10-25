@@ -15,6 +15,7 @@ class EmberPlayerBar extends StatelessWidget {
     required this.player,
     required this.onShowQueue,
     required this.onOpen,
+    required this.onMini,
   });
 
   final MTPlayer player;
@@ -22,6 +23,9 @@ class EmberPlayerBar extends StatelessWidget {
 
   /// Opens the playing clip's page, from a click on its title.
   final ValueChanged<String> onOpen;
+
+  /// Turns the window into the small card above the others.
+  final VoidCallback onMini;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +56,7 @@ class EmberPlayerBar extends StatelessWidget {
                   player: player,
                   state: state,
                   onShowQueue: onShowQueue,
+                  onMini: onMini,
                 ),
               ),
             ],
@@ -129,11 +134,13 @@ class _Extras extends StatelessWidget {
     required this.player,
     required this.state,
     required this.onShowQueue,
+    required this.onMini,
   });
 
   final MTPlayer player;
   final MTPlayerState state;
   final VoidCallback onShowQueue;
+  final VoidCallback onMini;
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +163,12 @@ class _Extras extends StatelessWidget {
             ),
           ),
         ),
+        _Control(
+          icon: MTIcons.pip,
+          label: l.desktopMiniWindow,
+          shortcut: 'Ctrl M',
+          onTap: state.isEmpty ? null : onMini,
+        ),
         _Control(icon: MTIcons.queue, label: l.queueLabel, onTap: onShowQueue),
       ],
     );
@@ -168,12 +181,14 @@ class _Control extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.selected = false,
+    this.shortcut,
   });
 
   final MTIconData icon;
   final String label;
   final VoidCallback? onTap;
   final bool selected;
+  final String? shortcut;
 
   @override
   Widget build(BuildContext context) {
@@ -181,6 +196,7 @@ class _Control extends StatelessWidget {
     final ink = onTap == null ? p.ink3 : (selected ? p.accentInk : p.ink2);
     return MTShortcutTooltip(
       message: label,
+      shortcut: shortcut,
       child: IconButton(
         onPressed: onTap,
         icon: MTIcon(icon, size: MTSpace.lg, color: ink, semanticLabel: label),

@@ -581,6 +581,12 @@ class MTLocalizationsAr extends MTLocalizations {
       'كل رفع جديد يحلّ محل ملف الكوكيز على السيرفر بالكامل، فإن أردت الإبقاء على عدة منصات فاختر ملفاتها كلها معاً في كل مرة، ومنها ما رفعته من قبل. ولاختيار أكثر من ملف، اضغط Ctrl أثناء النقر.';
 
   @override
+  String get desktopCopiedLinkAdd => 'إضافة…';
+
+  @override
+  String get desktopCopiedLinkTitle => 'أتضيف هذا الرابط إلى السيرفر؟';
+
+  @override
   String get desktopCopyCancelled => 'أُلغي';
 
   @override
@@ -695,6 +701,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopKeyAddLink => 'إضافة الرابط المنسوخ';
 
   @override
+  String get desktopKeyMini => 'نافذة صغيرة فوق البرامج، والعودة منها';
+
+  @override
   String get desktopKeyPlayPause => 'تشغيل أو إيقاف مؤقت';
 
   @override
@@ -777,6 +786,12 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopLogsSave => 'حفظ في ملف';
 
   @override
+  String get desktopMiniRestore => 'العودة إلى النافذة الكاملة';
+
+  @override
+  String get desktopMiniWindow => 'نافذة صغيرة';
+
+  @override
   String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
 
   @override
@@ -831,6 +846,13 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopNoticeSaved => 'حُفظ على هذا الكمبيوتر';
+
+  @override
+  String get desktopOfferCopiedLinks => 'اعرض عليّ الروابط التي أنسخها';
+
+  @override
+  String get desktopOfferCopiedLinksHint =>
+      'حين تنسخ رابط مقطع في برنامج آخر، يعرض عليك إشعارٌ إضافته. لا يُنظر إلا في الروابط، ولا يُحفظ منها شيء.';
 
   @override
   String desktopOfflineCount(int count) {

@@ -560,6 +560,12 @@ class MTLocalizationsEn extends MTLocalizations {
       'Each upload replaces the server\'s whole cookies file. To keep several platforms, choose all their files together every time, the ones you sent before too. Hold Ctrl to choose more than one.';
 
   @override
+  String get desktopCopiedLinkAdd => 'Add…';
+
+  @override
+  String get desktopCopiedLinkTitle => 'Add this link to the server?';
+
+  @override
   String get desktopCopyCancelled => 'Cancelled';
 
   @override
@@ -671,6 +677,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopKeyAddLink => 'Add the link you copied';
 
   @override
+  String get desktopKeyMini => 'Small window above the others, and back';
+
+  @override
   String get desktopKeyPlayPause => 'Play or pause';
 
   @override
@@ -750,6 +759,12 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopLogsSave => 'Save to a file';
 
   @override
+  String get desktopMiniRestore => 'Back to the full window';
+
+  @override
+  String get desktopMiniWindow => 'Small window';
+
+  @override
   String get desktopNarrowSidebar => 'Collapse sidebar';
 
   @override
@@ -801,6 +816,13 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopNoticeSaved => 'Saved to this computer';
+
+  @override
+  String get desktopOfferCopiedLinks => 'Offer links I copy';
+
+  @override
+  String get desktopOfferCopiedLinksHint =>
+      'When you copy a video link in another app, a notification offers to add it. Only links are looked at, and none is saved.';
 
   @override
   String desktopOfflineCount(int count) {

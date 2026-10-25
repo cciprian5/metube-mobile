@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../data/backup_data.dart';
 import '../data/covers/covers_data.dart';
+import '../data/incoming_links.dart';
 import '../data/library_data.dart';
 import '../data/setup_data.dart';
 import '../data/sync_runner.dart';
@@ -21,6 +22,7 @@ import '../features/clip/clip_state.dart';
 import '../features/downloads/downloads_button.dart';
 import '../features/folders/folder_tree.dart';
 import '../features/library/library_state.dart';
+import '../features/notices/copied_links_wiring.dart';
 import '../features/notices/notices_wiring.dart';
 import '../features/palette/palette_entry.dart';
 import '../features/settings/backup_actions.dart';
@@ -29,6 +31,7 @@ import '../features/setup/setup_dialog.dart';
 import '../router.dart';
 import 'content_bar.dart';
 import 'keyboard.dart';
+import 'mini_window.dart';
 import 'nav_history.dart';
 import 'player_bar.dart';
 import 'right_panel.dart';
@@ -65,6 +68,13 @@ class _EmberShellState extends ConsumerState<EmberShell> {
   /// saved: a layer left open would cover the content on the next start.
   bool _overlayOpen = false;
 
+  late final IncomingLinks _incoming;
+
+  /// Links from outside wait their turn: each gets its dialog once the one
+  /// before is closed, rather than a pile of dialogs, one over another.
+  final _outside = <String>[];
+  bool _showingOutside = false;
+
   @override
   void initState() {
     super.initState();
@@ -81,6 +91,12 @@ class _EmberShellState extends ConsumerState<EmberShell> {
         if (mounted) unawaited(maybeShowWhatsNew(context, ref));
       });
     }
+    // Links from outside the window, once there is a window to show the
+    // add dialog in.
+    _incoming = ref.read(incomingLinksProvider);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _incoming.listen(_fromOutside);
+    });
   }
 
   @override
@@ -91,6 +107,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
 
   @override
   void dispose() {
+    _incoming.cancel();
     _history?.dispose();
     super.dispose();
   }
@@ -139,6 +156,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
           ? controls.setFullScreen(false)
           : _showTab(PanelTab.upNext, arranged),
       onOpen: (url) => router.go(EmberRoutes.item(url)),
+      onMini: _toggleMini,
     );
 
     final drop = ref.watch(linkDropProvider);
@@ -160,18 +178,39 @@ class _EmberShellState extends ConsumerState<EmberShell> {
             : _framed(context, layout, theater, playerBar),
       ),
     );
-    // Links reach the add dialog three ways: the button, Ctrl+V anywhere
-    // but a text field, and a drop on the window, where a phone's backup
-    // goes to the import instead.
+    // Links reach the add dialog from the button, Ctrl+V anywhere but a
+    // text field, a drop on the window (where a phone's backup goes to the
+    // import instead), and from outside: a `metube://` link or a link
+    // copied elsewhere, when the user asked to be offered those.
     return PaletteShortcut(
       onOpen: _openPalette,
       child: EmberKeyboard(
         onSearch: _openPalette,
+        onMini: _toggleMini,
         inShortsLane: () =>
             placeOf(widget.location) == EmberPlace.item &&
             (player.state.current?.isShortForm ?? false),
         child: NoticesWiring(
-          child: AddShortcut(onLinks: _openAdd, child: drop(scaffold, _onDrop)),
+          child: CopiedLinksWiring(
+            child: AddShortcut(
+              onLinks: _openAdd,
+              // The small card in place of the frame, the wirings above it
+              // still listening.
+              child: drop(
+                ValueListenableBuilder<bool>(
+                  valueListenable: controls.mini,
+                  builder: (context, mini, _) => mini
+                      ? EmberMiniWindow(
+                          player: player,
+                          controls: controls,
+                          onRestore: _toggleMini,
+                        )
+                      : scaffold,
+                ),
+                _onDrop,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -187,6 +226,34 @@ class _EmberShellState extends ConsumerState<EmberShell> {
       initial: initial,
     ),
   );
+
+  /// Ctrl+M and the player bar's button: the small card above every
+  /// window, sized for what plays, or the full window again.
+  void _toggleMini() {
+    final controls = ref.read(windowControlsProvider);
+    if (controls.mini.value) {
+      controls.setMini(null);
+      return;
+    }
+    final picture = miniShowsPicture(
+      ref.read(playerProvider).state,
+      audioOnly: ref.read(audioOnlyProvider),
+    );
+    controls.setMini(picture ? EmberMiniSize.video : EmberMiniSize.audio);
+  }
+
+  void _fromOutside(String text) {
+    _outside.add(text);
+    if (!_showingOutside) unawaited(_showOutside());
+  }
+
+  Future<void> _showOutside() async {
+    _showingOutside = true;
+    while (_outside.isNotEmpty && mounted) {
+      await openAddDialog(context, text: _outside.removeAt(0));
+    }
+    _showingOutside = false;
+  }
 
   void _openAdd([String text = '']) =>
       unawaited(openAddDialog(context, text: text));

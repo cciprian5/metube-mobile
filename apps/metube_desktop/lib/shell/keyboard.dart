@@ -23,11 +23,21 @@ enum EmberKey {
   search,
   fullScreen,
   leaveFullScreen,
-  shortcuts;
+  shortcuts,
+  mini;
 
   /// Plain keys, which a text field types and a focused button presses;
   /// they are left to those.
-  bool get plain => this != search && this != fullScreen;
+  bool get plain => this != search && this != fullScreen && this != mini;
+
+  /// What the small card answers: play, seeking, and the way back (Esc
+  /// too). The rest wants the full window.
+  bool get inMini =>
+      this == playPause ||
+      this == back ||
+      this == forward ||
+      this == mini ||
+      this == leaveFullScreen;
 
   /// Held down, only seeking and the volume go on.
   bool get repeats =>
@@ -44,9 +54,12 @@ EmberKey? emberKeyFor(
   final logical = event.logicalKey;
   final physical = event.physicalKey;
   if (control) {
-    return physical == PhysicalKeyboardKey.keyF && !shift
-        ? EmberKey.search
-        : null;
+    if (shift) return null;
+    return switch (physical) {
+      PhysicalKeyboardKey.keyF => EmberKey.search,
+      PhysicalKeyboardKey.keyM => EmberKey.mini,
+      _ => null,
+    };
   }
   if (shift) {
     // "?" is Shift and the slash key; an Arabic layout types its own
@@ -77,11 +90,15 @@ class EmberKeyboard extends ConsumerStatefulWidget {
   const EmberKeyboard({
     super.key,
     required this.onSearch,
+    required this.onMini,
     required this.inShortsLane,
     required this.child,
   });
 
   final VoidCallback onSearch;
+
+  /// Turns the window into the small card, or back.
+  final VoidCallback onMini;
 
   /// Whether a short is open in its lane, where ↑ and ↓ move between
   /// shorts rather than the volume.
@@ -136,11 +153,16 @@ class _EmberKeyboardState extends ConsumerState<EmberKeyboard> {
               ?.isEnabled(const ActivateIntent()) ??
           false);
 
-  bool _run(EmberKey key) {
+  bool _run(EmberKey pressed) {
+    var key = pressed;
     final player = ref.read(playerProvider);
     final state = player.state;
     final loaded = state.current != null;
     final controls = ref.read(windowControlsProvider);
+    if (controls.mini.value) {
+      if (!key.inMini) return false;
+      if (key == EmberKey.leaveFullScreen) key = EmberKey.mini;
+    }
     switch (key) {
       case EmberKey.playPause when loaded:
         unawaited(state.playing ? player.pause() : player.play());
@@ -167,6 +189,8 @@ class _EmberKeyboardState extends ConsumerState<EmberKeyboard> {
         controls.setFullScreen(false);
       case EmberKey.shortcuts:
         unawaited(showShortcutsSheet(context));
+      case EmberKey.mini:
+        widget.onMini();
       default:
         return false;
     }

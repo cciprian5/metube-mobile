@@ -94,3 +94,24 @@ class GlobalPlayKey extends Notifier<bool> {
     return true;
   }
 }
+
+/// "Offer links I copy": a link copied in another program brings a notice
+/// offering to add it. Off until chosen; read once at start-up.
+final initialOfferCopiedLinksProvider = Provider<bool>((ref) => false);
+
+final offerCopiedLinksProvider = NotifierProvider<OfferCopiedLinks, bool>(
+  OfferCopiedLinks.new,
+);
+
+class OfferCopiedLinks extends Notifier<bool> {
+  static const key = 'ember_offer_copied_links';
+
+  @override
+  bool build() => ref.read(initialOfferCopiedLinksProvider);
+
+  Future<void> set(bool on) async {
+    state = on;
+    final store = ref.read(keyValueStoreProvider);
+    await ref.read(prefsMutexProvider).run(() => store.setBool(key, on));
+  }
+}

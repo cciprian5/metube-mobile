@@ -183,6 +183,13 @@ class DesktopPane extends ConsumerWidget {
             ),
           ),
         ),
+        SwitchLine(
+          title: l.desktopOfferCopiedLinks,
+          hint: l.desktopOfferCopiedLinksHint,
+          value: ref.watch(offerCopiedLinksProvider),
+          onChanged: (on) =>
+              unawaited(ref.read(offerCopiedLinksProvider.notifier).set(on)),
+        ),
       ],
     );
   }

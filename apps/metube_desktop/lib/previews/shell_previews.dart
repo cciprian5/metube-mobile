@@ -162,6 +162,7 @@ Widget playerBarPreview() => EmberPlayerBar(
   player: StillPlayer(_playing, const Duration(minutes: 7, seconds: 12)),
   onShowQueue: _ignore,
   onOpen: _ignore,
+  onMini: _ignore,
 );
 
 @EmberPreview('Player bar, idle', size: Size(1280, EmberShellSize.playerBar))
@@ -169,6 +170,7 @@ Widget playerBarIdlePreview() => EmberPlayerBar(
   player: StillPlayer(),
   onShowQueue: _ignore,
   onOpen: _ignore,
+  onMini: _ignore,
 );
 
 Widget _panel(PanelTab tab, MTPlayerState state) => EmberRightPanel(

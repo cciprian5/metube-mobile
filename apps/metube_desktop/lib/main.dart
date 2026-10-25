@@ -15,8 +15,10 @@ import 'app.dart';
 import 'data/addresses_data.dart';
 import 'data/backup_data.dart';
 import 'data/clip_handover.dart';
+import 'data/copied_links.dart';
 import 'data/covers/covers_data.dart';
 import 'data/folders_data.dart';
+import 'data/incoming_links.dart';
 import 'data/lab_server.dart';
 import 'data/setup_data.dart';
 import 'data/transcripts_data.dart';
@@ -32,6 +34,7 @@ import 'features/settings/whats_new.dart';
 import 'di.dart';
 import 'identity.dart';
 import 'platform/clip_drag.dart';
+import 'platform/clipboard_windows.dart';
 import 'platform/link_drop.dart';
 import 'platform/notifications.dart';
 import 'platform/error_log.dart';
@@ -74,10 +77,17 @@ Future<void> main(List<String> args) async {
   }
   // First, before anything opens a file or a window: a second copy exits
   // here and the first comes to the front.
-  // A second start brings this window back, from the tray too.
+  // A second start brings this window back, from the tray too; a
+  // `metube://add` link it or the first start came with opens the add
+  // dialog.
+  final incoming = IncomingLinks();
+  linksFromArgs(args).forEach(incoming.add);
   await claimSingleInstance(
     args,
-    onSecondStart: (_) => unawaited(EmberWindow.bringBack()),
+    onSecondStart: (second) {
+      unawaited(EmberWindow.bringBack());
+      linksFromArgs(second).forEach(incoming.add);
+    },
   );
   initMTL10n();
   MediaKit.ensureInitialized();
@@ -214,6 +224,7 @@ Future<void> main(List<String> args) async {
                 child: child,
               ),
         ),
+        incomingLinksProvider.overrideWithValue(incoming),
         initialShellLayoutProvider.overrideWithValue(layout),
         initialUiZoomProvider.overrideWithValue(
           UiZoom(window.zoom, lowered: lowered),
@@ -237,6 +248,10 @@ Future<void> main(List<String> args) async {
         startWithWindowsHookProvider.overrideWithValue(startup.set),
         initialGlobalPlayKeyProvider.overrideWithValue(playKeyOn),
         globalPlayKeyHookProvider.overrideWithValue(playKey.set),
+        initialOfferCopiedLinksProvider.overrideWithValue(
+          await store.getBool(OfferCopiedLinks.key) ?? false,
+        ),
+        clipboardPortProvider.overrideWithValue(WindowsClipboard()),
         backupFolderProvider.overrideWithValue(
           Directory('${roaming.path}/backup'),
         ),

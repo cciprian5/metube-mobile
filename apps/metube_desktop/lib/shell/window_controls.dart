@@ -38,6 +38,14 @@ abstract interface class WindowControls {
   ValueListenable<bool> get fullScreen;
 
   void setFullScreen(bool on);
+
+  /// Whether the window is the small card above every other (Ctrl+M).
+  ValueListenable<bool> get mini;
+
+  /// Makes the window the small card of [logical] size, above every other
+  /// window; called again, it only resizes it. Null brings the window back
+  /// as it was, maximized or not.
+  void setMini(Size? logical);
 }
 
 /// A window that does nothing: tests, previews and the component sheet.
@@ -77,4 +85,17 @@ class InertWindowControls implements WindowControls {
   @override
   void setMinimumSize(Size logical) =>
       calls.add('minimum ${logical.width.round()}x${logical.height.round()}');
+
+  @override
+  final ValueNotifier<bool> mini = ValueNotifier(false);
+
+  @override
+  void setMini(Size? logical) {
+    calls.add(
+      logical == null
+          ? 'mini off'
+          : 'mini ${logical.width.round()}x${logical.height.round()}',
+    );
+    mini.value = logical != null;
+  }
 }

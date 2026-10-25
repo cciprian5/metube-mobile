@@ -1052,6 +1052,18 @@ abstract class MTLocalizations {
   /// **'Each upload replaces the server\'s whole cookies file. To keep several platforms, choose all their files together every time, the ones you sent before too. Hold Ctrl to choose more than one.'**
   String get desktopCookiesReplaceNote;
 
+  /// No description provided for @desktopCopiedLinkAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add…'**
+  String get desktopCopiedLinkAdd;
+
+  /// No description provided for @desktopCopiedLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add this link to the server?'**
+  String get desktopCopiedLinkTitle;
+
   /// No description provided for @desktopCopyCancelled.
   ///
   /// In en, this message translates to:
@@ -1226,6 +1238,12 @@ abstract class MTLocalizations {
   /// **'Add the link you copied'**
   String get desktopKeyAddLink;
 
+  /// No description provided for @desktopKeyMini.
+  ///
+  /// In en, this message translates to:
+  /// **'Small window above the others, and back'**
+  String get desktopKeyMini;
+
   /// No description provided for @desktopKeyPlayPause.
   ///
   /// In en, this message translates to:
@@ -1358,6 +1376,18 @@ abstract class MTLocalizations {
   /// **'Save to a file'**
   String get desktopLogsSave;
 
+  /// No description provided for @desktopMiniRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the full window'**
+  String get desktopMiniRestore;
+
+  /// No description provided for @desktopMiniWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Small window'**
+  String get desktopMiniWindow;
+
   /// No description provided for @desktopNarrowSidebar.
   ///
   /// In en, this message translates to:
@@ -1435,6 +1465,18 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Saved to this computer'**
   String get desktopNoticeSaved;
+
+  /// No description provided for @desktopOfferCopiedLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer links I copy'**
+  String get desktopOfferCopiedLinks;
+
+  /// No description provided for @desktopOfferCopiedLinksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When you copy a video link in another app, a notification offers to add it. Only links are looked at, and none is saved.'**
+  String get desktopOfferCopiedLinksHint;
 
   /// No description provided for @desktopOfflineCount.
   ///

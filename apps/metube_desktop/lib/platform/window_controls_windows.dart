@@ -89,8 +89,15 @@ class WindowManagerControls with WindowListener implements WindowControls {
   @override
   void onWindowLeaveFullScreen() => fullScreen.value = false;
 
+  /// The smallest the full window may be, kept while the small card sets
+  /// its own.
+  Size _minimum = Size.zero;
+
   @override
-  void setMinimumSize(Size logical) => unawaited(_setMinimum(logical));
+  void setMinimumSize(Size logical) {
+    _minimum = logical;
+    if (!mini.value) unawaited(_setMinimum(logical));
+  }
 
   Future<void> _setMinimum(Size logical) async {
     await windowManager.setMinimumSize(logical);
@@ -105,6 +112,55 @@ class WindowManagerControls with WindowListener implements WindowControls {
       );
     }
   }
+
+  @override
+  final ValueNotifier<bool> mini = ValueNotifier(false);
+
+  /// The window as it was before the small card, to come back to.
+  Rect? _before;
+  bool _wasMaximized = false;
+
+  @override
+  void setMini(Size? logical) => unawaited(_setMini(logical));
+
+  /// The card sits in the corner by the clock, over everything. The card
+  /// is drawn before the window shrinks and the page after it grows back,
+  /// so neither is ever laid out in the other's size.
+  Future<void> _setMini(Size? logical) async {
+    if (logical == null) {
+      if (!mini.value) return;
+      await windowManager.setAlwaysOnTop(false);
+      await windowManager.setMinimumSize(_minimum);
+      if (_before case final before?) await windowManager.setBounds(before);
+      if (_wasMaximized) await windowManager.maximize();
+      mini.value = false;
+      return;
+    }
+    if (!mini.value) {
+      if (fullScreen.value) await _setFullScreen(false);
+      _wasMaximized = await windowManager.isMaximized();
+      if (_wasMaximized) await windowManager.unmaximize();
+      _before = await windowManager.getBounds();
+      mini.value = true;
+    }
+    final bounds = await windowManager.getBounds();
+    final areas = [
+      for (final d in await screenRetriever.getAllDisplays()) workAreaOf(d),
+    ];
+    final area = workAreaHolding(bounds, areas) ?? bounds;
+    await windowManager.setMinimumSize(logical);
+    await windowManager.setBounds(
+      Rect.fromLTWH(
+        area.right - logical.width - _cardMargin,
+        area.bottom - logical.height - _cardMargin,
+        logical.width,
+        logical.height,
+      ),
+    );
+    await windowManager.setAlwaysOnTop(true);
+  }
+
+  static const _cardMargin = 16.0;
 
   /// Which screen the window is on, by most overlap.
   Future<void> _readWorkArea() async {

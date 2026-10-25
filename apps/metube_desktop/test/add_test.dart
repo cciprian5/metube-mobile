@@ -389,6 +389,27 @@ void main() {
     expect(await h.store.getBool('transcripts_enabled'), isFalse);
   });
 
+  testWidgets('**the guard**: in Arabic the site name stands apart from the '
+      'link, not glued to its first letter', (tester) async {
+    ShellHarness.useArabic(tester);
+    ShellHarness.useWindow(tester, const Size(1440, 900));
+    clipboard(tester, '');
+    final h = ShellHarness(
+      library: const [],
+      server: ServerConfig(baseUrl: 'http://nas:8081'),
+    );
+    await tester.pumpWidget(h.app());
+    await tester.pumpAndSettle();
+    await tester.tap(byLabel('إضافة رابط'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, _yt);
+    await tester.pumpAndSettle();
+    final site = tester.getRect(find.byKey(const ValueKey('addLinkSite')));
+    final link = tester.getRect(find.byType(EditableText).first);
+    // Right to left, the site name sits on the link's left.
+    expect(link.left - site.right, greaterThanOrEqualTo(MTSpace.sm));
+  });
+
   testWidgets('in Arabic, a narrow window and large text, no overflow', (
     tester,
   ) async {

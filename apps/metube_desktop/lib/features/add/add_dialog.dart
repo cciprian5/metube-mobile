@@ -153,9 +153,23 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
                 decoration: InputDecoration(
                   hintText: l.pasteUrlHint,
                   hintTextDirection: TextDirection.ltr,
-                  suffixText: url == null
+                  // A widget, not suffixText: the link reads left to right
+                  // inside a right-to-left dialog, and the plain suffix sat
+                  // flush against its first letter ("YouTubehttps://…").
+                  suffix: url == null
                       ? null
-                      : platformLabel(l, MediaPlatform.detect(url)),
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: MTSpace.sm,
+                          ),
+                          child: Text(
+                            platformLabel(l, MediaPlatform.detect(url)),
+                            key: const ValueKey('addLinkSite'),
+                            style: Theme.of(context)
+                                .inputDecorationTheme
+                                .hintStyle,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: MTSpace.md),

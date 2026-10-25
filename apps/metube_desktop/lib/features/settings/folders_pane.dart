@@ -30,8 +30,10 @@ class FoldersPane extends ConsumerWidget {
       if (picked != null) await set(picked);
     }
 
+    // Apart enough to read as two buttons: at the narrow gap the pair read
+    // as one phrase ("Change… Open in Explorer").
     Widget actions(String? path, Future<void> Function(String) set) => Wrap(
-      spacing: MTSpace.xs,
+      spacing: MTSpace.xl,
       children: [
         MTLinkButton(
           label: l.desktopChangeFolder,

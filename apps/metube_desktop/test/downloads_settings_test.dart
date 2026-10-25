@@ -15,6 +15,7 @@ import 'package:metube_desktop/features/settings/folders_pane.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
+import 'package:mt_ui/mt_ui.dart';
 
 import 'support/shell_harness.dart';
 
@@ -169,6 +170,14 @@ void main() {
       // switch's own name.
       expect(find.text('Ask me every time'), findsNWidgets(2));
       expect(find.text(r'C:\Users\me\Downloads\MeTube'), findsNothing);
+    });
+
+    testWidgets('**the guard**: "Change…" and "Open in Explorer" stand apart '
+        'enough to read as two buttons', (tester) async {
+      await open(tester, to: '/settings/folders');
+      final change = tester.getRect(find.text('Change…').first);
+      final open_ = tester.getRect(find.text('Open in Explorer').first);
+      expect(open_.left - change.right, greaterThanOrEqualTo(MTSpace.lg));
     });
 
     testWidgets('a section not built yet says so instead of an empty page', (

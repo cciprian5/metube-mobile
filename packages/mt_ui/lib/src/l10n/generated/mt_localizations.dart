@@ -1547,7 +1547,7 @@ abstract class MTLocalizations {
   /// No description provided for @desktopServerFoldersHint.
   ///
   /// In en, this message translates to:
-  /// **'A clip in the server\'s Kids folder is saved in Kids here too.'**
+  /// **'For example, a clip in a folder called “Kids” on the server is saved in a folder of the same name here.'**
   String get desktopServerFoldersHint;
 
   /// No description provided for @desktopServerPartMissing.

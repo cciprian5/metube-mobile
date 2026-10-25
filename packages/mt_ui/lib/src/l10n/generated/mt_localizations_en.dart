@@ -872,7 +872,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopServerFoldersHint =>
-      'A clip in the server\'s Kids folder is saved in Kids here too.';
+      'For example, a clip in a folder called “Kids” on the server is saved in a folder of the same name here.';
 
   @override
   String get desktopServerPartMissing =>

@@ -902,7 +902,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopServerFoldersHint =>
-      'المقطع الذي في مجلد Kids على السيرفر يُحفظ في Kids هنا أيضاً.';
+      'مثلاً: المقطع الذي في مجلد «أطفال» على السيرفر يُحفظ في مجلد بالاسم نفسه هنا.';
 
   @override
   String get desktopServerPartMissing =>

@@ -123,7 +123,8 @@ Future<void> main(List<String> args) async {
   // Windows' places for the clip playing: the media keys and flyout, the
   // icon by the clock, the taskbar button. All read the player and command
   // it; none knows the engine.
-  final words = mtLocalizationsFor(null);
+  final labLocale = labLocaleFrom(args);
+  final words = mtLocalizationsFor(labLocale);
   final tray = EmberTray(
     words: (
       play: words.play,
@@ -206,7 +207,7 @@ Future<void> main(List<String> args) async {
         ),
         frameGrabProvider.overrideWithValue(grabFrame),
       ],
-      child: const EmberApp(),
+      child: EmberApp(locale: labLocale == null ? null : Locale(labLocale)),
     ),
   );
 }

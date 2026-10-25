@@ -652,7 +652,7 @@
   "desktopSearchHint": "Search titles and what was said…",
   "desktopSearchSaved": "Saved in the sidebar",
   "desktopServerFolders": "Same folders as on the server",
-  "desktopServerFoldersHint": "A clip in the server's Kids folder is saved in Kids here too.",
+  "desktopServerFoldersHint": "For example, a clip in a folder called “Kids” on the server is saved in a folder of the same name here.",
   "desktopServerPartMissing": "The server isn't answering, so this is what it held last time.",
   "desktopSettingsLater": "This section comes in a later step of the Windows app.",
   "desktopSetupAgain": "Set up again",

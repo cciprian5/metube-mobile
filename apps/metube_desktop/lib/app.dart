@@ -18,10 +18,14 @@ import 'shell/zoom_frame.dart';
 /// following Windows between day and night, plus localisation and the
 /// router.
 class EmberApp extends StatefulWidget {
-  const EmberApp({super.key, this.router});
+  const EmberApp({super.key, this.router, this.locale});
 
   /// For tests; the app builds its own otherwise.
   final GoRouter? router;
+
+  /// A language chosen for development (`--lab-locale`); null follows
+  /// Windows.
+  final Locale? locale;
 
   @override
   State<EmberApp> createState() => _EmberAppState();
@@ -62,6 +66,7 @@ class _EmberAppState extends State<EmberApp> {
         theme: mtDesktopTheme(MTVariant.superApp, Brightness.light),
         darkTheme: mtDesktopTheme(MTVariant.superApp, Brightness.dark),
         themeMode: ThemeMode.system,
+        locale: widget.locale,
         localizationsDelegates: MTLocalizations.localizationsDelegates,
         supportedLocales: MTLocalizations.supportedLocales,
         localeListResolutionCallback: mtLocaleResolution,

@@ -39,6 +39,18 @@ ServerConfig? labServerFrom(List<String> args) {
   }
 }
 
+/// The interface language for development, `--lab-locale=en`: **debug
+/// builds only**, so both languages can be checked in the real window
+/// without changing Windows' own. Null follows Windows, as every user's
+/// copy does.
+String? labLocaleFrom(List<String> args) {
+  if (!kDebugMode) return null;
+  for (final a in args) {
+    if (a.startsWith('--lab-locale=')) return a.substring(13);
+  }
+  return null;
+}
+
 /// Every address in the lab file, the chosen one first, to seed the
 /// address list the first time; empty outside a debug build.
 List<String> labAddressesFrom(List<String> args) {

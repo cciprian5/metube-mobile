@@ -29,10 +29,24 @@ abstract class SyncStorage {
 
 /// The sync folder as plain files: `<chosen>/MeTube Sync/`.
 class IoSyncStorage implements SyncStorage {
-  IoSyncStorage(String chosen)
+  IoSyncStorage(String chosen, {this.renameRetries = _renameRetries})
     : root = Directory('$chosen${Platform.pathSeparator}MeTube Sync');
 
   final Directory root;
+
+  /// The waits before trying a refused rename again. A sync program reads
+  /// a file it is about to send, and on Windows a file open for reading
+  /// cannot be replaced: measured with Syncthing, the write failed
+  /// ("being used by another process") about once every few minutes.
+  /// The read takes a moment, so a few short waits see it through.
+  final List<Duration> renameRetries;
+
+  static const _renameRetries = [
+    Duration(milliseconds: 100),
+    Duration(milliseconds: 300),
+    Duration(seconds: 1),
+    Duration(seconds: 2),
+  ];
 
   /// Where [path] is on disk.
   String pathOf(List<String> path) =>
@@ -72,7 +86,15 @@ class IoSyncStorage implements SyncStorage {
     await file.parent.create(recursive: true);
     final temp = File('${file.path}.tmp');
     await temp.writeAsString(text, flush: true);
-    await temp.rename(file.path);
+    for (final wait in [...renameRetries, null]) {
+      try {
+        await temp.rename(file.path);
+        return;
+      } on FileSystemException {
+        if (wait == null) rethrow;
+        await Future<void>.delayed(wait);
+      }
+    }
   }
 
   @override

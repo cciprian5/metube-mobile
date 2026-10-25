@@ -7,8 +7,10 @@ import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart' show mtFormatDuration;
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/clip_handover.dart';
 import '../../data/library_data.dart';
 import 'artwork.dart';
+import 'item_menu.dart';
 
 /// One library item in the current layout: a grid card, a table row, or a
 /// compact row. The shared Wahaj pieces draw it; this only says what to
@@ -40,8 +42,17 @@ class LibraryItemView extends ConsumerWidget {
   static const double _gridCell = 210;
   static const double _compactWidth = 64;
 
+  /// A right click opens the clip's menu; a drag carries its file out of
+  /// the window.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) => GestureDetector(
+    behavior: HitTestBehavior.translucent,
+    onSecondaryTapUp: (d) =>
+        unawaited(showItemMenu(context, ref, d.globalPosition, item)),
+    child: ref.watch(clipDragProvider)(item, _view(context, ref)),
+  );
+
+  Widget _view(BuildContext context, WidgetRef ref) {
     final l = context.mtl;
     final subtitle = mtMetaLine([
       item.uploader,

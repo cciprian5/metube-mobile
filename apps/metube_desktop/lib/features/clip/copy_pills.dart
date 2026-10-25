@@ -39,26 +39,27 @@ List<Widget> copyPills(BuildContext context, WidgetRef ref, LibraryItem item) {
         label: l.removeLocalCopy,
         icon: MTIcons.offline,
         selected: true,
-        onTap: () => unawaited(_remove(context, ref, item)),
+        onTap: () => unawaited(removeOfflineCopy(context, ref, item)),
       )
     else if (!item.isOffline && source != null)
       EmberPill(
         label: l.makeOffline,
         icon: MTIcons.offline,
         selected: false,
-        onTap: () => unawaited(_makeOffline(context, ref, source)),
+        onTap: () => unawaited(makeOfflineCopy(context, ref, source)),
       ),
     if (source != null)
       EmberPill(
         label: l.desktopDownloadTo,
         icon: MTIcons.saveTo,
         selected: false,
-        onTap: () => unawaited(_download(context, ref, source)),
+        onTap: () => unawaited(downloadCopy(context, ref, source)),
       ),
   ];
 }
 
-Future<void> _makeOffline(
+/// Starts an offline copy, or says the folder for it cannot be used.
+Future<void> makeOfflineCopy(
   BuildContext context,
   WidgetRef ref,
   CopySource source,
@@ -71,7 +72,8 @@ Future<void> _makeOffline(
   }
 }
 
-Future<void> _download(
+/// Saves a file of the user's own and says where.
+Future<void> downloadCopy(
   BuildContext context,
   WidgetRef ref,
   CopySource source,
@@ -82,7 +84,8 @@ Future<void> _download(
   showMTNotice(context, message: context.mtl.desktopSavingTo(folder));
 }
 
-Future<void> _remove(
+/// Deletes the offline copy; the server keeps its own.
+Future<void> removeOfflineCopy(
   BuildContext context,
   WidgetRef ref,
   LibraryItem item,

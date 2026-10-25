@@ -6,6 +6,9 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
+import '../shell/drop_frame.dart';
+import 'clip_drag.dart';
+
 /// The whole window as a drop target for links: a link dragged from a
 /// browser, a selected text that holds links, or a text file of them. What
 /// arrives is handed on as text, and the add dialog reads the links in it.
@@ -77,15 +80,17 @@ class _LinkDropAreaState extends State<LinkDropArea> {
 
   @override
   Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
     return DropRegion(
       formats: const [Formats.uri, Formats.fileUri, Formats.plainText],
       hitTestBehavior: HitTestBehavior.translucent,
+      // A clip dragged out of this window is on its way elsewhere; it is
+      // not offered as a link while it crosses the window.
       onDropOver: (event) =>
-          event.session.allowedOperations.contains(DropOperation.copy)
+          !_ownDrag(event.session) &&
+              event.session.allowedOperations.contains(DropOperation.copy)
           ? DropOperation.copy
           : DropOperation.none,
-      onDropEnter: (_) => setState(() => _over = true),
+      onDropEnter: (event) => setState(() => _over = !_ownDrag(event.session)),
       onDropLeave: (_) => setState(() => _over = false),
       onPerformDrop: (event) async {
         final reads = [for (final item in event.session.items) _read(item)];
@@ -102,22 +107,16 @@ class _LinkDropAreaState extends State<LinkDropArea> {
           if (_over)
             Positioned.fill(
               child: IgnorePointer(
-                child: ColoredBox(
-                  color: p.accentSoft.withValues(alpha: 0.85),
-                  child: Center(
-                    child: Text(
-                      context.mtl.desktopDropLinks,
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(color: p.accentInk),
-                    ),
-                  ),
-                ),
+                child: DropFrame(label: context.mtl.desktopDropLinks),
               ),
             ),
         ],
       ),
     );
   }
+
+  static bool _ownDrag(DropSession session) =>
+      session.items.any((item) => item.localData == emberDragMark);
 
   /// A transcripts file of a large library runs to tens of megabytes.
   static const _maxBackupBytes = 64 * 1024 * 1024;

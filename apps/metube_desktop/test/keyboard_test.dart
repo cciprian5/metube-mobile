@@ -32,7 +32,7 @@ void main() {
 
     test('**the guard**: R, F and "?" go by the key\'s place, so an Arabic '
         'layout works too', () {
-      // R on an Arabic layout types ق.
+      // R on an Arabic layout types the letter qaf (U+0642).
       final arabicR = down(
         const LogicalKeyboardKey(0x0642),
         PhysicalKeyboardKey.keyR,

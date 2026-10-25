@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'data/addresses_data.dart';
 import 'data/backup_data.dart';
+import 'data/clip_handover.dart';
 import 'data/covers/covers_data.dart';
 import 'data/folders_data.dart';
 import 'data/lab_server.dart';
@@ -30,6 +31,7 @@ import 'data/volume.dart';
 import 'features/settings/whats_new.dart';
 import 'di.dart';
 import 'identity.dart';
+import 'platform/clip_drag.dart';
 import 'platform/link_drop.dart';
 import 'platform/notifications.dart';
 import 'platform/error_log.dart';
@@ -203,6 +205,14 @@ Future<void> main(List<String> args) async {
         ),
         linkDropProvider.overrideWithValue(
           (child, onText) => LinkDropArea(onText: onText, child: child),
+        ),
+        clipDragProvider.overrideWith(
+          (ref) =>
+              (item, child) => ClipDragSource(
+                item: item,
+                handover: ref.read(clipHandoverProvider),
+                child: child,
+              ),
         ),
         initialShellLayoutProvider.overrideWithValue(layout),
         initialUiZoomProvider.overrideWithValue(

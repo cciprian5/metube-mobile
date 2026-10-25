@@ -2,14 +2,27 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart' show FilledButton, TextField;
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart'
+    show
+        Builder,
+        FilledButton,
+        Positioned,
+        PopupMenuItem,
+        Scrollable,
+        Stack,
+        TextField;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/features/add/add_entry.dart';
 import 'package:metube_desktop/features/add/batch_dialog.dart';
+import 'package:metube_desktop/features/library/item_menu.dart';
+import 'package:metube_desktop/features/library/library_item_view.dart';
 import 'package:metube_desktop/features/library/library_page.dart';
 import 'package:metube_desktop/features/library/library_state.dart';
 import 'package:metube_desktop/router.dart';
+import 'package:metube_desktop/shell/drop_frame.dart';
 import 'package:metube_desktop/shell/ember_shell.dart';
 import 'package:metube_desktop/shell/key_cap.dart';
 import 'package:metube_desktop/shell/pill.dart';
@@ -328,6 +341,67 @@ void main() {
       );
     });
   }
+
+  testWidgets("a card's right-click menu", (tester) async {
+    _emptyClipboard(tester);
+    await expectNoOverflow(
+      tester,
+      () => _stocked().app(),
+      then: (tester) async {
+        // At twice the text the chips fill a short window; the grid is
+        // further down.
+        final page = find
+            .descendant(
+              of: find.byType(LibraryPage),
+              matching: find.byType(Scrollable),
+            )
+            .first;
+        for (var i = 0; i < 20; i++) {
+          if (find.byType(LibraryItemView).evaluate().isNotEmpty) break;
+          await tester.drag(page, const Offset(0, -100));
+          await tester.pumpAndSettle();
+        }
+        // Its top edge: a card the drag just brought in may be cut below.
+        await tester.tapAt(
+          tester.getRect(find.byType(LibraryItemView).first).topCenter +
+              const Offset(0, MTSpace.sm),
+          buttons: kSecondaryMouseButton,
+          kind: PointerDeviceKind.mouse,
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(PopupMenuItem<ItemChoice>), findsWidgets);
+      },
+    );
+  });
+
+  testWidgets('the frame shown while links are dragged over the window', (
+    tester,
+  ) async {
+    _emptyClipboard(tester);
+    await expectNoOverflow(
+      tester,
+      () => ShellHarness(
+        library: _library,
+        server: _server,
+        overrides: [
+          linkDropProvider.overrideWithValue(
+            (child, _) => Stack(
+              children: [
+                child,
+                Positioned.fill(
+                  child: Builder(
+                    builder: (context) =>
+                        DropFrame(label: context.mtl.desktopDropLinks),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ).app(),
+      then: (tester) async => expect(find.byType(DropFrame), findsOneWidget),
+    );
+  });
 
   testWidgets('the shortcuts sheet, opened with "?"', (tester) async {
     _emptyClipboard(tester);

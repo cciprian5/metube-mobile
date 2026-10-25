@@ -49,7 +49,8 @@ EmberKey? emberKeyFor(
         : null;
   }
   if (shift) {
-    // "?" is Shift and the slash key, "؟" on an Arabic layout.
+    // "?" is Shift and the slash key; an Arabic layout types its own
+    // question mark there, so the key is read, not the character.
     return physical == PhysicalKeyboardKey.slash ? EmberKey.shortcuts : null;
   }
   return switch (logical) {

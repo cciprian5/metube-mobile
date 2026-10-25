@@ -13,8 +13,10 @@ workspace:
   - apps/metube_super
   - apps/metube_desktop
 
-# audio_service 0.18.19 with one fix, kept in third_party until upstream has
-# it: see third_party/audio_service/PATCHES.md.
+# audio_service 0.18.19 and windows_taskbar 1.1.2, each with fixes, kept in
+# third_party until upstream has them: see the PATCHES.md in each folder.
 dependency_overrides:
   audio_service:
     path: third_party/audio_service
+  windows_taskbar:
+    path: third_party/windows_taskbar

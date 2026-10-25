@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -63,6 +64,48 @@ void main() {
         expect(publicThumbnail(private), isNull, reason: '$private');
       }
     });
+  });
+
+  group("Windows' own right to left", () {
+    test('**the guard**: a mirrored taskbar is handed the preview buttons '
+        'reversed, so they read ⏮ ▶ ⏭ like the player bar', () {
+      expect(windowsMirrors('ar'), isTrue);
+      expect(windowsMirrors('en'), isFalse);
+      expect(windowsMirrors(null), isFalse);
+      const buttons = ['previous', 'play', 'next'];
+      expect(previewOrder(buttons, mirrored: true), [
+        'next',
+        'play',
+        'previous',
+      ]);
+      expect(previewOrder(buttons, mirrored: false), buttons);
+    });
+
+    test("**the guard**: an Arabic tray line is embedded right to left, so "
+        "the verb comes before the app's name; English is left alone", () {
+      final arabic = windowsMenuText('فتح MeTube Ember', rtl: true);
+      expect(arabic.runes.first, 0x202B);
+      expect(arabic.runes.last, 0x202C);
+      expect(
+        windowsMenuText('Open MeTube Ember', rtl: false),
+        'Open MeTube Ember',
+      );
+    });
+  });
+
+  test('**the guard**: the taskbar plugin is the patched copy that waits '
+      'for the taskbar button and follows it after the tray', () {
+    final lines = [
+      for (final line in File('../../pubspec.yaml').readAsLinesSync())
+        line.trim(),
+    ];
+    final at = lines.indexOf('windows_taskbar:');
+    expect(at, isNot(-1));
+    expect(lines[at + 1], 'path: third_party/windows_taskbar');
+    final native = File(
+      '../../third_party/windows_taskbar/windows/windows_taskbar_plugin.cc',
+    ).readAsStringSync();
+    expect(native, contains('TaskbarButtonCreated'));
   });
 
   group('the bridge', () {

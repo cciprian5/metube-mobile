@@ -27,6 +27,13 @@ class WindowsTaskbarSurface implements SystemMediaSurface, TaskbarPort {
 
   static const _folder = 'assets/tray/';
 
+  /// Windows' own display language, which decides whether its taskbar is
+  /// mirrored; the first of the user's languages.
+  bool get _mirrored {
+    final locales = PlatformDispatcher.instance.locales;
+    return windowsMirrors(locales.isEmpty ? null : locales.first.languageCode);
+  }
+
   String get _theme =>
       PlatformDispatcher.instance.platformBrightness == Brightness.dark
       ? 'dark'
@@ -56,23 +63,25 @@ class WindowsTaskbarSurface implements SystemMediaSurface, TaskbarPort {
         () => _buttons.add(press),
         mode: enabled ? 0 : ThumbnailToolbarButtonMode.disabled,
       );
-      await WindowsTaskbar.setThumbnailToolbar([
-        button(
-          'prev',
-          words.previous,
-          SystemMediaButton.previous,
-          enabled: now.canPrevious,
-        ),
-        now.playing
-            ? button('pause', words.pause, SystemMediaButton.pause)
-            : button('play_fill', words.play, SystemMediaButton.play),
-        button(
-          'next',
-          words.next,
-          SystemMediaButton.next,
-          enabled: now.canNext,
-        ),
-      ]);
+      await WindowsTaskbar.setThumbnailToolbar(
+        previewOrder(mirrored: _mirrored, [
+          button(
+            'prev',
+            words.previous,
+            SystemMediaButton.previous,
+            enabled: now.canPrevious,
+          ),
+          now.playing
+              ? button('pause', words.pause, SystemMediaButton.pause)
+              : button('play_fill', words.play, SystemMediaButton.play),
+          button(
+            'next',
+            words.next,
+            SystemMediaButton.next,
+            enabled: now.canNext,
+          ),
+        ]),
+      );
     } on Object {
       // The window is not shown yet, or is closing; the next change tries
       // again.

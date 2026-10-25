@@ -70,6 +70,28 @@ String? publicThumbnail(String? url) {
   return youtube ? url : null;
 }
 
+/// The right-to-left languages Flutter's own localizations know; Windows
+/// shown in one of them mirrors its taskbar.
+const _mirroredLanguages = {'ar', 'fa', 'he', 'ps', 'ur'};
+
+/// Whether Windows, shown in [languageCode], mirrors its taskbar.
+bool windowsMirrors(String? languageCode) =>
+    _mirroredLanguages.contains(languageCode?.toLowerCase());
+
+/// The preview's buttons in the order Windows is handed them. Media
+/// controls read ⏮ ▶ ⏭ left to right in every language, as the app's own
+/// player bar does; a mirrored taskbar lays them out from the right, so it
+/// is handed them reversed.
+List<T> previewOrder<T>(List<T> buttons, {required bool mirrored}) =>
+    mirrored ? buttons.reversed.toList() : buttons;
+
+/// A line for a menu Windows draws itself (the tray's). Those menus lay
+/// text out left to right whatever the language, so "Open MeTube Ember" in
+/// Arabic put the verb after the name; a right-to-left embedding makes the
+/// line read in its own order.
+String windowsMenuText(String text, {required bool rtl}) =>
+    rtl ? '\u202B$text\u202C' : text;
+
 /// A button pressed in one of Windows' media places.
 enum SystemMediaButton { play, pause, toggle, next, previous, stop }
 

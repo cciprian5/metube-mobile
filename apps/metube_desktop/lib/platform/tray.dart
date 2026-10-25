@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:mt_ui/mt_ui.dart';
 import 'package:tray_manager/tray_manager.dart';
 
 import '../data/system_media.dart';
@@ -27,6 +28,12 @@ class EmberTray with TrayListener implements SystemMediaSurface {
   final _buttons = StreamController<SystemMediaButton>.broadcast();
   SystemNowPlaying? _now;
   var _on = false;
+
+  /// The menu's lines, in the app's language and its direction.
+  String _line(String text) => windowsMenuText(
+    text,
+    rtl: mtTextDirectionOf(words.play, TextDirection.ltr) == TextDirection.rtl,
+  );
 
   static const _toggle = 'toggle';
   static const _next = 'next';
@@ -71,24 +78,24 @@ class EmberTray with TrayListener implements SystemMediaSurface {
       await trayManager.setToolTip(
         now == null
             ? EmberIdentity.displayName
-            : '${EmberIdentity.displayName} · ${now.title}',
+            : _line('${EmberIdentity.displayName} · ${now.title}'),
       );
       await trayManager.setContextMenu(
         Menu(
           items: [
             MenuItem(
               key: _toggle,
-              label: now?.playing ?? false ? words.pause : words.play,
+              label: _line(now?.playing ?? false ? words.pause : words.play),
               disabled: now == null,
             ),
             MenuItem(
               key: _next,
-              label: words.next,
+              label: _line(words.next),
               disabled: !(now?.canNext ?? false),
             ),
             MenuItem.separator(),
-            MenuItem(key: _open, label: words.open),
-            MenuItem(key: _quit, label: words.quit),
+            MenuItem(key: _open, label: _line(words.open)),
+            MenuItem(key: _quit, label: _line(words.quit)),
           ],
         ),
       );

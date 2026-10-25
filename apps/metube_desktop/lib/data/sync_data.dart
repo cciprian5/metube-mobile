@@ -137,7 +137,7 @@ class EmberSync {
     final store = _ref.read(keyValueStoreProvider);
     final now = DateTime.now();
     try {
-      final folder = SyncFolder(settings.folder!);
+      final folder = SyncFolder.at(settings.folder!);
       final myId = settings.deviceId!;
       final others = await folder.others(myId);
       final outcome = SyncMerge.forDevice(
@@ -148,8 +148,7 @@ class EmberSync {
       );
       if (await _local.apply(outcome.snapshot)) _refresh();
       final data = outcome.snapshot.encode();
-      if (data != _written ||
-          await folder.read(folder.deviceDir(myId)) == null) {
+      if (data != _written || await folder.read(myId) == null) {
         await folder.write(
           outcome.snapshot.copyWith(writtenAt: now.millisecondsSinceEpoch),
         );
@@ -192,7 +191,7 @@ class EmberSync {
     if (settings == null || !settings.on || store == null) return;
     try {
       await SyncTranscripts(
-        folder: SyncFolder(settings.folder!),
+        folder: SyncFolder.at(settings.folder!),
         myId: settings.deviceId!,
         local: store,
       ).publish(transcript);
@@ -207,9 +206,9 @@ class EmberSync {
     final settings = await _ref.read(syncSettingsProvider.future);
     if (!settings.on) return;
     await SyncTranscripts(
-      folder: SyncFolder(settings.folder!),
+      folder: SyncFolder.at(settings.folder!),
       myId: settings.deviceId!,
-    ).adopt(device.dir);
+    ).adopt(device.id);
     await run();
   }
 

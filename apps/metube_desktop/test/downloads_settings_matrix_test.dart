@@ -246,7 +246,6 @@ void main() {
                 cameBack: true,
                 devices: [
                   SyncDevice(
-                    root,
                     SyncSnapshot(
                       deviceId: 'phone-a1b2',
                       deviceKind: 'phone',

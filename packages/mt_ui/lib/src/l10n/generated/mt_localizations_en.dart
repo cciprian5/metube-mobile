@@ -2216,6 +2216,42 @@ class MTLocalizationsEn extends MTLocalizations {
   String get subtitlesSizeSmall => 'Small';
 
   @override
+  String get syncPhoneCameBack =>
+      'This phone was away for more than 90 days, so your other devices\' data was taken first.';
+
+  @override
+  String get syncPhoneFailed =>
+      'The sync folder could not be read. Choose it again if it moved or its permission was taken back.';
+
+  @override
+  String syncPhoneForgetBody(String device) {
+    return '$device will no longer be read. Its transcripts move to this phone\'s folder first, so none is lost. Use this for a device that was lost or sold.';
+  }
+
+  @override
+  String get syncPhoneGuide =>
+      'At home: Syncthing-Fork (from F-Droid) on this phone and Syncthing on the computer, sharing one folder; set it to Wi‑Fi only to spare the battery. Through a cloud: FolderSync with the cloud folder the computer uses.';
+
+  @override
+  String get syncPhoneHint =>
+      'Mirrors tags, favourites, lists, resume positions and transcripts with MeTube Ember on your computer, through a folder a sync app keeps in step. Nothing goes to any service from here.';
+
+  @override
+  String get syncPhoneNoOthers =>
+      'No other device in this folder yet. Turn sync on in MeTube Ember with the same folder.';
+
+  @override
+  String get syncPhoneOff => 'Off. Nothing leaves this phone.';
+
+  @override
+  String syncPhoneThisDevice(String name) {
+    return 'This phone: $name';
+  }
+
+  @override
+  String get syncTitle => 'Sync with the computer';
+
+  @override
   String get tagActionsHint => 'Long-press a tag to rename or delete it.';
 
   @override

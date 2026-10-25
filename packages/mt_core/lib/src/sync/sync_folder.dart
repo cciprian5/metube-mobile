@@ -3,21 +3,102 @@ import 'dart:math';
 
 import 'sync_snapshot.dart';
 
-/// Another device's folder and what its file says.
-class SyncDevice {
-  const SyncDevice(this.dir, this.snapshot);
+/// Where the sync folder's files are read and written, by path inside
+/// `MeTube Sync/`. A computer reaches the folder as files ([IoSyncStorage]);
+/// Android 11+ hides files another app (the sync program) made, so a phone
+/// reaches it through the folder the user granted in the system picker,
+/// with the same paths.
+abstract class SyncStorage {
+  /// The folders directly in [dir].
+  Future<List<String>> folders(List<String> dir);
 
-  final Directory dir;
+  /// The files directly in [dir].
+  Future<List<String>> files(List<String> dir);
+
+  /// A file's text, or null when it is missing or cannot be read now.
+  Future<String?> read(List<String> path);
+
+  /// Writes a file **whole or not at all** (a temporary name, then a
+  /// rename), so a sync program never sends half of one. Missing folders
+  /// are made.
+  Future<void> write(List<String> path, String text);
+
+  /// Removes a file, or a folder with everything in it.
+  Future<void> remove(List<String> path);
+}
+
+/// The sync folder as plain files: `<chosen>/MeTube Sync/`.
+class IoSyncStorage implements SyncStorage {
+  IoSyncStorage(String chosen)
+    : root = Directory('$chosen${Platform.pathSeparator}MeTube Sync');
+
+  final Directory root;
+
+  /// Where [path] is on disk.
+  String pathOf(List<String> path) =>
+      [root.path, ...path].join(Platform.pathSeparator);
+
+  Future<List<String>> _names(List<String> dir, {required bool folders}) async {
+    final at = Directory(pathOf(dir));
+    if (!await at.exists()) return const [];
+    return [
+      await for (final entry in at.list())
+        if ((entry is Directory) == folders)
+          entry.uri.pathSegments.where((s) => s.isNotEmpty).last,
+    ];
+  }
+
+  @override
+  Future<List<String>> folders(List<String> dir) => _names(dir, folders: true);
+
+  @override
+  Future<List<String>> files(List<String> dir) => _names(dir, folders: false);
+
+  @override
+  Future<String?> read(List<String> path) async {
+    final file = File(pathOf(path));
+    try {
+      return await file.exists() ? await file.readAsString() : null;
+    } on FileSystemException {
+      // Being replaced by the sync program this very moment; the next
+      // change notice reads it whole.
+      return null;
+    }
+  }
+
+  @override
+  Future<void> write(List<String> path, String text) async {
+    final file = File(pathOf(path));
+    await file.parent.create(recursive: true);
+    final temp = File('${file.path}.tmp');
+    await temp.writeAsString(text, flush: true);
+    await temp.rename(file.path);
+  }
+
+  @override
+  Future<void> remove(List<String> path) async {
+    final at = pathOf(path);
+    if (await Directory(at).exists()) {
+      await Directory(at).delete(recursive: true);
+    } else if (await File(at).exists()) {
+      await File(at).delete();
+    }
+  }
+}
+
+/// Another device's file in the folder.
+class SyncDevice {
+  const SyncDevice(this.snapshot);
+
   final SyncSnapshot snapshot;
 
   String get id => snapshot.deviceId;
 }
 
-/// **The folder the user chose**, with `MeTube Sync` inside it and one
-/// subfolder per device:
+/// **The sync folder**, one subfolder per device:
 ///
 /// ```
-/// <chosen>/MeTube Sync/
+/// MeTube Sync/
 ///   phone-a1b2/   library.json   transcripts/…
 ///   ember-c3d4/   library.json   transcripts/…
 /// ```
@@ -27,10 +108,12 @@ class SyncDevice {
 /// conflict copies it makes anyway (a file edited by hand, a clock gone
 /// wrong) are skipped by name.
 class SyncFolder {
-  SyncFolder(String chosen)
-    : root = Directory('$chosen${Platform.pathSeparator}MeTube Sync');
+  SyncFolder(this.storage);
 
-  final Directory root;
+  /// The folder the user chose on this computer.
+  factory SyncFolder.at(String chosen) => SyncFolder(IoSyncStorage(chosen));
+
+  final SyncStorage storage;
 
   static const libraryFile = 'library.json';
   static const transcriptsFolder = 'transcripts';
@@ -61,49 +144,36 @@ class SyncFolder {
         lower.startsWith('~');
   }
 
-  Directory deviceDir(String deviceId) =>
-      Directory('${root.path}${Platform.pathSeparator}$deviceId');
-
-  Directory transcriptsOf(Directory device) =>
-      Directory('${device.path}${Platform.pathSeparator}$transcriptsFolder');
-
   /// Every other device whose file can be read. A folder without a
   /// readable file (one being created, one from another program) is
   /// skipped.
-  Future<List<SyncDevice>> others(String myId) async {
-    if (!await root.exists()) return const [];
-    final found = <SyncDevice>[];
-    await for (final entry in root.list()) {
-      if (entry is! Directory) continue;
-      final name = entry.uri.pathSegments.where((s) => s.isNotEmpty).last;
-      if (name == myId || isConflictCopy(name)) continue;
-      final snapshot = await read(entry);
-      if (snapshot != null) found.add(SyncDevice(entry, snapshot));
-    }
-    return found;
-  }
+  Future<List<SyncDevice>> others(String myId) async => [
+    for (final name in await storage.folders(const []))
+      if (name != myId && !isConflictCopy(name))
+        if (await read(name) case final snapshot?) SyncDevice(snapshot),
+  ];
 
   /// A device's file, or null when it is missing or unreadable.
-  Future<SyncSnapshot?> read(Directory device) async {
-    final file = File('${device.path}${Platform.pathSeparator}$libraryFile');
-    try {
-      if (!await file.exists()) return null;
-      return SyncSnapshot.decode(await file.readAsString());
-    } on FileSystemException {
-      // Being replaced by the sync program this very moment; the next
-      // change notice reads it whole.
-      return null;
-    }
+  Future<SyncSnapshot?> read(String deviceId) async {
+    final text = await storage.read([deviceId, libraryFile]);
+    return text == null ? null : SyncSnapshot.decode(text);
   }
 
-  /// Writes this device's file **to a temporary name and renames it**, so
-  /// a sync program never sends half a file.
-  Future<void> write(SyncSnapshot snapshot) async {
-    final dir = deviceDir(snapshot.deviceId);
-    await dir.create(recursive: true);
-    final file = File('${dir.path}${Platform.pathSeparator}$libraryFile');
-    final temp = File('${file.path}.tmp');
-    await temp.writeAsString(snapshot.encode(), flush: true);
-    await temp.rename(file.path);
-  }
+  Future<void> write(SyncSnapshot snapshot) =>
+      storage.write([snapshot.deviceId, libraryFile], snapshot.encode());
+
+  /// The transcript files in a device's folder, conflict copies left out.
+  Future<List<String>> transcriptFiles(String deviceId) async => [
+    for (final name in await storage.files([deviceId, transcriptsFolder]))
+      if (name.endsWith('.json') && !isConflictCopy(name)) name,
+  ];
+
+  Future<String?> readTranscript(String deviceId, String name) =>
+      storage.read([deviceId, transcriptsFolder, name]);
+
+  Future<void> writeTranscript(String deviceId, String name, String text) =>
+      storage.write([deviceId, transcriptsFolder, name], text);
+
+  /// Removes a device's folder, for "forget this device".
+  Future<void> removeDevice(String deviceId) => storage.remove([deviceId]);
 }

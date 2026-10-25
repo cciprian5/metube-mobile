@@ -21,9 +21,13 @@ class MainActivity : AudioServiceActivity() {
     private val channel = "com.yasir.metubesuper/permissions"
     private val requestCode = 4301
 
+    // The sync folder, reached through the system picker (see SyncTree).
+    private val syncTree by lazy { SyncTree(this) }
+
     override fun configureFlutterEngine(engine: FlutterEngine) {
         super.configureFlutterEngine(engine)
         UpdateInstaller.register(this, engine)
+        syncTree.register(engine.dartExecutor.binaryMessenger)
         ShareInbox.register(engine.dartExecutor.binaryMessenger)
         MethodChannel(engine.dartExecutor.binaryMessenger, channel)
             .setMethodCallHandler { call, result ->
@@ -98,6 +102,13 @@ class MainActivity : AudioServiceActivity() {
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    @Deprecated("The activity-result API needs AndroidX's ComponentActivity.")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!syncTree.onResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     /** The pending shortcut name, from the intent action `<pkg>.SHORTCUT_<NAME>`. */

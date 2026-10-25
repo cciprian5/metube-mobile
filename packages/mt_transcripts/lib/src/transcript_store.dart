@@ -22,8 +22,9 @@ class TranscriptStore {
 
   File _file(String name) => File('${root.path}${Platform.pathSeparator}$name');
 
-  /// A clip holds one file per language, named from both.
-  static String _nameFor(String canonicalUrl, String language) =>
+  /// A clip holds one file per language, named from both. Public so the
+  /// sync folder names its copies the same way.
+  static String nameFor(String canonicalUrl, String language) =>
       _hashName('$canonicalUrl\n$language');
 
   /// The name a clip's only file had before a clip could hold two
@@ -51,7 +52,7 @@ class TranscriptStore {
 
   Future<Transcript?> read(String canonicalUrl, String language) async {
     for (final name in [
-      _nameFor(canonicalUrl, language),
+      nameFor(canonicalUrl, language),
       _legacyNameFor(canonicalUrl),
     ]) {
       final file = _file(name);
@@ -76,7 +77,7 @@ class TranscriptStore {
   Future<void> write(Transcript transcript) async {
     await root.create(recursive: true);
     final url = transcript.canonicalUrl;
-    final file = _file(_nameFor(url, transcript.language));
+    final file = _file(nameFor(url, transcript.language));
     final temp = File('${file.path}.tmp');
     await temp.writeAsString(jsonEncode(transcript.toJson()), flush: true);
     await temp.rename(file.path);
@@ -129,7 +130,7 @@ class TranscriptStore {
     final url = transcript.canonicalUrl;
     final name = file.uri.pathSegments.last;
     if (name != _legacyNameFor(url)) return false;
-    return _file(_nameFor(url, transcript.language)).exists();
+    return _file(nameFor(url, transcript.language)).exists();
   }
 
   /// The folder's size, for the settings line that tells the user what

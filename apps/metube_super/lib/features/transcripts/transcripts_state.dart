@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart' show mtLocalizationsFor;
 import 'package:path_provider/path_provider.dart';
 
 import '../../di.dart';
+import '../sync/phone_sync.dart';
 
 /// "Search inside clips": off until the user turns it on.
 final transcriptsEnabledProvider =
@@ -109,7 +110,9 @@ class TranscriptsService {
         'captions $language ${result.outcome.name} for $url'
         '${result.detail == null ? '' : ': ${result.detail}'}',
       );
-      if (result.transcript case final transcript?) await save(transcript);
+      if (result.transcript case final transcript?) {
+        await save(transcript, fetched: true);
+      }
       // A server that failed once will likely fail again, and every try
       // holds the download back: the second language is only asked when
       // the first went through.
@@ -147,10 +150,14 @@ class TranscriptsService {
     mtLocalizationsFor(_ref.read(settingsProvider).localeCode).localeName,
   );
 
-  Future<void> save(Transcript transcript) async {
+  /// Keeps [transcript]. One this phone [fetched] from the server also goes
+  /// to the sync folder when sync is on; one imported from a file does not,
+  /// so every transcript there stays a single copy.
+  Future<void> save(Transcript transcript, {bool fetched = false}) async {
     await (await _ref.read(transcriptStoreProvider.future)).write(transcript);
     (await _ref.read(transcriptIndexProvider.future)).add(transcript);
     _ref.read(transcriptsRevisionProvider.notifier).state++;
+    if (fetched) unawaited(_ref.read(phoneSyncProvider).publish(transcript));
   }
 
   /// Everything, as one file's text.

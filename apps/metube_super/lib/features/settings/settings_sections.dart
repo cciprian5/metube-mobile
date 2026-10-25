@@ -9,6 +9,7 @@ import '../transcripts/subtitles.dart';
 import '../transcripts/transcripts_state.dart';
 import '../update/update_state.dart';
 import '../update/whats_new_prompt.dart';
+import '../sync/phone_sync.dart';
 import 'auto_backup.dart';
 import 'cookies_screen.dart';
 import 'settings_state.dart';
@@ -24,6 +25,7 @@ enum SettingsPane {
   appearance,
   transcripts,
   backup,
+  sync,
   updates,
   logs,
   about;
@@ -120,6 +122,12 @@ List<(String, List<SettingsEntry>)> settingsGroups(
           Icons.shield_outlined,
           l10n.settingsBackup,
           v.backup(),
+        ),
+        SettingsEntry(
+          SettingsPane.sync,
+          Icons.sync_rounded,
+          l10n.syncTitle,
+          v.sync(),
         ),
         SettingsEntry(
           SettingsPane.updates,
@@ -232,6 +240,11 @@ class _Values {
         l10n.settingsValueSubtitlesShown,
     ]);
   }
+
+  String sync() => ref.watch(phoneSyncSettingsProvider).valueOrNull?.on ?? false
+      ? l10n.settingsValueOn
+      // What "off" means here, not a bare word another row also says.
+      : l10n.syncPhoneOff;
 
   String backup() => switch (ref.watch(latestBackupProvider).valueOrNull) {
     final at? => l10n.lastBackup(mtTimeAgo(context, at)),

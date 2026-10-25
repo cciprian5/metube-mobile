@@ -18,9 +18,13 @@ Transcript _t(String id, String text, {String language = 'en'}) => Transcript(
   ],
 );
 
+/// The folder of one device, on disk.
+Directory _device(SyncFolder folder, String id) =>
+    Directory('${(folder.storage as IoSyncStorage).root.path}/$id');
+
 /// The files under one device's transcripts folder.
 List<String> _files(SyncFolder folder, String id) {
-  final dir = folder.transcriptsOf(folder.deviceDir(id));
+  final dir = Directory('${_device(folder, id).path}/transcripts');
   return dir.existsSync()
       ? [for (final f in dir.listSync()) f.uri.pathSegments.last]
       : const [];
@@ -44,7 +48,7 @@ void main() {
 
   setUp(() {
     root = Directory.systemTemp.createTempSync('mt_sync_t_');
-    folder = SyncFolder('${root.path}/chosen');
+    folder = SyncFolder.at('${root.path}/chosen');
     phoneLocal = TranscriptStore(Directory('${root.path}/phone'));
     emberLocal = TranscriptStore(Directory('${root.path}/ember'));
     phone = SyncTranscripts(
@@ -100,14 +104,14 @@ void main() {
     await phone.publish(_t('only0000000', 'only the phone had this'));
     await phone.publish(_t('both0000000', 'both'));
     await ember.publish(_t('both0000000', 'both'));
-    await ember.adopt(folder.deviceDir('phone-a1b2'));
-    expect(folder.deviceDir('phone-a1b2').existsSync(), isFalse);
+    await ember.adopt('phone-a1b2');
+    expect(_device(folder, 'phone-a1b2').existsSync(), isFalse);
     expect(_files(folder, 'ember-c3d4'), hasLength(2));
   });
 
   test("a sync program's conflict copy is not read", () async {
     await phone.publish(_t('talk0000000', 'real'));
-    final dir = folder.transcriptsOf(folder.deviceDir('phone-a1b2'));
+    final dir = Directory('${_device(folder, 'phone-a1b2').path}/transcripts');
     final real = dir.listSync().single as File;
     await real.copy(
       real.path.replaceFirst('.json', '.sync-conflict-20261025-1.json'),

@@ -93,7 +93,7 @@ class SidecarBackfill {
           switch (result.outcome) {
             case SidecarOutcome.found:
               found = true;
-              await service.save(result.transcript!);
+              await service.save(result.transcript!, fetched: true);
             case SidecarOutcome.none:
               break;
             case SidecarOutcome.failed:

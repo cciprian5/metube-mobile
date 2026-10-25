@@ -33,8 +33,9 @@ final syncRunnerProvider = Provider<void>((ref) {
   final settings = ref.watch(syncSettingsProvider).valueOrNull;
   if (settings == null || !settings.on) return;
   final sync = ref.read(emberSyncProvider);
-  final folder = SyncFolder(settings.folder!);
-  final mine = folder.deviceDir(settings.deviceId!).path.toLowerCase();
+  final storage = IoSyncStorage(settings.folder!);
+  final root = storage.root;
+  final mine = storage.pathOf([settings.deviceId!]).toLowerCase();
 
   Timer? settle;
   void soon() {
@@ -45,8 +46,8 @@ final syncRunnerProvider = Provider<void>((ref) {
   StreamSubscription<FileSystemEvent>? watching;
   Future<void> watch() async {
     try {
-      await folder.root.create(recursive: true);
-      watching = folder.root.watch(recursive: true).listen(
+      await root.create(recursive: true);
+      watching = root.watch(recursive: true).listen(
         (event) {
           if (!event.path.toLowerCase().startsWith(mine)) soon();
         },

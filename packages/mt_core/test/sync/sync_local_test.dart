@@ -58,7 +58,7 @@ void main() {
 
   setUp(() {
     root = Directory.systemTemp.createTempSync('mt_sync_');
-    folder = SyncFolder(root.path);
+    folder = SyncFolder.at(root.path);
   });
   tearDown(() => root.deleteSync(recursive: true));
 
@@ -139,20 +139,19 @@ void main() {
     },
   );
 
-  test(
-    'a conflict copy and a half-written file are not read as devices',
-    () async {
-      final phone = _Device('phone-a1b2', t0);
-      await phone.tags.toggleTag(_trip, 'travel');
-      await phone.sync(folder);
-      await Directory('${folder.root.path}/phone-a1b2.sync-conflict-20261025-1')
-          .create();
-      await File('${folder.root.path}/phone-a1b2/library.sync-conflict-x.json')
-          .writeAsString('{}');
-      final others = await folder.others('ember-c3d4');
-      expect(others.map((d) => d.id), ['phone-a1b2']);
-    },
-  );
+  test('a conflict copy and a half-written file are not read as devices', () async {
+    final phone = _Device('phone-a1b2', t0);
+    await phone.tags.toggleTag(_trip, 'travel');
+    await phone.sync(folder);
+    await Directory(
+      '${(folder.storage as IoSyncStorage).root.path}/phone-a1b2.sync-conflict-20261025-1',
+    ).create();
+    await File(
+      '${(folder.storage as IoSyncStorage).root.path}/phone-a1b2/library.sync-conflict-x.json',
+    ).writeAsString('{}');
+    final others = await folder.others('ember-c3d4');
+    expect(others.map((d) => d.id), ['phone-a1b2']);
+  });
 
   test('saved searches travel with their removals', () async {
     final ember = _Device('ember-c3d4', t0);

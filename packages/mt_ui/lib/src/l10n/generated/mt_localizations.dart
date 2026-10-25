@@ -3836,6 +3836,60 @@ abstract class MTLocalizations {
   /// **'Small'**
   String get subtitlesSizeSmall;
 
+  /// No description provided for @syncPhoneCameBack.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone was away for more than 90 days, so your other devices\' data was taken first.'**
+  String get syncPhoneCameBack;
+
+  /// No description provided for @syncPhoneFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The sync folder could not be read. Choose it again if it moved or its permission was taken back.'**
+  String get syncPhoneFailed;
+
+  /// No description provided for @syncPhoneForgetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} will no longer be read. Its transcripts move to this phone\'s folder first, so none is lost. Use this for a device that was lost or sold.'**
+  String syncPhoneForgetBody(String device);
+
+  /// No description provided for @syncPhoneGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'At home: Syncthing-Fork (from F-Droid) on this phone and Syncthing on the computer, sharing one folder; set it to Wi‑Fi only to spare the battery. Through a cloud: FolderSync with the cloud folder the computer uses.'**
+  String get syncPhoneGuide;
+
+  /// No description provided for @syncPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirrors tags, favourites, lists, resume positions and transcripts with MeTube Ember on your computer, through a folder a sync app keeps in step. Nothing goes to any service from here.'**
+  String get syncPhoneHint;
+
+  /// No description provided for @syncPhoneNoOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'No other device in this folder yet. Turn sync on in MeTube Ember with the same folder.'**
+  String get syncPhoneNoOthers;
+
+  /// No description provided for @syncPhoneOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off. Nothing leaves this phone.'**
+  String get syncPhoneOff;
+
+  /// No description provided for @syncPhoneThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone: {name}'**
+  String syncPhoneThisDevice(String name);
+
+  /// No description provided for @syncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync with the computer'**
+  String get syncTitle;
+
   /// No description provided for @tagActionsHint.
   ///
   /// In en, this message translates to:

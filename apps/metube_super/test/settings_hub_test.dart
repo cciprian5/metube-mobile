@@ -107,6 +107,7 @@ void main() {
       SettingsPane.appearance: l10n.appearanceAndLanguage,
       SettingsPane.transcripts: l10n.settingsTranscripts,
       SettingsPane.backup: l10n.settingsBackup,
+      SettingsPane.sync: l10n.syncTitle,
       SettingsPane.updates: l10n.updates,
       SettingsPane.logs: l10n.diagnosticLogs,
       SettingsPane.about: l10n.aboutApp,

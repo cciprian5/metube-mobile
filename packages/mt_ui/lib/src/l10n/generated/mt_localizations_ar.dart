@@ -2275,6 +2275,42 @@ class MTLocalizationsAr extends MTLocalizations {
   String get subtitlesSizeSmall => 'صغير';
 
   @override
+  String get syncPhoneCameBack =>
+      'غاب هذا الجوال أكثر من 90 يوماً، فأُخذت بيانات أجهزتك الأخرى أولاً.';
+
+  @override
+  String get syncPhoneFailed =>
+      'تعذّرت قراءة مجلد المزامنة. اختره من جديد إن نُقل أو سُحب إذنه.';
+
+  @override
+  String syncPhoneForgetBody(String device) {
+    return 'لن يُقرأ $device بعد الآن، وتُنقل نصوصه إلى مجلد هذا الجوال أولاً فلا يضيع منها شيء. استعمله لجهاز ضاع أو بِيع.';
+  }
+
+  @override
+  String get syncPhoneGuide =>
+      'داخل البيت: Syncthing-Fork (من F-Droid) على هذا الجوال وSyncthing على الكمبيوتر يتشاركان مجلداً واحداً، واضبطه على «Wi‑Fi فقط» توفيراً للبطارية. وعبر السحابة: FolderSync مع المجلد السحابي الذي يستعمله الكمبيوتر.';
+
+  @override
+  String get syncPhoneHint =>
+      'تعكس الوسوم والمفضلة والقوائم ومواضع التوقف والنصوص بين هذا الجوال وMeTube Ember على الكمبيوتر، عبر مجلد يزامنه برنامج تختاره. ولا يُرسَل شيء من هنا إلى أي خدمة.';
+
+  @override
+  String get syncPhoneNoOthers =>
+      'لا جهاز آخر في هذا المجلد بعد. شغّل المزامنة في MeTube Ember بالمجلد نفسه.';
+
+  @override
+  String get syncPhoneOff => 'متوقفة، ولا يخرج شيء من هذا الجوال.';
+
+  @override
+  String syncPhoneThisDevice(String name) {
+    return 'هذا الجوال: $name';
+  }
+
+  @override
+  String get syncTitle => 'المزامنة مع الكمبيوتر';
+
+  @override
   String get tagActionsHint => 'اضغط مطوّلاً على وسم لإعادة تسميته أو حذفه.';
 
   @override

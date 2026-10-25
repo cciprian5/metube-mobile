@@ -11,6 +11,7 @@ import 'features/settings/auto_backup.dart';
 import 'features/settings/settings_state.dart';
 import 'features/shared/error_report.dart';
 import 'features/shared/stores.dart';
+import 'features/sync/phone_sync.dart';
 import 'features/transcripts/transcripts_state.dart';
 
 /// Riverpod injection (TRD §3.1): a settings change rebuilds the client and
@@ -63,7 +64,11 @@ final tagsIndexProvider = Provider(
     // **A single choke point for the automatic backup** (2026-09-04):
     // every tag write, from any screen, requests a backup, so no screen
     // can be forgotten.
-    onChanged: () => unawaited(ref.read(autoBackupProvider).requestBackup()),
+    onChanged: () {
+      unawaited(ref.read(autoBackupProvider).requestBackup());
+      // The sync folder too, when sync is on.
+      ref.read(phoneSyncProvider).nudge();
+    },
   ),
 );
 
@@ -96,7 +101,11 @@ final playlistsStoreProvider = Provider(
     // on the emulator 2026-09-03: the file on disk was correct and the
     // screen
     // was empty).
-    onChanged: () => unawaited(ref.read(autoBackupProvider).requestBackup()),
+    onChanged: () {
+      unawaited(ref.read(autoBackupProvider).requestBackup());
+      // The sync folder too, when sync is on.
+      ref.read(phoneSyncProvider).nudge();
+    },
   ),
 );
 

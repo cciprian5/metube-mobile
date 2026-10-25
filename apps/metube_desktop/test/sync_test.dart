@@ -64,7 +64,7 @@ void main() {
 
   setUp(() {
     root = Directory.systemTemp.createTempSync('ember_sync_');
-    folder = SyncFolder('${root.path}/Sync');
+    folder = SyncFolder.at('${root.path}/Sync');
   });
   tearDown(() => root.deleteSync(recursive: true));
 
@@ -106,7 +106,7 @@ void main() {
       expect(lists.single.name, 'Evening');
       final id = c.read(syncSettingsProvider).value!.deviceId!;
       expect(id, startsWith('ember-'));
-      final written = await folder.read(folder.deviceDir(id));
+      final written = await folder.read(id);
       expect(written!.tags[_trip]!.keys, containsAll(['travel', 'nature']));
       expect(c.read(syncReportProvider)!.devices.single.id, _phone);
     });
@@ -124,11 +124,9 @@ void main() {
       );
       await keepTranscript(ref, transcripts, _said('imported000'));
       await Future<void>.delayed(const Duration(milliseconds: 50));
-      final published = folder
-          .transcriptsOf(folder.deviceDir(id))
-          .listSync()
-          .whereType<File>()
-          .toList();
+      final published = Directory(
+        '${root.path}/Sync/MeTube Sync/$id/transcripts',
+      ).listSync().whereType<File>().toList();
       expect(published, hasLength(1));
       expect(await published.single.readAsString(), contains('fetched0000'));
     });
@@ -187,7 +185,10 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Forget this device').last);
       await settle(tester);
-      expect(folder.deviceDir(_phone).existsSync(), isFalse);
+      expect(
+        Directory('${root.path}/Sync/MeTube Sync/$_phone').existsSync(),
+        isFalse,
+      );
       expect(find.textContaining('No other device'), findsOneWidget);
     });
   });

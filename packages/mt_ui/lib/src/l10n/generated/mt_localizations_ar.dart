@@ -1063,6 +1063,16 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopTrayOnClose => 'يبقى التشغيل في الدرج عند إغلاق النافذة';
 
   @override
+  String get desktopTrayOnCloseHint =>
+      'إغلاق النافذة يُبقي الصوت شغالاً، والخروج من الأيقونة بجانب الساعة.';
+
+  @override
+  String get desktopTrayOpen => 'فتح MeTube Ember';
+
+  @override
+  String get desktopTrayQuit => 'خروج';
+
+  @override
   String get desktopViewCompact => 'مختصر';
 
   @override

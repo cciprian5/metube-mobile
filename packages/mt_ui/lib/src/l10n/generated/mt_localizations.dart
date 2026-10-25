@@ -1814,6 +1814,24 @@ abstract class MTLocalizations {
   /// **'Keep playing in the tray when the window closes'**
   String get desktopTrayOnClose;
 
+  /// No description provided for @desktopTrayOnCloseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing the window keeps the sound playing; quit from the icon by the clock.'**
+  String get desktopTrayOnCloseHint;
+
+  /// No description provided for @desktopTrayOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open MeTube Ember'**
+  String get desktopTrayOpen;
+
+  /// No description provided for @desktopTrayQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get desktopTrayQuit;
+
   /// No description provided for @desktopViewCompact.
   ///
   /// In en, this message translates to:

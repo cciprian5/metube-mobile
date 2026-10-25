@@ -36,6 +36,10 @@ class FakeEngine extends Fake implements DownloadEngine {
   void fail(DownloadTask task, MTApiException error) =>
       _put(task.copyWith(phase: TaskPhase.failed, error: error));
 
+  /// As if the server reported [progress] on it.
+  void advance(DownloadTask task, double progress) =>
+      _put(task.copyWith(phase: TaskPhase.polling, progress: progress));
+
   void finish(DownloadTask task) =>
       _put(task.copyWith(phase: TaskPhase.completed));
 

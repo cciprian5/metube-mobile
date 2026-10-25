@@ -11,10 +11,14 @@ import 'window_placement.dart';
 /// The main window: opened where it was left, saved whenever it moves or
 /// resizes, and closed only after [beforeClose] has run.
 class EmberWindow with WindowListener {
-  EmberWindow._(this._placements, this._beforeClose);
+  EmberWindow._(this._placements, this._beforeClose, this._hideOnClose);
 
   final WindowPlacementStore _placements;
   final Future<void> Function() _beforeClose;
+
+  /// Asked as the window closes: true hides it to the tray and playing
+  /// goes on; false closes the app.
+  final bool Function() _hideOnClose;
 
   /// The interface size the window opened at: the one asked for, or a
   /// smaller one when that does not fit the screen it opened on.
@@ -33,9 +37,14 @@ class EmberWindow with WindowListener {
     required WindowPlacementStore placements,
     required Future<void> Function() beforeClose,
     required double zoom,
+    bool Function()? hideOnClose,
   }) async {
     await windowManager.ensureInitialized();
-    final window = EmberWindow._(placements, beforeClose);
+    final window = EmberWindow._(
+      placements,
+      beforeClose,
+      hideOnClose ?? () => false,
+    );
     final saved = await placements.read();
     final areas = [
       for (final d in await screenRetriever.getAllDisplays()) workAreaOf(d),
@@ -113,6 +122,26 @@ class EmberWindow with WindowListener {
 
   @override
   Future<void> onWindowClose() async {
+    if (_hideOnClose()) {
+      // To the tray: the window goes, the app and its sound stay.
+      _saveSoon?.cancel();
+      await _save();
+      await windowManager.hide();
+      return;
+    }
+    await quit();
+  }
+
+  /// Brings the window back from the tray, or to the front.
+  static Future<void> bringBack() async {
+    await windowManager.show();
+    if (await windowManager.isMinimized()) await windowManager.restore();
+    await windowManager.focus();
+  }
+
+  /// **Closes the app**: what the window's close does when it does not go
+  /// to the tray, and what the tray's "Quit" does.
+  Future<void> quit() async {
     _saveSoon?.cancel();
     try {
       await Future.wait([_save(), _beforeClose()]).timeout(closeBudget);

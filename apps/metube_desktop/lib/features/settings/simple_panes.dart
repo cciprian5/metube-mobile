@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/desktop_habits.dart';
 import '../../data/downloads_data.dart';
 import '../../data/library_data.dart';
 import '../setup/setup_dialog.dart';
@@ -142,17 +143,23 @@ class DownloadsPane extends ConsumerWidget {
 
 /// The computer's own habits: all off, and each arrives with its own step
 /// (the tray, starting with Windows, the shortcut from any app).
-class DesktopPane extends StatelessWidget {
+class DesktopPane extends ConsumerWidget {
   const DesktopPane({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.mtl;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        SwitchLine(
+          title: l.desktopTrayOnClose,
+          hint: l.desktopTrayOnCloseHint,
+          value: ref.watch(closeToTrayProvider),
+          onChanged: (on) =>
+              unawaited(ref.read(closeToTrayProvider.notifier).set(on)),
+        ),
         for (final title in [
-          l.desktopTrayOnClose,
           l.desktopStartWithWindows,
           l.desktopGlobalShortcut,
         ])

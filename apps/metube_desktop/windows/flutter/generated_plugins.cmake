@@ -10,9 +10,11 @@ list(APPEND FLUTTER_PLUGIN_LIST
   media_kit_video
   screen_retriever_windows
   super_native_extensions
+  tray_manager
   url_launcher_windows
   window_manager
   windows_single_instance
+  windows_taskbar
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

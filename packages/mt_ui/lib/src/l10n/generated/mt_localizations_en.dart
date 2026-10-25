@@ -1034,6 +1034,16 @@ class MTLocalizationsEn extends MTLocalizations {
       'Keep playing in the tray when the window closes';
 
   @override
+  String get desktopTrayOnCloseHint =>
+      'Closing the window keeps the sound playing; quit from the icon by the clock.';
+
+  @override
+  String get desktopTrayOpen => 'Open MeTube Ember';
+
+  @override
+  String get desktopTrayQuit => 'Quit';
+
+  @override
   String get desktopViewCompact => 'Compact';
 
   @override

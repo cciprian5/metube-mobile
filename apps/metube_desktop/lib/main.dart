@@ -21,7 +21,10 @@ import 'data/setup_data.dart';
 import 'data/transcripts_data.dart';
 import 'features/add/add_entry.dart';
 import 'features/library/artwork.dart';
+import 'data/desktop_habits.dart';
 import 'data/sync_runner.dart';
+import 'data/system_media.dart';
+import 'data/taskbar_data.dart';
 import 'features/settings/whats_new.dart';
 import 'di.dart';
 import 'identity.dart';
@@ -36,6 +39,9 @@ import 'platform/video_surface_windows.dart';
 import 'platform/window_controls_windows.dart';
 import 'platform/window_frame.dart';
 import 'platform/windows_folders.dart';
+import 'platform/smtc.dart';
+import 'platform/taskbar.dart';
+import 'platform/tray.dart';
 import 'platform/window_placement.dart';
 import 'shell/shell_layout.dart';
 import 'shell/shell_state.dart';
@@ -60,7 +66,11 @@ Future<void> main(List<String> args) async {
   }
   // First, before anything opens a file or a window: a second copy exits
   // here and the first comes to the front.
-  await claimSingleInstance(args);
+  // A second start brings this window back, from the tray too.
+  await claimSingleInstance(
+    args,
+    onSecondStart: (_) => unawaited(EmberWindow.bringBack()),
+  );
   initMTL10n();
   MediaKit.ensureInitialized();
 
@@ -91,6 +101,8 @@ Future<void> main(List<String> args) async {
   // The player is saved first; then whatever the app adds, such as the
   // sync folder's last write.
   final closing = <Future<void> Function()>[];
+  // Off until chosen: closing the window closes the app.
+  var toTray = await store.getBool(CloseToTray.key) ?? false;
   final window = await EmberWindow.open(
     placements: WindowPlacementStore(store: store, mutex: mutex),
     beforeClose: () async {
@@ -99,6 +111,7 @@ Future<void> main(List<String> args) async {
         await step();
       }
     },
+    hideOnClose: () => toTray,
     zoom: wanted,
   );
   // A size that did not fit this screen was stepped down; it is kept, and
@@ -106,6 +119,31 @@ Future<void> main(List<String> args) async {
   final lowered = window.zoom < wanted;
   if (lowered) await zooms.write(window.zoom);
   final controls = await WindowManagerControls.create();
+
+  // Windows' places for the clip playing: the media keys and flyout, the
+  // icon by the clock, the taskbar button. All read the player and command
+  // it; none knows the engine.
+  final words = mtLocalizationsFor(null);
+  final tray = EmberTray(
+    words: (
+      play: words.play,
+      pause: words.pause,
+      next: words.next,
+      open: words.desktopTrayOpen,
+      quit: words.desktopTrayQuit,
+    ),
+    onOpen: () => unawaited(EmberWindow.bringBack()),
+    onQuit: window.quit,
+  );
+  await tray.setOn(toTray);
+  final taskbar = WindowsTaskbarSurface((
+    previous: words.previous,
+    play: words.play,
+    pause: words.pause,
+    next: words.next,
+    downloads: words.activeDownloadsCount,
+  ));
+  SystemMediaBridge(player, [?await SmtcSurface.start(), tray, taskbar]);
   // The lab file (debug builds) stands in for the first-run setup;
   // otherwise the server set up before, if any.
   const secrets = WindowsSecretStore();
@@ -145,6 +183,12 @@ Future<void> main(List<String> args) async {
         offerSetupAtStartProvider.overrideWithValue(true),
         offerWhatsNewProvider.overrideWithValue(true),
         beforeCloseProvider.overrideWithValue(closing),
+        initialCloseToTrayProvider.overrideWithValue(toTray),
+        closeToTrayHookProvider.overrideWithValue((on) {
+          toTray = on;
+          unawaited(tray.setOn(on));
+        }),
+        taskbarPortProvider.overrideWithValue(taskbar),
         backupFolderProvider.overrideWithValue(
           Directory('${roaming.path}/backup'),
         ),

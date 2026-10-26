@@ -491,6 +491,43 @@ void main() {
     await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
   }
 
+  /// The listening room on the sound in the queue, opened from the bar.
+  Future<void> listeningRoom(WidgetTester tester, ShellHarness h) async {
+    h.player.showPlaying([_queue[1], _queue[0]], playing: false);
+    await tester.pumpAndSettle();
+    final english = find.byTooltip('Listening room');
+    await tester.tap(
+      english.evaluate().isEmpty ? find.byTooltip('غرفة الاستماع') : english,
+    );
+  }
+
+  /// The clip page with its chapters listed beneath.
+  Future<void> chapters(WidgetTester tester) async {
+    GoRouter.of(tester.element(find.byType(LibraryPage)))
+        .go(EmberRoutes.item(_url));
+  }
+
+  /// Both rooms read the same words; only which clip they belong to differs.
+  ShellHarness withWords({double zoom = 1}) => ShellHarness(
+    library: _library,
+    server: _server,
+    transcripts: {_url: _transcript, _queue[1].canonicalUrl: _transcript},
+    zoom: UiZoom(zoom),
+  );
+
+  testWidgets('the listening room', (tester) async {
+    late ShellHarness h;
+    await expectNoOverflow(
+      tester,
+      () => (h = withWords()).app(),
+      then: (tester) => listeningRoom(tester, h),
+    );
+  });
+
+  testWidgets('a clip with its chapters', (tester) async {
+    await expectNoOverflow(tester, () => withWords().app(), then: chapters);
+  });
+
   testWidgets('the reading room, playing, finding', (tester) async {
     late ShellHarness h;
     await expectNoOverflow(
@@ -552,6 +589,25 @@ void main() {
         )).app(),
         windows: [window],
         then: (tester) => readingRoom(tester, h),
+      );
+    });
+
+    testWidgets('the listening room, ${window.name}', (tester) async {
+      late ShellHarness h;
+      await expectNoOverflow(
+        tester,
+        () => (h = withWords(zoom: zoom)).app(),
+        windows: [window],
+        then: (tester) => listeningRoom(tester, h),
+      );
+    });
+
+    testWidgets('a clip with its chapters, ${window.name}', (tester) async {
+      await expectNoOverflow(
+        tester,
+        () => withWords(zoom: zoom).app(),
+        windows: [window],
+        then: chapters,
       );
     });
 

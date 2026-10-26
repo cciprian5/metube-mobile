@@ -49,7 +49,10 @@ List<Chapter> chaptersOf(List<TranscriptSegment> segments) {
         best ??= p;
         break;
       }
-      if (best == null || pause(p) > pause(best)) best = p;
+      if (best == null ||
+          _better(pause(p), into, pause(best), at(best) - from, due)) {
+        best = p;
+      }
     }
     if (best == null) break;
     starts.add(best);
@@ -79,5 +82,22 @@ String openingOf(String text) {
   final cut = sentence.lastIndexOf(' ', _openingLength);
   return '${sentence.substring(0, cut > 0 ? cut : _openingLength)}…';
 }
+
+/// Whether a cut [into] a chapter after a pause of [pause] seconds beats
+/// the best so far: a clearly longer pause wins, and between pauses alike
+/// the one nearer where the chapter is [due].
+bool _better(
+  double pause,
+  double into,
+  double bestPause,
+  double bestInto,
+  double due,
+) {
+  if ((pause - bestPause).abs() > _alike) return pause > bestPause;
+  return (into - due).abs() < (bestInto - due).abs();
+}
+
+/// Pauses closer than this, in seconds, count as the same.
+const _alike = 0.5;
 
 double _seconds(Duration d) => d.inMilliseconds / 1000;

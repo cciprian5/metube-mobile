@@ -4,6 +4,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../features/listening/listening_room.dart';
 import 'now_playing.dart';
+import 'player_controls.dart';
 import 'seek_bar.dart';
 import 'shell_metrics.dart';
 
@@ -31,10 +32,9 @@ class EmberPlayerBar extends StatelessWidget {
   /// Turns the window into the small card above the others.
   final VoidCallback onMini;
 
-  /// Whether a video plays with its picture off, so it is heard as sound.
+  /// Whether a video is heard with its picture off; whether the listening
+  /// room is asked for, and the way in and out.
   final bool audioOnly;
-
-  /// Whether the listening room is asked for, and the way in and out.
   final bool listening;
   final VoidCallback onListen;
 
@@ -107,19 +107,19 @@ class _Transport extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _Control(
+              EmberPlayerControl(
                 icon: MTIcons.shuffle,
                 label: l.shuffle,
                 selected: state.shuffle,
                 onTap: when(() => player.setShuffle(!state.shuffle)),
               ),
-              _Control(
+              EmberPlayerControl(
                 icon: MTIcons.prev,
                 label: l.previous,
                 onTap: when(player.skipToPrevious),
               ),
               const SizedBox(width: MTSpace.xs),
-              _PlayButton(
+              EmberPlayButton(
                 playing: state.playing,
                 label: state.playing ? l.pause : l.play,
                 onTap: when(state.playing ? player.pause : player.play),
@@ -127,12 +127,12 @@ class _Transport extends StatelessWidget {
                 ink: p.onAccent,
               ),
               const SizedBox(width: MTSpace.xs),
-              _Control(
+              EmberPlayerControl(
                 icon: MTIcons.next,
                 label: l.next,
                 onTap: when(player.skipToNext),
               ),
-              _Control(
+              EmberPlayerControl(
                 icon: MTIcons.repeat,
                 label: mtPlayModeLabel(context, state.mode),
                 selected: state.mode != PlayMode.autoNext,
@@ -173,124 +173,51 @@ class _Extras extends StatelessWidget {
     final speeds = PlaybackSpeeds.options;
     final at = speeds.indexOf(state.speed);
     final nextSpeed = speeds[(at + 1) % speeds.length];
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        MTShortcutTooltip(
-          message: l.playbackSpeed,
-          child: TextButton(
-            onPressed: state.isEmpty ? null : () => player.setSpeed(nextSpeed),
-            // Read as what it is, then the speed: "Playback speed, 1.0×".
-            child: Semantics(
-              label: l.playbackSpeed,
-              value: mtLtrRun('${state.speed}×'),
-              excludeSemantics: true,
-              child: Text(
-                mtLtrRun('${state.speed}×'),
-                style: Theme.of(context).textTheme.labelMedium?.tabular
-                    .copyWith(color: p.ink2),
+    // In a narrow window the group shrinks rather than spill past the bar.
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: AlignmentDirectional.centerEnd,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          MTShortcutTooltip(
+            message: l.playbackSpeed,
+            child: TextButton(
+              onPressed: state.isEmpty
+                  ? null
+                  : () => player.setSpeed(nextSpeed),
+              // Read as what it is, then the speed: "Playback speed, 1.0×".
+              child: Semantics(
+                label: l.playbackSpeed,
+                value: mtLtrRun('${state.speed}×'),
+                excludeSemantics: true,
+                child: Text(
+                  mtLtrRun('${state.speed}×'),
+                  style: Theme.of(context).textTheme.labelMedium?.tabular
+                      .copyWith(color: p.ink2),
+                ),
               ),
             ),
           ),
-        ),
-        if (listening case final open?)
-          _Control(
-            icon: MTIcons.headphones,
-            label: context.mtl.desktopListeningRoom,
-            selected: open,
-            onTap: onListen,
-          ),
-        _Control(
-          icon: MTIcons.pip,
-          label: l.desktopMiniWindow,
-          shortcut: 'Ctrl M',
-          onTap: state.isEmpty ? null : onMini,
-        ),
-        _Control(icon: MTIcons.queue, label: l.queueLabel, onTap: onShowQueue),
-      ],
-    );
-  }
-}
-
-class _Control extends StatelessWidget {
-  const _Control({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.selected = false,
-    this.shortcut,
-  });
-
-  final MTIconData icon;
-  final String label;
-  final VoidCallback? onTap;
-  final bool selected;
-  final String? shortcut;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final ink = onTap == null ? p.ink3 : (selected ? p.accentInk : p.ink2);
-    return MTShortcutTooltip(
-      message: label,
-      shortcut: shortcut,
-      child: IconButton(
-        onPressed: onTap,
-        icon: MTIcon(icon, size: MTSpace.lg, color: ink, semanticLabel: label),
-      ),
-    );
-  }
-}
-
-class _PlayButton extends StatelessWidget {
-  const _PlayButton({
-    required this.playing,
-    required this.label,
-    required this.onTap,
-    required this.accent,
-    required this.ink,
-  });
-
-  final bool playing;
-  final String label;
-  final VoidCallback? onTap;
-  final Color accent;
-  final Color ink;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    return MTShortcutTooltip(
-      message: label,
-      shortcut: 'Space',
-      // A bare ink well is only tappable; a screen reader also needs to
-      // hear that this is a button, and when it is dimmed.
-      child: Semantics(button: true, enabled: onTap != null, child: _face(p)),
-    );
-  }
-
-  Widget _face(MTPalette p) {
-    return Material(
-      color: onTap == null ? p.cardAlt : accent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTCorners.desktop.fab),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        // Not the theme's opaque hover fill, which would hide the ember.
-        hoverColor: ink.withValues(alpha: 0.12),
-        child: SizedBox.square(
-          dimension: MTDensity.desktop.row,
-          child: Center(
-            child: MTIcon(
-              playing ? MTIcons.pause : MTIcons.playFill,
-              size: MTSpace.lg,
-              color: onTap == null ? p.ink3 : ink,
-              semanticLabel: label,
+          if (listening case final open?)
+            EmberPlayerControl(
+              icon: MTIcons.headphones,
+              label: context.mtl.desktopListeningRoom,
+              selected: open,
+              onTap: onListen,
             ),
+          EmberPlayerControl(
+            icon: MTIcons.pip,
+            label: l.desktopMiniWindow,
+            shortcut: 'Ctrl M',
+            onTap: state.isEmpty ? null : onMini,
           ),
-        ),
+          EmberPlayerControl(
+            icon: MTIcons.queue,
+            label: l.queueLabel,
+            onTap: onShowQueue,
+          ),
+        ],
       ),
     );
   }

@@ -596,6 +596,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopCopyQueued => 'ينتظر دوره';
 
   @override
+  String get desktopCopyQuote => 'انسخ مع الوقت والرابط';
+
+  @override
   String get desktopDesktopSection => 'سطح المكتب';
 
   @override
@@ -911,6 +914,41 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopQueueEnd => 'لا شيء بعد هذا المقطع';
+
+  @override
+  String desktopQuote(String text, String title, String time, String link) {
+    return '«$text»\n— $title، $time\n$link';
+  }
+
+  @override
+  String get desktopQuoteCopied => 'نُسخ مع وقته ورابطه';
+
+  @override
+  String get desktopReadingBack => 'العودة إلى المقطع';
+
+  @override
+  String get desktopReadingCloseFind => 'إغلاق البحث';
+
+  @override
+  String get desktopReadingFind => 'ابحث في النص';
+
+  @override
+  String desktopReadingFound(int at, int count) {
+    return '$at من $count';
+  }
+
+  @override
+  String get desktopReadingHint =>
+      'انقر جملة لتسمعها منها · Ctrl+F للبحث عن كلمة · حدِّد لتنسخ مع الوقت';
+
+  @override
+  String get desktopReadingNextMatch => 'النتيجة التالية';
+
+  @override
+  String get desktopReadingPreviousMatch => 'النتيجة السابقة';
+
+  @override
+  String get desktopReadingRoom => 'غرفة القراءة';
 
   @override
   String get desktopRemoveFromList => 'أزله من القائمة';

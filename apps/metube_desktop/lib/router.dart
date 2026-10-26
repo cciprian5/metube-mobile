@@ -43,6 +43,10 @@ abstract final class EmberRoutes {
   static String item(String canonicalUrl) =>
       '/item/${Uri.encodeComponent(canonicalUrl)}';
 
+  /// One clip's reading room, its transcript as an article.
+  static String reading(String canonicalUrl) =>
+      '/read/${Uri.encodeComponent(canonicalUrl)}';
+
   /// One saved list's page, by its id.
   static String playlist(String id) => '$playlists/${Uri.encodeComponent(id)}';
 
@@ -97,6 +101,9 @@ Widget _pendingLibrary(String? only) => PendingPlace('library', argument: only);
 Widget _pendingItem(String? canonicalUrl) =>
     PendingPlace('item', argument: canonicalUrl);
 
+Widget _pendingReading(String? canonicalUrl) =>
+    PendingPlace('read', argument: canonicalUrl);
+
 Widget _pendingPlaylists(String? id) => PendingPlace('playlists', argument: id);
 
 Widget _pendingChannels(String? id) => PendingPlace('channels', argument: id);
@@ -111,6 +118,7 @@ GoRouter buildEmberRouter({
   EmberShellBuilder shell = _bare,
   EmberPlaceBuilder library = _pendingLibrary,
   EmberPlaceBuilder item = _pendingItem,
+  EmberPlaceBuilder reading = _pendingReading,
   EmberPlaceBuilder playlists = _pendingPlaylists,
   EmberPlaceBuilder channels = _pendingChannels,
   EmberPlaceBuilder settings = _pendingSettings,
@@ -148,6 +156,10 @@ GoRouter buildEmberRouter({
         GoRoute(
           path: '/item/:id',
           builder: (_, state) => item(state.pathParameters['id']),
+        ),
+        GoRoute(
+          path: '/read/:id',
+          builder: (_, state) => reading(state.pathParameters['id']),
         ),
         GoRoute(
           path: EmberRoutes.settings,

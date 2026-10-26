@@ -88,6 +88,7 @@ void main() {
   final places = [
     EmberRoutes.library,
     EmberRoutes.item(_video.canonicalUrl),
+    EmberRoutes.reading(_video.canonicalUrl),
     EmberRoutes.playlists,
     EmberRoutes.channels,
     for (final pane in EmberSettingsPane.values) pane.route,

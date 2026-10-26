@@ -575,6 +575,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopCopyQueued => 'Waiting its turn';
 
   @override
+  String get desktopCopyQuote => 'Copy with time and link';
+
+  @override
   String get desktopDesktopSection => 'Desktop';
 
   @override
@@ -881,6 +884,41 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopQueueEnd => 'Nothing comes after this one';
+
+  @override
+  String desktopQuote(String text, String title, String time, String link) {
+    return '“$text”\n— $title, $time\n$link';
+  }
+
+  @override
+  String get desktopQuoteCopied => 'Copied with its time and link';
+
+  @override
+  String get desktopReadingBack => 'Back to the clip';
+
+  @override
+  String get desktopReadingCloseFind => 'Close the search';
+
+  @override
+  String get desktopReadingFind => 'Find in the text';
+
+  @override
+  String desktopReadingFound(int at, int count) {
+    return '$at of $count';
+  }
+
+  @override
+  String get desktopReadingHint =>
+      'Click a sentence to hear it from there · Ctrl+F finds a word · select to copy with its time';
+
+  @override
+  String get desktopReadingNextMatch => 'Next match';
+
+  @override
+  String get desktopReadingPreviousMatch => 'Previous match';
+
+  @override
+  String get desktopReadingRoom => 'Reading room';
 
   @override
   String get desktopRemoveFromList => 'Remove from the list';

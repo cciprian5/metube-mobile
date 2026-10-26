@@ -479,6 +479,31 @@ void main() {
     });
   }
 
+  Future<void> readingRoom(WidgetTester tester, ShellHarness h) async {
+    h.player.showPlaying(_queue, playing: false);
+    await tester.pumpAndSettle();
+    GoRouter.of(tester.element(find.byType(LibraryPage)))
+        .go(EmberRoutes.reading(_url));
+    await tester.pumpAndSettle();
+    // With its find bar open, the tallest it gets.
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.keyF);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+  }
+
+  testWidgets('the reading room, playing, finding', (tester) async {
+    late ShellHarness h;
+    await expectNoOverflow(
+      tester,
+      () => (h = ShellHarness(
+        library: _library,
+        server: _server,
+        transcripts: {_url: _transcript},
+      )).app(),
+      then: (tester) => readingRoom(tester, h),
+    );
+  });
+
   // The interface size at both ends, each in its smallest window, and the
   // laptop that only fits at 90%.
   for (final (zoom, window) in [
@@ -514,6 +539,21 @@ void main() {
         );
       });
     }
+
+    testWidgets('the reading room, ${window.name}', (tester) async {
+      late ShellHarness h;
+      await expectNoOverflow(
+        tester,
+        () => (h = ShellHarness(
+          library: _library,
+          server: _server,
+          transcripts: {_url: _transcript},
+          zoom: UiZoom(zoom),
+        )).app(),
+        windows: [window],
+        then: (tester) => readingRoom(tester, h),
+      );
+    });
 
     for (final (i, tab) in PanelTab.values.indexed) {
       testWidgets('playing, ${tab.name} open, ${window.name}', (tester) async {

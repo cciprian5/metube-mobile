@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart';
@@ -11,6 +12,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/library_data.dart';
 import '../../di.dart';
+import '../../router.dart';
 import '../../shell/pill.dart';
 import '../../shell/shell_metrics.dart';
 import '../../shell/shell_state.dart';
@@ -305,6 +307,13 @@ class _ClipLayout extends ConsumerWidget {
                         onTap: onFullScreen,
                       ),
                     ],
+                    EmberPill(
+                      label: l.desktopReadingRoom,
+                      icon: MTIcons.reading,
+                      selected: false,
+                      onTap: () =>
+                          GoRouter.of(context).go(EmberRoutes.reading(url)),
+                    ),
                     EmberPill(
                       label: l.openOriginalLink,
                       icon: MTIcons.external,

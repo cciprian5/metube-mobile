@@ -43,6 +43,10 @@ abstract final class EmberShellSize {
   /// The widest a clip's picture grows, so a maximized 2560 window does
   /// not stretch a 1080p picture past its own pixels.
   static const double clipMax = 1280;
+
+  /// The picture in the reading room's corner: small beside the article,
+  /// still large enough to follow who is speaking.
+  static const double readingVideo = 300;
 }
 
 /// How the columns share a given window width.

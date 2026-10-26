@@ -6,6 +6,7 @@ import 'identity.dart';
 import 'features/channels/channel_page.dart';
 import 'features/channels/channels_page.dart';
 import 'features/clip/clip_page.dart';
+import 'features/reading/reading_room.dart';
 import 'features/library/library_page.dart';
 import 'features/lists/lists_page.dart';
 import 'features/lists/playlist_page.dart';
@@ -42,6 +43,8 @@ class _EmberAppState extends State<EmberApp> {
         library: (only) =>
             LibraryPage(key: ValueKey(only), scope: LibraryPage.scopeOf(only)),
         item: (url) => ClipPage(key: ValueKey(url), canonicalUrl: url ?? ''),
+        reading: (url) =>
+            ReadingRoom(key: ValueKey(url), canonicalUrl: url ?? ''),
         playlists: (id) => id == null
             ? const ListsPage()
             : PlaylistPage(key: ValueKey(id), id: id),

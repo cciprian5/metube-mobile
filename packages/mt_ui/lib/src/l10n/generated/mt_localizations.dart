@@ -1082,6 +1082,12 @@ abstract class MTLocalizations {
   /// **'Waiting its turn'**
   String get desktopCopyQueued;
 
+  /// No description provided for @desktopCopyQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy with time and link'**
+  String get desktopCopyQuote;
+
   /// No description provided for @desktopDesktopSection.
   ///
   /// In en, this message translates to:
@@ -1573,6 +1579,66 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Nothing comes after this one'**
   String get desktopQueueEnd;
+
+  /// No description provided for @desktopQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'“{text}”\n— {title}, {time}\n{link}'**
+  String desktopQuote(String text, String title, String time, String link);
+
+  /// No description provided for @desktopQuoteCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied with its time and link'**
+  String get desktopQuoteCopied;
+
+  /// No description provided for @desktopReadingBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the clip'**
+  String get desktopReadingBack;
+
+  /// No description provided for @desktopReadingCloseFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the search'**
+  String get desktopReadingCloseFind;
+
+  /// No description provided for @desktopReadingFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Find in the text'**
+  String get desktopReadingFind;
+
+  /// No description provided for @desktopReadingFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{at} of {count}'**
+  String desktopReadingFound(int at, int count);
+
+  /// No description provided for @desktopReadingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Click a sentence to hear it from there · Ctrl+F finds a word · select to copy with its time'**
+  String get desktopReadingHint;
+
+  /// No description provided for @desktopReadingNextMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Next match'**
+  String get desktopReadingNextMatch;
+
+  /// No description provided for @desktopReadingPreviousMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous match'**
+  String get desktopReadingPreviousMatch;
+
+  /// No description provided for @desktopReadingRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading room'**
+  String get desktopReadingRoom;
 
   /// No description provided for @desktopRemoveFromList.
   ///

@@ -4,6 +4,7 @@ import 'package:mt_ui/mt_ui.dart';
 /// One of the player bar's icon buttons, ember when its mode is on.
 class EmberPlayerControl extends StatelessWidget {
   const EmberPlayerControl({
+    super.key,
     required this.icon,
     required this.label,
     required this.onTap,
@@ -35,6 +36,7 @@ class EmberPlayerControl extends StatelessWidget {
 /// The player bar's play and pause, filled with the accent.
 class EmberPlayButton extends StatelessWidget {
   const EmberPlayButton({
+    super.key,
     required this.playing,
     required this.label,
     required this.onTap,

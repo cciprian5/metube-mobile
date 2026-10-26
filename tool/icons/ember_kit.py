@@ -11,6 +11,7 @@
 Run from the repository root: python tool/make_icons.py --windows
 """
 
+import glob
 import os
 
 from PIL import Image
@@ -104,15 +105,23 @@ def brand_files():
 # --- the installer's images --------------------------------------------------
 
 def _flat(image, background):
-    """Inno Setup takes 24-bit bitmaps: no transparency."""
+    """The tall image as a 24-bit bitmap: it is opaque anyway."""
     base = Image.new("RGB", image.size, background)
     base.paste(image, mask=image.split()[3])
     return base
 
 
+# The sizes of the two image areas at 100, 125, 150 and 200 percent; Inno
+# Setup picks the nearest, so nothing is stretched on a common display.
+LARGE_SIZES = {100: (164, 314), 125: (205, 393), 150: (246, 471), 200: (328, 628)}
+SMALL_SIZES = (58, 77, 97, 124)
+
+
 def installer_images():
     out = f"{APP}/windows/installer"
     os.makedirs(out, exist_ok=True)
+    for old in glob.glob(f"{out}/wizard_*"):
+        os.remove(old)
     espresso = tuple(int(m.ESPRESSO[i:i + 2], 16) for i in (1, 3, 5))
     # The welcome page's tall image: the mark large, bare (its tile would
     # vanish into the same espresso), and the name under it.
@@ -123,18 +132,22 @@ def installer_images():
     word, width = m.wordmark("MeTube Ember", FONT, 100)
     name = m._svg(f'<path transform="translate(1 64)" fill="{m.CREAM}" d="{word}"/>',
                   w=round(width + 2), h=66)
-    for scale, (w, h) in [(1, (164, 314)), (2, (328, 628))]:
+    for percent, (w, h) in LARGE_SIZES.items():
         mark = m.render(bare, round(w * 0.56))
         title = m.render(name, round(w * 0.76 * 66 / (width + 2)))
         panel = Image.new("RGBA", (w, h), espresso + (255,))
         top = round(h * 0.30)
         panel.alpha_composite(mark, ((w - mark.width) // 2, top))
         panel.alpha_composite(title, ((w - title.width) // 2, top + mark.height + round(h * 0.03)))
-        _flat(panel, espresso).save(f"{out}/wizard_large_{scale}x.bmp")
-    # The small image at the top right of every other page: the app icon.
-    for scale, side in [(1, 55), (2, 110)]:
-        _flat(m.render(m.tile_svg(edge=False, small=side < m.SMALL_BELOW), side),
-              (255, 255, 255)).save(f"{out}/wizard_small_{scale}x.bmp")
+        _flat(panel, espresso).save(f"{out}/wizard_large_{percent}.bmp")
+    # The small image at the top of every other page: the app icon with its
+    # light edge, on transparency so its corners suit the light and the dark
+    # wizard alike, and a little inset so it does not crowd the window's edge.
+    for side in SMALL_SIZES:
+        tile = m.render(m.tile_svg(edge=True), round(side * 0.88))
+        canvas = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+        canvas.alpha_composite(tile, ((side - tile.width) // 2, (side - tile.height) // 2))
+        canvas.save(f"{out}/wizard_small_{side}.png")
 
 
 # --- the usage guide -------------------------------------------------------

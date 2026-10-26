@@ -1,5 +1,6 @@
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
+#include <shobjidl.h>
 #include <windows.h>
 
 #include "flutter_window.h"
@@ -12,6 +13,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   if (!::AttachConsole(ATTACH_PARENT_PROCESS) && ::IsDebuggerPresent()) {
     CreateAndAttachConsole();
   }
+
+  // The app's identity for the taskbar, the media flyout and notifications,
+  // the same one the installer puts on the Start menu shortcut. It must be
+  // set before the first window: Windows groups a window under the identity
+  // its process had when the window appeared.
+  ::SetCurrentProcessExplicitAppUserModelID(L"MeTube Ember");
+
+  // Lets the uninstaller see that the app is still running. Never released:
+  // Windows drops it when the process ends.
+  ::CreateMutexW(nullptr, FALSE, L"MeTubeEmber.Running");
 
   // Initialize COM, so that it is available for use in the library and/or
   // plugins.

@@ -3,6 +3,8 @@
 *.ps1 text eol=crlf
 *.cmd text eol=crlf
 *.bat text eol=crlf
+# Inno Setup reads its scripts as Windows text; UTF-8 with a BOM.
+*.iss text eol=crlf
 
 # Binaries
 *.png binary

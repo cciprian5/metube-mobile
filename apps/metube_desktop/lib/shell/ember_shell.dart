@@ -21,6 +21,8 @@ import '../features/add/outside_links.dart';
 import '../features/clip/clip_state.dart';
 import '../features/downloads/downloads_button.dart';
 import '../features/folders/folder_tree.dart';
+import '../features/listening/listening_layer.dart';
+import '../features/listening/listening_room.dart';
 import '../features/library/library_state.dart';
 import '../features/notices/copied_links_wiring.dart';
 import '../features/notices/notices_wiring.dart';
@@ -138,8 +140,14 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     final theater =
         ref.watch(theaterProvider) &&
         placeOf(widget.location) == EmberPlace.item;
+    final audioOnly = ref.watch(audioOnlyProvider);
+    final listening = ref.watch(listeningProvider);
     EmberPlayerBar playerBar(ShellArrangement? arranged) => EmberPlayerBar(
       player: player,
+      audioOnly: audioOnly,
+      // Full screen is the room, while sound plays.
+      listening: listening || arranged == null,
+      onListen: () => toggleListening(ref),
       onShowQueue: () => arranged == null
           ? controls.setFullScreen(false)
           : _showTab(PanelTab.upNext, arranged),
@@ -155,13 +163,14 @@ class _EmberShellState extends ConsumerState<EmberShell> {
       body: ValueListenableBuilder<bool>(
         valueListenable: controls.fullScreen,
         builder: (context, full, _) => full
-            // The whole screen for the picture; the player bar stays, so
-            // the clip can still be paused and sought.
-            ? Column(
-                children: [
-                  Expanded(child: widget.child),
-                  playerBar(null),
-                ],
+            // The whole screen for the picture, or the listening room for
+            // sound; the player bar stays, so the clip can still be paused
+            // and sought.
+            ? ListeningLayer(
+                full: true,
+                onClose: () => toggleListening(ref),
+                bar: playerBar(null),
+                child: widget.child,
               )
             : _framed(context, layout, theater, playerBar),
       ),
@@ -270,110 +279,115 @@ class _EmberShellState extends ConsumerState<EmberShell> {
             children: [
               inRegion(EmberRegion.titleBar, EmberTitleBar(controls: controls)),
               Expanded(
-                child: Row(
-                  children: [
-                    inRegion(
-                      EmberRegion.sidebar,
-                      EmberSidebar(
-                        narrow: arranged.sidebarNarrow,
-                        current: place,
-                        pinned: ref.watch(pinnedPlaylistsProvider),
-                        currentList: _openList(widget.location),
-                        folders: sidebarFolders(
-                          ref.watch(libraryItemsProvider).valueOrNull ??
+                child: ListeningLayer(
+                  full: false,
+                  onClose: () => toggleListening(ref),
+                  bar: inRegion(EmberRegion.playerBar, playerBar(arranged)),
+                  child: Row(
+                    children: [
+                      inRegion(
+                        EmberRegion.sidebar,
+                        EmberSidebar(
+                          narrow: arranged.sidebarNarrow,
+                          current: place,
+                          pinned: ref.watch(pinnedPlaylistsProvider),
+                          currentList: _openList(widget.location),
+                          folders: sidebarFolders(
+                            ref.watch(libraryItemsProvider).valueOrNull ??
+                                const [],
+                            folder,
+                          ),
+                          currentFolder: place == EmberPlace.library
+                              ? folder
+                              : null,
+                          onFolder: (path) {
+                            // The chosen folder again goes up a level.
+                            final view = ref.read(libraryViewProvider.notifier);
+                            view.setFolder(
+                              path == folder && place == EmberPlace.library
+                                  ? parentFolder(path)
+                                  : path,
+                            );
+                            router.go(EmberRoutes.library);
+                          },
+                          onGo: (to) => to == EmberRoutes.search
+                              ? _openPalette()
+                              : router.go(to),
+                          searches:
+                              ref.watch(savedSearchesProvider).valueOrNull ??
                               const [],
-                          folder,
-                        ),
-                        currentFolder: place == EmberPlace.library
-                            ? folder
-                            : null,
-                        onFolder: (path) {
-                          // The chosen folder again goes up a level.
-                          final view = ref.read(libraryViewProvider.notifier);
-                          view.setFolder(
-                            path == folder && place == EmberPlace.library
-                                ? parentFolder(path)
-                                : path,
-                          );
-                          router.go(EmberRoutes.library);
-                        },
-                        onGo: (to) => to == EmberRoutes.search
-                            ? _openPalette()
-                            : router.go(to),
-                        searches:
-                            ref.watch(savedSearchesProvider).valueOrNull ??
-                            const [],
-                        onSavedSearch: (search) => _openPalette(search.query),
-                        onSavedSearchMenu: (search, at) => unawaited(
-                          savedSearchMenu(context, ref, search, at),
-                        ),
-                        onAdd: () => unawaited(_addFromButton()),
-                        onToggleNarrow: arranged.canWidenSidebar
-                            ? () => ref
-                                  .read(shellLayoutProvider.notifier)
-                                  .setSidebarNarrow(!layout.sidebarNarrow)
-                            : null,
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          inRegion(
-                            EmberRegion.contentBar,
-                            EmberContentBar(
-                              history: _history!,
-                              onSearch: _openPalette,
-                              panelShown: panelShown,
-                              onTogglePanel: () =>
-                                  _togglePanel(arranged, layout),
-                              downloads: const DownloadsButton(),
-                            ),
+                          onSavedSearch: (search) => _openPalette(search.query),
+                          onSavedSearchMenu: (search, at) => unawaited(
+                            savedSearchMenu(context, ref, search, at),
                           ),
-                          // The layer opens over the content only, so the
-                          // bar with its own toggle stays reachable.
-                          Expanded(
-                            child: Stack(
-                              children: [
-                                Positioned.fill(
-                                  child: inRegion(
-                                    EmberRegion.content,
-                                    widget.child,
-                                    focus: ref.watch(contentFocusProvider),
-                                  ),
-                                ),
-                                if (!arranged.panelBeside &&
-                                    _overlayOpen &&
-                                    !theater) ...[
+                          onAdd: () => unawaited(_addFromButton()),
+                          onToggleNarrow: arranged.canWidenSidebar
+                              ? () => ref
+                                    .read(shellLayoutProvider.notifier)
+                                    .setSidebarNarrow(!layout.sidebarNarrow)
+                              : null,
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            inRegion(
+                              EmberRegion.contentBar,
+                              EmberContentBar(
+                                history: _history!,
+                                onSearch: _openPalette,
+                                panelShown: panelShown,
+                                onTogglePanel: () =>
+                                    _togglePanel(arranged, layout),
+                                downloads: const DownloadsButton(),
+                              ),
+                            ),
+                            // The layer opens over the content only, so the
+                            // bar with its own toggle stays reachable.
+                            Expanded(
+                              child: Stack(
+                                children: [
                                   Positioned.fill(
-                                    child: GestureDetector(
-                                      behavior: HitTestBehavior.opaque,
-                                      onTap: () =>
-                                          setState(() => _overlayOpen = false),
+                                    child: inRegion(
+                                      EmberRegion.content,
+                                      widget.child,
+                                      focus: ref.watch(contentFocusProvider),
                                     ),
                                   ),
-                                  PositionedDirectional(
-                                    top: 0,
-                                    bottom: 0,
-                                    end: 0,
-                                    child: DecoratedBox(
-                                      decoration: const BoxDecoration(
-                                        boxShadow: MTShadow.card,
+                                  if (!arranged.panelBeside &&
+                                      _overlayOpen &&
+                                      !theater) ...[
+                                    Positioned.fill(
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () => setState(
+                                          () => _overlayOpen = false,
+                                        ),
                                       ),
-                                      child: panel,
                                     ),
-                                  ),
+                                    PositionedDirectional(
+                                      top: 0,
+                                      bottom: 0,
+                                      end: 0,
+                                      child: DecoratedBox(
+                                        decoration: const BoxDecoration(
+                                          boxShadow: MTShadow.card,
+                                        ),
+                                        child: panel,
+                                      ),
+                                    ),
+                                  ],
                                 ],
-                              ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    if (arranged.panelBeside && panelShown) panel,
-                  ],
+                      if (arranged.panelBeside && panelShown) panel,
+                    ],
+                  ),
                 ),
               ),
-              inRegion(EmberRegion.playerBar, playerBar(arranged)),
             ],
           ),
         );

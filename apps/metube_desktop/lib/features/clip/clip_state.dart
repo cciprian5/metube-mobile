@@ -72,3 +72,18 @@ Future<void> playFromList(
   }
   if (!item.isAudio) router.go(EmberRoutes.item(item.canonicalUrl));
 }
+
+/// Plays [item] from [at]: sought if it is the clip playing ([isCurrent]),
+/// otherwise played alone from there, as a click in its transcript does.
+Future<void> playFrom(
+  MTPlayer player,
+  PlaylistItem item, {
+  required bool isCurrent,
+  required Duration at,
+}) async {
+  if (!isCurrent) {
+    await player.setLooping(false);
+    await player.playItems([item]);
+  }
+  await player.seek(at);
+}

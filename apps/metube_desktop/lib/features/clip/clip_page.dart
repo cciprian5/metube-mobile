@@ -19,6 +19,7 @@ import '../../shell/shell_state.dart';
 import '../library/platform_label.dart';
 import '../lists/list_dialogs.dart';
 import 'clip_actions.dart';
+import 'clip_chapters.dart';
 import 'clip_menu.dart';
 import 'clip_stage.dart';
 import 'clip_state.dart';
@@ -322,6 +323,7 @@ class _ClipLayout extends ConsumerWidget {
                     ),
                   ],
                 ),
+                ClipChapters(item: item, isCurrent: isCurrent),
               ],
             ),
           ),

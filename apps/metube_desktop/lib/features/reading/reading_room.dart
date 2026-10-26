@@ -105,16 +105,6 @@ class _ReadingRoomState extends ConsumerState<ReadingRoom> {
     setState(() => _hit = (_hit + by) % _hits.length);
   }
 
-  /// Plays from [start]: the clip already playing is sought; another is
-  /// played from there, staying in the room.
-  Future<void> _jump(PlaylistItem item, bool isCurrent, Duration start) async {
-    if (!isCurrent) {
-      await _player.setLooping(false);
-      await _player.playItems([item]);
-    }
-    await _player.seek(start);
-  }
-
   void _copy(PlaylistItem item, List<TranscriptSegment> segments) {
     if (!_selection.registered) return;
     final range = _selection.selection.range;
@@ -242,8 +232,14 @@ class _ReadingRoomState extends ConsumerState<ReadingRoom> {
                             hits: _hits,
                             hit: _finding && _hits.isNotEmpty ? _hit : null,
                             selection: _selection,
+                            // Another clip starts there, staying in the room.
                             onJump: (line) => unawaited(
-                              _jump(item, isCurrent, segments[line].start),
+                              playFrom(
+                                _player,
+                                item,
+                                isCurrent: isCurrent,
+                                at: segments[line].start,
+                              ),
                             ),
                             onCopy: () => _copy(item, segments),
                           ),

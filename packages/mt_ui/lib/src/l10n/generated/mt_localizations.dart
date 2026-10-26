@@ -1022,6 +1022,12 @@ abstract class MTLocalizations {
   /// **'Channels in your library'**
   String get desktopChannelsInLibrary;
 
+  /// No description provided for @desktopChapters.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapters'**
+  String get desktopChapters;
+
   /// No description provided for @desktopCheckAll.
   ///
   /// In en, this message translates to:
@@ -1357,6 +1363,18 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 link} other{{count} links}}'**
   String desktopLinksFound(int count);
+
+  /// No description provided for @desktopListeningClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the listening room'**
+  String get desktopListeningClose;
+
+  /// No description provided for @desktopListeningRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening room'**
+  String get desktopListeningRoom;
 
   /// No description provided for @desktopLocalCopyRemoved.
   ///

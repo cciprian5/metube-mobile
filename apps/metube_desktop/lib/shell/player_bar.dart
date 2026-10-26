@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../features/listening/listening_room.dart';
 import 'now_playing.dart';
 import 'seek_bar.dart';
 import 'shell_metrics.dart';
@@ -16,6 +17,9 @@ class EmberPlayerBar extends StatelessWidget {
     required this.onShowQueue,
     required this.onOpen,
     required this.onMini,
+    required this.audioOnly,
+    required this.listening,
+    required this.onListen,
   });
 
   final MTPlayer player;
@@ -26,6 +30,13 @@ class EmberPlayerBar extends StatelessWidget {
 
   /// Turns the window into the small card above the others.
   final VoidCallback onMini;
+
+  /// Whether a video plays with its picture off, so it is heard as sound.
+  final bool audioOnly;
+
+  /// Whether the listening room is asked for, and the way in and out.
+  final bool listening;
+  final VoidCallback onListen;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +70,11 @@ class EmberPlayerBar extends StatelessWidget {
                   state: state,
                   onShowQueue: onShowQueue,
                   onMini: onMini,
+                  // The room is for sound: a picture has full screen.
+                  listening: playsAsSound(state.current, audioOnly: audioOnly)
+                      ? listening
+                      : null,
+                  onListen: onListen,
                 ),
               ),
             ],
@@ -137,12 +153,18 @@ class _Extras extends StatelessWidget {
     required this.state,
     required this.onShowQueue,
     required this.onMini,
+    required this.listening,
+    required this.onListen,
   });
 
   final MTPlayer player;
   final MTPlayerState state;
   final VoidCallback onShowQueue;
   final VoidCallback onMini;
+
+  /// Whether the listening room is open; null hides its button.
+  final bool? listening;
+  final VoidCallback onListen;
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +193,13 @@ class _Extras extends StatelessWidget {
             ),
           ),
         ),
+        if (listening case final open?)
+          _Control(
+            icon: MTIcons.headphones,
+            label: context.mtl.desktopListeningRoom,
+            selected: open,
+            onTap: onListen,
+          ),
         _Control(
           icon: MTIcons.pip,
           label: l.desktopMiniWindow,

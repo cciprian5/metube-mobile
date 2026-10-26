@@ -163,6 +163,9 @@ Widget playerBarPreview() => EmberPlayerBar(
   onShowQueue: _ignore,
   onOpen: _ignore,
   onMini: _ignore,
+  audioOnly: false,
+  listening: false,
+  onListen: _ignore,
 );
 
 @EmberPreview('Player bar, idle', size: Size(1280, EmberShellSize.playerBar))
@@ -171,6 +174,9 @@ Widget playerBarIdlePreview() => EmberPlayerBar(
   onShowQueue: _ignore,
   onOpen: _ignore,
   onMini: _ignore,
+  audioOnly: false,
+  listening: false,
+  onListen: _ignore,
 );
 
 Widget _panel(PanelTab tab, MTPlayerState state) => EmberRightPanel(

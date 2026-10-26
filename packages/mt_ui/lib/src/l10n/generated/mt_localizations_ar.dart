@@ -564,6 +564,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopChannelsInLibrary => 'قنوات في مكتبتك';
 
   @override
+  String get desktopChapters => 'الفصول';
+
+  @override
   String get desktopCheckAll => 'افحص الكل';
 
   @override
@@ -775,6 +778,12 @@ class MTLocalizationsAr extends MTLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get desktopListeningClose => 'إغلاق غرفة الاستماع';
+
+  @override
+  String get desktopListeningRoom => 'غرفة الاستماع';
 
   @override
   String get desktopLocalCopyRemoved => 'أُزيلت النسخة المحلية';

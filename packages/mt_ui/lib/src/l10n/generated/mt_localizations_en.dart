@@ -543,6 +543,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopChannelsInLibrary => 'Channels in your library';
 
   @override
+  String get desktopChapters => 'Chapters';
+
+  @override
   String get desktopCheckAll => 'Check all';
 
   @override
@@ -748,6 +751,12 @@ class MTLocalizationsEn extends MTLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get desktopListeningClose => 'Close the listening room';
+
+  @override
+  String get desktopListeningRoom => 'Listening room';
 
   @override
   String get desktopLocalCopyRemoved => 'Local copy removed';

@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../data/volume.dart';
 import '../di.dart';
+import '../features/listening/listening_room.dart';
 import '../features/shortcuts/shortcuts_sheet.dart';
 import 'player_bar.dart';
 import 'shell_state.dart';
@@ -187,6 +188,9 @@ class _EmberKeyboardState extends ConsumerState<EmberKeyboard> {
         controls.setFullScreen(!controls.fullScreen.value);
       case EmberKey.leaveFullScreen when controls.fullScreen.value:
         controls.setFullScreen(false);
+      // Out of full screen first, then out of the room.
+      case EmberKey.leaveFullScreen when ref.read(listeningProvider):
+        ref.read(listeningProvider.notifier).state = false;
       case EmberKey.shortcuts:
         unawaited(showShortcutsSheet(context));
       case EmberKey.mini:

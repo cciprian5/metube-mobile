@@ -1652,6 +1652,12 @@ abstract class MTLocalizations {
   /// **'Saved in the sidebar'**
   String get desktopSearchSaved;
 
+  /// No description provided for @desktopSeekBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Position in the clip'**
+  String get desktopSeekBar;
+
   /// No description provided for @desktopServerFolders.
   ///
   /// In en, this message translates to:

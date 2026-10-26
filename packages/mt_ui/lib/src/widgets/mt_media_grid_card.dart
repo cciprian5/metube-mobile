@@ -81,6 +81,8 @@ class MTMediaGridCard extends StatelessWidget {
   String _semanticsLabel(MTLocalizations l10n) => [
     title,
     ?subtitle,
+    // The length is on the cover only, which the reader is not given.
+    ?duration,
     ?locationLabel,
     if (audio) l10n.filterAudio,
     if (favorite) l10n.favorites,
@@ -94,11 +96,15 @@ class MTMediaGridCard extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final (titleDirection, titleAlign) = mtForeignLine(context, title);
 
+    // One node that is the button: its name, and the tap and focus of the
+    // ink well beneath, which a split node had read out as an image. What
+    // the card shows is in the name already, so the reader skips it; the
+    // cover's own buttons stay apart, each with its own tap.
     return Semantics(
+      container: true,
       button: onTap != null,
       selected: selected,
       label: _semanticsLabel(l10n),
-      explicitChildNodes: true,
       child: MTHoverLift(
         borderRadius: BorderRadius.circular(MTRadius.card),
         builder: (context, hovered) => MTHighlightSurface(
@@ -132,50 +138,55 @@ class MTMediaGridCard extends StatelessWidget {
                     child: thumbnail,
                   ),
                   SizedBox(height: feed ? MTSpace.sm : MTSpace.xs),
-                  Text(
-                    title,
-                    textDirection: titleDirection,
-                    textAlign: titleAlign,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: (feed ? text.bodyMedium! : text.bodySmall!).copyWith(
-                      color: p.ink,
-                      fontWeight: FontWeight.w700,
-                      height: 1.35,
+                  ExcludeSemantics(
+                    child: Text(
+                      title,
+                      textDirection: titleDirection,
+                      textAlign: titleAlign,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: (feed ? text.bodyMedium! : text.bodySmall!)
+                          .copyWith(
+                            color: p.ink,
+                            fontWeight: FontWeight.w700,
+                            height: 1.35,
+                          ),
                     ),
                   ),
                   const SizedBox(height: 3),
-                  Row(
-                    children: [
-                      if (platform != MTPlatformKind.other) ...[
-                        MTPlatformChip(kind: platform),
-                        const SizedBox(width: MTSpace.xxs),
-                      ],
-                      if (subtitle != null)
-                        Flexible(
-                          child: Text(
-                            subtitle!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: (feed ? text.bodySmall! : text.labelSmall!)
-                                .copyWith(color: p.ink3),
+                  ExcludeSemantics(
+                    child: Row(
+                      children: [
+                        if (platform != MTPlatformKind.other) ...[
+                          MTPlatformChip(kind: platform),
+                          const SizedBox(width: MTSpace.xxs),
+                        ],
+                        if (subtitle != null)
+                          Flexible(
+                            child: Text(
+                              subtitle!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: (feed ? text.bodySmall! : text.labelSmall!)
+                                  .copyWith(color: p.ink3),
+                            ),
                           ),
-                        ),
-                      // The location badge appears in cards mode only: a grid
-                      // cell is half a screen wide and already carries the
-                      // chip and the meta line.
-                      if (feed &&
-                          location != MTMediaLocation.none &&
-                          locationLabel != null) ...[
-                        const SizedBox(width: MTSpace.xs),
-                        Flexible(
-                          child: MTLocationBadge(
-                            location: location,
-                            label: locationLabel!,
+                        // The location badge appears in cards mode only: a grid
+                        // cell is half a screen wide and already carries the
+                        // chip and the meta line.
+                        if (feed &&
+                            location != MTMediaLocation.none &&
+                            locationLabel != null) ...[
+                          const SizedBox(width: MTSpace.xs),
+                          Flexible(
+                            child: MTLocationBadge(
+                              location: location,
+                              label: locationLabel!,
+                            ),
                           ),
-                        ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ],
               ),

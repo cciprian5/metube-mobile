@@ -74,6 +74,9 @@ class MTMediaRow extends StatelessWidget {
     ?duration,
     if (columns.size) ?size,
     if (columns.added) ?added,
+    // The tags the row shows beside the source.
+    if (columns.added)
+      for (final tag in tags.take(3)) '#$tag',
     ?locationLabel,
     if (audio) l10n.filterAudio,
     if (favorite) l10n.favorites,
@@ -89,11 +92,14 @@ class MTMediaRow extends StatelessWidget {
     final (titleDirection, titleAlign) = mtForeignLine(context, title);
     final showTags = columns.added && tags.isNotEmpty;
 
+    // One node that is the button, with the ink well's tap and focus; the
+    // cells are in its name, so the reader skips them, and the buttons at
+    // the end stay apart, each with its own tap.
     return Semantics(
+      container: true,
       button: onTap != null,
       selected: selected,
       label: _semanticsLabel(l10n),
-      explicitChildNodes: true,
       child: MTHighlightSurface(
         selected: selected,
         highlighted: highlighted,
@@ -122,83 +128,91 @@ class MTMediaRow extends StatelessWidget {
             ),
             child: Row(
               children: [
-                MTMediaThumb(
-                  width: MTMediaColumns.thumbWidth,
-                  height: MTMediaColumns.thumbHeight,
-                  audio: audio,
-                  child: thumbnail,
+                ExcludeSemantics(
+                  child: MTMediaThumb(
+                    width: MTMediaColumns.thumbWidth,
+                    height: MTMediaColumns.thumbHeight,
+                    audio: audio,
+                    child: thumbnail,
+                  ),
                 ),
                 const SizedBox(width: MTSpace.lg),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        textDirection: titleDirection,
-                        textAlign: titleAlign,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: text.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.w700,
+                  child: ExcludeSemantics(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          textDirection: titleDirection,
+                          textAlign: titleAlign,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: MTSpace.xxs),
-                      Row(
-                        children: [
-                          if (platform != MTPlatformKind.other) ...[
-                            MTPlatformChip(kind: platform),
-                            const SizedBox(width: MTSpace.xxs),
-                          ],
-                          if (subtitle case final subtitle?
-                              when subtitle.isNotEmpty)
-                            Flexible(
-                              child: Text(
-                                subtitle,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: small,
-                              ),
-                            ),
-                          // Flexible, so with large text the tags shorten
-                          // to an ellipsis instead of pushing out the row.
-                          if (showTags)
-                            for (final tag in tags.take(3))
+                        const SizedBox(height: MTSpace.xxs),
+                        Row(
+                          children: [
+                            if (platform != MTPlatformKind.other) ...[
+                              MTPlatformChip(kind: platform),
+                              const SizedBox(width: MTSpace.xxs),
+                            ],
+                            if (subtitle case final subtitle?
+                                when subtitle.isNotEmpty)
                               Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.only(
-                                    start: MTSpace.xs,
-                                  ),
-                                  child: _Tag(tag),
+                                child: Text(
+                                  subtitle,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: small,
                                 ),
                               ),
-                        ],
-                      ),
-                    ],
+                            // Flexible, so with large text the tags shorten
+                            // to an ellipsis instead of pushing out the row.
+                            if (showTags)
+                              for (final tag in tags.take(3))
+                                Flexible(
+                                  child: Padding(
+                                    padding: const EdgeInsetsDirectional.only(
+                                      start: MTSpace.xs,
+                                    ),
+                                    child: _Tag(tag),
+                                  ),
+                                ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 ..._cells(
                   context,
                   columns,
-                  length: _figure(duration, figure),
-                  size: _figure(size, figure),
-                  added: Text(
-                    added ?? '',
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: figure,
+                  length: ExcludeSemantics(child: _figure(duration, figure)),
+                  size: ExcludeSemantics(child: _figure(size, figure)),
+                  added: ExcludeSemantics(
+                    child: Text(
+                      added ?? '',
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: figure,
+                    ),
                   ),
-                  location: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child:
-                        location == MTMediaLocation.none ||
-                            locationLabel == null
-                        ? const SizedBox.shrink()
-                        : MTLocationBadge(
-                            location: location,
-                            label: locationLabel!,
-                          ),
+                  location: ExcludeSemantics(
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child:
+                          location == MTMediaLocation.none ||
+                              locationLabel == null
+                          ? const SizedBox.shrink()
+                          : MTLocationBadge(
+                              location: location,
+                              label: locationLabel!,
+                            ),
+                    ),
                   ),
                   actions: Row(
                     mainAxisAlignment: MainAxisAlignment.end,

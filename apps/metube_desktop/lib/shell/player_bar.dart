@@ -158,10 +158,16 @@ class _Extras extends StatelessWidget {
           message: l.playbackSpeed,
           child: TextButton(
             onPressed: state.isEmpty ? null : () => player.setSpeed(nextSpeed),
-            child: Text(
-              mtLtrRun('${state.speed}×'),
-              style: Theme.of(context).textTheme.labelMedium?.tabular
-                  .copyWith(color: p.ink2),
+            // Read as what it is, then the speed: "Playback speed, 1.0×".
+            child: Semantics(
+              label: l.playbackSpeed,
+              value: mtLtrRun('${state.speed}×'),
+              excludeSemantics: true,
+              child: Text(
+                mtLtrRun('${state.speed}×'),
+                style: Theme.of(context).textTheme.labelMedium?.tabular
+                    .copyWith(color: p.ink2),
+              ),
             ),
           ),
         ),
@@ -228,25 +234,31 @@ class _PlayButton extends StatelessWidget {
     return MTShortcutTooltip(
       message: label,
       shortcut: 'Space',
-      child: Material(
-        color: onTap == null ? p.cardAlt : accent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(MTCorners.desktop.fab),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          // Not the theme's opaque hover fill, which would hide the ember.
-          hoverColor: ink.withValues(alpha: 0.12),
-          child: SizedBox.square(
-            dimension: MTDensity.desktop.row,
-            child: Center(
-              child: MTIcon(
-                playing ? MTIcons.pause : MTIcons.playFill,
-                size: MTSpace.lg,
-                color: onTap == null ? p.ink3 : ink,
-                semanticLabel: label,
-              ),
+      // A bare ink well is only tappable; a screen reader also needs to
+      // hear that this is a button, and when it is dimmed.
+      child: Semantics(button: true, enabled: onTap != null, child: _face(p)),
+    );
+  }
+
+  Widget _face(MTPalette p) {
+    return Material(
+      color: onTap == null ? p.cardAlt : accent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(MTCorners.desktop.fab),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        // Not the theme's opaque hover fill, which would hide the ember.
+        hoverColor: ink.withValues(alpha: 0.12),
+        child: SizedBox.square(
+          dimension: MTDensity.desktop.row,
+          child: Center(
+            child: MTIcon(
+              playing ? MTIcons.pause : MTIcons.playFill,
+              size: MTSpace.lg,
+              color: onTap == null ? p.ink3 : ink,
+              semanticLabel: label,
             ),
           ),
         ),

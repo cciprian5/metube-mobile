@@ -60,63 +60,73 @@ class MTMediaGridCover extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            child ??
-                mtCoverPlaceholder(
-                  context,
-                  size: 22,
-                  color: p.ink3,
-                  audio: audio,
-                ),
-            if (playing)
-              Align(
-                alignment: Alignment.center,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: p.ink.withValues(alpha: 0.55),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(MTSpace.xs),
-                    child: MTEqualizer(animate: !paused),
-                  ),
-                ),
-              ),
-            // Under the mouse, a play mark says what a click does: Windows
-            // only, and not over the playing clip, which already shows its
-            // equalizer there.
-            if (!playing && MTDesktopApp.isDesktop(context))
-              Align(
-                child: AnimatedOpacity(
-                  opacity: hovered ? 1 : 0,
-                  duration: mtMotionDuration(context, MTMotion.fast),
-                  // Dark in day and night alike, like the cover buttons:
-                  // the theme's ink turns pale at night, under a white mark.
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: MTPalette.fullscreenScrim.withValues(alpha: 0.6),
-                      shape: BoxShape.circle,
+            // The picture and its marks: the card's name already says them.
+            ExcludeSemantics(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  child ??
+                      mtCoverPlaceholder(
+                        context,
+                        size: 22,
+                        color: p.ink3,
+                        audio: audio,
+                      ),
+                  if (playing)
+                    Align(
+                      alignment: Alignment.center,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: p.ink.withValues(alpha: 0.55),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(MTSpace.xs),
+                          child: MTEqualizer(animate: !paused),
+                        ),
+                      ),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(MTSpace.xs),
-                      child: MTIcon(MTIcons.play, color: Colors.white),
+                  // Under the mouse, a play mark says what a click does: Windows
+                  // only, and not over the playing clip, which already shows its
+                  // equalizer there.
+                  if (!playing && MTDesktopApp.isDesktop(context))
+                    Align(
+                      child: AnimatedOpacity(
+                        opacity: hovered ? 1 : 0,
+                        duration: mtMotionDuration(context, MTMotion.fast),
+                        // Dark in day and night alike, like the cover buttons:
+                        // the theme's ink turns pale at night, under a white mark.
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: MTPalette.fullscreenScrim.withValues(
+                              alpha: 0.6,
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(MTSpace.xs),
+                            child: MTIcon(MTIcons.play, color: Colors.white),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  if (duration != null)
+                    PositionedDirectional(
+                      bottom: 5,
+                      start: 5,
+                      child: MTThumbPill.duration(duration!),
+                    ),
+                  // Without a cover the placeholder is already a music note, so
+                  // a second one would only repeat it.
+                  if (audio && child != null)
+                    PositionedDirectional(
+                      bottom: 5,
+                      end: 5,
+                      child: MTThumbPill.audio(),
+                    ),
+                ],
               ),
-            if (duration != null)
-              PositionedDirectional(
-                bottom: 5,
-                start: 5,
-                child: MTThumbPill.duration(duration!),
-              ),
-            // Without a cover the placeholder is already a music note, so
-            // a second one would only repeat it.
-            if (audio && child != null)
-              PositionedDirectional(
-                bottom: 5,
-                end: 5,
-                child: MTThumbPill.audio(),
-              ),
+            ),
             PositionedDirectional(
               top: 0,
               end: 0,
@@ -176,21 +186,25 @@ class _CoverButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Tooltip(
     message: tooltip,
-    child: InkWell(
-      onTap: onTap,
-      customBorder: const CircleBorder(),
-      child: Padding(
-        padding: const EdgeInsets.all(MTSpace.xs),
-        // The favourite heart fades and expands rather than jumping (polish
-        // 2026-09-04).
-        child: MTIconSwap(
-          icon: icon,
-          wahaj: wahaj,
-          size: 17,
-          color: color,
-          // Icons over a thumbnail of unknown colour: a light shadow keeps
-          // them legible over both pale and dark covers.
-          shadows: const [Shadow(color: Color(0x99000000), blurRadius: 5)],
+    // A bare ink well is only tappable: the reader is told it is a button.
+    child: Semantics(
+      button: true,
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        child: Padding(
+          padding: const EdgeInsets.all(MTSpace.xs),
+          // The favourite heart fades and expands rather than jumping (polish
+          // 2026-09-04).
+          child: MTIconSwap(
+            icon: icon,
+            wahaj: wahaj,
+            size: 17,
+            color: color,
+            // Icons over a thumbnail of unknown colour: a light shadow keeps
+            // them legible over both pale and dark covers.
+            shadows: const [Shadow(color: Color(0x99000000), blurRadius: 5)],
+          ),
         ),
       ),
     ),

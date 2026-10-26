@@ -70,6 +70,9 @@ class _PaletteState extends ConsumerState<_Palette> {
     );
   final _scroll = ScrollController();
   final _keys = <int, GlobalKey>{};
+
+  /// What each row says to a screen reader when the arrows reach it.
+  final _spoken = <int, String>{};
   var _selected = 0;
 
   static const double _width = 640;
@@ -121,6 +124,7 @@ class _PaletteState extends ConsumerState<_Palette> {
   void _move(int by, int count) {
     if (count == 0) return;
     setState(() => _selected = (_selected + by) % count);
+    if (_spoken[_selected] case final said?) announceRow(context, said);
     final key = _keys[_selected];
     if (key?.currentContext case final row?) {
       unawaited(
@@ -146,12 +150,14 @@ class _PaletteState extends ConsumerState<_Palette> {
     final actions = _actions(results);
     if (_selected >= actions.length) _selected = 0;
     var row = 0;
-    Widget pick(Widget Function(bool selected) build) {
+    Widget pick(String spoken, Widget Function(bool selected) build) {
       final index = row++;
+      _spoken[index] = spoken;
       return KeyedSubtree(
         key: _keyOf(index),
         child: PaletteRowTap(
           onTap: () => _run(actions[index]),
+          selected: index == _selected,
           child: build(index == _selected),
         ),
       );
@@ -229,11 +235,15 @@ class _PaletteState extends ConsumerState<_Palette> {
                             if (results.titles.isNotEmpty)
                               PaletteHeader(l.desktopPaletteTitles),
                             for (final item in results.titles)
-                              pick((on) => TitleRow(item: item, selected: on)),
+                              pick(
+                                TitleRow.spoken(l, item),
+                                (on) => TitleRow(item: item, selected: on),
+                              ),
                             if (results.said.isNotEmpty)
                               PaletteHeader(l.desktopPaletteSaid),
                             for (final match in results.said)
                               pick(
+                                SaidRow.spoken(l, match),
                                 (on) => SaidRow(
                                   match: match,
                                   query: query,
@@ -244,6 +254,7 @@ class _PaletteState extends ConsumerState<_Palette> {
                               PaletteHeader(l.desktopPaletteCommands),
                             for (final command in results.commands)
                               pick(
+                                command.label,
                                 (on) => CommandRow(
                                   icon: command.icon,
                                   label: command.label,
@@ -252,6 +263,7 @@ class _PaletteState extends ConsumerState<_Palette> {
                               ),
                             if (results.canSave)
                               pick(
+                                l.desktopPaletteSave,
                                 (on) => CommandRow(
                                   icon: MTIcons.plus,
                                   label: l.desktopPaletteSave,

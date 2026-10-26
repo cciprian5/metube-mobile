@@ -142,34 +142,39 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextField(
-                controller: _field,
-                autofocus: true,
-                minLines: 1,
-                maxLines: many ? 4 : 2,
-                keyboardType: TextInputType.url,
-                textDirection: TextDirection.ltr,
-                onChanged: (_) => setState(() => _tasks = const {}),
-                decoration: InputDecoration(
-                  hintText: l.pasteUrlHint,
-                  hintTextDirection: TextDirection.ltr,
-                  // A widget, not suffixText: the link reads left to right
-                  // inside a right-to-left dialog, and the plain suffix sat
-                  // flush against its first letter ("YouTubehttps://…").
-                  suffix: url == null
-                      ? null
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: MTSpace.sm,
+              // Named for a screen reader even once filled, when its hint
+              // is gone and only the link would be read.
+              Semantics(
+                label: l.addUrl,
+                child: TextField(
+                  controller: _field,
+                  autofocus: true,
+                  minLines: 1,
+                  maxLines: many ? 4 : 2,
+                  keyboardType: TextInputType.url,
+                  textDirection: TextDirection.ltr,
+                  onChanged: (_) => setState(() => _tasks = const {}),
+                  decoration: InputDecoration(
+                    hintText: l.pasteUrlHint,
+                    hintTextDirection: TextDirection.ltr,
+                    // A widget, not suffixText: the link reads left to right
+                    // inside a right-to-left dialog, and the plain suffix sat
+                    // flush against its first letter ("YouTubehttps://…").
+                    suffix: url == null
+                        ? null
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: MTSpace.sm,
+                            ),
+                            child: Text(
+                              platformLabel(l, MediaPlatform.detect(url)),
+                              key: const ValueKey('addLinkSite'),
+                              style: Theme.of(context)
+                                  .inputDecorationTheme
+                                  .hintStyle,
+                            ),
                           ),
-                          child: Text(
-                            platformLabel(l, MediaPlatform.detect(url)),
-                            key: const ValueKey('addLinkSite'),
-                            style: Theme.of(context)
-                                .inputDecorationTheme
-                                .hintStyle,
-                          ),
-                        ),
+                  ),
                 ),
               ),
               const SizedBox(height: MTSpace.md),

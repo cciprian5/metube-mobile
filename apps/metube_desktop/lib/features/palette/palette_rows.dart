@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart' show mtFormatDuration;
 import 'package:mt_transcripts/mt_transcripts.dart';
@@ -28,15 +31,36 @@ class PaletteHeader extends StatelessWidget {
   );
 }
 
-/// A row the mouse can open too.
+/// Tells a screen reader which row the arrows reached: the focus stays in
+/// the search field, so a moving highlight is otherwise silent.
+void announceRow(BuildContext context, String said) => unawaited(
+  SemanticsService.sendAnnouncement(
+    View.of(context),
+    said,
+    Directionality.of(context),
+  ),
+);
+
+/// A row the mouse can open too; to a screen reader, a button, and the
+/// chosen one marked as selected.
 class PaletteRowTap extends StatelessWidget {
-  const PaletteRowTap({super.key, required this.onTap, required this.child});
+  const PaletteRowTap({
+    super.key,
+    required this.onTap,
+    this.selected = false,
+    required this.child,
+  });
 
   final VoidCallback onTap;
+  final bool selected;
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => InkWell(onTap: onTap, child: child);
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    selected: selected,
+    child: InkWell(onTap: onTap, child: child),
+  );
 }
 
 /// The frame of every row: the chosen one is drawn as the sidebar draws
@@ -83,6 +107,10 @@ class _Row extends StatelessWidget {
 
 class TitleRow extends StatelessWidget {
   const TitleRow({super.key, required this.item, required this.selected});
+
+  /// What the row says when the arrows reach it.
+  static String spoken(MTLocalizations l, LibraryItem item) =>
+      [item.title, ?item.uploader].join(l.listSeparator);
 
   final LibraryItem item;
   final bool selected;
@@ -131,6 +159,13 @@ class SaidRow extends StatelessWidget {
   final SaidMatch match;
   final String query;
   final bool selected;
+
+  /// What the row says when the arrows reach it: when, what, and where.
+  static String spoken(MTLocalizations l, SaidMatch match) => [
+    mtFormatDuration(match.hit.start),
+    match.hit.text,
+    match.item.title,
+  ].join(l.listSeparator);
 
   @override
   Widget build(BuildContext context) {

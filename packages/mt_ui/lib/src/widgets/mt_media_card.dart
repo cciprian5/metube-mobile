@@ -88,6 +88,8 @@ class MTMediaCard extends StatelessWidget {
   String _semanticsLabel(MTLocalizations l10n) => [
     title,
     ?subtitle,
+    // The length is on the cover only, which the reader is not given.
+    ?duration,
     ?locationLabel,
     if (audio) l10n.filterAudio,
     if (favorite) l10n.favorites,
@@ -104,13 +106,14 @@ class MTMediaCard extends StatelessWidget {
     final thumbW = compact ? 64.0 : 98.0;
     final thumbH = compact ? 40.0 : 62.0;
 
+    // One node that is the button, with the ink well's tap and focus; what
+    // the row shows is in its name, so the reader skips it, and the inner
+    // buttons stay apart, each with its own tap.
     return Semantics(
+      container: true,
       button: onTap != null,
       selected: selected,
       label: _semanticsLabel(l10n),
-      // Inner buttons keep their own semantics; their labels are replaced
-      // by the combined description.
-      explicitChildNodes: true,
       child: MTHighlightSurface(
         selected: selected,
         highlighted: highlighted,
@@ -139,71 +142,79 @@ class MTMediaCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                MTMediaThumb(
-                  width: thumbW,
-                  height: thumbH,
-                  duration: duration,
-                  playing: playing,
-                  audio: audio,
-                  child: thumbnail,
+                ExcludeSemantics(
+                  child: MTMediaThumb(
+                    width: thumbW,
+                    height: thumbH,
+                    duration: duration,
+                    playing: playing,
+                    audio: audio,
+                    child: thumbnail,
+                  ),
                 ),
                 const SizedBox(width: MTSpace.md - 1),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        textDirection: titleDirection,
-                        textAlign: titleAlign,
-                        maxLines: compact ? 1 : 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: text.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.w700,
-                          height: 1.55,
+                  child: ExcludeSemantics(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          textDirection: titleDirection,
+                          textAlign: titleAlign,
+                          maxLines: compact ? 1 : 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.w700,
+                            height: 1.55,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: compact ? 3 : 6),
-                      Row(
-                        children: [
-                          // An unknown platform deserves neither an icon
-                          // nor a separator: a bullet followed by "3
-                          // minutes ago" is visual noise (audit 8.1).
-                          if (platform != MTPlatformKind.other)
-                            MTPlatformChip(kind: platform),
-                          // The separator travels with the text it
-                          // introduces, so on a narrow card or a large font
-                          // it gives way with it instead of overflowing.
-                          if (subtitle != null)
-                            Flexible(
-                              child: Text(
-                                platform == MTPlatformKind.other
-                                    ? subtitle!
-                                    : ' · $subtitle',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: text.bodySmall!.copyWith(color: p.ink3),
+                        SizedBox(height: compact ? 3 : 6),
+                        Row(
+                          children: [
+                            // An unknown platform deserves neither an icon
+                            // nor a separator: a bullet followed by "3
+                            // minutes ago" is visual noise (audit 8.1).
+                            if (platform != MTPlatformKind.other)
+                              MTPlatformChip(kind: platform),
+                            // The separator travels with the text it
+                            // introduces, so on a narrow card or a large font
+                            // it gives way with it instead of overflowing.
+                            if (subtitle != null)
+                              Flexible(
+                                child: Text(
+                                  platform == MTPlatformKind.other
+                                      ? subtitle!
+                                      : ' · $subtitle',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: text.bodySmall!.copyWith(
+                                    color: p.ink3,
+                                  ),
+                                ),
                               ),
-                            ),
-                          if (location != MTMediaLocation.none &&
-                              locationLabel != null) ...[
-                            const SizedBox(width: MTSpace.xs),
-                            Flexible(
-                              child: MTLocationBadge(
-                                location: location,
-                                label: locationLabel!,
+                            if (location != MTMediaLocation.none &&
+                                locationLabel != null) ...[
+                              const SizedBox(width: MTSpace.xs),
+                              Flexible(
+                                child: MTLocationBadge(
+                                  location: location,
+                                  label: locationLabel!,
+                                ),
                               ),
-                            ),
+                            ],
                           ],
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 if (playing)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: MTSpace.xs),
-                    child: MTEqualizer(animate: !paused),
+                    child: ExcludeSemantics(
+                      child: MTEqualizer(animate: !paused),
+                    ),
                   ),
                 if (onFavoriteToggle != null)
                   IconButton(

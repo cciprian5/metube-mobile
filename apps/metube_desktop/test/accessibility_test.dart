@@ -2,14 +2,18 @@ import 'dart:io';
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/material.dart' show Theme;
+import 'package:flutter/material.dart'
+    show Brightness, InkWell, MaterialApp, TextField, Theme;
+import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/di.dart';
+import 'package:metube_desktop/features/folders/folder_widgets.dart';
 import 'package:metube_desktop/features/library/library_item_view.dart';
 import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/focus_regions.dart';
+import 'package:metube_desktop/shell/now_playing.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
@@ -28,8 +32,11 @@ const _video = PlaylistItem(
 );
 
 void main() {
-  Future<ShellHarness> open(WidgetTester tester) async {
-    ShellHarness.useWindow(tester, const Size(1440, 900));
+  Future<ShellHarness> open(
+    WidgetTester tester, {
+    Size window = const Size(1440, 900),
+  }) async {
+    ShellHarness.useWindow(tester, window);
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
       SystemChannels.platform,
       (call) async => call.method == 'Clipboard.getData'
@@ -97,6 +104,22 @@ void main() {
     });
   }
 
+  // Narrow, the sidebar shows icons alone, whose names were only in their
+  // tooltips, which say nothing to a screen reader.
+  for (final place in [
+    EmberRoutes.library,
+    EmberRoutes.item(_video.canonicalUrl),
+  ]) {
+    testWidgets('**the guard**: every control has a name in a narrow '
+        'window, $place', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await open(tester, window: const Size(1000, 700));
+      await go(tester, place);
+      await named(tester);
+      semantics.dispose();
+    });
+  }
+
   final layers = <String, Future<void> Function(WidgetTester)>{
     'the add dialog': (tester) => tester.tap(byLabel('Add link')),
     'the downloads panel': (tester) => tester.tap(byLabel('Downloads')),
@@ -131,6 +154,165 @@ void main() {
       semantics.dispose();
     });
   }
+
+  // Every page in the content lies over a modal barrier, which hid from a
+  // screen reader all that was painted before it: the title bar, the
+  // places and the bar with the search. Only the real reader showed it.
+  for (final place in [EmberRoutes.library, EmberRoutes.settings]) {
+    testWidgets('**the guard**: a screen reader reaches every part of the '
+        'window, $place', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await open(tester);
+      await go(tester, place);
+      for (final (part, label) in [
+        ('title bar', 'Close'),
+        ('sidebar', 'Playlists'),
+        ('content bar', 'Search titles and what was said…'),
+        ('side panel', 'Up next'),
+        ('player bar', 'Queue'),
+      ]) {
+        expect(find.semantics.byLabel(label), findsAny, reason: part);
+      }
+      semantics.dispose();
+    });
+  }
+
+  testWidgets('**the guard**: the player bar tells a screen reader what each '
+      'control is: play is a button, the bar reads as time, what plays opens '
+      'as a button; and no tooltip ends in a stray placeholder', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await open(tester);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Play')),
+      isSemantics(isButton: true, isEnabled: true),
+    );
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Position in the clip')),
+      isSemantics(isSlider: true, value: '0:00'),
+    );
+    // The speed says what it is; its tooltip says nothing to a reader.
+    expect(
+      tester.getSemantics(find.bySemanticsLabel('Playback speed')),
+      isSemantics(isButton: true, value: mtLtrRun('1.0×')),
+    );
+    expect(
+      tester.getSemantics(
+        find.descendant(
+          of: find.byType(EmberNowPlaying),
+          matching: find.byType(InkWell),
+        ),
+      ),
+      isSemantics(isButton: true),
+    );
+    final stray = <String>[];
+    void walk(SemanticsNode node) {
+      final data = node.getSemanticsData();
+      if ('${data.label}${data.tooltip}'.contains('￼')) {
+        stray.add('${data.label} / ${data.tooltip}');
+      }
+      node.visitChildren((child) {
+        walk(child);
+        return true;
+      });
+    }
+
+    walk(
+      tester
+          .binding
+          .renderViews
+          .first
+          .owner!
+          .semanticsOwner!
+          .rootSemanticsNode!,
+    );
+    expect(stray, isEmpty);
+    semantics.dispose();
+  });
+
+  // A name and a tooltip on one node, Windows reads both: "Play. Play".
+  for (final window in [const Size(1440, 900), const Size(1000, 700)]) {
+    testWidgets('**the guard**: no control says its name twice, '
+        '${window.width.toInt()} wide', (tester) async {
+      final semantics = tester.ensureSemantics();
+      await open(tester, window: window);
+      final twice = <String>[];
+      void walk(SemanticsNode node) {
+        final data = node.getSemanticsData();
+        if (data.label.isNotEmpty && data.tooltip.isNotEmpty) {
+          twice.add('${data.label} / ${data.tooltip}');
+        }
+        node.visitChildren((child) {
+          walk(child);
+          return true;
+        });
+      }
+
+      walk(
+        tester
+            .binding
+            .renderViews
+            .first
+            .owner!
+            .semanticsOwner!
+            .rootSemanticsNode!,
+      );
+      expect(twice, isEmpty);
+      semantics.dispose();
+    });
+  }
+
+  testWidgets('**the guard**: the add window keeps its link field named once '
+      'filled, and its folder and the folders offered read as buttons', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await open(tester);
+    await tester.tap(byLabel('Add link'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byType(TextField).last,
+      'https://youtu.be/aaaaaaaaaaa',
+    );
+    await tester.pumpAndSettle();
+    expect(
+      tester.getSemantics(find.byType(EditableText).last),
+      isSemantics(isTextField: true, label: 'Add URL'),
+    );
+    expect(
+      tester.getSemantics(find.text('Folder').last),
+      isSemantics(isButton: true),
+    );
+    // Its list: each folder a button, the current one selected.
+    await tester.tap(find.text('Folder').last);
+    await tester.pumpAndSettle();
+    expect(
+      tester.getSemantics(find.text('No folder').last),
+      isSemantics(isButton: true, isSelected: true),
+    );
+    semantics.dispose();
+  });
+
+  testWidgets('**the guard**: the folders help is a button named by what it '
+      'explains, not by its question mark', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: MTLocalizations.localizationsDelegates,
+        supportedLocales: MTLocalizations.supportedLocales,
+        theme: mtTheme(MTVariant.superApp, Brightness.light),
+        home: Center(
+          child: PulsingHelp(label: 'How folders work', onTap: () {}),
+        ),
+      ),
+    );
+    expect(
+      tester.getSemantics(find.byType(InkWell)),
+      isSemantics(isButton: true, label: 'How folders work'),
+    );
+    semantics.dispose();
+  });
 
   /// The part of the window [node] is in, by the order it was given.
   double? regionOf(FocusNode? node) {

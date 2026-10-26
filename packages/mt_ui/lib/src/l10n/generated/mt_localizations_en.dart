@@ -931,6 +931,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopSearchSaved => 'Saved in the sidebar';
 
   @override
+  String get desktopSeekBar => 'Position in the clip';
+
+  @override
   String get desktopServerFolders => 'Same folders as on the server';
 
   @override

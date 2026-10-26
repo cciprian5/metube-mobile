@@ -181,15 +181,21 @@ class _PulsingHelpState extends State<PulsingHelp>
             ),
           ),
           color: p.accentSoft,
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: widget.onTap,
-            child: SizedBox.square(
-              dimension: MTSpace.xl,
-              child: Center(
-                child: Text(
-                  mark,
-                  style: text.labelMedium?.copyWith(color: p.accentInk),
+          // A button by its name, not by the question mark it shows: the
+          // tooltip says nothing to a screen reader.
+          child: Semantics(
+            button: true,
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: widget.onTap,
+              child: SizedBox.square(
+                dimension: MTSpace.xl,
+                child: Center(
+                  child: Text(
+                    mark,
+                    semanticsLabel: widget.label,
+                    style: text.labelMedium?.copyWith(color: p.accentInk),
+                  ),
                 ),
               ),
             ),

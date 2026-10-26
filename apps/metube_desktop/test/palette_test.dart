@@ -218,6 +218,49 @@ void main() {
       expect(saved.single.query, 'pool');
     });
 
+    // The focus stays in the field while the arrows move the highlight,
+    // so a screen reader heard nothing of the results.
+    testWidgets('**the guard**: a screen reader hears each row the arrows '
+        'reach, and finds the rows as buttons with the chosen one selected', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      final heard = <String>[];
+      tester.binding.defaultBinaryMessenger
+          .setMockDecodedMessageHandler<Object?>(SystemChannels.accessibility, (
+            message,
+          ) async {
+            final map = message! as Map<Object?, Object?>;
+            if (map['type'] == 'announce') {
+              heard.add(
+                (map['data']! as Map<Object?, Object?>)['message']! as String,
+              );
+            }
+            return null;
+          });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(
+              SystemChannels.accessibility,
+              null,
+            ),
+      );
+      await open(tester);
+      await ctrlK(tester);
+      await tester.enterText(find.byType(TextField).last, 'pool');
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSemantics(find.byType(TitleRow)),
+        isSemantics(isButton: true, isSelected: true),
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pump();
+      expect(heard, ['Save this search', 'Pool layouts compared, Field Notes']);
+      semantics.dispose();
+    });
+
     testWidgets('**the guard**: a saved search keeps its query, not its '
         'results, and is renamed and deleted from its menu', (tester) async {
       final h = await open(tester);

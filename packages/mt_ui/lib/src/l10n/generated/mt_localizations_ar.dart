@@ -961,6 +961,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopSearchSaved => 'حُفظ في الشريط الجانبي';
 
   @override
+  String get desktopSeekBar => 'الموضع في المقطع';
+
+  @override
   String get desktopServerFolders => 'بالمجلدات نفسها التي على السيرفر';
 
   @override

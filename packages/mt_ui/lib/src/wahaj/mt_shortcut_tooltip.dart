@@ -26,6 +26,10 @@ class MTShortcutTooltip extends StatelessWidget {
     final style = TooltipTheme.of(context).textStyle;
     final key = shortcut;
     return Tooltip(
+      // Silent to a screen reader. Every control under it carries its own
+      // name, which Windows would read twice ("Play. Play"), and the key
+      // cap is a widget the tooltip would read as a placeholder character.
+      excludeFromSemantics: true,
       richMessage: TextSpan(
         style: style,
         children: [

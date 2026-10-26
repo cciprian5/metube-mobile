@@ -19,43 +19,55 @@ class SidebarAddButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
-    final corners = MTCorners.desktop;
     final ink = onTap == null ? p.ink3 : p.onAccent;
     final plus = MTIcon(MTIcons.plus, size: MTSpace.lg, color: ink);
     return MTShortcutTooltip(
       message: label,
       shortcut: 'Ctrl+V',
-      child: Material(
-        color: onTap == null ? p.cardAlt : p.accent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(corners.field),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          // Not the theme's opaque hover fill, which would hide the ember.
-          hoverColor: p.onAccent.withValues(alpha: 0.12),
-          child: SizedBox(
-            height: MTDensity.desktop.row + MTSpace.xxs,
-            child: narrow
-                ? Center(child: plus)
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      plus,
-                      const SizedBox(width: MTSpace.xs),
-                      Flexible(
-                        child: Text(
-                          label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(color: ink),
-                        ),
+      // Its own name when narrow, where only the plus shows: the tooltip
+      // says nothing to a screen reader.
+      child: Semantics(
+        button: true,
+        enabled: onTap != null,
+        label: narrow ? label : null,
+        child: _face(context, ink, plus),
+      ),
+    );
+  }
+
+  Widget _face(BuildContext context, Color ink, Widget plus) {
+    final p = MTThemeX.of(context).palette;
+    final corners = MTCorners.desktop;
+    return Material(
+      color: onTap == null ? p.cardAlt : p.accent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(corners.field),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        // Not the theme's opaque hover fill, which would hide the ember.
+        hoverColor: p.onAccent.withValues(alpha: 0.12),
+        child: SizedBox(
+          height: MTDensity.desktop.row + MTSpace.xxs,
+          child: narrow
+              ? Center(child: plus)
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    plus,
+                    const SizedBox(width: MTSpace.xs),
+                    Flexible(
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelLarge
+                            ?.copyWith(color: ink),
                       ),
-                    ],
-                  ),
-          ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );

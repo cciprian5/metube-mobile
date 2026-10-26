@@ -56,6 +56,10 @@ class _EmberSeekBarState extends State<EmberSeekBar> {
                   ),
                 ),
                 child: Slider(
+                  label: context.mtl.desktopSeekBar,
+                  // Read as the time it shows, not a bare percentage.
+                  semanticFormatterCallback: (v) =>
+                      mtFormatDuration(Duration(milliseconds: v.round())),
                   value: shownMs,
                   max: maxMs > 0 ? maxMs : 1,
                   onChanged: maxMs > 0

@@ -36,36 +36,41 @@ class FolderLine extends StatelessWidget {
         borderRadius: BorderRadius.circular(MTCorners.desktop.field),
       ),
       clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onPick,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: MTSpace.md,
-            vertical: MTSpace.sm,
-          ),
-          child: Row(
-            children: [
-              MTIcon(MTIcons.folder, size: MTSpace.lg, color: p.ink2),
-              const SizedBox(width: MTSpace.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label ?? l.folder,
-                      style: text.labelSmall?.copyWith(color: p.ink3),
-                    ),
-                    Text(
-                      value,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: text.bodySmall?.copyWith(color: p.ink),
-                    ),
-                  ],
+      // A button to a screen reader, not two lines of text: it opens the
+      // list of folders.
+      child: Semantics(
+        button: true,
+        child: InkWell(
+          onTap: onPick,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: MTSpace.md,
+              vertical: MTSpace.sm,
+            ),
+            child: Row(
+              children: [
+                MTIcon(MTIcons.folder, size: MTSpace.lg, color: p.ink2),
+                const SizedBox(width: MTSpace.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label ?? l.folder,
+                        style: text.labelSmall?.copyWith(color: p.ink3),
+                      ),
+                      Text(
+                        value,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.bodySmall?.copyWith(color: p.ink),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              MTIcon(MTIcons.chevronDown, size: MTSpace.lg, color: p.ink3),
-            ],
+                MTIcon(MTIcons.chevronDown, size: MTSpace.lg, color: p.ink3),
+              ],
+            ),
           ),
         ),
       ),
@@ -134,44 +139,52 @@ class _FolderPicker extends ConsumerWidget {
       required bool selected,
       required VoidCallback onTap,
       int depth = 0,
-    }) => InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
-      child: Padding(
-        padding: EdgeInsetsDirectional.only(
-          start: MTSpace.sm + MTSpace.lg * depth,
-          end: MTSpace.sm,
-          top: MTSpace.xs,
-          bottom: MTSpace.xs,
-        ),
-        child: Row(
-          children: [
-            MTIcon(icon, size: MTSpace.lg, color: selected ? p.accent : p.ink2),
-            const SizedBox(width: MTSpace.sm),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: text.bodySmall?.copyWith(
-                      color: selected ? p.accentInk : p.ink,
-                      fontWeight: selected ? FontWeight.w700 : null,
-                    ),
-                  ),
-                  if (subtitle != null)
-                    Text(
-                      subtitle,
-                      style: text.labelSmall?.copyWith(color: p.ink3),
-                    ),
-                ],
+    }) => Semantics(
+      button: true,
+      selected: selected,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+        child: Padding(
+          padding: EdgeInsetsDirectional.only(
+            start: MTSpace.sm + MTSpace.lg * depth,
+            end: MTSpace.sm,
+            top: MTSpace.xs,
+            bottom: MTSpace.xs,
+          ),
+          child: Row(
+            children: [
+              MTIcon(
+                icon,
+                size: MTSpace.lg,
+                color: selected ? p.accent : p.ink2,
               ),
-            ),
-            if (selected)
-              MTIcon(MTIcons.check, size: MTSpace.lg, color: p.accent),
-          ],
+              const SizedBox(width: MTSpace.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: text.bodySmall?.copyWith(
+                        color: selected ? p.accentInk : p.ink,
+                        fontWeight: selected ? FontWeight.w700 : null,
+                      ),
+                    ),
+                    if (subtitle != null)
+                      Text(
+                        subtitle,
+                        style: text.labelSmall?.copyWith(color: p.ink3),
+                      ),
+                  ],
+                ),
+              ),
+              if (selected)
+                MTIcon(MTIcons.check, size: MTSpace.lg, color: p.accent),
+            ],
+          ),
         ),
       ),
     );

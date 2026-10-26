@@ -62,10 +62,14 @@ class EmberNowPlaying extends StatelessWidget {
       ],
     );
     if (item == null) return row;
-    return InkWell(
-      onTap: () => onOpen(item.canonicalUrl),
-      borderRadius: BorderRadius.circular(MTCorners.desktop.thumb),
-      child: row,
+    // A button to a screen reader too: it opens the clip's page.
+    return Semantics(
+      button: true,
+      child: InkWell(
+        onTap: () => onOpen(item.canonicalUrl),
+        borderRadius: BorderRadius.circular(MTCorners.desktop.thumb),
+        child: row,
+      ),
     );
   }
 }

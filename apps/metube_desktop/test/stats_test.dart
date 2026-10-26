@@ -80,6 +80,34 @@ void main() {
     });
   });
 
+  testWidgets('**the guard**: what the server does not say is not shown as '
+      'if it were: no running time when most lengths are unknown, no '
+      'channels when none is named', (tester) async {
+    ShellHarness.useWindow(tester, const Size(1440, 900));
+    final h = ShellHarness(
+      library: [
+        for (final id in ['aaaaaaaaaaa', 'bbbbbbbbbbb', 'ccccccccccc'])
+          LibraryItem(
+            canonicalUrl: 'https://youtu.be/$id',
+            title: 'Clip $id',
+            onServer: true,
+            sizeBytes: _mb,
+            duration: id == 'aaaaaaaaaaa' ? const Duration(hours: 2) : null,
+            timestamp: DateTime(2026, 10, 1),
+          ),
+      ],
+      server: ServerConfig(baseUrl: 'http://nas:8081'),
+    );
+    await tester.pumpWidget(h.app());
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Statistics'));
+    await tester.pumpAndSettle();
+    expect(find.byType(StatsPage), findsOneWidget);
+    expect(find.text('Running time'), findsNothing);
+    expect(find.text('By channel'), findsNothing);
+    expect(find.text('By site'), findsOneWidget);
+  });
+
   group('the page', () {
     final items = [
       _clip('aaaaaaaaaaa', channel: 'Rivers', mb: 300),

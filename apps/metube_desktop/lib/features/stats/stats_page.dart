@@ -52,7 +52,8 @@ class StatsPage extends ConsumerWidget {
         builder: (context, box) {
           final left = [_bySite(context, value), _byMonth(context, value)];
           final right = [
-            _byChannel(context, value),
+            // A history that names no channel would give one bar of all.
+            if (value.byChannel.isNotEmpty) _byChannel(context, value),
             _suggestions(context, value),
           ];
           return SingleChildScrollView(
@@ -244,10 +245,13 @@ class _Heading extends StatelessWidget {
               value: mtFormatSize(stats.bytes),
               label: l.desktopStatsRoom,
             ),
-            StatsTile(
-              value: l.desktopStatsHours(stats.length.inHours),
-              label: l.desktopStatsLength,
-            ),
+            // Only when most lengths are known: a total of the few known
+            // would read as the library's.
+            if (stats.timed * 2 >= stats.count)
+              StatsTile(
+                value: l.desktopStatsHours(stats.length.inHours),
+                label: l.desktopStatsLength,
+              ),
             StatsTile(
               value: mtLtrRun('$share%'),
               label: l.desktopStatsWithText,

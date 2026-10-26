@@ -12,6 +12,7 @@ class LibraryStats {
     required this.count,
     required this.bytes,
     required this.length,
+    required this.timed,
     required this.withText,
     required this.bySite,
     required this.byChannel,
@@ -25,8 +26,10 @@ class LibraryStats {
   final int count;
   final int bytes;
 
-  /// The length of every clip whose length is known.
+  /// The length of every clip whose length is known, and how many those
+  /// are: a server's history often gives none.
   final Duration length;
+  final int timed;
   final int withText;
 
   /// Largest first, by room taken.
@@ -62,6 +65,7 @@ LibraryStats statsOf(
 }) {
   var bytes = 0;
   var length = Duration.zero;
+  var timed = 0;
   var withText = 0;
   var unnamed = 0;
   final sites = <MediaPlatform, (int, int)>{};
@@ -75,7 +79,10 @@ LibraryStats statsOf(
   for (final item in items) {
     final size = item.sizeBytes ?? 0;
     bytes += size;
-    length += item.duration ?? Duration.zero;
+    if (item.duration case final d?) {
+      length += d;
+      timed++;
+    }
     if (hasText(item.canonicalUrl)) withText++;
     add(sites, MediaPlatform.detect(item.canonicalUrl), size);
     final channel = item.uploader?.trim() ?? '';
@@ -108,6 +115,7 @@ LibraryStats statsOf(
     count: items.length,
     bytes: bytes,
     length: length,
+    timed: timed,
     withText: withText,
     bySite: bySite,
     byChannel: allChannels.take(LibraryStats.topChannels).toList(),

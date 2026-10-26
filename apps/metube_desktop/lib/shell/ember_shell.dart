@@ -336,6 +336,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
                                   child: inRegion(
                                     EmberRegion.content,
                                     widget.child,
+                                    focus: ref.watch(contentFocusProvider),
                                   ),
                                 ),
                                 if (!arranged.panelBeside &&

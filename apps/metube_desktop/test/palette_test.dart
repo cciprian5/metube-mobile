@@ -261,6 +261,29 @@ void main() {
       semantics.dispose();
     });
 
+    // Opened from the search, focus had nowhere to return to: a screen
+    // reader said nothing until Tab.
+    testWidgets('**the guard**: a clip opened from the search takes the '
+        'keyboard into its page', (tester) async {
+      await open(tester);
+      ShellHarness.useWindow(tester, const Size(1000, 560));
+      await ctrlK(tester);
+      await tester.enterText(find.byType(TextField).last, 'pool');
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      final focused = FocusManager.instance.primaryFocus?.context;
+      expect(focused, isNotNull);
+      expect(
+        focused!.findAncestorWidgetOfExactType<ClipPage>(),
+        isNotNull,
+        reason: '$focused',
+      );
+      // And in view, though the window is too short to show it at first.
+      final shown = tester.getRect(find.byWidget(focused.widget));
+      expect(shown.bottom, lessThanOrEqualTo(560), reason: '$shown');
+    });
+
     testWidgets('**the guard**: a saved search keeps its query, not its '
         'results, and is renamed and deleted from its menu', (tester) async {
       final h = await open(tester);

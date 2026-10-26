@@ -12,6 +12,7 @@ import '../../data/saved_searches.dart';
 import '../../data/transcripts_data.dart';
 import '../../di.dart';
 import '../../router.dart';
+import '../../shell/focus_regions.dart';
 import 'palette_model.dart';
 import 'palette_rows.dart';
 
@@ -78,8 +79,14 @@ class _PaletteState extends ConsumerState<_Palette> {
   static const double _width = 640;
   static const double _topGap = 64;
 
+  /// Rows before this open a page (titles, then lines said), entered once
+  /// the palette is fully gone: any sooner, the closing route takes focus.
+  var _pages = 0;
+  FocusNode? _enter;
+
   @override
   void dispose() {
+    if (_enter case final page?) focusFirstIn(page);
     _query.dispose();
     _scroll.dispose();
     super.dispose();
@@ -116,7 +123,9 @@ class _PaletteState extends ConsumerState<_Palette> {
     showMTNotice(context, message: context.mtl.desktopSearchSaved);
   }
 
-  void _run(VoidCallback action) {
+  void _run(List<VoidCallback> actions, int index) {
+    if (index < _pages) _enter = ref.read(contentFocusProvider);
+    final action = actions[index];
     Navigator.of(context).pop();
     action();
   }
@@ -148,6 +157,7 @@ class _PaletteState extends ConsumerState<_Palette> {
     final text = Theme.of(context).textTheme;
     final results = _results();
     final actions = _actions(results);
+    _pages = results.titles.length + results.said.length;
     if (_selected >= actions.length) _selected = 0;
     var row = 0;
     Widget pick(String spoken, Widget Function(bool selected) build) {
@@ -156,7 +166,7 @@ class _PaletteState extends ConsumerState<_Palette> {
       return KeyedSubtree(
         key: _keyOf(index),
         child: PaletteRowTap(
-          onTap: () => _run(actions[index]),
+          onTap: () => _run(actions, index),
           selected: index == _selected,
           child: build(index == _selected),
         ),
@@ -164,7 +174,7 @@ class _PaletteState extends ConsumerState<_Palette> {
     }
 
     void open() {
-      if (actions.isNotEmpty) _run(actions[_selected]);
+      if (actions.isNotEmpty) _run(actions, _selected);
     }
 
     final query = _query.text.trim();
@@ -220,13 +230,7 @@ class _PaletteState extends ConsumerState<_Palette> {
                 ),
                 Flexible(
                   child: results.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.all(MTSpace.lg),
-                          child: Text(
-                            l.noResults,
-                            style: text.bodyMedium?.copyWith(color: p.ink3),
-                          ),
-                        )
+                      ? const PaletteEmpty()
                       : ListView(
                           controller: _scroll,
                           shrinkWrap: true,

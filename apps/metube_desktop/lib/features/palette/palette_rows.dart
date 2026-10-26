@@ -9,6 +9,21 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'palette_model.dart';
 
+/// What the palette shows when nothing matches.
+class PaletteEmpty extends StatelessWidget {
+  const PaletteEmpty({super.key});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(MTSpace.lg),
+    child: Text(
+      context.mtl.noResults,
+      style: Theme.of(context).textTheme.bodyMedium
+          ?.copyWith(color: MTThemeX.of(context).palette.ink3),
+    ),
+  );
+}
+
 /// A kind of result's name above its rows.
 class PaletteHeader extends StatelessWidget {
   const PaletteHeader(this.label, {super.key});

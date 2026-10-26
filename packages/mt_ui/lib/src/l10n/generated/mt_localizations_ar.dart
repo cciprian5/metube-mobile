@@ -637,11 +637,31 @@ class MTLocalizationsAr extends MTLocalizations {
       'أضِف رابطاً فيظهر المقطع هنا بعد أن ينزّله السيرفر.';
 
   @override
+  String get desktopExport => 'تصدير';
+
+  @override
   String get desktopExportForPhone => 'تصدير للجوال';
 
   @override
   String get desktopExportForPhoneHint =>
       'يحفظ وسوم هذا الكمبيوتر وقوائمه ومواضع الاستئناف ونصوصه في ملفين يستعيدهما الجوال. والاستعادة في الجوال تستبدل وسومه وقوائمه.';
+
+  @override
+  String get desktopExportMarkdown => 'نص (Markdown)';
+
+  @override
+  String get desktopExportPdf => 'مستند (PDF)';
+
+  @override
+  String get desktopExportPhone => 'للجوال (ملف الاستيراد في Super)';
+
+  @override
+  String get desktopExportSrt => 'ترجمة (SRT)';
+
+  @override
+  String desktopExported(String name) {
+    return 'حُفظ $name';
+  }
 
   @override
   String get desktopFolderUnavailable => 'لا مجلد متاح';
@@ -1111,6 +1131,73 @@ class MTLocalizationsAr extends MTLocalizations {
   @override
   String get desktopStartWithWindowsRefused =>
       'لم يسمح Windows للتطبيق بالبدء معه.';
+
+  @override
+  String get desktopStats => 'إحصاءات المكتبة';
+
+  @override
+  String get desktopStatsByChannel => 'حسب القناة';
+
+  @override
+  String get desktopStatsByMonth => 'حسب شهر الإضافة';
+
+  @override
+  String get desktopStatsBySite => 'حسب المنصة';
+
+  @override
+  String get desktopStatsClips => 'المقاطع';
+
+  @override
+  String get desktopStatsHint =>
+      'ما تحويه المكتبة، وما قد يستحق نظرة. لا يُحذف شيء من هنا.';
+
+  @override
+  String desktopStatsHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ساعة',
+      many: '$count ساعة',
+      few: '$count ساعات',
+      two: 'ساعتان',
+      one: 'ساعة واحدة',
+      zero: 'أقل من ساعة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get desktopStatsLargest => 'أكبرها:';
+
+  @override
+  String get desktopStatsLength => 'المدة';
+
+  @override
+  String get desktopStatsLink => 'الإحصاءات';
+
+  @override
+  String get desktopStatsNeverPlayed => 'لم تُشغَّل هنا قط';
+
+  @override
+  String get desktopStatsNewest => 'أحدثها:';
+
+  @override
+  String get desktopStatsOtherChannels => 'قنوات أخرى';
+
+  @override
+  String get desktopStatsRoom => 'المساحة';
+
+  @override
+  String get desktopStatsUnnamed => 'بلا اسم قناة';
+
+  @override
+  String get desktopStatsWithText => 'لها نص';
+
+  @override
+  String get desktopStatsWithoutText => 'بلا نص';
+
+  @override
+  String get desktopStatsWorthALook => 'قد تستحق نظرة';
 
   @override
   String get desktopSync => 'المزامنة';

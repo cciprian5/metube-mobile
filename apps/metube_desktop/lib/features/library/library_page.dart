@@ -9,6 +9,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/library_data.dart';
 import '../../di.dart';
+import '../../router.dart';
 import '../../shell/pill.dart';
 import '../clip/clip_state.dart';
 import '../setup/setup_dialog.dart';
@@ -239,7 +240,7 @@ class _Heading extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.end,
             children: [
               Text(title, style: text.headlineSmall),
-              if (counts case final line?)
+              if (counts case final line?) ...[
                 Padding(
                   padding: const EdgeInsets.only(bottom: MTSpace.xxs),
                   child: Text(
@@ -247,6 +248,12 @@ class _Heading extends StatelessWidget {
                     style: text.bodySmall?.copyWith(color: p.ink3),
                   ),
                 ),
+                // The figures behind the counts, a page of their own.
+                MTLinkButton(
+                  label: l.desktopStatsLink,
+                  onPressed: () => GoRouter.of(context).go(EmberRoutes.stats),
+                ),
+              ],
             ],
           ),
         ),

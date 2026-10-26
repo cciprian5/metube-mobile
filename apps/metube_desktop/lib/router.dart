@@ -38,6 +38,9 @@ abstract final class EmberRoutes {
   static const channels = '/channels';
   static const settings = '/settings';
 
+  /// The library counted: by site, channel and month.
+  static const stats = '/stats';
+
   /// One clip's page. The key is a canonical URL, full of slashes and
   /// question marks, so it travels percent-encoded as one path segment.
   static String item(String canonicalUrl) =>
@@ -79,6 +82,8 @@ EmberPlace placeOf(Uri location) {
     'playlists' => EmberPlace.playlists,
     'channels' => EmberPlace.channels,
     'settings' => EmberPlace.settings,
+    // The library seen as figures: its place stays lit.
+    'stats' => EmberPlace.library,
     _ => EmberPlace.item,
   };
 }
@@ -108,6 +113,8 @@ Widget _pendingPlaylists(String? id) => PendingPlace('playlists', argument: id);
 
 Widget _pendingChannels(String? id) => PendingPlace('channels', argument: id);
 
+Widget _pendingStats(String? _) => const PendingPlace('stats');
+
 Widget _pendingSettings(String? pane) =>
     PendingPlace('settings', argument: pane);
 
@@ -122,6 +129,7 @@ GoRouter buildEmberRouter({
   EmberPlaceBuilder playlists = _pendingPlaylists,
   EmberPlaceBuilder channels = _pendingChannels,
   EmberPlaceBuilder settings = _pendingSettings,
+  EmberPlaceBuilder stats = _pendingStats,
 }) => GoRouter(
   initialLocation: initialLocation,
   // An address that names no place (an old link, a typo in a protocol
@@ -161,6 +169,7 @@ GoRouter buildEmberRouter({
           path: '/read/:id',
           builder: (_, state) => reading(state.pathParameters['id']),
         ),
+        GoRoute(path: EmberRoutes.stats, builder: (_, _) => stats(null)),
         GoRoute(
           path: EmberRoutes.settings,
           builder: (_, _) => settings(null),

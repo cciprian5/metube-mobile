@@ -20,6 +20,7 @@ import '../../shell/video_surface.dart';
 import '../clip/clip_state.dart';
 import '../library/platform_label.dart';
 import 'reading_article.dart';
+import 'reading_export_menu.dart';
 import 'reading_find.dart';
 import 'reading_text.dart';
 
@@ -187,6 +188,14 @@ class _ReadingRoomState extends ConsumerState<ReadingRoom> {
         final header = _Header(
           item: item,
           video: corner ? null : video,
+          export: transcript == null
+              ? null
+              : ReadingExportPill(
+                  item: item,
+                  meta: _metaOf(l, item),
+                  transcript: transcript,
+                  paragraphs: _paragraphs,
+                ),
           onBack: () =>
               GoRouter.of(context).go(EmberRoutes.item(item.canonicalUrl)),
         );
@@ -289,10 +298,14 @@ class _Header extends StatelessWidget {
   const _Header({
     required this.item,
     required this.video,
+    required this.export,
     required this.onBack,
   });
 
   final PlaylistItem item;
+
+  /// The export button, once there is a transcript to export.
+  final Widget? export;
 
   /// The picture above the title, when the window has no room beside.
   final Widget? video;
@@ -303,21 +316,24 @@ class _Header extends StatelessWidget {
     final l = context.mtl;
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
-    final meta = mtMetaLine([
-      ?item.uploader,
-      platformLabel(l, MediaPlatform.detect(item.canonicalUrl)),
-      if (item.duration case final d?) mtFormatDuration(d),
-    ]);
+    final meta = _metaOf(l, item);
     return Padding(
       padding: const EdgeInsets.only(bottom: MTSpace.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EmberPill(
-            label: l.desktopReadingBack,
-            icon: MTIcons.back,
-            selected: false,
-            onTap: onBack,
+          Wrap(
+            spacing: MTSpace.sm,
+            runSpacing: MTSpace.sm,
+            children: [
+              EmberPill(
+                label: l.desktopReadingBack,
+                icon: MTIcons.back,
+                selected: false,
+                onTap: onBack,
+              ),
+              ?export,
+            ],
           ),
           const SizedBox(height: MTSpace.lg),
           if (video case final video?) ...[
@@ -346,3 +362,10 @@ class _Header extends StatelessWidget {
     );
   }
 }
+
+/// The line under the title: channel, site and length.
+String _metaOf(MTLocalizations l, PlaylistItem item) => mtMetaLine([
+  ?item.uploader,
+  platformLabel(l, MediaPlatform.detect(item.canonicalUrl)),
+  if (item.duration case final d?) mtFormatDuration(d),
+]);

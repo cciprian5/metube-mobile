@@ -1154,6 +1154,12 @@ abstract class MTLocalizations {
   /// **'Add a link, and the clip appears here once the server has it.'**
   String get desktopEmptyLibraryMessage;
 
+  /// No description provided for @desktopExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get desktopExport;
+
   /// No description provided for @desktopExportForPhone.
   ///
   /// In en, this message translates to:
@@ -1165,6 +1171,36 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Saves this computer\'s tags, lists and resume points, and its transcripts, as two files the phone restores. Restoring on the phone replaces its own tags and lists.'**
   String get desktopExportForPhoneHint;
+
+  /// No description provided for @desktopExportMarkdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Text (Markdown)'**
+  String get desktopExportMarkdown;
+
+  /// No description provided for @desktopExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Document (PDF)'**
+  String get desktopExportPdf;
+
+  /// No description provided for @desktopExportPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'For the phone (Super\'s import)'**
+  String get desktopExportPhone;
+
+  /// No description provided for @desktopExportSrt.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitles (SRT)'**
+  String get desktopExportSrt;
+
+  /// No description provided for @desktopExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {name}'**
+  String desktopExported(String name);
 
   /// No description provided for @desktopFolderUnavailable.
   ///
@@ -1921,6 +1957,114 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Windows did not let the app start with it.'**
   String get desktopStartWithWindowsRefused;
+
+  /// No description provided for @desktopStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Library statistics'**
+  String get desktopStats;
+
+  /// No description provided for @desktopStatsByChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'By channel'**
+  String get desktopStatsByChannel;
+
+  /// No description provided for @desktopStatsByMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'By month added'**
+  String get desktopStatsByMonth;
+
+  /// No description provided for @desktopStatsBySite.
+  ///
+  /// In en, this message translates to:
+  /// **'By site'**
+  String get desktopStatsBySite;
+
+  /// No description provided for @desktopStatsClips.
+  ///
+  /// In en, this message translates to:
+  /// **'Clips'**
+  String get desktopStatsClips;
+
+  /// No description provided for @desktopStatsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What the library holds, and what may deserve a look. Nothing is deleted from here.'**
+  String get desktopStatsHint;
+
+  /// No description provided for @desktopStatsHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Under an hour} =1{1 hour} other{{count} hours}}'**
+  String desktopStatsHours(int count);
+
+  /// No description provided for @desktopStatsLargest.
+  ///
+  /// In en, this message translates to:
+  /// **'The largest:'**
+  String get desktopStatsLargest;
+
+  /// No description provided for @desktopStatsLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Running time'**
+  String get desktopStatsLength;
+
+  /// No description provided for @desktopStatsLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get desktopStatsLink;
+
+  /// No description provided for @desktopStatsNeverPlayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Never played here'**
+  String get desktopStatsNeverPlayed;
+
+  /// No description provided for @desktopStatsNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'The newest:'**
+  String get desktopStatsNewest;
+
+  /// No description provided for @desktopStatsOtherChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Other channels'**
+  String get desktopStatsOtherChannels;
+
+  /// No description provided for @desktopStatsRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Room taken'**
+  String get desktopStatsRoom;
+
+  /// No description provided for @desktopStatsUnnamed.
+  ///
+  /// In en, this message translates to:
+  /// **'No channel named'**
+  String get desktopStatsUnnamed;
+
+  /// No description provided for @desktopStatsWithText.
+  ///
+  /// In en, this message translates to:
+  /// **'With a transcript'**
+  String get desktopStatsWithText;
+
+  /// No description provided for @desktopStatsWithoutText.
+  ///
+  /// In en, this message translates to:
+  /// **'Without a transcript'**
+  String get desktopStatsWithoutText;
+
+  /// No description provided for @desktopStatsWorthALook.
+  ///
+  /// In en, this message translates to:
+  /// **'Worth a look'**
+  String get desktopStatsWorthALook;
 
   /// No description provided for @desktopSync.
   ///

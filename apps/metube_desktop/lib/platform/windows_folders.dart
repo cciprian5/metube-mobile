@@ -72,6 +72,17 @@ class WindowsFolders extends DesktopFolders {
     return place.path;
   }
 
+  @override
+  Future<String?> saveBytes({
+    required String name,
+    required List<int> bytes,
+  }) async {
+    final place = await selector.getSaveLocation(suggestedName: name);
+    if (place == null) return null;
+    await File(place.path).writeAsBytes(bytes, flush: true);
+    return place.path;
+  }
+
   // Explorer is started with its arguments as a list, never through a
   // shell, so a name with spaces or an ampersand stays one argument.
   @override

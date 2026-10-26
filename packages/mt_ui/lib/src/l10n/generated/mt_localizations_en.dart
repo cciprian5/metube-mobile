@@ -616,11 +616,31 @@ class MTLocalizationsEn extends MTLocalizations {
       'Add a link, and the clip appears here once the server has it.';
 
   @override
+  String get desktopExport => 'Export';
+
+  @override
   String get desktopExportForPhone => 'Export for the phone';
 
   @override
   String get desktopExportForPhoneHint =>
       'Saves this computer\'s tags, lists and resume points, and its transcripts, as two files the phone restores. Restoring on the phone replaces its own tags and lists.';
+
+  @override
+  String get desktopExportMarkdown => 'Text (Markdown)';
+
+  @override
+  String get desktopExportPdf => 'Document (PDF)';
+
+  @override
+  String get desktopExportPhone => 'For the phone (Super\'s import)';
+
+  @override
+  String get desktopExportSrt => 'Subtitles (SRT)';
+
+  @override
+  String desktopExported(String name) {
+    return 'Saved $name';
+  }
 
   @override
   String get desktopFolderUnavailable => 'No folder available';
@@ -1081,6 +1101,70 @@ class MTLocalizationsEn extends MTLocalizations {
   @override
   String get desktopStartWithWindowsRefused =>
       'Windows did not let the app start with it.';
+
+  @override
+  String get desktopStats => 'Library statistics';
+
+  @override
+  String get desktopStatsByChannel => 'By channel';
+
+  @override
+  String get desktopStatsByMonth => 'By month added';
+
+  @override
+  String get desktopStatsBySite => 'By site';
+
+  @override
+  String get desktopStatsClips => 'Clips';
+
+  @override
+  String get desktopStatsHint =>
+      'What the library holds, and what may deserve a look. Nothing is deleted from here.';
+
+  @override
+  String desktopStatsHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours',
+      one: '1 hour',
+      zero: 'Under an hour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get desktopStatsLargest => 'The largest:';
+
+  @override
+  String get desktopStatsLength => 'Running time';
+
+  @override
+  String get desktopStatsLink => 'Statistics';
+
+  @override
+  String get desktopStatsNeverPlayed => 'Never played here';
+
+  @override
+  String get desktopStatsNewest => 'The newest:';
+
+  @override
+  String get desktopStatsOtherChannels => 'Other channels';
+
+  @override
+  String get desktopStatsRoom => 'Room taken';
+
+  @override
+  String get desktopStatsUnnamed => 'No channel named';
+
+  @override
+  String get desktopStatsWithText => 'With a transcript';
+
+  @override
+  String get desktopStatsWithoutText => 'Without a transcript';
+
+  @override
+  String get desktopStatsWorthALook => 'Worth a look';
 
   @override
   String get desktopSync => 'Sync';

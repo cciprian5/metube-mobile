@@ -515,6 +515,15 @@ void main() {
     zoom: UiZoom(zoom),
   );
 
+  /// The library statistics, from the library's counts.
+  Future<void> stats(WidgetTester tester) async {
+    GoRouter.of(tester.element(find.byType(LibraryPage))).go(EmberRoutes.stats);
+  }
+
+  testWidgets('the library statistics', (tester) async {
+    await expectNoOverflow(tester, () => withWords().app(), then: stats);
+  });
+
   testWidgets('the listening room', (tester) async {
     late ShellHarness h;
     await expectNoOverflow(
@@ -589,6 +598,15 @@ void main() {
         )).app(),
         windows: [window],
         then: (tester) => readingRoom(tester, h),
+      );
+    });
+
+    testWidgets('the library statistics, ${window.name}', (tester) async {
+      await expectNoOverflow(
+        tester,
+        () => withWords(zoom: zoom).app(),
+        windows: [window],
+        then: stats,
       );
     });
 

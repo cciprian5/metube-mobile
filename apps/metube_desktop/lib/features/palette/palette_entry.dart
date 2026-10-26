@@ -37,6 +37,7 @@ Future<void> openPalette(
       go(l.filterOffline, MTIcons.download, EmberRoutes.offline),
       go(l.navPlaylists, MTIcons.queue, EmberRoutes.playlists),
       go(l.desktopChannels, MTIcons.subscriptions, EmberRoutes.channels),
+      go(l.desktopStats, MTIcons.library, EmberRoutes.stats),
       for (final list in lists)
         go(
           l.desktopPaletteList(mtName(list.name)),

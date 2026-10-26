@@ -32,6 +32,9 @@ abstract class DesktopFolders {
   /// chose and returns that path, or null when it is closed.
   Future<String?> saveText({required String name, required String text});
 
+  /// [saveText] for a file that is not text, a PDF say.
+  Future<String?> saveBytes({required String name, required List<int> bytes});
+
   /// Opens Explorer on [path]'s folder with the file selected.
   Future<void> reveal(String path);
 
@@ -63,6 +66,12 @@ class NoFolders extends DesktopFolders {
   Future<String?> saveText({
     required String name,
     required String text,
+  }) async => null;
+
+  @override
+  Future<String?> saveBytes({
+    required String name,
+    required List<int> bytes,
   }) async => null;
 
   @override

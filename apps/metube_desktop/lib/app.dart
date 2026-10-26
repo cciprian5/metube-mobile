@@ -11,6 +11,7 @@ import 'features/library/library_page.dart';
 import 'features/lists/lists_page.dart';
 import 'features/lists/playlist_page.dart';
 import 'features/settings/settings_place.dart';
+import 'features/stats/stats_page.dart';
 import 'router.dart';
 import 'shell/ember_shell.dart';
 import 'shell/zoom_frame.dart';
@@ -51,6 +52,7 @@ class _EmberAppState extends State<EmberApp> {
         channels: (id) => id == null
             ? const ChannelsPage()
             : ChannelPage(key: ValueKey(id), id: id),
+        stats: (_) => const StatsPage(),
         settings: (pane) => SettingsPlace(
           pane:
               EmberSettingsPane.values.asNameMap()[pane] ??

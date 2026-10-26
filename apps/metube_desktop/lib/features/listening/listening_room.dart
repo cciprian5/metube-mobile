@@ -133,14 +133,24 @@ class _ListeningRoomState extends ConsumerState<ListeningRoom> {
                         box.maxWidth >=
                         ListeningRoom.cover + 2 * MTSpace.xxl + _narrowest;
                     return beside
+                        // Together in the middle: on a wide screen the lines
+                        // keep a reading width rather than run to the edge.
                         ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
                                 width: ListeningRoom.cover + MTSpace.xxl,
                                 child: cover,
                               ),
                               const SizedBox(width: MTSpace.xxl),
-                              Expanded(child: lines),
+                              Flexible(
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: MTBreakpoint.readable,
+                                  ),
+                                  child: lines,
+                                ),
+                              ),
                             ],
                           )
                         : Column(
@@ -219,15 +229,19 @@ class _CoverColumn extends ConsumerWidget {
                 child: MTBreathingGlow(
                   playing: playing,
                   size: size * glowScale,
-                  child: MTTiltedArtwork(
-                    item: item,
-                    size: size,
-                    artwork: (context, _) => artworkFor(
-                      ref,
-                      context,
-                      art,
-                      width: size,
-                      height: size,
+                  // Its own layer: the blurred shadow is drawn once, not on
+                  // every frame the embers behind it move.
+                  child: RepaintBoundary(
+                    child: MTTiltedArtwork(
+                      item: item,
+                      size: size,
+                      artwork: (context, _) => artworkFor(
+                        ref,
+                        context,
+                        art,
+                        width: size,
+                        height: size,
+                      ),
                     ),
                   ),
                 ),

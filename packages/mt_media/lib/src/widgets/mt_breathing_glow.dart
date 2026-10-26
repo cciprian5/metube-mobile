@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -156,6 +157,7 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
   @override
   Widget build(BuildContext context) {
     final accent = MTThemeX.of(context).palette.accent;
+    final light = MTDesktopApp.isDesktop(context) ? _emberLight() : null;
     // Night needs more of it to be seen on espresso than day needs on
     // cream, where a moving light too strong reads as a travelling stain.
     final dark = Theme.of(context).brightness == Brightness.dark;
@@ -185,6 +187,7 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
                   return CustomPaint(
                     painter: _EmberPainter(
                       embers: [large, small],
+                      light: light,
                       side: widget.size,
                       color: accent,
                       peak: peak,
@@ -201,15 +204,51 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
   }
 }
 
+/// The side of [_emberLight], in pixels: smooth when stretched to an
+/// ember's size, as it only fades.
+const _lightSide = 256;
+
+ui.Image? _light;
+
+/// **One ember's light, drawn once**: white at full strength out to half
+/// its radius, then fading, tinted to the accent as it is drawn.
+///
+/// On a computer the embers are drawn from it rather than from a gradient
+/// worked out for every pixel of every frame. On the integrated graphics
+/// of an ordinary laptop that gradient took about 18 ms a frame in a maximized
+/// window, too long for 60 frames a second; the image takes about 2. Phones keep
+/// the gradient, which is quick there.
+ui.Image _emberLight() {
+  if (_light case final ready?) return ready;
+  final recorder = ui.PictureRecorder();
+  final side = _lightSide.toDouble();
+  final rect = Rect.fromLTWH(0, 0, side, side);
+  Canvas(recorder)
+      .drawRect(rect, Paint()..shader = _fade(Colors.white).createShader(rect));
+  return _light = recorder.endRecording().toImageSync(_lightSide, _lightSide);
+}
+
+/// Full strength out to near the middle, then fading: the cover hides the
+/// middle, and an ember that faded from its centre would show nothing as it
+/// passed behind the edge.
+RadialGradient _fade(Color color) => RadialGradient(
+  colors: [color, color, color.withValues(alpha: 0)],
+  stops: const [0, 0.5, 1],
+);
+
 class _EmberPainter extends CustomPainter {
   _EmberPainter({
     required this.embers,
+    required this.light,
     required this.side,
     required this.color,
     required this.peak,
   });
 
   final List<MTEmber> embers;
+
+  /// The light drawn once, on a computer; null draws the gradient.
+  final ui.Image? light;
   final double side;
   final Color color;
   final double peak;
@@ -222,19 +261,23 @@ class _EmberPainter extends CustomPainter {
       final radius = ember.radius * side;
       final alpha = peak * ember.strength;
       final rect = Rect.fromCircle(center: centre, radius: radius);
-      // Full strength out to near the middle, then fading: the cover hides
-      // the middle, and an ember that faded from its centre would show
-      // nothing as it passed behind the edge.
-      final paint = Paint()
-        ..shader = RadialGradient(
-          colors: [
-            color.withValues(alpha: alpha),
-            color.withValues(alpha: alpha),
-            color.withValues(alpha: 0),
-          ],
-          stops: const [0, 0.5, 1],
-        ).createShader(rect);
-      canvas.drawCircle(centre, radius, paint);
+      final tint = color.withValues(alpha: alpha);
+      if (light case final image?) {
+        canvas.drawImageRect(
+          image,
+          Rect.fromLTWH(0, 0, _lightSide.toDouble(), _lightSide.toDouble()),
+          rect,
+          Paint()
+            ..filterQuality = FilterQuality.low
+            ..colorFilter = ColorFilter.mode(tint, BlendMode.modulate),
+        );
+      } else {
+        canvas.drawCircle(
+          centre,
+          radius,
+          Paint()..shader = _fade(tint).createShader(rect),
+        );
+      }
     }
   }
 

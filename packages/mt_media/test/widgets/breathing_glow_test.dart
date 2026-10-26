@@ -125,4 +125,28 @@ void main() {
     playing.value = false;
     await tester.pump(MTBreathingGlow.settle * 2);
   });
+
+  testWidgets('**the guard**: on a computer the embers are drawn from a '
+      'light made once, as a gradient for every pixel of every frame was '
+      'too slow there; a phone keeps the gradient', (tester) async {
+    final playing = ValueNotifier(false);
+    Finder embers() => find.descendant(
+      of: find.byType(MTBreathingGlow),
+      matching: find.byType(CustomPaint),
+    );
+    await tester.pumpWidget(host(playing));
+    expect(
+      embers(),
+      paints
+        ..circle()
+        ..circle(),
+    );
+    await tester.pumpWidget(MTDesktopApp(child: host(playing)));
+    expect(
+      embers(),
+      paints
+        ..drawImageRect()
+        ..drawImageRect(),
+    );
+  });
 }

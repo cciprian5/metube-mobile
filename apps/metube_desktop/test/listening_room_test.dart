@@ -187,8 +187,9 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgets('the room keeps its lines where the window is narrow: the '
-      'cover above them', (tester) async {
+  testWidgets('**the guard**: narrower than a window opens, the lines go '
+      'below the cover and the player bar shrinks its end rather than spill '
+      'past it', (tester) async {
     await open(tester);
     await tester.tap(roomButton);
     await tester.pumpAndSettle();

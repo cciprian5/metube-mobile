@@ -94,8 +94,9 @@ class _ListeningLinesState extends State<ListeningLines> {
     final segments = widget.segments;
     return LayoutBuilder(
       builder: (context, box) => ShaderMask(
-        // Lines fade in at the foot and out at the head, so the text
-        // seems to pass rather than be cut off.
+        // Lines fade in at the foot and out at the head, so the text seems
+        // to pass rather than be cut off. A mask over the text alone: a
+        // fade painted in the room's colour would cover the embers too.
         blendMode: BlendMode.dstIn,
         shaderCallback: (rect) => const LinearGradient(
           begin: Alignment.topCenter,

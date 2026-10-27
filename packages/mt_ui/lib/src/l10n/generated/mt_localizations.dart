@@ -1094,6 +1094,12 @@ abstract class MTLocalizations {
   /// **'Copy with time and link'**
   String get desktopCopyQuote;
 
+  /// No description provided for @desktopDefaultQualityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What each add starts with; you can still change it for each link.'**
+  String get desktopDefaultQualityHint;
+
   /// No description provided for @desktopDesktopSection.
   ///
   /// In en, this message translates to:
@@ -1346,6 +1352,12 @@ abstract class MTLocalizations {
   /// **'Interface at its usual size'**
   String get desktopKeyZoomReset;
 
+  /// No description provided for @desktopLanguageSystemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Follows the language of Windows.'**
+  String get desktopLanguageSystemHint;
+
   /// No description provided for @desktopLastArrival.
   ///
   /// In en, this message translates to:
@@ -1526,6 +1538,12 @@ abstract class MTLocalizations {
   /// **'Saved to this computer'**
   String get desktopNoticeSaved;
 
+  /// No description provided for @desktopNotifyArrivalsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A Windows notice when new clips from the channels you follow reach the server.'**
+  String get desktopNotifyArrivalsHint;
+
   /// No description provided for @desktopOfferCopiedLinks.
   ///
   /// In en, this message translates to:
@@ -1561,6 +1579,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Offline · {percent}%'**
   String desktopOfflineProgress(int percent);
+
+  /// No description provided for @desktopOpenChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Channels'**
+  String get desktopOpenChannels;
 
   /// No description provided for @desktopOpenInExplorer.
   ///
@@ -1795,12 +1819,6 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'The server isn\'t answering, so this is what it held last time.'**
   String get desktopServerPartMissing;
-
-  /// No description provided for @desktopSettingsLater.
-  ///
-  /// In en, this message translates to:
-  /// **'This section comes in a later step of the Windows app.'**
-  String get desktopSettingsLater;
 
   /// No description provided for @desktopSetupAgain.
   ///
@@ -2192,6 +2210,30 @@ abstract class MTLocalizations {
   /// **'Follows playback · click a line to jump'**
   String get desktopTranscriptHint;
 
+  /// No description provided for @desktopTranscriptsDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They are removed from this computer. Only a file you exported, or another device through sync, can bring them back.'**
+  String get desktopTranscriptsDeleteBody;
+
+  /// No description provided for @desktopTranscriptsExportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'All of them in one file a phone can import.'**
+  String get desktopTranscriptsExportHint;
+
+  /// No description provided for @desktopTranscriptsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Ember keeps the words said in each YouTube clip you add, so a search (Ctrl+K) also finds what was said inside your clips, not only their titles. They stay on this computer.'**
+  String get desktopTranscriptsHelp;
+
+  /// No description provided for @desktopTranscriptsImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A transcripts file from a phone. It adds what is missing here and deletes nothing.'**
+  String get desktopTranscriptsImportHint;
+
   /// No description provided for @desktopTrayOnClose.
   ///
   /// In en, this message translates to:
@@ -2215,6 +2257,36 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Quit'**
   String get desktopTrayQuit;
+
+  /// No description provided for @desktopUiSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface size'**
+  String get desktopUiSize;
+
+  /// No description provided for @desktopUiSizeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl+= and Ctrl+− change it from anywhere, and Ctrl+0 returns to 100%.'**
+  String get desktopUiSizeHint;
+
+  /// No description provided for @desktopUiSizeTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Too large for this screen'**
+  String get desktopUiSizeTooLarge;
+
+  /// No description provided for @desktopUpdateInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install and restart'**
+  String get desktopUpdateInstall;
+
+  /// No description provided for @desktopUpdateRestartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ember closes, installs the update and opens again. Your settings and library stay as they are.'**
+  String get desktopUpdateRestartHint;
 
   /// No description provided for @desktopViewCompact.
   ///

@@ -14,6 +14,7 @@ import '../data/sync_runner.dart';
 import '../data/taskbar_data.dart';
 import '../data/lists_data.dart';
 import '../data/saved_searches.dart';
+import '../data/update_data.dart';
 import '../di.dart';
 import '../features/add/add_dialog.dart';
 import '../features/add/add_entry.dart';
@@ -29,7 +30,7 @@ import '../features/notices/notices_wiring.dart';
 import '../features/palette/palette_entry.dart';
 import '../features/reading/reading_room.dart';
 import '../features/settings/backup_actions.dart';
-import '../features/settings/whats_new.dart';
+import '../features/settings/updates_pane.dart';
 import '../features/setup/setup_dialog.dart';
 import '../router.dart';
 import 'content_bar.dart';
@@ -85,7 +86,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     } else if (ref.read(offerWhatsNewProvider)) {
       // Not over the setup: a first start has nothing new to tell.
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) unawaited(maybeShowWhatsNew(context, ref));
+        if (mounted) unawaited(startupNotes(context, ref));
       });
     }
   }

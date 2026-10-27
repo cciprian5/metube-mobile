@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/update_data.dart';
 import '../../identity.dart';
 import 'simple_panes.dart';
 import 'whats_new.dart';

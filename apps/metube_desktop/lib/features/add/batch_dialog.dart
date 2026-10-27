@@ -6,6 +6,7 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart' show mtFormatDuration;
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/choices_data.dart';
 import '../../data/downloads_data.dart';
 import '../../shell/shell_metrics.dart';
 import '../library/artwork.dart';
@@ -45,7 +46,9 @@ class _BatchDialog extends ConsumerStatefulWidget {
 }
 
 class _BatchDialogState extends ConsumerState<_BatchDialog> {
-  AddChoice _choice = const AddChoice();
+  late AddChoice _choice = AddChoice.startingWith(
+    ref.read(defaultQualityProvider),
+  );
 
   /// Unticked, by link; everything else is sent.
   final _left = <String>{};

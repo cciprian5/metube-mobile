@@ -581,6 +581,10 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopCopyQuote => 'Copy with time and link';
 
   @override
+  String get desktopDefaultQualityHint =>
+      'What each add starts with; you can still change it for each link.';
+
+  @override
   String get desktopDesktopSection => 'Desktop';
 
   @override
@@ -734,6 +738,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopKeyZoomReset => 'Interface at its usual size';
 
   @override
+  String get desktopLanguageSystemHint => 'Follows the language of Windows.';
+
+  @override
   String desktopLastArrival(String when) {
     return 'Last arrival $when';
   }
@@ -850,6 +857,10 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopNoticeSaved => 'Saved to this computer';
 
   @override
+  String get desktopNotifyArrivalsHint =>
+      'A Windows notice when new clips from the channels you follow reach the server.';
+
+  @override
   String get desktopOfferCopiedLinks => 'Offer links I copy';
 
   @override
@@ -872,6 +883,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String desktopOfflineProgress(int percent) {
     return 'Offline · $percent%';
   }
+
+  @override
+  String get desktopOpenChannels => 'Open Channels';
 
   @override
   String get desktopOpenInExplorer => 'Open in Explorer';
@@ -1010,10 +1024,6 @@ class MTLocalizationsEn extends MTLocalizations {
   @override
   String get desktopServerPartMissing =>
       'The server isn\'t answering, so this is what it held last time.';
-
-  @override
-  String get desktopSettingsLater =>
-      'This section comes in a later step of the Windows app.';
 
   @override
   String get desktopSetupAgain => 'Set up again';
@@ -1247,6 +1257,22 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopTranscriptHint => 'Follows playback · click a line to jump';
 
   @override
+  String get desktopTranscriptsDeleteBody =>
+      'They are removed from this computer. Only a file you exported, or another device through sync, can bring them back.';
+
+  @override
+  String get desktopTranscriptsExportHint =>
+      'All of them in one file a phone can import.';
+
+  @override
+  String get desktopTranscriptsHelp =>
+      'Ember keeps the words said in each YouTube clip you add, so a search (Ctrl+K) also finds what was said inside your clips, not only their titles. They stay on this computer.';
+
+  @override
+  String get desktopTranscriptsImportHint =>
+      'A transcripts file from a phone. It adds what is missing here and deletes nothing.';
+
+  @override
   String get desktopTrayOnClose =>
       'Keep playing in the tray when the window closes';
 
@@ -1259,6 +1285,23 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopTrayQuit => 'Quit';
+
+  @override
+  String get desktopUiSize => 'Interface size';
+
+  @override
+  String get desktopUiSizeHint =>
+      'Ctrl+= and Ctrl+− change it from anywhere, and Ctrl+0 returns to 100%.';
+
+  @override
+  String get desktopUiSizeTooLarge => 'Too large for this screen';
+
+  @override
+  String get desktopUpdateInstall => 'Install and restart';
+
+  @override
+  String get desktopUpdateRestartHint =>
+      'Ember closes, installs the update and opens again. Your settings and library stay as they are.';
 
   @override
   String get desktopViewCompact => 'Compact';

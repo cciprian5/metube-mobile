@@ -17,7 +17,8 @@ class UpdateRelease {
   final AppVersion version;
   final String tag;
 
-  /// The download URL of the APK matching this app, Lite or Super.
+  /// The download URL of this app's file: the Lite or Super APK on the
+  /// phones, the Windows installer for Ember.
   final String apkUrl;
 
   /// The file size in bytes, or `0` when the server did not declare one.
@@ -35,7 +36,9 @@ class UpdateRelease {
   /// The size in megabytes for display, or `null` when unknown.
   double? get sizeMb => apkSize <= 0 ? null : apkSize / (1024 * 1024);
 
-  /// Reads GitHub's response and picks the asset matching [assetMarker].
+  /// Reads GitHub's response and picks the asset matching [assetMarker]
+  /// whose name ends with [extension] (`.apk` on the phones, `.exe` for
+  /// the Windows installer).
   ///
   /// **Every asset is optional.** The apps share one release stream, so a
   /// release may carry any subset of the Lite APK, the Super APK and the
@@ -46,7 +49,11 @@ class UpdateRelease {
   /// pre-release, a release with no APK for this app, or unexpected JSON.
   /// **An update check never troubles the user with an error** (rule 5: a
   /// new feature does not break what works).
-  static UpdateRelease? tryParse(String body, {required String assetMarker}) {
+  static UpdateRelease? tryParse(
+    String body, {
+    required String assetMarker,
+    String extension = '.apk',
+  }) {
     Object? decoded;
     try {
       decoded = json.decode(body);
@@ -68,6 +75,7 @@ class UpdateRelease {
     final assets = decoded['assets'];
     if (assets is! List) return null;
     final marker = assetMarker.toLowerCase();
+    final ending = extension.toLowerCase();
     for (final asset in assets) {
       if (asset is! Map<String, dynamic>) continue;
       final name = asset['name'];
@@ -75,10 +83,10 @@ class UpdateRelease {
       if (name is! String || url is! String) continue;
       final lower = name.toLowerCase();
       // **Matching on both the marker and the extension**: one release
-      // carries both apps' files, so without the marker a Lite user
+      // carries every app's file, so without the marker a Lite user
       // installs Super; and without the extension a phone could be handed
-      // the Windows installer that shares the release.
-      if (!lower.endsWith('.apk') || !lower.contains(marker)) continue;
+      // the Windows installer that shares the release, or Windows an APK.
+      if (!lower.endsWith(ending) || !lower.contains(marker)) continue;
       final size = asset['size'];
       return UpdateRelease(
         version: version,

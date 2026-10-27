@@ -4,27 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/update_data.dart';
 import '../../di.dart';
 import '../../shell/shell_metrics.dart';
-
-/// The running version. A provider of its own so a test can name one:
-/// package_info_plus reads the executable, which a test does not have.
-final installedVersionProvider = FutureProvider<String>(
-  (ref) async => (await PackageInfo.fromPlatform()).version,
-);
-
-/// Whether "what's new" is looked for at start-up: the real app only, so
-/// a test of the shell never reaches GitHub.
-final offerWhatsNewProvider = Provider<bool>((ref) => false);
-
-/// The releases, read from the same repository the phones read. Windows
-/// files carry `Ember` in their names.
-final updateCheckerProvider = Provider(
-  (ref) => UpdateChecker(fetch: ioHttpGetString, assetMarker: 'ember'),
-);
 
 final whatsNewServiceProvider = Provider(
   (ref) => WhatsNewService(

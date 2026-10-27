@@ -10,7 +10,6 @@ enum EmberSettingsPane {
   cookies,
   downloads,
   folders,
-  playback,
   appearance,
   desktop,
   transcripts,

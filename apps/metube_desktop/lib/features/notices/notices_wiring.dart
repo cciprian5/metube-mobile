@@ -7,6 +7,7 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/choices_data.dart';
 import '../../data/downloads_data.dart';
 import '../../data/folders_data.dart';
 import '../../data/library_data.dart';
@@ -78,8 +79,12 @@ class _NoticesWiringState extends ConsumerState<NoticesWiring> {
   }
 
   Future<void> _onLibrary(List<LibraryItem> items) async {
+    // Checked even when the notice is off, so turning it on later does not
+    // announce everything that came in the meantime.
     final arrived = await ref.read(arrivalsProvider).check(items, mine: _mine);
-    if (arrived.isEmpty || !mounted) return;
+    if (arrived.isEmpty || !mounted || !ref.read(notifyArrivalsProvider)) {
+      return;
+    }
     final l = context.mtl;
     // One notice for the batch, as on the phone.
     String name(LibraryItem item) =>

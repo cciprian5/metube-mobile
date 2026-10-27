@@ -5,10 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/choices_data.dart';
 import '../../data/desktop_habits.dart';
 import '../../data/downloads_data.dart';
 import '../../data/library_data.dart';
+import '../../shell/pill.dart';
 import '../setup/setup_dialog.dart';
+import 'appearance_pane.dart';
 
 /// One setting: its name, a line saying what it does, and its control.
 class SettingLine extends StatelessWidget {
@@ -128,22 +131,52 @@ class ServerPane extends ConsumerWidget {
   }
 }
 
-/// How links are added.
+/// How links are added: the quality an add starts with, and the
+/// transcript first.
 class DownloadsPane extends ConsumerWidget {
   const DownloadsPane({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.mtl;
-    return SwitchLine(
-      title: l.desktopTranscriptFirst,
-      hint: l.transcriptsSearchHelp,
-      value: ref.watch(transcriptsFirstProvider),
-      onChanged: (on) =>
-          unawaited(ref.read(transcriptsFirstProvider.notifier).set(on)),
+    final quality = ref.watch(defaultQualityProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ChoiceGroup(
+          title: l.defaultQuality,
+          hint: l.desktopDefaultQualityHint,
+          children: [
+            for (final (choice, label) in qualityLabels(l))
+              EmberPill(
+                label: label,
+                selected: quality == choice,
+                onTap: () => unawaited(
+                  ref.read(defaultQualityProvider.notifier).set(choice),
+                ),
+              ),
+          ],
+        ),
+        SwitchLine(
+          title: l.desktopTranscriptFirst,
+          hint: l.transcriptsSearchHelp,
+          value: ref.watch(transcriptsFirstProvider),
+          onChanged: (on) =>
+              unawaited(ref.read(transcriptsFirstProvider.notifier).set(on)),
+        ),
+      ],
     );
   }
 }
+
+/// The qualities in the order offered, with their names.
+List<(Quality, String)> qualityLabels(MTLocalizations l) => [
+  (Quality.best, l.qualityBest),
+  (Quality.q1080, l.quality1080),
+  (Quality.q720, l.quality720),
+  (Quality.q480, l.quality480),
+  (Quality.audio, l.qualityAudio),
+];
 
 /// The computer's own habits, all off until chosen: the tray, starting
 /// with Windows, and the play key from any app.

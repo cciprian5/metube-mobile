@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/data/folders_data.dart';
+import 'package:metube_desktop/data/update_data.dart';
 import 'package:metube_desktop/di.dart';
-import 'package:metube_desktop/features/settings/whats_new.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 

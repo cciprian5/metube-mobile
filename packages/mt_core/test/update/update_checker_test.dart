@@ -34,8 +34,15 @@ String release({
       ],
 });
 
-UpdateChecker checkerOf(String body, {String marker = 'super'}) =>
-    UpdateChecker(fetch: (_) async => body, assetMarker: marker);
+UpdateChecker checkerOf(
+  String body, {
+  String marker = 'super',
+  String extension = '.apk',
+}) => UpdateChecker(
+  fetch: (_) async => body,
+  assetMarker: marker,
+  assetExtension: extension,
+);
 
 void main() {
   group('choosing the asset', () {
@@ -162,6 +169,63 @@ void main() {
           reason: marker,
         );
       }
+    });
+  });
+
+  group('Ember, the Windows app', () {
+    UpdateChecker ember(String body) =>
+        checkerOf(body, marker: 'ember', extension: '.exe');
+
+    test('**the guard**: Windows takes its installer from a release of all '
+        'three', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Lite-v2.7.0.apk',
+            'browser_download_url': 'https://x/lite.apk',
+            'size': 21000000,
+          },
+          {
+            'name': 'MeTube-Ember-2.7.0-windows-x64-setup.exe',
+            'browser_download_url': 'https://x/setup.exe',
+            'size': 28000000,
+          },
+          {
+            'name': 'MeTube-Super-v2.7.0.apk',
+            'browser_download_url': 'https://x/super.apk',
+            'size': 24000000,
+          },
+        ],
+      );
+      final r = await ember(body).check(currentVersion: '2.0.0');
+      expect(r!.apkUrl, 'https://x/setup.exe');
+      expect(r.apkSize, 28000000);
+    });
+
+    test('an APK named for Ember is never taken for the installer', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Ember-v2.7.0.apk',
+            'browser_download_url': 'https://x/ember.apk',
+            'size': 1,
+          },
+        ],
+      );
+      expect(await ember(body).check(currentVersion: '2.0.0'), isNull);
+    });
+
+    test('a phones-only release is no update for Windows', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Super-v2.7.0.apk',
+            'browser_download_url': 'https://x/super.apk',
+            'size': 24000000,
+          },
+        ],
+      );
+      expect(await ember(body).check(currentVersion: '2.0.0'), isNull);
     });
   });
 

@@ -36,14 +36,21 @@ class DownloadCancelToken {
 /// handed to the package installer fails with an opaque "corrupt package"
 /// message, and may linger in the cache suggesting an update is ready.
 class ApkDownloader {
-  ApkDownloader({HttpClient Function()? clientFactory})
+  ApkDownloader({HttpClient Function()? clientFactory, this.magic = zipMagic})
     : _clientFactory = clientFactory ?? HttpClient.new;
 
   final HttpClient Function() _clientFactory;
 
+  /// The bytes the file must start with: [zipMagic] for an APK,
+  /// [exeMagic] for the Windows installer.
+  final List<int> magic;
+
   /// The first four bytes of any APK: an APK is a ZIP archive, and its
   /// signature is `PK\x03\x04`.
   static const List<int> zipMagic = [0x50, 0x4B, 0x03, 0x04];
+
+  /// The first two bytes of any Windows program: `MZ`.
+  static const List<int> exeMagic = [0x4D, 0x5A];
 
   /// Returns the final path once the download has completed and been
   /// verified.
@@ -85,12 +92,12 @@ class ApkDownloader {
         }
         // **Signature check on the first chunk**: an HTML error page or a
         // login redirect arrives with status 200 and would be saved as
-        // `.apk` without objection.
-        if (!checkedMagic && chunk.length >= zipMagic.length) {
+        // the installer without objection.
+        if (!checkedMagic && chunk.length >= magic.length) {
           checkedMagic = true;
-          for (var i = 0; i < zipMagic.length; i++) {
-            if (chunk[i] != zipMagic[i]) {
-              throw const UpdateDownloadException('not an apk');
+          for (var i = 0; i < magic.length; i++) {
+            if (chunk[i] != magic[i]) {
+              throw const UpdateDownloadException('not the expected file');
             }
           }
         }

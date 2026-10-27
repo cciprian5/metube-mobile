@@ -602,6 +602,10 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopCopyQuote => 'انسخ مع الوقت والرابط';
 
   @override
+  String get desktopDefaultQualityHint =>
+      'ما تبدأ به كل إضافة، ويبقى تغييره ممكناً لكل رابط.';
+
+  @override
   String get desktopDesktopSection => 'سطح المكتب';
 
   @override
@@ -758,6 +762,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopKeyZoomReset => 'الواجهة بحجمها المعتاد';
 
   @override
+  String get desktopLanguageSystemHint => 'يتبع لغة Windows.';
+
+  @override
   String desktopLastArrival(String when) {
     return 'آخر وصول $when';
   }
@@ -880,6 +887,10 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopNoticeSaved => 'حُفظ على هذا الكمبيوتر';
 
   @override
+  String get desktopNotifyArrivalsHint =>
+      'إشعار من Windows حين تصل إلى السيرفر مقاطع جديدة من القنوات التي تتابعها.';
+
+  @override
   String get desktopOfferCopiedLinks => 'اعرض عليّ الروابط التي أنسخها';
 
   @override
@@ -902,6 +913,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String desktopOfflineProgress(int percent) {
     return 'دون اتصال · $percent٪';
   }
+
+  @override
+  String get desktopOpenChannels => 'افتح القنوات';
 
   @override
   String get desktopOpenInExplorer => 'فتح في مستكشف الملفات';
@@ -1040,10 +1054,6 @@ class MTLocalizationsAr extends MTLocalizations {
   @override
   String get desktopServerPartMissing =>
       'السيرفر لا يستجيب، فهذا ما كان فيه آخر مرة.';
-
-  @override
-  String get desktopSettingsLater =>
-      'يأتي هذا القسم في خطوة لاحقة من نسخة Windows.';
 
   @override
   String get desktopSetupAgain => 'إعداد من جديد';
@@ -1280,6 +1290,21 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopTranscriptHint => 'يتبع التشغيل · انقر سطراً ليُشغَّل منه';
 
   @override
+  String get desktopTranscriptsDeleteBody =>
+      'تُحذف من هذا الكمبيوتر، ولا يعيدها إلا ملف صدّرته أو جهاز آخر عبر المزامنة.';
+
+  @override
+  String get desktopTranscriptsExportHint => 'كلها في ملف واحد يستورده الجوال.';
+
+  @override
+  String get desktopTranscriptsHelp =>
+      'يحفظ Ember ما يُقال في كل مقطع يوتيوب تضيفه، فيجد البحث (Ctrl+K) ما قيل داخل مقاطعك لا عناوينها وحدها. وتبقى النصوص على هذا الكمبيوتر.';
+
+  @override
+  String get desktopTranscriptsImportHint =>
+      'ملف نصوص من الجوال، يضيف ما ينقص هنا ولا يحذف شيئاً.';
+
+  @override
   String get desktopTrayOnClose => 'يبقى التشغيل في الدرج عند إغلاق النافذة';
 
   @override
@@ -1291,6 +1316,23 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopTrayQuit => 'خروج';
+
+  @override
+  String get desktopUiSize => 'حجم الواجهة';
+
+  @override
+  String get desktopUiSizeHint =>
+      'يتغيّر من أي مكان بـCtrl+= وCtrl+−، ويعود إلى 100% بـCtrl+0.';
+
+  @override
+  String get desktopUiSizeTooLarge => 'لا تتسع له هذه الشاشة';
+
+  @override
+  String get desktopUpdateInstall => 'ثبّته وأعد التشغيل';
+
+  @override
+  String get desktopUpdateRestartHint =>
+      'يُغلَق Ember ويثبّت التحديث ثم يُفتح من جديد، وتبقى إعداداتك ومكتبتك كما هي.';
 
   @override
   String get desktopViewCompact => 'مختصر';

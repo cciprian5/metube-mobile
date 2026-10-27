@@ -11,6 +11,7 @@ import 'package:metube_desktop/data/folders_data.dart';
 import 'package:metube_desktop/data/local_copies.dart';
 import 'package:metube_desktop/data/sync_data.dart';
 import 'package:metube_desktop/data/transcripts_data.dart';
+import 'package:metube_desktop/data/update_data.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/features/downloads/downloads_button.dart';
 import 'package:metube_desktop/features/settings/whats_new.dart';
@@ -137,6 +138,10 @@ void main() {
     'cookies',
     'logs',
     'about',
+    'subscriptions',
+    'appearance',
+    'transcripts',
+    'updates',
   ]) {
     testWidgets('settings: $pane', (tester) async {
       await expectNoOverflow(
@@ -149,6 +154,26 @@ void main() {
       );
     });
   }
+
+  testWidgets('settings: updates, with a version found and long notes', (
+    tester,
+  ) async {
+    await expectNoOverflow(
+      tester,
+      () => ShellHarness(
+        library: const [],
+        server: ServerConfig(baseUrl: 'http://nas:8081'),
+        overrides: [
+          installedVersionProvider.overrideWith((ref) async => '0.12.10'),
+          updateProvider.overrideWith(_Found.new),
+        ],
+      ).app(),
+      then: (tester) async {
+        GoRouter.of(tester.element(find.byType(EmberSidebar)))
+            .go('/settings/updates');
+      },
+    );
+  });
 
   testWidgets('the downloads panel, full', (tester) async {
     await expectNoOverflow(
@@ -269,4 +294,22 @@ void main() {
       },
     );
   });
+}
+
+/// A version already found, with notes long enough to wrap.
+class _Found extends UpdateNotifier {
+  @override
+  UpdateState build() => UpdateState(
+    phase: UpdatePhase.available,
+    release: UpdateRelease(
+      version: AppVersion.tryParse('0.13.0')!,
+      tag: 'v0.13.0',
+      apkUrl: 'https://x/setup.exe',
+      apkSize: 28000000,
+      notes:
+          '## Fixed\n- ${'The palette opens at once, and the reading room '
+                  'keeps its place when the window is resized. ' * 3}\n'
+          '## Added\n- Updates install themselves.',
+    ),
+  );
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'data/appearance_data.dart';
 import 'identity.dart';
 import 'features/channels/channel_page.dart';
 import 'features/channels/channels_page.dart';
@@ -17,23 +19,23 @@ import 'shell/ember_shell.dart';
 import 'shell/zoom_frame.dart';
 
 /// The MeTube Ember root: the Wahaj desktop theme in Super's identity,
-/// following Windows between day and night, plus localisation and the
-/// router.
-class EmberApp extends StatefulWidget {
+/// day or night and the language as chosen in Appearance (Windows' own by
+/// default), plus the router.
+class EmberApp extends ConsumerStatefulWidget {
   const EmberApp({super.key, this.router, this.locale});
 
   /// For tests; the app builds its own otherwise.
   final GoRouter? router;
 
-  /// A language chosen for development (`--lab-locale`); null follows
-  /// Windows.
+  /// A language chosen for development (`--lab-locale`), over the one
+  /// chosen in Appearance.
   final Locale? locale;
 
   @override
-  State<EmberApp> createState() => _EmberAppState();
+  ConsumerState<EmberApp> createState() => _EmberAppState();
 }
 
-class _EmberAppState extends State<EmberApp> {
+class _EmberAppState extends ConsumerState<EmberApp> {
   // Built once for the life of the app: a router rebuilt with the widget
   // would reset the navigation and everything living under the shell.
   late final GoRouter _router =
@@ -64,6 +66,8 @@ class _EmberAppState extends State<EmberApp> {
   Widget build(BuildContext context) {
     // Declares this the Windows app, the only place that does, so shared
     // layouts may take their desktop branch here and never on a phone.
+    final look = ref.watch(appearanceProvider);
+    final chosen = look.locale;
     return MTDesktopApp(
       child: MaterialApp.router(
         title: EmberIdentity.displayName,
@@ -81,8 +85,8 @@ class _EmberAppState extends State<EmberApp> {
           Brightness.dark,
           highContrast: true,
         ),
-        themeMode: ThemeMode.system,
-        locale: widget.locale,
+        themeMode: look.theme,
+        locale: widget.locale ?? (chosen == null ? null : Locale(chosen)),
         localizationsDelegates: MTLocalizations.localizationsDelegates,
         supportedLocales: MTLocalizations.supportedLocales,
         localeListResolutionCallback: mtLocaleResolution,

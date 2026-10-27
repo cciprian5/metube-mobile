@@ -13,7 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'data/addresses_data.dart';
+import 'data/appearance_data.dart';
 import 'data/backup_data.dart';
+import 'data/choices_data.dart';
 import 'data/clip_handover.dart';
 import 'data/copied_links.dart';
 import 'data/covers/covers_data.dart';
@@ -22,6 +24,7 @@ import 'data/incoming_links.dart';
 import 'data/lab_server.dart';
 import 'data/setup_data.dart';
 import 'data/transcripts_data.dart';
+import 'data/update_data.dart';
 import 'features/add/add_entry.dart';
 import 'features/library/artwork.dart';
 import 'data/desktop_habits.dart';
@@ -30,7 +33,6 @@ import 'data/sync_runner.dart';
 import 'data/system_media.dart';
 import 'data/taskbar_data.dart';
 import 'data/volume.dart';
-import 'features/settings/whats_new.dart';
 import 'di.dart';
 import 'identity.dart';
 import 'platform/clip_drag.dart';
@@ -44,6 +46,7 @@ import 'platform/player_desktop.dart';
 import 'platform/secret_store_windows.dart';
 import 'platform/prefs_store.dart';
 import 'platform/single_instance.dart';
+import 'platform/updater_windows.dart';
 import 'platform/video_surface_windows.dart';
 import 'platform/window_controls_windows.dart';
 import 'platform/window_frame.dart';
@@ -152,8 +155,9 @@ Future<void> main(List<String> args) async {
   // Windows' places for the clip playing: the media keys and flyout, the
   // icon by the clock, the taskbar button. All read the player and command
   // it; none knows the engine.
+  final appearance = await AppearanceStore(store: store, mutex: mutex).read();
   final labLocale = labLocaleFrom(args);
-  final words = mtLocalizationsFor(labLocale);
+  final words = mtLocalizationsFor(labLocale ?? appearance.locale);
   final tray = EmberTray(
     words: (
       play: words.play,
@@ -233,6 +237,13 @@ Future<void> main(List<String> args) async {
         initialServerSetupProvider.overrideWithValue(setup),
         offerSetupAtStartProvider.overrideWithValue(true),
         offerWhatsNewProvider.overrideWithValue(true),
+        initialAppearanceProvider.overrideWithValue(appearance),
+        initialDefaultQualityProvider.overrideWithValue(
+          Quality.fromWire(await store.getString(DefaultQualityNotifier.key)),
+        ),
+        installerLauncherProvider.overrideWithValue(
+          (path) => runInstaller(path, window.quit),
+        ),
         beforeCloseProvider.overrideWithValue(closing),
         initialCloseToTrayProvider.overrideWithValue(toTray),
         closeToTrayHookProvider.overrideWithValue((on) {

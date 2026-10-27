@@ -21,6 +21,12 @@ class AddChoice {
     this.pullAfter = false,
   });
 
+  /// An add as Downloads' default quality starts it: on sound when that is
+  /// audio.
+  factory AddChoice.startingWith(Quality quality) => quality == Quality.audio
+      ? const AddChoice(audio: true)
+      : AddChoice(quality: quality);
+
   final bool audio;
 
   /// The video quality; numbers are YouTube's alone.

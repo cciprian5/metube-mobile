@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../router.dart';
 import 'about_pane.dart';
 import 'addresses_pane.dart';
+import 'appearance_pane.dart';
 import 'backup_pane.dart';
+import 'channels_pane.dart';
 import 'cookies_pane.dart';
 import 'folders_pane.dart';
 import 'logs_pane.dart';
+import 'pane_values.dart';
 import 'simple_panes.dart';
 import 'sync_pane.dart';
+import 'transcripts_pane.dart';
+import 'updates_pane.dart';
 
 /// Settings in two panes, the tablet's layout: the sections on one side,
 /// the chosen one open on the other. Each section has its own address
@@ -43,7 +49,6 @@ class SettingsPlace extends StatelessWidget {
         const [
           EmberSettingsPane.downloads,
           EmberSettingsPane.folders,
-          EmberSettingsPane.playback,
           EmberSettingsPane.appearance,
           EmberSettingsPane.desktop,
           EmberSettingsPane.transcripts,
@@ -119,12 +124,14 @@ class SettingsPlace extends StatelessWidget {
                         EmberSettingsPane.backup => const BackupPane(),
                         EmberSettingsPane.cookies => const CookiesPane(),
                         EmberSettingsPane.sync => const SyncPane(),
+                        EmberSettingsPane.subscriptions =>
+                          const SubscriptionsPane(),
+                        EmberSettingsPane.appearance => const AppearancePane(),
+                        EmberSettingsPane.transcripts =>
+                          const TranscriptsPane(),
+                        EmberSettingsPane.updates => const UpdatesPane(),
                         EmberSettingsPane.logs => const LogsPane(),
                         EmberSettingsPane.about => const AboutPane(),
-                        _ => Text(
-                          l.desktopSettingsLater,
-                          style: text.bodyMedium?.copyWith(color: p.ink2),
-                        ),
                       },
                     ],
                   ),
@@ -145,7 +152,6 @@ String paneTitle(MTLocalizations l, EmberSettingsPane pane) => switch (pane) {
   EmberSettingsPane.cookies => l.cookies,
   EmberSettingsPane.downloads => l.settingsDownloads,
   EmberSettingsPane.folders => l.desktopFolders,
-  EmberSettingsPane.playback => l.settingsPlayback,
   EmberSettingsPane.appearance => l.appearanceAndLanguage,
   EmberSettingsPane.desktop => l.desktopDesktopSection,
   EmberSettingsPane.transcripts => l.settingsTranscripts,
@@ -163,7 +169,6 @@ MTIconData _paneIcon(EmberSettingsPane pane) => switch (pane) {
   EmberSettingsPane.cookies => MTIcons.cookie,
   EmberSettingsPane.downloads => MTIcons.download,
   EmberSettingsPane.folders => MTIcons.folder,
-  EmberSettingsPane.playback => MTIcons.playback,
   EmberSettingsPane.appearance => MTIcons.appearance,
   EmberSettingsPane.desktop => MTIcons.monitor,
   EmberSettingsPane.transcripts => MTIcons.transcript,
@@ -174,7 +179,7 @@ MTIconData _paneIcon(EmberSettingsPane pane) => switch (pane) {
   EmberSettingsPane.about => MTIcons.info,
 };
 
-class _PaneEntry extends StatelessWidget {
+class _PaneEntry extends ConsumerWidget {
   const _PaneEntry({
     required this.pane,
     required this.selected,
@@ -186,11 +191,12 @@ class _PaneEntry extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
     final ink = selected ? p.accentInk : p.ink2;
     final label = paneTitle(context.mtl, pane);
+    final value = paneValue(context, ref, pane);
     return Padding(
       padding: const EdgeInsets.only(bottom: MTSpace.xxs),
       child: Material(
@@ -209,14 +215,28 @@ class _PaneEntry extends StatelessWidget {
                 MTIcon(_paneIcon(pane), size: MTSpace.lg, color: ink),
                 const SizedBox(width: MTSpace.sm),
                 Expanded(
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: text.bodyMedium?.copyWith(
-                      color: selected ? p.accentInk : p.ink,
-                      fontWeight: selected ? FontWeight.w700 : null,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.bodyMedium?.copyWith(
+                          color: selected ? p.accentInk : p.ink,
+                          fontWeight: selected ? FontWeight.w700 : null,
+                        ),
+                      ),
+                      // The setting as it stands, so a look down the list
+                      // answers most questions without opening anything.
+                      if (value != null)
+                        Text(
+                          value,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.labelSmall?.copyWith(color: p.ink3),
+                        ),
+                    ],
                   ),
                 ),
               ],

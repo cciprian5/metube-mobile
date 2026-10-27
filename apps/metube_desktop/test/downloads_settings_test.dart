@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +14,7 @@ import 'package:metube_desktop/data/local_copies.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/features/downloads/downloads_panel.dart';
 import 'package:metube_desktop/features/settings/folders_pane.dart';
+import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
@@ -53,7 +56,13 @@ void main() {
     final h = ShellHarness(
       library: library,
       server: ServerConfig(baseUrl: 'http://nas:8081'),
-      overrides: [desktopFoldersProvider.overrideWithValue(const _Folders())],
+      overrides: [
+        desktopFoldersProvider.overrideWithValue(const _Folders()),
+        // Logs reads its file; one that is never written is enough here.
+        loggerProvider.overrideWithValue(
+          MTLogger(filePath: '${Directory.systemTemp.path}/ember_none.log'),
+        ),
+      ],
     );
     await tester.pumpWidget(h.app());
     await tester.pumpAndSettle();
@@ -180,11 +189,23 @@ void main() {
       expect(open_.left - change.right, greaterThanOrEqualTo(MTSpace.lg));
     });
 
-    testWidgets('a section not built yet says so instead of an empty page', (
-      tester,
-    ) async {
+    testWidgets('**the guard**: every section opens a page of its own, none '
+        'says it comes later, and Playback is not offered', (tester) async {
       await open(tester, to: '/settings/subscriptions');
-      expect(find.textContaining('later step'), findsOneWidget);
+      // Playback's one choice on the phone works around an Android
+      // decoder; the computer has nothing to put there.
+      expect(
+        EmberSettingsPane.values.map((p) => p.name),
+        isNot(contains('playback')),
+      );
+      expect(find.text('Playback'), findsNothing);
+      for (final pane in EmberSettingsPane.values) {
+        GoRouter.of(tester.element(find.byType(EmberSidebar))).go(pane.route);
+        await tester.pump();
+        await tester.pump();
+        expect(tester.takeException(), isNull, reason: pane.name);
+        expect(find.textContaining('later'), findsNothing, reason: pane.name);
+      }
     });
   });
 

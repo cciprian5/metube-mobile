@@ -6,6 +6,7 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/choices_data.dart';
 import '../../data/downloads_data.dart';
 import '../../data/library_data.dart';
 import '../../data/local_copies.dart';
@@ -33,7 +34,9 @@ class _AddDialog extends ConsumerStatefulWidget {
 
 class _AddDialogState extends ConsumerState<_AddDialog> {
   late final _field = TextEditingController(text: widget.text.trim());
-  AddChoice _choice = const AddChoice();
+  late AddChoice _choice = AddChoice.startingWith(
+    ref.read(defaultQualityProvider),
+  );
   final _removed = <String>{};
 
   /// The links sent, each with its task, so its line follows it.

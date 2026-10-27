@@ -108,6 +108,9 @@ class SidebarItem extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
+  /// The least width the full line (icon, label, count) is laid out in.
+  static const double _fullLine = MTSpace.xxl * 5;
+
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
@@ -126,42 +129,51 @@ class SidebarItem extends StatelessWidget {
             : (d) => onMenu!(d.globalPosition),
         child: SizedBox(
           height: MTDensity.desktop.row,
-          child: narrow
-              ? Center(child: glyph)
-              : Row(
-                  children: [
-                    SizedBox(
-                      width: indent
-                          ? MTSpace.xl
-                          : MTSpace.sm + MTSpace.md * depth,
-                    ),
-                    glyph,
-                    const SizedBox(width: MTSpace.sm),
-                    Expanded(
-                      child: Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: selected ? p.accentInk : p.ink,
-                          fontWeight: selected ? FontWeight.w700 : null,
-                        ),
+          // The icon alone too while the sidebar widens or narrows: its
+          // width passes through sizes the full line does not fit in,
+          // which overflowed for a few frames each time (logged).
+          child: LayoutBuilder(
+            builder: (context, box) => narrow || box.maxWidth < _fullLine
+                ? Center(child: glyph)
+                : Row(
+                    children: [
+                      SizedBox(
+                        width: indent
+                            ? MTSpace.xl
+                            : MTSpace.sm + MTSpace.md * depth,
                       ),
-                    ),
-                    if (trailing case final count?)
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                          start: MTSpace.xs,
-                          end: MTSpace.sm,
-                        ),
+                      glyph,
+                      const SizedBox(width: MTSpace.sm),
+                      Expanded(
                         child: Text(
-                          count,
-                          style: Theme.of(context).textTheme.labelSmall?.tabular
-                              .copyWith(color: p.ink3),
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: selected ? p.accentInk : p.ink,
+                                fontWeight: selected ? FontWeight.w700 : null,
+                              ),
                         ),
                       ),
-                  ],
-                ),
+                      if (trailing case final count?)
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            start: MTSpace.xs,
+                            end: MTSpace.sm,
+                          ),
+                          child: Text(
+                            count,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.tabular
+                                .copyWith(color: p.ink3),
+                          ),
+                        ),
+                    ],
+                  ),
+          ),
         ),
       ),
     );

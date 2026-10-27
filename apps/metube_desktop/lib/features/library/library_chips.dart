@@ -87,7 +87,7 @@ class LibraryChips extends ConsumerWidget {
             ),
         for (final tag in tags)
           EmberPill(
-            label: '#$tag',
+            label: mtName('#$tag'),
             selected: options.tags.contains(tag),
             struck: options.excludedTags.contains(tag),
             onTap: () => view.cycleTag(tag),

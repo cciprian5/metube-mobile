@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/folders_data.dart';
 import '../../di.dart';
+import '../../shell/search_lens.dart';
 
 /// The diagnostic log: searched, cleared, and given away as a file or
 /// copied. **What leaves the app is always the sanitised text**: no links,
@@ -134,7 +135,7 @@ class _LogsPaneState extends ConsumerState<LogsPane> {
           onChanged: (value) => setState(() => _query = value),
           decoration: InputDecoration(
             hintText: l.searchLogs,
-            prefixIcon: MTIcon(MTIcons.search, color: p.ink3),
+            prefixIcon: searchLens(p),
           ),
         ),
         const SizedBox(height: MTSpace.md),

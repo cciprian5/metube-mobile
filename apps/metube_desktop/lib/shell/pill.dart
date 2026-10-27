@@ -10,6 +10,7 @@ class EmberPill extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.icon,
+    this.mirrored = false,
     this.struck = false,
   });
 
@@ -17,6 +18,10 @@ class EmberPill extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
   final MTIconData? icon;
+
+  /// Turned to face the reading direction in Arabic: "back" points right
+  /// there.
+  final bool mirrored;
 
   /// An excluded filter: drawn crossed out rather than chosen.
   final bool struck;
@@ -77,7 +82,12 @@ class EmberPill extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (icon case final glyph?) ...[
-                      MTIcon(glyph, size: MTSpace.md, color: ink),
+                      Transform.flip(
+                        flipX:
+                            mirrored &&
+                            Directionality.of(context) == TextDirection.rtl,
+                        child: MTIcon(glyph, size: MTSpace.md, color: ink),
+                      ),
                       const SizedBox(width: MTSpace.xxs),
                     ],
                     if (box.hasBoundedWidth) Flexible(child: text) else text,

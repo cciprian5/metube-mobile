@@ -7,6 +7,7 @@ import '../icons/mt_icons.dart';
 import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import '../wahaj/mt_shortcut_tooltip.dart';
 import 'mt_desktop_app.dart';
 import 'mt_equalizer.dart';
 import 'mt_polish.dart';
@@ -184,27 +185,38 @@ class _CoverButton extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Tooltip(
-    message: tooltip,
-    // A bare ink well is only tappable: the reader is told it is a button.
-    child: Semantics(
-      button: true,
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const CircleBorder(),
-        child: Padding(
-          padding: const EdgeInsets.all(MTSpace.xs),
-          // The favourite heart fades and expands rather than jumping (polish
-          // 2026-09-04).
-          child: MTIconSwap(
-            icon: icon,
-            wahaj: wahaj,
-            size: 17,
-            color: color,
-            // Icons over a thumbnail of unknown colour: a light shadow keeps
-            // them legible over both pale and dark covers.
-            shadows: const [Shadow(color: Color(0x99000000), blurRadius: 5)],
-          ),
+  Widget build(BuildContext context) {
+    // On the computer, the app's own tooltip: Material's breaks Windows'
+    // accessibility tree when two meet in one node (see
+    // MTShortcutTooltip). It says nothing to a reader, so the button is
+    // named here instead.
+    if (MTDesktopApp.isDesktop(context)) {
+      return MTShortcutTooltip(
+        message: tooltip,
+        child: Semantics(label: tooltip, child: _button()),
+      );
+    }
+    return Tooltip(message: tooltip, child: _button());
+  }
+
+  // A bare ink well is only tappable: the reader is told it is a button.
+  Widget _button() => Semantics(
+    button: true,
+    child: InkWell(
+      onTap: onTap,
+      customBorder: const CircleBorder(),
+      child: Padding(
+        padding: const EdgeInsets.all(MTSpace.xs),
+        // The favourite heart fades and expands rather than jumping (polish
+        // 2026-09-04).
+        child: MTIconSwap(
+          icon: icon,
+          wahaj: wahaj,
+          size: 17,
+          color: color,
+          // Icons over a thumbnail of unknown colour: a light shadow keeps
+          // them legible over both pale and dark covers.
+          shadows: const [Shadow(color: Color(0x99000000), blurRadius: 5)],
         ),
       ),
     ),

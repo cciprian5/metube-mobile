@@ -47,6 +47,13 @@ class LibraryPage extends ConsumerWidget {
       _ => l.navLibrary,
     };
     final offline = all.where((i) => i.isOffline).length;
+    // What this place holds before any chip: its own count, and the
+    // message when it holds nothing yet.
+    final held = switch (scope) {
+      LibraryScope.favorites => all.where((i) => i.favorite).length,
+      LibraryScope.offline => offline,
+      _ => all.length,
+    };
 
     return SelectionFrame(
       items: visible.valueOrNull ?? const [],
@@ -66,8 +73,9 @@ class LibraryPage extends ConsumerWidget {
                   counts: all.isEmpty
                       ? null
                       : mtMetaLine([
-                          l.transcriptsClips(all.length),
-                          if (offline > 0) l.desktopOfflineCount(offline),
+                          l.transcriptsClips(held),
+                          if (scope == LibraryScope.all && offline > 0)
+                            l.desktopOfflineCount(offline),
                         ]),
                   mode: options.mode,
                   onMode: (m) => unawaited(
@@ -85,7 +93,7 @@ class LibraryPage extends ConsumerWidget {
               ],
             ),
           ),
-          ..._content(context, ref, visible, all, configured),
+          ..._content(context, ref, visible, all, configured, held),
         ],
       ),
     );
@@ -97,6 +105,7 @@ class LibraryPage extends ConsumerWidget {
     AsyncValue<List<LibraryItem>> visible,
     List<LibraryItem> all,
     bool configured,
+    int held,
   ) {
     final l = context.mtl;
     // A plain box that scrolls with the page, not a fill: a filling sliver
@@ -143,6 +152,17 @@ class LibraryPage extends ConsumerWidget {
               ? MTEmptyFrame(
                   title: l.noVideosFound,
                   message: l.desktopEmptyLibraryMessage,
+                )
+              // Nothing here yet is not a filter that hides too much.
+              : held == 0 && scope == LibraryScope.favorites
+              ? MTEmptyFrame(
+                  title: l.desktopNoFavoritesTitle,
+                  message: l.desktopNoFavoritesMessage,
+                )
+              : held == 0 && scope == LibraryScope.offline
+              ? MTEmptyFrame(
+                  title: l.desktopNoOfflineTitle,
+                  message: l.desktopNoOfflineMessage,
                 )
               : MTEmptyFrame(
                   title: l.desktopNoMatchTitle,

@@ -15,6 +15,7 @@ import '../../router.dart';
 import '../../shell/focus_regions.dart';
 import 'palette_model.dart';
 import 'palette_rows.dart';
+import '../../shell/search_lens.dart';
 
 /// **The command palette** (Ctrl+K): it drops from the top of the window
 /// and searches titles and what was said inside clips together, and runs
@@ -223,7 +224,7 @@ class _PaletteState extends ConsumerState<_Palette> {
                       onChanged: (_) => setState(() => _selected = 0),
                       decoration: InputDecoration(
                         hintText: l.desktopPaletteHint,
-                        prefixIcon: MTIcon(MTIcons.search, color: p.ink3),
+                        prefixIcon: searchLens(p),
                       ),
                     ),
                   ),

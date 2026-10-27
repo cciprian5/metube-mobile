@@ -76,7 +76,7 @@ class MTMediaRow extends StatelessWidget {
     if (columns.added) ?added,
     // The tags the row shows beside the source.
     if (columns.added)
-      for (final tag in tags.take(3)) '#$tag',
+      for (final tag in tags.take(3)) mtName('#$tag'),
     ?locationLabel,
     if (audio) l10n.filterAudio,
     if (favorite) l10n.favorites,
@@ -279,7 +279,7 @@ class _Tag extends StatelessWidget {
         borderRadius: BorderRadius.circular(MTRadius.thumb),
       ),
       child: Text(
-        '#$tag',
+        mtName('#$tag'),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: Theme.of(context).textTheme.labelSmall!.copyWith(color: p.ink2),

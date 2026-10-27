@@ -69,11 +69,24 @@ class TranscriptsPane extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: MTSpace.xs),
-        for (final hint in [
-          l.desktopTranscriptsExportHint,
-          l.desktopTranscriptsImportHint,
+        // Each note opens with its button's name: two loose lines under
+        // three buttons left which said what to guess.
+        for (final (name, hint) in [
+          (l.transcriptsExport, l.desktopTranscriptsExportHint),
+          (l.transcriptsImport, l.desktopTranscriptsImportHint),
         ])
-          Text(hint, style: text.labelSmall?.copyWith(color: p.ink3)),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: name,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                TextSpan(text: ' · $hint'),
+              ],
+            ),
+            style: text.labelSmall?.copyWith(color: p.ink3),
+          ),
       ],
     );
   }

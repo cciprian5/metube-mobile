@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../shell/search_lens.dart';
+
 /// The reading room's find bar (Ctrl+F): the words, how many places hold
 /// them and which one is chosen, and the way between them. Enter and ↓
 /// go to the next, Shift+Enter and ↑ to the one before, Esc closes.
@@ -89,7 +91,7 @@ class ReadingFindBar extends StatelessWidget {
                   onChanged: onChanged,
                   decoration: InputDecoration(
                     hintText: l.desktopReadingFind,
-                    prefixIcon: MTIcon(MTIcons.search, color: p.ink3),
+                    prefixIcon: searchLens(p),
                   ),
                 ),
               ),

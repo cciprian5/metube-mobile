@@ -73,7 +73,7 @@ void main() {
     return h;
   }
 
-  final roomButton = find.byTooltip('Listening room');
+  final roomButton = byLabel('Listening room');
 
   /// [line] in the room, not in the side panel's transcript beneath it.
   Finder said(String line) => find.descendant(

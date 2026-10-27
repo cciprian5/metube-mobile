@@ -72,7 +72,7 @@ class _ManageTags extends ConsumerWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                '# $tag',
+                                mtName('# $tag'),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: text.bodySmall?.copyWith(color: p.ink),

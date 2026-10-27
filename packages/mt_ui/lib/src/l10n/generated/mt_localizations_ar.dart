@@ -867,10 +867,23 @@ class MTLocalizationsAr extends MTLocalizations {
       'سجل سيرفرك لا يذكر قناة كل مقطع، فلا يمكن عرض مقاطع القناة هنا.';
 
   @override
+  String get desktopNoFavoritesMessage => 'ضع ♥ على مقطع فيبقى لك هنا.';
+
+  @override
+  String get desktopNoFavoritesTitle => 'لا مفضلة بعد';
+
+  @override
   String get desktopNoMatchMessage => 'ألغِ أحد الاختيارات لترى أكثر.';
 
   @override
   String get desktopNoMatchTitle => 'لا شيء يطابق هذه التصفية';
+
+  @override
+  String get desktopNoOfflineMessage =>
+      'اختر «إتاحة دون اتصال» من قائمة مقطع، فيعمل هنا دون السيرفر.';
+
+  @override
+  String get desktopNoOfflineTitle => 'لا شيء محفوظ على هذا الكمبيوتر بعد';
 
   @override
   String get desktopNoServerMessage =>

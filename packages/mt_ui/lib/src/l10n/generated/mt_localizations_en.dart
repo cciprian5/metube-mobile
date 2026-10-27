@@ -836,10 +836,24 @@ class MTLocalizationsEn extends MTLocalizations {
       'Your server\'s history doesn\'t say which channel each clip came from, so its clips can\'t be shown here.';
 
   @override
+  String get desktopNoFavoritesMessage =>
+      'Mark a clip with ♥ and it waits for you here.';
+
+  @override
+  String get desktopNoFavoritesTitle => 'No favorites yet';
+
+  @override
   String get desktopNoMatchMessage => 'Clear a filter to see more.';
 
   @override
   String get desktopNoMatchTitle => 'Nothing matches these filters';
+
+  @override
+  String get desktopNoOfflineMessage =>
+      'Choose “Make available offline” from a clip\'s menu, and it plays here without the server.';
+
+  @override
+  String get desktopNoOfflineTitle => 'Nothing kept on this computer yet';
 
   @override
   String get desktopNoServerMessage =>
@@ -1265,7 +1279,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopSyncHint =>
-      'Mirrors tags, favourites, lists, positions, saved searches and transcripts with your phone and other computers, through a folder a sync app keeps in step (Syncthing at home, or a cloud folder). Nothing goes to any service from here.';
+      'Mirrors tags, favorites, lists, positions, saved searches and transcripts with your phone and other computers, through a folder a sync app keeps in step (Syncthing at home, or a cloud folder). Nothing goes to any service from here.';
 
   @override
   String desktopSyncLast(String ago) {
@@ -2565,7 +2579,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get syncPhoneHint =>
-      'Mirrors tags, favourites, lists, resume positions and transcripts with MeTube Ember on your computer, through a folder a sync app keeps in step. Nothing goes to any service from here.';
+      'Mirrors tags, favorites, lists, resume positions and transcripts with MeTube Ember on your computer, through a folder a sync app keeps in step. Nothing goes to any service from here.';
 
   @override
   String get syncPhoneNoOthers =>

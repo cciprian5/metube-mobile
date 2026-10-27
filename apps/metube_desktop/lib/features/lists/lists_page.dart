@@ -230,7 +230,7 @@ class ListsPage extends ConsumerWidget {
               children: [
                 for (final tag in (tags.keys.toList()..sort()))
                   EmberPill(
-                    label: '# $tag  ${tags[tag]}',
+                    label: '${mtName('# $tag')}  ${tags[tag]}',
                     selected: false,
                     onTap: () {
                       ref.read(libraryViewProvider.notifier).showTag(tag);

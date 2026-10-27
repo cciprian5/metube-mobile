@@ -356,6 +356,7 @@ class _Header extends StatelessWidget {
               EmberPill(
                 label: l.desktopReadingBack,
                 icon: MTIcons.back,
+                mirrored: true,
                 selected: false,
                 onTap: onBack,
               ),

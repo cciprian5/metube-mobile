@@ -12,6 +12,7 @@ import 'package:metube_desktop/data/volume.dart';
 import 'package:metube_desktop/features/add/add_dialog.dart';
 import 'package:metube_desktop/features/reading/reading_find.dart';
 import 'package:metube_desktop/router.dart';
+import 'package:metube_desktop/shell/player_bar.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
 import 'package:metube_desktop/shell/ember_slider.dart';
 import 'package:metube_desktop/shell/server_line.dart';
@@ -81,7 +82,12 @@ void main() {
     tester,
   ) async {
     final h = await open(tester);
-    await tester.tap(byLabel('Add to favorites'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(EmberPlayerBar),
+        matching: byLabel('Add to favorites'),
+      ),
+    );
     await tester.pumpAndSettle();
     final tags = await containerOf(tester).read(tagsIndexProvider).tagsOf(_url);
     expect(tags, contains(MTConstants.favoritesSystemTag));
@@ -194,6 +200,17 @@ void main() {
     await open(tester, window: const Size(960, 600), playing: false);
     go(tester, '/settings/about');
     await tester.pumpAndSettle();
-    expect(find.text('About').hitTestable(), findsWidgets);
+    // The page's title and the list's entry.
+    expect(find.text('About').hitTestable(), findsNWidgets(2));
+  });
+
+  testWidgets('**the guard**: and again when the window takes another size, '
+      'as it does a moment after it opens', (tester) async {
+    await open(tester, window: const Size(1440, 1000), playing: false);
+    go(tester, '/settings/about');
+    await tester.pumpAndSettle();
+    ShellHarness.useWindow(tester, const Size(960, 600));
+    await tester.pumpAndSettle();
+    expect(find.text('About').hitTestable(), findsNWidgets(2));
   });
 }

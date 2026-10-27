@@ -131,10 +131,13 @@ class _Step extends StatelessWidget {
   Widget build(BuildContext context) {
     final pill = EmberPill(label: label, selected: selected, onTap: onTap);
     if (fits || selected) return pill;
-    return Tooltip(
-      message: context.mtl.desktopUiSizeTooLarge,
+    final why = context.mtl.desktopUiSizeTooLarge;
+    return MTShortcutTooltip(
+      message: why,
+      // The card is silent to a screen reader; the reason is said here.
       child: Semantics(
         enabled: false,
+        hint: why,
         child: IgnorePointer(child: Opacity(opacity: 0.4, child: pill)),
       ),
     );

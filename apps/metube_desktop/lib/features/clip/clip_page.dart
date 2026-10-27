@@ -249,10 +249,10 @@ class _ClipLayout extends ConsumerWidget {
                 const SizedBox(height: MTSpace.lg),
                 Text(
                   item.title,
-                  textDirection: mtTextDirectionOf(
-                    item.title,
-                    Directionality.of(context),
-                  ),
+                  // Its own direction, the interface's side: the line is
+                  // as wide as the stage.
+                  textDirection: mtForeignLine(context, item.title).$1,
+                  textAlign: mtForeignLine(context, item.title).$2,
                   style: text.titleLarge?.copyWith(color: p.ink),
                 ),
                 const SizedBox(height: MTSpace.xxs),

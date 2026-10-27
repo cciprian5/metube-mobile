@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/features/library/library_state.dart';
+import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/pill.dart';
+import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -127,13 +130,13 @@ void main() {
     tester,
   ) async {
     await open(tester, library: _library, server: server);
-    await tester.tap(find.text('#homelab'));
+    await tester.tap(find.text(mtName('#homelab')));
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaGridCard), findsOneWidget);
-    await tester.tap(find.text('#homelab'));
+    await tester.tap(find.text(mtName('#homelab')));
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaGridCard), findsNWidgets(3));
-    await tester.tap(find.text('#homelab'));
+    await tester.tap(find.text(mtName('#homelab')));
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaGridCard), findsNWidgets(4));
   });
@@ -179,6 +182,31 @@ void main() {
     await tester.pumpAndSettle();
     expect(h.player.calls, ['loop false', 'playItems']);
     expect(find.byType(MTMediaGridCard), findsNWidgets(4));
+  });
+
+  testWidgets('**the guard**: favourites and offline count their own, and '
+      'an empty one says what fills it, not that a filter hides it', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      library: [
+        for (final i in _library)
+          if (i.localPath == null) i,
+      ],
+      server: server,
+    );
+    void go(String to) =>
+        GoRouter.of(tester.element(find.byType(EmberSidebar))).go(to);
+    go(EmberRoutes.favorites);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('1 clip'), findsOneWidget);
+
+    go(EmberRoutes.offline);
+    await tester.pumpAndSettle();
+    expect(find.text('Nothing kept on this computer yet'), findsOneWidget);
+    expect(find.text('Nothing matches these filters'), findsNothing);
+    expect(find.textContaining('No clips yet'), findsOneWidget);
   });
 
   testWidgets('filters that hide everything offer to clear them', (

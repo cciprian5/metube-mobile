@@ -11,6 +11,7 @@ import 'backup_pane.dart';
 import 'channels_pane.dart';
 import 'cookies_pane.dart';
 import 'folders_pane.dart';
+import 'keep_in_view.dart';
 import 'logs_pane.dart';
 import 'pane_values.dart';
 import 'simple_panes.dart';
@@ -70,34 +71,39 @@ class SettingsPlace extends StatelessWidget {
       children: [
         SizedBox(
           width: listWidth,
-          child: ListView(
+          // Built whole, not lazily: a list of under twenty entries costs
+          // nothing, and an entry below the fold that was never built could
+          // never be brought into view.
+          child: KeepChosenInView(
+            chosen: pane,
+            isChosen: (w) => w is _PaneEntry && w.selected,
             padding: const EdgeInsets.all(MTSpace.md),
-            children: [
-              for (final (title, panes) in groups) ...[
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(
-                    MTSpace.sm,
-                    MTSpace.md,
-                    MTSpace.sm,
-                    MTSpace.xs,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final (title, panes) in groups) ...[
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                      MTSpace.sm,
+                      MTSpace.md,
+                      MTSpace.sm,
+                      MTSpace.xs,
+                    ),
+                    child: Text(
+                      title,
+                      style: text.labelMedium?.copyWith(color: p.ink3),
+                    ),
                   ),
-                  child: Text(
-                    title,
-                    style: text.labelMedium?.copyWith(color: p.ink3),
-                  ),
-                ),
-                for (final entry in panes)
-                  _Reveal(
-                    key: ValueKey(entry),
-                    when: entry == pane,
-                    child: _PaneEntry(
+                  for (final entry in panes)
+                    _PaneEntry(
+                      key: ValueKey(entry),
                       pane: entry,
                       selected: entry == pane,
                       onTap: () => context.go(entry.route),
                     ),
-                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
         VerticalDivider(width: 1, color: p.line),
@@ -185,6 +191,7 @@ MTIconData _paneIcon(EmberSettingsPane pane) => switch (pane) {
 
 class _PaneEntry extends ConsumerWidget {
   const _PaneEntry({
+    super.key,
     required this.pane,
     required this.selected,
     required this.onTap,
@@ -250,45 +257,4 @@ class _PaneEntry extends ConsumerWidget {
       ),
     );
   }
-}
-
-/// Brings the section being shown into the list's view: opened from a
-/// notice or a short window, it may sit below the list's fold.
-class _Reveal extends StatefulWidget {
-  const _Reveal({super.key, required this.when, required this.child});
-
-  final bool when;
-  final Widget child;
-
-  @override
-  State<_Reveal> createState() => _RevealState();
-}
-
-class _RevealState extends State<_Reveal> {
-  @override
-  void initState() {
-    super.initState();
-    _reveal();
-  }
-
-  @override
-  void didUpdateWidget(_Reveal old) {
-    super.didUpdateWidget(old);
-    if (!old.when) _reveal();
-  }
-
-  void _reveal() {
-    if (!widget.when) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        Scrollable.ensureVisible(
-          context,
-          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-        );
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => widget.child;
 }

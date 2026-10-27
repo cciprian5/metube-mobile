@@ -1502,6 +1502,18 @@ abstract class MTLocalizations {
   /// **'Your server\'s history doesn\'t say which channel each clip came from, so its clips can\'t be shown here.'**
   String get desktopNoChannelNames;
 
+  /// No description provided for @desktopNoFavoritesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark a clip with ♥ and it waits for you here.'**
+  String get desktopNoFavoritesMessage;
+
+  /// No description provided for @desktopNoFavoritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet'**
+  String get desktopNoFavoritesTitle;
+
   /// No description provided for @desktopNoMatchMessage.
   ///
   /// In en, this message translates to:
@@ -1513,6 +1525,18 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Nothing matches these filters'**
   String get desktopNoMatchTitle;
+
+  /// No description provided for @desktopNoOfflineMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose “Make available offline” from a clip\'s menu, and it plays here without the server.'**
+  String get desktopNoOfflineMessage;
+
+  /// No description provided for @desktopNoOfflineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing kept on this computer yet'**
+  String get desktopNoOfflineTitle;
 
   /// No description provided for @desktopNoServerMessage.
   ///
@@ -2207,7 +2231,7 @@ abstract class MTLocalizations {
   /// No description provided for @desktopSyncHint.
   ///
   /// In en, this message translates to:
-  /// **'Mirrors tags, favourites, lists, positions, saved searches and transcripts with your phone and other computers, through a folder a sync app keeps in step (Syncthing at home, or a cloud folder). Nothing goes to any service from here.'**
+  /// **'Mirrors tags, favorites, lists, positions, saved searches and transcripts with your phone and other computers, through a folder a sync app keeps in step (Syncthing at home, or a cloud folder). Nothing goes to any service from here.'**
   String get desktopSyncHint;
 
   /// No description provided for @desktopSyncLast.
@@ -4415,7 +4439,7 @@ abstract class MTLocalizations {
   /// No description provided for @syncPhoneHint.
   ///
   /// In en, this message translates to:
-  /// **'Mirrors tags, favourites, lists, resume positions and transcripts with MeTube Ember on your computer, through a folder a sync app keeps in step. Nothing goes to any service from here.'**
+  /// **'Mirrors tags, favorites, lists, resume positions and transcripts with MeTube Ember on your computer, through a folder a sync app keeps in step. Nothing goes to any service from here.'**
   String get syncPhoneHint;
 
   /// No description provided for @syncPhoneNoOthers.

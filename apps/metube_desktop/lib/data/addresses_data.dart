@@ -36,7 +36,9 @@ class AddressesStore {
     final urls = saved is List ? saved.whereType<String>().toList() : seed;
     final active = await store.getString(_activeKey);
     return ServerAddresses(
-      urls: urls.isEmpty ? seed : urls,
+      // Each once: a list saved by an older version held one address twice,
+      // and both rows said "In use".
+      urls: {...(urls.isEmpty ? seed : urls)}.toList(),
       active: active ?? seed.firstOrNull,
     );
   }
@@ -65,10 +67,7 @@ class AddressesNotifier extends Notifier<ServerAddresses> {
     final saved = ref.read(initialAddressesProvider);
     final setUp = ref.read(serverSetupProvider)?.baseUrl;
     return ServerAddresses(
-      urls: [
-        ...saved.urls,
-        if (setUp != null && !saved.urls.contains(setUp)) setUp,
-      ],
+      urls: {...saved.urls, ?setUp}.toList(),
       active: saved.active ?? setUp,
     );
   }

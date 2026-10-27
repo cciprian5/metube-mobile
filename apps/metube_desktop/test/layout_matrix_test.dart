@@ -495,9 +495,9 @@ void main() {
   Future<void> listeningRoom(WidgetTester tester, ShellHarness h) async {
     h.player.showPlaying([_queue[1], _queue[0]], playing: false);
     await tester.pumpAndSettle();
-    final english = find.byTooltip('Listening room');
+    final english = byLabel('Listening room');
     await tester.tap(
-      english.evaluate().isEmpty ? find.byTooltip('غرفة الاستماع') : english,
+      english.evaluate().isEmpty ? byLabel('غرفة الاستماع') : english,
     );
   }
 

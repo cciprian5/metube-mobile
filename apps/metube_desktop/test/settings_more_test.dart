@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/data/folders_data.dart';
 import 'package:metube_desktop/data/update_data.dart';
 import 'package:metube_desktop/di.dart';
+import 'package:metube_desktop/features/settings/about_pane.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
 
@@ -183,7 +184,14 @@ void main() {
       tester,
     ) async {
       await open(tester, to: '/settings/about');
-      expect(find.text('Version 0.2.0'), findsOneWidget);
+      // On the page; the list's Updates entry says it too.
+      expect(
+        find.descendant(
+          of: find.byType(AboutPane),
+          matching: find.text('Version 0.2.0'),
+        ),
+        findsOneWidget,
+      );
       await tester.tap(find.text("What's new in this version"));
       await tester.pumpAndSettle();
       expect(find.text("What's new in 0.2.0"), findsOneWidget);

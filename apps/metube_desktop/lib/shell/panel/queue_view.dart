@@ -96,7 +96,7 @@ class _QueueLine extends StatelessWidget {
                 index: index,
                 child: MouseRegion(
                   cursor: SystemMouseCursors.grab,
-                  child: Tooltip(
+                  child: MTShortcutTooltip(
                     message: l.desktopDragToReorder,
                     child: SizedBox(
                       width: MTSpace.xxl,

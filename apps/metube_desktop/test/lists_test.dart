@@ -107,7 +107,7 @@ void main() {
     expect(find.text('Evening'), findsOneWidget);
     expect(find.textContaining('2 items'), findsOneWidget);
     // Favourites are a tag underneath, but never offered as one.
-    expect(find.text('# homelab  2'), findsOneWidget);
+    expect(find.text('${mtName('# homelab')}  2'), findsOneWidget);
     expect(find.textContaining(MTConstants.favoritesSystemTag), findsNothing);
   });
 
@@ -131,7 +131,7 @@ void main() {
 
   testWidgets('a tag opens the library filtered by it', (tester) async {
     await open(tester);
-    await tester.tap(find.text('# homelab  2'));
+    await tester.tap(find.text('${mtName('# homelab')}  2'));
     await tester.pumpAndSettle();
     final container = ProviderScope.containerOf(
       tester.element(find.byType(EmberSidebar)),

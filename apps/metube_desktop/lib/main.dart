@@ -22,6 +22,7 @@ import 'data/copied_links.dart';
 import 'data/covers/covers_data.dart';
 import 'data/folders_data.dart';
 import 'data/incoming_links.dart';
+import 'data/lab_hover.dart';
 import 'data/lab_server.dart';
 import 'data/setup_data.dart';
 import 'data/transcripts_data.dart';
@@ -294,4 +295,5 @@ Future<void> main(List<String> args) async {
       ),
     ),
   );
+  runLabHover(labHoverFrom(args));
 }

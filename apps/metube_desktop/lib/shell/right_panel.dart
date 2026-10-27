@@ -76,15 +76,23 @@ class EmberRightPanel extends StatelessWidget {
               ),
             )
           else ...[
-            Text(
-              current.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textDirection: mtTextDirectionOf(
-                current.title,
-                Directionality.of(context),
-              ),
-              style: Theme.of(context).textTheme.titleSmall,
+            Builder(
+              builder: (context) {
+                // Its own direction, the interface's side: a Latin title
+                // in the Arabic panel sat on the far side otherwise.
+                final (direction, align) = mtForeignLine(
+                  context,
+                  current.title,
+                );
+                return Text(
+                  current.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textDirection: direction,
+                  textAlign: align,
+                  style: Theme.of(context).textTheme.titleSmall,
+                );
+              },
             ),
             const SizedBox(height: MTSpace.md),
             Expanded(

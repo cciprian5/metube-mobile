@@ -60,12 +60,12 @@ class SidebarServerLine extends ConsumerWidget {
                       dot,
                       const SizedBox(width: MTSpace.sm),
                       Expanded(
+                        // Read left to right, but set beside the dot in
+                        // either language.
                         child: Text(
-                          host,
+                          mtLtrRun(host),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          textDirection: TextDirection.ltr,
-                          textAlign: TextAlign.start,
                           style: text.labelSmall?.copyWith(color: p.ink2),
                         ),
                       ),

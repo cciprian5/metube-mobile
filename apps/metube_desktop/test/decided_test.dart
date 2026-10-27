@@ -157,7 +157,7 @@ void main() {
     );
     final line = find.byType(SidebarServerLine);
     expect(
-      find.descendant(of: line, matching: find.text('nas:8081')),
+      find.descendant(of: line, matching: find.textContaining('nas:8081')),
       findsOneWidget,
     );
     await tester.tap(line);

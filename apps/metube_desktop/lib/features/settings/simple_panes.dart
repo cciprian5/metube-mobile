@@ -88,7 +88,7 @@ class SwitchLine extends StatelessWidget {
     child: SettingLine(
       title: title,
       hint: hint,
-      trailing: Switch(value: value, onChanged: onChanged),
+      trailing: MTSwitch(value: value, onChanged: onChanged),
     ),
   );
 }

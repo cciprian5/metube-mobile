@@ -7,6 +7,7 @@ import 'now_playing.dart';
 import 'player_controls.dart';
 import 'seek_bar.dart';
 import 'shell_metrics.dart';
+import 'volume_slider.dart';
 
 /// The player bar, fixed at the foot of the window and never hidden, so
 /// sound and its controls survive every move around the app. With nothing
@@ -217,6 +218,8 @@ class _Extras extends StatelessWidget {
             label: l.queueLabel,
             onTap: onShowQueue,
           ),
+          const SizedBox(width: MTSpace.xs),
+          const EmberVolumeSlider(),
         ],
       ),
     );

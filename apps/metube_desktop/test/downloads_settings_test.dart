@@ -173,7 +173,7 @@ void main() {
       expect(find.byType(FoldersPane), findsOneWidget);
       expect(find.text(r'C:\Users\me\Videos\MeTube\Offline'), findsOneWidget);
       expect(find.text(r'C:\Users\me\Downloads\MeTube'), findsOneWidget);
-      await tester.tap(find.byType(Switch).first);
+      await tester.tap(find.byType(MTSwitch).first);
       await tester.pumpAndSettle();
       // The download folder now reads "ask me every time", beside the
       // switch's own name.

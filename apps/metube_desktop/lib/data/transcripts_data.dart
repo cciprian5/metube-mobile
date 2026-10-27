@@ -93,6 +93,21 @@ final transcriptForProvider = FutureProvider.family<Transcript?, TranscriptKey>(
   },
 );
 
+/// Every language this computer keeps for one clip, for the reading
+/// room's choice between them.
+final transcriptLanguagesProvider =
+    FutureProvider.family<List<Transcript>, String>((ref, canonicalUrl) async {
+      final store = ref.watch(transcriptStoreProvider);
+      if (store == null) return const [];
+      return store.readFor(canonicalUrl);
+    });
+
+/// The language the reader chose for a clip's transcript; null takes the
+/// reader's own, then English.
+final readingLanguageProvider = StateProvider.family<String?, String>(
+  (ref, canonicalUrl) => null,
+);
+
 /// The reader's language first, then English, which most clips have.
 List<String> _readerLanguages() {
   final own = PlatformDispatcher.instance.locale.languageCode;

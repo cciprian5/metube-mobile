@@ -12,15 +12,17 @@ import '../../shell/shell_metrics.dart';
 /// field for a new one. Each change is written at once, as on the phone,
 /// so closing the dialog any way keeps it.
 Future<void> showTagsDialog(BuildContext context, String canonicalUrl) =>
-    showDialog<void>(
-      context: context,
-      builder: (_) => _TagsDialog(canonicalUrl),
-    );
+    showTagsDialogFor(context, [canonicalUrl]);
+
+/// The same for several clips at once: a tag some of them carry shows a
+/// dash, and ticking it gives it to them all.
+Future<void> showTagsDialogFor(BuildContext context, List<String> urls) =>
+    showDialog<void>(context: context, builder: (_) => _TagsDialog(urls));
 
 class _TagsDialog extends ConsumerStatefulWidget {
-  const _TagsDialog(this.canonicalUrl);
+  const _TagsDialog(this.urls);
 
-  final String canonicalUrl;
+  final List<String> urls;
 
   @override
   ConsumerState<_TagsDialog> createState() => _TagsDialogState();
@@ -29,7 +31,9 @@ class _TagsDialog extends ConsumerStatefulWidget {
 class _TagsDialogState extends ConsumerState<_TagsDialog> {
   final _field = TextEditingController();
   List<String> _all = const [];
-  Set<String> _mine = const {};
+
+  /// How many of the clips carry each tag.
+  Map<String, int> _carried = const {};
 
   @override
   void initState() {
@@ -47,19 +51,35 @@ class _TagsDialogState extends ConsumerState<_TagsDialog> {
 
   Future<void> _load() async {
     final counts = await _index.allTagsWithCounts();
-    final mine = await _index.tagsOf(widget.canonicalUrl);
+    final carried = <String, int>{};
+    for (final url in widget.urls) {
+      for (final tag in await _index.tagsOf(url)) {
+        carried[tag] = (carried[tag] ?? 0) + 1;
+      }
+    }
     if (!mounted) return;
     setState(() {
       // The favourites mark is a tag underneath, but it has its own heart.
       _all =
           counts.keys.where((t) => t != MTConstants.favoritesSystemTag).toList()
             ..sort();
-      _mine = mine.toSet();
+      _carried = carried;
     });
   }
 
+  /// True when every clip carries [tag], false for none, null for some.
+  bool? _state(String tag) {
+    final n = _carried[tag] ?? 0;
+    return n == 0 ? false : (n >= widget.urls.length ? true : null);
+  }
+
+  /// All carry it: it comes off them all. Otherwise all get it.
   Future<void> _toggle(String tag) async {
-    await _index.toggleTag(widget.canonicalUrl, tag);
+    final give = _state(tag) != true;
+    for (final url in widget.urls) {
+      final has = (await _index.tagsOf(url)).contains(tag);
+      if (has != give) await _index.toggleTag(url, tag);
+    }
     ref.invalidate(libraryItemsProvider);
     await _load();
   }
@@ -68,7 +88,7 @@ class _TagsDialogState extends ConsumerState<_TagsDialog> {
     final tag = raw.trim();
     _field.clear();
     if (tag.isEmpty || tag == MTConstants.favoritesSystemTag) return;
-    if (_mine.contains(tag)) return;
+    if (_state(tag) == true) return;
     await _toggle(tag);
   }
 
@@ -99,7 +119,8 @@ class _TagsDialogState extends ConsumerState<_TagsDialog> {
                     for (final tag in _all)
                       CheckboxListTile(
                         dense: true,
-                        value: _mine.contains(tag),
+                        tristate: true,
+                        value: _state(tag),
                         title: Text(
                           tag,
                           style: text.bodySmall?.copyWith(color: p.ink),

@@ -24,8 +24,8 @@ final volumeControlProvider = Provider<VolumeControl>((ref) => HeldVolume());
 
 final volumeProvider = NotifierProvider<VolumeLevel, double>(VolumeLevel.new);
 
-/// The level, changed by ↑ and ↓ and kept between runs (main applies the
-/// kept one before the first clip plays).
+/// The level, changed by ↑ and ↓ or the player bar's slider, and kept
+/// between runs (main applies the kept one before the first clip plays).
 class VolumeLevel extends Notifier<double> {
   static const key = 'ember_volume';
 
@@ -37,8 +37,12 @@ class VolumeLevel extends Notifier<double> {
 
   /// Up for a positive [direction], down for a negative one; held at the
   /// ends.
-  Future<void> nudge(int direction) async {
-    final next = (state + direction.sign * step).clamp(0.0, 100.0);
+  Future<void> nudge(int direction) =>
+      set((state + direction.sign * step).clamp(0.0, 100.0));
+
+  /// The level from the player bar's slider, from 0 to 100.
+  Future<void> set(double level) async {
+    final next = level.clamp(0.0, 100.0);
     if (next == state) return;
     state = next;
     await ref.read(volumeControlProvider).setLevel(next);

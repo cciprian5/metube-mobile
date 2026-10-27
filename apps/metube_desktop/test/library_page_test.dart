@@ -169,13 +169,13 @@ void main() {
     expect(y('Tidepools at Dawn'), lessThan(y('Amber Skies')));
   });
 
-  testWidgets('a click plays the list on screen from that clip', (
+  testWidgets('a double click plays the list on screen from that clip', (
     tester,
   ) async {
     final h = await open(tester, library: _library, server: server);
     // Audio: it plays from the bar and the list stays on screen. (Any
     // shorts loop left on is let go first.)
-    await tester.tap(titleOf('Amber Skies'));
+    await doubleClick(tester, titleOf('Amber Skies'));
     await tester.pumpAndSettle();
     expect(h.player.calls, ['loop false', 'playItems']);
     expect(find.byType(MTMediaGridCard), findsNWidgets(4));

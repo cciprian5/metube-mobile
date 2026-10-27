@@ -161,14 +161,20 @@ class _ReadingRoomState extends ConsumerState<ReadingRoom> {
 
   Widget _room(BuildContext context, PlaylistItem item, bool isCurrent) {
     final l = context.mtl;
-    final transcript = ref
-        .watch(
-          transcriptForProvider((
-            canonicalUrl: item.canonicalUrl,
-            serverFilename: item.serverFilename,
-          )),
-        )
-        .valueOrNull;
+    final url = item.canonicalUrl;
+    final kept =
+        ref.watch(transcriptLanguagesProvider(url)).valueOrNull ?? const [];
+    final chosen = ref.watch(readingLanguageProvider(url));
+    final transcript =
+        kept.where((t) => t.language == chosen).firstOrNull ??
+        ref
+            .watch(
+              transcriptForProvider((
+                canonicalUrl: url,
+                serverFilename: item.serverFilename,
+              )),
+            )
+            .valueOrNull;
     if (transcript != _drawn) {
       _drawn = transcript;
       _paragraphs = transcript == null
@@ -188,6 +194,23 @@ class _ReadingRoomState extends ConsumerState<ReadingRoom> {
         final header = _Header(
           item: item,
           video: corner ? null : video,
+          // A choice only where this computer keeps more than one.
+          languages: kept.length < 2
+              ? const []
+              : [
+                  for (final t in kept)
+                    EmberPill(
+                      label: mtLanguageName(
+                        Transcript.baseLanguage(t.language),
+                      ),
+                      selected: t.language == transcript?.language,
+                      onTap: () =>
+                          ref
+                                  .read(readingLanguageProvider(url).notifier)
+                                  .state =
+                              t.language,
+                    ),
+                ],
           export: transcript == null
               ? null
               : ReadingExportPill(
@@ -300,9 +323,13 @@ class _Header extends StatelessWidget {
     required this.video,
     required this.export,
     required this.onBack,
+    this.languages = const [],
   });
 
   final PlaylistItem item;
+
+  /// The transcript's languages to choose between.
+  final List<Widget> languages;
 
   /// The export button, once there is a transcript to export.
   final Widget? export;
@@ -333,6 +360,7 @@ class _Header extends StatelessWidget {
                 onTap: onBack,
               ),
               ?export,
+              ...languages,
             ],
           ),
           const SizedBox(height: MTSpace.lg),

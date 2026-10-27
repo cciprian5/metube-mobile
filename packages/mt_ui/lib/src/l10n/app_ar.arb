@@ -45,6 +45,13 @@
       }
     }
   },
+  "@desktopDeleteSelectedConfirm": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@desktopInLibrary": {
     "placeholders": {
       "count": {
@@ -287,6 +294,7 @@
   "desktopCheckAll": "افحص الكل",
   "desktopClearFilters": "إلغاء التصفية",
   "desktopClearFinished": "إخفاء المنتهية",
+  "desktopClearSelection": "إلغاء التحديد",
   "desktopCookiesPrivacy": "تُرسَل الملفات إلى سيرفرك مباشرة ولا تُحفظ على هذا الكمبيوتر أبداً. ولأنها بمثابة مفاتيح لحساباتك، فلا ترسلها إلا إلى سيرفر تملكه.",
   "desktopCookiesReplaceNote": "كل رفع جديد يحلّ محل ملف الكوكيز على السيرفر بالكامل، فإن أردت الإبقاء على عدة منصات فاختر ملفاتها كلها معاً في كل مرة، ومنها ما رفعته من قبل. ولاختيار أكثر من ملف، اضغط Ctrl أثناء النقر.",
   "desktopCopiedLinkAdd": "إضافة…",
@@ -296,6 +304,7 @@
   "desktopCopyQueued": "ينتظر دوره",
   "desktopCopyQuote": "انسخ مع الوقت والرابط",
   "desktopDefaultQualityHint": "ما تبدأ به كل إضافة، ويبقى تغييره ممكناً لكل رابط.",
+  "desktopDeleteSelectedConfirm": "{count, plural, =1{حذف مقطع واحد من السيرفر؟ تبقى نسخته على هذا الكمبيوتر إن وُجدت.} =2{حذف مقطعين من السيرفر؟ تبقى نسختاهما على هذا الكمبيوتر إن وُجدتا.} few{حذف {count} مقاطع من السيرفر؟ تبقى نسخها على هذا الكمبيوتر إن وُجدت.} many{حذف {count} مقطعاً من السيرفر؟ تبقى نسخها على هذا الكمبيوتر إن وُجدت.} other{حذف {count} مقطع من السيرفر؟ تبقى نسخها على هذا الكمبيوتر إن وُجدت.}}",
   "desktopDesktopSection": "سطح المكتب",
   "desktopDownloadFolder": "مجلد التنزيل",
   "desktopDownloadFolderHint": "ملفاتك الخاصة: تُحفظ هنا، ثم لا يتدخل فيها التطبيق.",
@@ -328,6 +337,7 @@
   "desktopImportedTranscripts": "نصوص أُضيفت: {count}",
   "desktopInLibrary": "{count, plural, =0{لا شيء في مكتبتك} =1{مقطع في مكتبتك} =2{مقطعان في مكتبتك} few{{count} مقاطع في مكتبتك} many{{count} مقطعاً في مكتبتك} other{{count} مقطع في مكتبتك}}",
   "desktopKeyAddLink": "إضافة الرابط المنسوخ",
+  "desktopKeyFullScreen": "ملء الشاشة، وفي الصوت غرفة الاستماع",
   "desktopKeyMini": "نافذة صغيرة فوق البرامج، والعودة منها",
   "desktopKeyPlayPause": "تشغيل أو إيقاف مؤقت",
   "desktopKeyRepeat": "تغيير التكرار",
@@ -404,6 +414,8 @@
   "desktopRestoreBody": "تصبح وسوم هذا الكمبيوتر وقوائمه وإعداداته كما في النسخة، ولا يُمسّ السيرفر.",
   "desktopRestoreTitle": "استعادة هذه النسخة؟",
   "desktopRestored": "استُعيدت النسخة",
+  "desktopRevealAfterDownload": "أظهره في المستكشف حين يكتمل",
+  "desktopRevealAfterDownloadHint": "حين يكتمل تنزيل ملف إلى هذا الكمبيوتر، يُفتح مجلده والملف محدَّد فيه.",
   "desktopSavedIn": "حُفظ في {folder}",
   "desktopSavedSearchDelete": "حذف البحث المحفوظ «{name}»؟ لا يتغير شيء في المكتبة.",
   "desktopSavedSearchName": "اسم البحث",
@@ -413,6 +425,7 @@
   "desktopSearchHint": "ابحث في العناوين وما قيل…",
   "desktopSearchSaved": "حُفظ في الشريط الجانبي",
   "desktopSeekBar": "الموضع في المقطع",
+  "desktopSelectedCount": "{count, plural, =1{مقطع محدد} =2{مقطعان محددان} few{{count} مقاطع محددة} many{{count} مقطعاً محدداً} other{{count} مقطع محدد}}",
   "desktopServerFolders": "بالمجلدات نفسها التي على السيرفر",
   "desktopServerFoldersHint": "مثلاً: المقطع الذي في مجلد «أطفال» على السيرفر يُحفظ في مجلد بالاسم نفسه هنا.",
   "desktopServerPartMissing": "السيرفر لا يستجيب، فهذا ما كان فيه آخر مرة.",
@@ -449,6 +462,13 @@
   "desktopStatsClips": "المقاطع",
   "desktopStatsHint": "ما تحويه المكتبة، وما قد يستحق نظرة. لا يُحذف شيء من هنا.",
   "desktopStatsHours": "{count, plural, =0{أقل من ساعة} =1{ساعة واحدة} =2{ساعتان} few{{count} ساعات} many{{count} ساعة} other{{count} ساعة}}",
+  "@desktopSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@desktopStatsHours": {
     "placeholders": {
       "count": {
@@ -503,6 +523,7 @@
   "desktopUpdateRestartHint": "يُغلَق Ember ويثبّت التحديث ثم يُفتح من جديد، وتبقى إعداداتك ومكتبتك كما هي.",
   "desktopViewCompact": "مختصر",
   "desktopViewTable": "جدول",
+  "desktopVolume": "مستوى الصوت",
   "desktopVolumeLevel": "الصوت {percent}٪",
   "desktopWidenSidebar": "توسيع الشريط الجانبي",
   "desktopWindowClose": "إغلاق",

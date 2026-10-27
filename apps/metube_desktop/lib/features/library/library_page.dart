@@ -16,6 +16,8 @@ import '../setup/setup_dialog.dart';
 import 'library_chips.dart';
 import 'library_item_view.dart';
 import 'library_state.dart';
+import 'selection.dart';
+import 'selection_bar.dart';
 
 /// The library: the whole unified library, or the favourites or the
 /// offline copies, with the filters in view and three layouts.
@@ -46,41 +48,46 @@ class LibraryPage extends ConsumerWidget {
     };
     final offline = all.where((i) => i.isOffline).length;
 
-    return CustomScrollView(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(
-            MTSpace.xl,
-            MTSpace.sm,
-            MTSpace.xl,
-            MTSpace.md,
-          ),
-          sliver: SliverList.list(
-            children: [
-              _Heading(
-                title: title,
-                counts: all.isEmpty
-                    ? null
-                    : mtMetaLine([
-                        l.transcriptsClips(all.length),
-                        if (offline > 0) l.desktopOfflineCount(offline),
-                      ]),
-                mode: options.mode,
-                onMode: (m) => unawaited(
-                  ref.read(libraryViewProvider.notifier).setMode(m),
+    return SelectionFrame(
+      items: visible.valueOrNull ?? const [],
+      child: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(
+              MTSpace.xl,
+              MTSpace.sm,
+              MTSpace.xl,
+              MTSpace.md,
+            ),
+            sliver: SliverList.list(
+              children: [
+                _Heading(
+                  title: title,
+                  counts: all.isEmpty
+                      ? null
+                      : mtMetaLine([
+                          l.transcriptsClips(all.length),
+                          if (offline > 0) l.desktopOfflineCount(offline),
+                        ]),
+                  mode: options.mode,
+                  onMode: (m) => unawaited(
+                    ref.read(libraryViewProvider.notifier).setMode(m),
+                  ),
                 ),
-              ),
-              const SizedBox(height: MTSpace.md),
-              LibraryChips(scope: scope),
-              if (serverMissing && all.isNotEmpty) ...[
                 const SizedBox(height: MTSpace.md),
-                _ServerMissing(onRetry: () => ref.invalidate(historyProvider)),
+                LibraryChips(scope: scope),
+                if (serverMissing && all.isNotEmpty) ...[
+                  const SizedBox(height: MTSpace.md),
+                  _ServerMissing(
+                    onRetry: () => ref.invalidate(historyProvider),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
-        ),
-        ..._content(context, ref, visible, all, configured),
-      ],
+          ..._content(context, ref, visible, all, configured),
+        ],
+      ),
     );
   }
 
@@ -171,6 +178,8 @@ class _Items extends ConsumerWidget {
     final options = ref.watch(libraryViewProvider);
     final view = ref.read(libraryViewProvider.notifier);
     final player = ref.watch(playerProvider);
+    final chosen = ref.watch(librarySelectionProvider).urls;
+    final order = [for (final i in items) i.canonicalUrl];
     return StreamBuilder<MTPlayerState>(
       stream: player.states,
       initialData: player.state,
@@ -195,6 +204,10 @@ class _Items extends ConsumerWidget {
               columns: columns,
               playing: isCurrent,
               paused: isCurrent && !state.playing,
+              selected: chosen.contains(item.canonicalUrl),
+              onChoose: () => ref
+                  .read(librarySelectionProvider.notifier)
+                  .click(item.canonicalUrl, order),
               // The list on screen becomes the queue, from the clip
               // clicked, as on the phone; a video opens its page and a
               // short its lane.

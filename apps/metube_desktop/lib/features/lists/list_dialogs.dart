@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
@@ -44,12 +45,19 @@ Future<bool> confirmDeletePlaylist(BuildContext context, String name) {
 /// new one that starts with the clip in it. Each change is written at
 /// once, as the tags dialog does, so closing it any way keeps it.
 Future<void> showAddToPlaylistDialog(BuildContext context, PlaylistItem item) =>
-    showDialog<void>(context: context, builder: (_) => _AddDialog(item));
+    showAddAllToPlaylistDialog(context, [item]);
+
+/// The same for several clips at once: a list holding some of them shows
+/// a dash, and ticking it adds the rest.
+Future<void> showAddAllToPlaylistDialog(
+  BuildContext context,
+  List<PlaylistItem> items,
+) => showDialog<void>(context: context, builder: (_) => _AddDialog(items));
 
 class _AddDialog extends ConsumerStatefulWidget {
-  const _AddDialog(this.item);
+  const _AddDialog(this.items);
 
-  final PlaylistItem item;
+  final List<PlaylistItem> items;
 
   @override
   ConsumerState<_AddDialog> createState() => _AddDialogState();
@@ -68,7 +76,21 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
     final name = raw.trim();
     _field.clear();
     if (name.isEmpty) return;
-    await ref.read(listActionsProvider).create(name, items: [widget.item]);
+    await ref.read(listActionsProvider).create(name, items: widget.items);
+  }
+
+  /// True when [members] hold every one of [urls], false for none, null
+  /// for some.
+  static bool? _held(List<PlaylistEntry> members, Set<String> urls) {
+    final inside = members.where((e) => urls.contains(e.canonicalUrl)).length;
+    return inside == 0 ? false : (inside >= urls.length ? true : null);
+  }
+
+  Future<void> _setAll(String listId, bool member) async {
+    final actions = ref.read(listActionsProvider);
+    for (final item in widget.items) {
+      await actions.setMember(listId, item, member);
+    }
   }
 
   @override
@@ -77,7 +99,7 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
     final lists = ref.watch(playlistsProvider).valueOrNull ?? const [];
-    final url = widget.item.canonicalUrl;
+    final urls = {for (final item in widget.items) item.canonicalUrl};
     return AlertDialog(
       title: Text(l.addToPlaylist),
       content: SizedBox(
@@ -108,7 +130,8 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
                     for (final list in lists)
                       CheckboxListTile(
                         dense: true,
-                        value: list.items.any((e) => e.canonicalUrl == url),
+                        tristate: true,
+                        value: _held(list.items, urls),
                         title: Text(
                           list.name,
                           maxLines: 1,
@@ -119,10 +142,10 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
                           l.queueItemsCount(list.items.length),
                           style: text.labelSmall?.copyWith(color: p.ink3),
                         ),
-                        onChanged: (on) => unawaited(
-                          ref
-                              .read(listActionsProvider)
-                              .setMember(list.id, widget.item, on ?? false),
+                        // Ticked or partly: all go in; fully ticked:
+                        // all come out.
+                        onChanged: (_) => unawaited(
+                          _setAll(list.id, _held(list.items, urls) != true),
                         ),
                       ),
                   ],

@@ -54,3 +54,30 @@ class NotifyArrivalsNotifier extends Notifier<bool> {
         .run(() => ref.read(keyValueStoreProvider).setBool(key, on));
   }
 }
+
+/// Whether a file downloaded to this computer opens Explorer on it when it
+/// is done; off until chosen, as a window appearing by itself surprises.
+final revealAfterDownloadProvider =
+    NotifierProvider<RevealAfterDownloadNotifier, bool>(
+      RevealAfterDownloadNotifier.new,
+    );
+
+class RevealAfterDownloadNotifier extends Notifier<bool> {
+  static const key = 'ember_reveal_after_download';
+
+  @override
+  bool build() {
+    ref
+        .read(keyValueStoreProvider)
+        .getBool(key)
+        .then((saved) => state = saved ?? false, onError: (_) {});
+    return false;
+  }
+
+  Future<void> set(bool on) {
+    state = on;
+    return ref
+        .read(prefsMutexProvider)
+        .run(() => ref.read(keyValueStoreProvider).setBool(key, on));
+  }
+}

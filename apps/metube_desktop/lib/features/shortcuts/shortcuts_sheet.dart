@@ -23,7 +23,7 @@ List<(String, List<ShortcutLine>)> shortcutGroups(MTLocalizations l) => [
   (
     l.desktopShortcutsWindow,
     [
-      (keys: ['F11'], does: l.enterFullscreen),
+      (keys: ['F11'], does: l.desktopKeyFullScreen),
       (keys: ['Esc'], does: l.exitFullscreen),
       (keys: ['Ctrl M'], does: l.desktopKeyMini),
       (keys: ['Ctrl +'], does: l.desktopKeyZoomIn),

@@ -12,6 +12,7 @@ import 'package:metube_desktop/data/update_data.dart';
 import 'package:metube_desktop/features/add/add_options.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
 
 import 'support/shell_harness.dart';
@@ -131,7 +132,7 @@ void main() {
       'is one click away', (tester) async {
     final h = await open(tester, '/settings/subscriptions');
     expect(find.text('No channels yet'), findsWidgets);
-    await tester.tap(find.byType(Switch));
+    await tester.tap(find.byType(MTSwitch));
     await tester.pumpAndSettle();
     expect(await h.store.getBool(NotifyArrivalsNotifier.key), isFalse);
     await tester.tap(find.text('Open Channels'));

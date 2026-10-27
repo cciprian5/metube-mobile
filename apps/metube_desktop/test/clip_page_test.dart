@@ -12,6 +12,7 @@ import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:metube_desktop/shell/ui_zoom.dart';
 import 'package:metube_desktop/shell/video_surface.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart';
 
@@ -69,6 +70,11 @@ void main() {
     return h;
   }
 
+  /// A clip's title on its library card, not in the bar or the panel.
+  Finder cardOf(String title) => find
+      .descendant(of: find.byType(MTMediaGridCard), matching: find.text(title))
+      .first;
+
   Future<void> rightClick(WidgetTester tester, Offset at) async {
     await tester.tapAt(
       at,
@@ -78,27 +84,28 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('a video opens its page and plays the list from it', (
-    tester,
-  ) async {
-    final h = await open(tester);
-    await tester.tap(find.text('Homelab Hour - Ep. 12'));
-    await tester.pumpAndSettle();
-    expect(h.player.calls, ['loop false', 'playItems']);
-    expect(find.byType(ClipPage), findsOneWidget);
-    // Not playing yet in the fake, so its cover offers play.
-    expect(find.byKey(InertVideoSurface.pictureKey), findsNothing);
+  testWidgets(
+    'a double click on a video opens its page and plays the list from it',
+    (tester) async {
+      final h = await open(tester);
+      await doubleClick(tester, cardOf('Homelab Hour - Ep. 12'));
+      await tester.pumpAndSettle();
+      expect(h.player.calls, ['loop false', 'playItems']);
+      expect(find.byType(ClipPage), findsOneWidget);
+      // Not playing yet in the fake, so its cover offers play.
+      expect(find.byKey(InertVideoSurface.pictureKey), findsNothing);
 
-    h.player.showPlaying([_playing(_video)]);
-    await tester.pumpAndSettle();
-    expect(find.byKey(InertVideoSurface.pictureKey), findsOneWidget);
-  });
+      h.player.showPlaying([_playing(_video)]);
+      await tester.pumpAndSettle();
+      expect(find.byKey(InertVideoSurface.pictureKey), findsOneWidget);
+    },
+  );
 
   Future<ShellHarness> onVideo(WidgetTester tester, {UiZoom? zoom}) async {
     final h = await open(tester, zoom: zoom ?? const UiZoom(1.0));
     // Paused: a playing card's equalizer never lets the test settle.
     h.player.showPlaying([_playing(_video)], playing: false);
-    await tester.tap(find.text('Homelab Hour - Ep. 12'));
+    await doubleClick(tester, cardOf('Homelab Hour - Ep. 12'));
     await tester.pumpAndSettle();
     return h;
   }
@@ -246,7 +253,7 @@ void main() {
     tester,
   ) async {
     final h = await open(tester);
-    await tester.tap(find.text('Blue Hour'));
+    await doubleClick(tester, cardOf('Blue Hour'));
     await tester.pumpAndSettle();
     expect(h.player.calls, ['playItems', 'loop true']);
     h.player.showPlaying([_playing(_shortA), _playing(_shortB)]);
@@ -274,7 +281,7 @@ void main() {
 
   testWidgets('a double click on a short marks it a favourite', (tester) async {
     final h = await open(tester);
-    await tester.tap(find.text('Blue Hour'));
+    await doubleClick(tester, cardOf('Blue Hour'));
     await tester.pumpAndSettle();
     h.player.showPlaying([_playing(_shortB)]);
     await tester.pumpAndSettle();
@@ -293,7 +300,7 @@ void main() {
     tester,
   ) async {
     final h = await open(tester);
-    await tester.tap(find.text('Blue Hour'));
+    await doubleClick(tester, cardOf('Blue Hour'));
     await tester.pumpAndSettle();
     h.player.calls.clear();
     await tester.tap(

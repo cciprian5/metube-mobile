@@ -87,10 +87,14 @@ class SettingsPlace extends StatelessWidget {
                   ),
                 ),
                 for (final entry in panes)
-                  _PaneEntry(
-                    pane: entry,
-                    selected: entry == pane,
-                    onTap: () => context.go(entry.route),
+                  _Reveal(
+                    key: ValueKey(entry),
+                    when: entry == pane,
+                    child: _PaneEntry(
+                      pane: entry,
+                      selected: entry == pane,
+                      onTap: () => context.go(entry.route),
+                    ),
                   ),
               ],
             ],
@@ -246,4 +250,45 @@ class _PaneEntry extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Brings the section being shown into the list's view: opened from a
+/// notice or a short window, it may sit below the list's fold.
+class _Reveal extends StatefulWidget {
+  const _Reveal({super.key, required this.when, required this.child});
+
+  final bool when;
+  final Widget child;
+
+  @override
+  State<_Reveal> createState() => _RevealState();
+}
+
+class _RevealState extends State<_Reveal> {
+  @override
+  void initState() {
+    super.initState();
+    _reveal();
+  }
+
+  @override
+  void didUpdateWidget(_Reveal old) {
+    super.didUpdateWidget(old);
+    if (!old.when) _reveal();
+  }
+
+  void _reveal() {
+    if (!widget.when) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Scrollable.ensureVisible(
+          context,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

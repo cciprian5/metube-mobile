@@ -6,6 +6,7 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/downloads_data.dart';
+import '../../data/folders_data.dart';
 import '../../shell/pill.dart';
 import '../folders/folder_picker.dart';
 
@@ -19,6 +20,7 @@ class AddChoice {
     this.quality = Quality.best,
     this.folder = FolderChoice.top,
     this.pullAfter = false,
+    this.pullInto,
   });
 
   /// An add as Downloads' default quality starts it: on sound when that is
@@ -37,6 +39,10 @@ class AddChoice {
   /// habit, without its delete).
   final bool pullAfter;
 
+  /// Where that copy goes, chosen for this add alone; null is the
+  /// download folder.
+  final String? pullInto;
+
   /// What is sent for [url]: sound, or the video quality after the rule
   /// that numbers are for YouTube alone.
   Quality qualityFor(String url) =>
@@ -49,11 +55,13 @@ class AddChoice {
     Quality? quality,
     FolderChoice? folder,
     bool? pullAfter,
+    String? pullInto,
   }) => AddChoice(
     audio: audio ?? this.audio,
     quality: quality ?? this.quality,
     folder: folder ?? this.folder,
     pullAfter: pullAfter ?? this.pullAfter,
+    pullInto: pullInto ?? this.pullInto,
   );
 }
 
@@ -79,6 +87,16 @@ class AddOptions extends ConsumerWidget {
 
   /// A SoundCloud set: sound is the only choice.
   final bool audioOnly;
+
+  Future<void> _pickPullFolder(WidgetRef ref, AddChoice choice) async {
+    final picked = await ref
+        .read(desktopFoldersProvider)
+        .pick(
+          initial:
+              choice.pullInto ?? ref.read(downloadFolderProvider).valueOrNull,
+        );
+    if (picked != null) onChanged(choice.copyWith(pullInto: picked));
+  }
 
   Future<void> _pickFolder(BuildContext context) async {
     final picked = await showFolderPicker(
@@ -179,6 +197,17 @@ class AddOptions extends ConsumerWidget {
             style: text.bodySmall?.copyWith(color: p.ink),
           ),
         ),
+        // Where it will land, said before it is sent; asked later instead
+        // when the user wants to be asked each time.
+        if (choice.pullAfter && !ref.watch(folderSettingsProvider).askEachTime)
+          FolderLine(
+            label: l.desktopDownloadFolder,
+            value:
+                choice.pullInto ??
+                ref.watch(downloadFolderProvider).valueOrNull ??
+                l.desktopFolderUnavailable,
+            onPick: () => unawaited(_pickPullFolder(ref, choice)),
+          ),
       ],
     );
   }

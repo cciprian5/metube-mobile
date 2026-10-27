@@ -76,6 +76,10 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
   /// dialog then would come from nowhere. False when it was closed.
   Future<bool> _askPullFolder() async {
     if (!_choice.pullAfter) return true;
+    if (_choice.pullInto case final picked?) {
+      _pullInto = picked;
+      return true;
+    }
     final chosen = await ref
         .read(localCopiesProvider.notifier)
         .chooseDownloadFolder();

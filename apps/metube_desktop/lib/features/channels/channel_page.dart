@@ -15,6 +15,8 @@ import '../../shell/pill.dart';
 import '../../shell/section_header.dart';
 import '../clip/clip_state.dart';
 import '../library/library_item_view.dart';
+import '../library/selection.dart';
+import '../library/selection_bar.dart';
 import 'channel_commands.dart';
 import 'channel_match.dart';
 import 'channel_row.dart';
@@ -59,34 +61,37 @@ class ChannelPage extends ConsumerWidget {
     final match = ref.watch(channelMatchProvider).valueOrNull;
     final stats = match?.stats[sub.id];
     final items = stats?.items ?? const <LibraryItem>[];
-    return CustomScrollView(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(
-            MTSpace.xl,
-            MTSpace.sm,
-            MTSpace.xl,
-            MTSpace.lg,
-          ),
-          sliver: SliverToBoxAdapter(
-            child: _Head(
-              sub: sub,
-              stats: stats,
-              namesChannels: match?.namesChannels ?? true,
-            ),
-          ),
-        ),
-        if (items.isNotEmpty)
+    return SelectionFrame(
+      items: items,
+      child: CustomScrollView(
+        slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(
               MTSpace.xl,
-              0,
+              MTSpace.sm,
               MTSpace.xl,
-              MTSpace.xl,
+              MTSpace.lg,
             ),
-            sliver: _Clips(items: items),
+            sliver: SliverToBoxAdapter(
+              child: _Head(
+                sub: sub,
+                stats: stats,
+                namesChannels: match?.namesChannels ?? true,
+              ),
+            ),
           ),
-      ],
+          if (items.isNotEmpty)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                MTSpace.xl,
+                0,
+                MTSpace.xl,
+                MTSpace.xl,
+              ),
+              sliver: _Clips(items: items),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -264,6 +269,8 @@ class _Clips extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final player = ref.watch(playerProvider);
+    final chosen = ref.watch(librarySelectionProvider).urls;
+    final order = [for (final i in items) i.canonicalUrl];
     return StreamBuilder<MTPlayerState>(
       stream: player.states,
       initialData: player.state,
@@ -283,6 +290,10 @@ class _Clips extends ConsumerWidget {
               columns: columns,
               playing: isCurrent,
               paused: isCurrent && !state.playing,
+              selected: chosen.contains(item.canonicalUrl),
+              onChoose: () => ref
+                  .read(librarySelectionProvider.notifier)
+                  .click(item.canonicalUrl, order),
               onPlay: () => unawaited(
                 openFromList(ref, GoRouter.of(context), [
                   for (final i in items) toPlaylistItem(i),

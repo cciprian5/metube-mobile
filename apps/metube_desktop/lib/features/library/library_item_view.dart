@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
@@ -12,6 +13,7 @@ import '../../data/library_data.dart';
 import '../../shell/context_menu.dart';
 import 'artwork.dart';
 import 'item_menu.dart';
+import 'selection.dart';
 
 /// One library item in the current layout: a grid card, a table row, or a
 /// compact row. The shared Wahaj pieces draw it; this only says what to
@@ -25,6 +27,8 @@ class LibraryItemView extends ConsumerWidget {
     required this.playing,
     required this.paused,
     required this.onPlay,
+    this.selected = false,
+    this.onChoose,
   });
 
   final LibraryItem item;
@@ -37,6 +41,13 @@ class LibraryItemView extends ConsumerWidget {
   final bool playing;
   final bool paused;
   final VoidCallback onPlay;
+
+  /// Chosen in the list's selection: framed in the accent.
+  final bool selected;
+
+  /// A mouse click, which chooses rather than plays; a double click, Enter
+  /// and a screen reader still play. Null plays on a click, as before.
+  final VoidCallback? onChoose;
 
   /// The cover boxes of the grid and the compact row (`MTLibrarySliver`
   /// and `MTMediaCard`), for decoding at the size actually drawn.
@@ -58,10 +69,36 @@ class LibraryItemView extends ConsumerWidget {
     excludeFromSemantics: true,
     onSecondaryTapUp: (d) =>
         unawaited(showItemMenu(context, ref, d.globalPosition, item)),
-    child: ref.watch(clipDragProvider)(item, _view(context, ref)),
+    child: ref.watch(clipDragProvider)(item, _framed(context, ref)),
   );
 
-  Widget _view(BuildContext context, WidgetRef ref) {
+  Widget _framed(BuildContext context, WidgetRef ref) {
+    if (onChoose == null) return _view(context, ref, onPlay);
+    final p = MTThemeX.of(context).palette;
+    return Listener(
+      onPointerDown: (e) {
+        if (e.buttons == kPrimaryButton) ClickClock.pointerDown();
+      },
+      child: Container(
+        foregroundDecoration: selected
+            ? BoxDecoration(
+                border: Border.all(color: p.accent, width: 2),
+                borderRadius: BorderRadius.circular(MTCorners.desktop.card),
+              )
+            : null,
+        child: _view(
+          context,
+          ref,
+          () => switch (ClickClock.activate(item.canonicalUrl)) {
+            ClickMeaning.play => onPlay(),
+            ClickMeaning.choose => onChoose!(),
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _view(BuildContext context, WidgetRef ref, VoidCallback onTap) {
     final l = context.mtl;
     final subtitle = mtMetaLine([
       item.uploader,
@@ -109,7 +146,7 @@ class LibraryItemView extends ConsumerWidget {
         audio: item.isAudio,
         highlighted: playing,
         onFavoriteToggle: favorite,
-        onTap: onPlay,
+        onTap: onTap,
       );
     }
     if (mode == LibraryViewMode.grid) {
@@ -127,7 +164,7 @@ class LibraryItemView extends ConsumerWidget {
         playing: playing,
         paused: paused,
         onFavoriteToggle: favorite,
-        onTap: onPlay,
+        onTap: onTap,
       );
     }
     return MTMediaCard(
@@ -144,7 +181,7 @@ class LibraryItemView extends ConsumerWidget {
       playing: playing,
       paused: paused,
       onFavoriteToggle: favorite,
-      onTap: onPlay,
+      onTap: onTap,
     );
   }
 }

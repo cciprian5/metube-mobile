@@ -1046,6 +1046,12 @@ abstract class MTLocalizations {
   /// **'Hide finished'**
   String get desktopClearFinished;
 
+  /// No description provided for @desktopClearSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get desktopClearSelection;
+
   /// No description provided for @desktopCookiesPrivacy.
   ///
   /// In en, this message translates to:
@@ -1099,6 +1105,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'What each add starts with; you can still change it for each link.'**
   String get desktopDefaultQualityHint;
+
+  /// No description provided for @desktopDeleteSelectedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Delete 1 clip from the server? A copy on this computer stays.} other{Delete {count} clips from the server? Copies on this computer stay.}}'**
+  String desktopDeleteSelectedConfirm(int count);
 
   /// No description provided for @desktopDesktopSection.
   ///
@@ -1291,6 +1303,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Add the link you copied'**
   String get desktopKeyAddLink;
+
+  /// No description provided for @desktopKeyFullScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen; for sound, the listening room'**
+  String get desktopKeyFullScreen;
 
   /// No description provided for @desktopKeyMini.
   ///
@@ -1748,6 +1766,18 @@ abstract class MTLocalizations {
   /// **'Backup restored'**
   String get desktopRestored;
 
+  /// No description provided for @desktopRevealAfterDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Explorer when done'**
+  String get desktopRevealAfterDownload;
+
+  /// No description provided for @desktopRevealAfterDownloadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When a file downloaded to this computer is done, its folder opens with the file chosen.'**
+  String get desktopRevealAfterDownloadHint;
+
   /// No description provided for @desktopSavedIn.
   ///
   /// In en, this message translates to:
@@ -1801,6 +1831,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Position in the clip'**
   String get desktopSeekBar;
+
+  /// No description provided for @desktopSelectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 selected} other{{count} selected}}'**
+  String desktopSelectedCount(int count);
 
   /// No description provided for @desktopServerFolders.
   ///
@@ -2299,6 +2335,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Table'**
   String get desktopViewTable;
+
+  /// No description provided for @desktopVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get desktopVolume;
 
   /// No description provided for @desktopVolumeLevel.
   ///

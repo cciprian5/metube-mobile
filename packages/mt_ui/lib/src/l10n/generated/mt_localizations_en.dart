@@ -555,6 +555,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopClearFinished => 'Hide finished';
 
   @override
+  String get desktopClearSelection => 'Clear selection';
+
+  @override
   String get desktopCookiesPrivacy =>
       'The files go straight to your server and are never kept on this computer. They are your accounts\' sign-in material, so only ever send them to a server you own.';
 
@@ -583,6 +586,18 @@ class MTLocalizationsEn extends MTLocalizations {
   @override
   String get desktopDefaultQualityHint =>
       'What each add starts with; you can still change it for each link.';
+
+  @override
+  String desktopDeleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Delete $count clips from the server? Copies on this computer stay.',
+      one: 'Delete 1 clip from the server? A copy on this computer stays.',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get desktopDesktopSection => 'Desktop';
@@ -705,6 +720,10 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopKeyAddLink => 'Add the link you copied';
+
+  @override
+  String get desktopKeyFullScreen =>
+      'Full screen; for sound, the listening room';
 
   @override
   String get desktopKeyMini => 'Small window above the others, and back';
@@ -980,6 +999,13 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopRestored => 'Backup restored';
 
   @override
+  String get desktopRevealAfterDownload => 'Show in Explorer when done';
+
+  @override
+  String get desktopRevealAfterDownloadHint =>
+      'When a file downloaded to this computer is done, its folder opens with the file chosen.';
+
+  @override
   String desktopSavedIn(String folder) {
     return 'Saved in $folder';
   }
@@ -1013,6 +1039,17 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopSeekBar => 'Position in the clip';
+
+  @override
+  String desktopSelectedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count selected',
+      one: '1 selected',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get desktopServerFolders => 'Same folders as on the server';
@@ -1309,6 +1346,9 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopViewTable => 'Table';
+
+  @override
+  String get desktopVolume => 'Volume';
 
   @override
   String desktopVolumeLevel(int percent) {

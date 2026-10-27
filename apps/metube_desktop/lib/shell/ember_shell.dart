@@ -28,7 +28,6 @@ import '../features/library/library_state.dart';
 import '../features/notices/copied_links_wiring.dart';
 import '../features/notices/notices_wiring.dart';
 import '../features/palette/palette_entry.dart';
-import '../features/reading/reading_room.dart';
 import '../features/settings/backup_actions.dart';
 import '../features/settings/updates_pane.dart';
 import '../features/setup/setup_dialog.dart';
@@ -38,6 +37,7 @@ import 'focus_regions.dart';
 import 'keyboard.dart';
 import 'mini_window.dart';
 import 'nav_history.dart';
+import 'panel/transcript_view.dart';
 import 'player_bar.dart';
 import 'right_panel.dart';
 import 'shell_layout.dart';
@@ -184,7 +184,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
       onOpen: _openPalette,
       child: EmberKeyboard(
         // In the reading room, Ctrl+F finds in its text.
-        onSearch: () => (ref.read(readingFindProvider).value ?? _openPalette)(),
+        onSearch: () => (findHere(ref) ?? _openPalette)(),
         onMini: _toggleMini,
         inShortsLane: () =>
             placeOf(widget.location) == EmberPlace.item &&

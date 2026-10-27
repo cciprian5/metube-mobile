@@ -10,6 +10,7 @@ class EmberPlayerControl extends StatelessWidget {
     required this.onTap,
     this.selected = false,
     this.shortcut,
+    this.color,
   });
 
   final MTIconData icon;
@@ -18,10 +19,15 @@ class EmberPlayerControl extends StatelessWidget {
   final bool selected;
   final String? shortcut;
 
+  /// The icon's own colour when on, over the accent: the favourite's red.
+  final Color? color;
+
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
-    final ink = onTap == null ? p.ink3 : (selected ? p.accentInk : p.ink2);
+    final ink = onTap == null
+        ? p.ink3
+        : (selected ? color ?? p.accentInk : p.ink2);
     return MTShortcutTooltip(
       message: label,
       shortcut: shortcut,

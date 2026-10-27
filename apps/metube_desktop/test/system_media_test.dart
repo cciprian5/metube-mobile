@@ -11,6 +11,7 @@ import 'package:metube_desktop/data/system_media.dart';
 import 'package:metube_desktop/data/taskbar_data.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_media/mt_media.dart';
 
 import 'support/shell_harness.dart';
@@ -202,12 +203,12 @@ void main() {
           .go('/settings/desktop');
       await tester.pumpAndSettle();
       // The tray line is the first of the section.
-      final toggle = find.byType(Switch).first;
+      final toggle = find.byType(MTSwitch).first;
       expect(
         find.text('Keep playing in the tray when the window closes'),
         findsOneWidget,
       );
-      expect(tester.widget<Switch>(toggle).value, isFalse);
+      expect(tester.widget<MTSwitch>(toggle).value, isFalse);
       await tester.tap(toggle);
       await tester.pumpAndSettle();
       expect(told, [true]);

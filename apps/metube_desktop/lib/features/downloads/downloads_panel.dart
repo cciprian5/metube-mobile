@@ -10,6 +10,7 @@ import '../../data/folders_data.dart';
 import '../../data/local_copies.dart';
 import '../../shell/section_header.dart';
 import '../add/links_view.dart';
+import 'panel_line.dart';
 
 /// The downloads, opened from the button above the content and drawn at
 /// its corner: what the server is fetching, what waits its turn, what is
@@ -169,6 +170,7 @@ class _TaskLine extends StatelessWidget {
     final failed = task.phase == TaskPhase.failed;
     return PanelLine(
       title: task.title ?? task.effectiveUrl,
+      thumbnail: task.thumbnail,
       status: taskLine(context.mtl, task),
       error: failed,
       // Waiting is not working: only a clip the server is on moves.
@@ -209,6 +211,7 @@ class _CopyLine extends ConsumerWidget {
     };
     return PanelLine(
       title: copy.title,
+      thumbnail: copy.thumbnail,
       status: status,
       error: copy.phase == CopyPhase.failed,
       progress: switch (copy.phase) {
@@ -227,91 +230,6 @@ class _CopyLine extends ConsumerWidget {
             ),
       ],
       onClose: copy.isActive ? () => copies.cancel(copy.id) : null,
-    );
-  }
-}
-
-/// One line of the panel: the title, what is happening to it, a thin bar
-/// while it moves, and its actions.
-class PanelLine extends StatelessWidget {
-  const PanelLine({
-    super.key,
-    required this.title,
-    required this.status,
-    this.error = false,
-    this.progress,
-    this.actions = const [],
-    this.onClose,
-  });
-
-  final String title;
-  final String status;
-  final bool error;
-
-  /// 0 to 1; a negative value moves without a known end; null shows none.
-  final double? progress;
-  final List<Widget> actions;
-  final VoidCallback? onClose;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final text = Theme.of(context).textTheme;
-    final l = context.mtl;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: MTSpace.xs),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  mtName(title),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: text.bodyMedium,
-                ),
-                Text(
-                  status,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: text.labelSmall?.copyWith(
-                    color: error ? p.err : p.ink3,
-                  ),
-                ),
-                if (progress case final value?)
-                  Padding(
-                    padding: const EdgeInsets.only(top: MTSpace.xxs),
-                    child: LinearProgressIndicator(
-                      value: value < 0 ? null : value,
-                      minHeight: 3,
-                      color: p.accent,
-                      backgroundColor: p.line,
-                    ),
-                  ),
-                // Under the text, where a long label wraps instead of
-                // pushing the line past the panel at large text sizes.
-                if (actions.isNotEmpty)
-                  Wrap(spacing: MTSpace.xs, children: actions),
-              ],
-            ),
-          ),
-          if (onClose case final close?)
-            MTShortcutTooltip(
-              message: l.cancel,
-              child: IconButton(
-                onPressed: close,
-                icon: MTIcon(
-                  MTIcons.close,
-                  size: MTSpace.md,
-                  color: p.ink3,
-                  semanticLabel: l.cancel,
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

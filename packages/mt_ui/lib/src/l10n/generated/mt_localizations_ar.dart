@@ -576,6 +576,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopClearFinished => 'إخفاء المنتهية';
 
   @override
+  String get desktopClearSelection => 'إلغاء التحديد';
+
+  @override
   String get desktopCookiesPrivacy =>
       'تُرسَل الملفات إلى سيرفرك مباشرة ولا تُحفظ على هذا الكمبيوتر أبداً. ولأنها بمثابة مفاتيح لحساباتك، فلا ترسلها إلا إلى سيرفر تملكه.';
 
@@ -604,6 +607,23 @@ class MTLocalizationsAr extends MTLocalizations {
   @override
   String get desktopDefaultQualityHint =>
       'ما تبدأ به كل إضافة، ويبقى تغييره ممكناً لكل رابط.';
+
+  @override
+  String desktopDeleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'حذف $count مقطع من السيرفر؟ تبقى نسخها على هذا الكمبيوتر إن وُجدت.',
+      many:
+          'حذف $count مقطعاً من السيرفر؟ تبقى نسخها على هذا الكمبيوتر إن وُجدت.',
+      few:
+          'حذف $count مقاطع من السيرفر؟ تبقى نسخها على هذا الكمبيوتر إن وُجدت.',
+      two: 'حذف مقطعين من السيرفر؟ تبقى نسختاهما على هذا الكمبيوتر إن وُجدتا.',
+      one: 'حذف مقطع واحد من السيرفر؟ تبقى نسخته على هذا الكمبيوتر إن وُجدت.',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get desktopDesktopSection => 'سطح المكتب';
@@ -729,6 +749,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopKeyAddLink => 'إضافة الرابط المنسوخ';
+
+  @override
+  String get desktopKeyFullScreen => 'ملء الشاشة، وفي الصوت غرفة الاستماع';
 
   @override
   String get desktopKeyMini => 'نافذة صغيرة فوق البرامج، والعودة منها';
@@ -1010,6 +1033,13 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopRestored => 'استُعيدت النسخة';
 
   @override
+  String get desktopRevealAfterDownload => 'أظهره في المستكشف حين يكتمل';
+
+  @override
+  String get desktopRevealAfterDownloadHint =>
+      'حين يكتمل تنزيل ملف إلى هذا الكمبيوتر، يُفتح مجلده والملف محدَّد فيه.';
+
+  @override
   String desktopSavedIn(String folder) {
     return 'حُفظ في $folder';
   }
@@ -1043,6 +1073,20 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopSeekBar => 'الموضع في المقطع';
+
+  @override
+  String desktopSelectedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقطع محدد',
+      many: '$count مقطعاً محدداً',
+      few: '$count مقاطع محددة',
+      two: 'مقطعان محددان',
+      one: 'مقطع محدد',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get desktopServerFolders => 'بالمجلدات نفسها التي على السيرفر';
@@ -1340,6 +1384,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopViewTable => 'جدول';
+
+  @override
+  String get desktopVolume => 'مستوى الصوت';
 
   @override
   String desktopVolumeLevel(int percent) {

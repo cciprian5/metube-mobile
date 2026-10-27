@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -250,4 +251,12 @@ class NoCovers extends Fake implements BaseCacheManager {
     Map<String, String>? headers,
     bool withProgress = false,
   }) => const Stream.empty();
+}
+
+/// A double click, as a mouse makes it: a list of clips chooses on one
+/// click and plays on two.
+Future<void> doubleClick(WidgetTester tester, Finder target) async {
+  await tester.tap(target, kind: PointerDeviceKind.mouse);
+  await tester.pump(const Duration(milliseconds: 50));
+  await tester.tap(target, kind: PointerDeviceKind.mouse);
 }

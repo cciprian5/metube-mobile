@@ -75,6 +75,14 @@ class _NoticesWiringState extends ConsumerState<NoticesWiring> {
       ..addAll({for (final copy in copies) copy.id: copy.phase});
     for (final copy in ended) {
       unawaited(_show(_forCopy(copy)));
+      // A file the user downloaded, not an offline copy the app keeps.
+      if (copy.phase == CopyPhase.done &&
+          copy.kind == CopyKind.download &&
+          ref.read(revealAfterDownloadProvider)) {
+        if (copy.path case final path?) {
+          unawaited(ref.read(desktopFoldersProvider).reveal(path));
+        }
+      }
     }
   }
 

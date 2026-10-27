@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/choices_data.dart';
 import '../../data/folders_data.dart';
 import 'simple_panes.dart';
 
@@ -77,6 +78,13 @@ class FoldersPane extends ConsumerWidget {
           onChanged: settings.askEachTime
               ? null
               : (on) => unawaited(notifier.setServerFolders(on)),
+        ),
+        SwitchLine(
+          title: l.desktopRevealAfterDownload,
+          hint: l.desktopRevealAfterDownloadHint,
+          value: ref.watch(revealAfterDownloadProvider),
+          onChanged: (on) =>
+              unawaited(ref.read(revealAfterDownloadProvider.notifier).set(on)),
         ),
       ],
     );

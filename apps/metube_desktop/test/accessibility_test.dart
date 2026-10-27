@@ -200,10 +200,13 @@ void main() {
     );
     expect(
       tester.getSemantics(
-        find.descendant(
-          of: find.byType(EmberNowPlaying),
-          matching: find.byType(InkWell),
-        ),
+        find
+            .descendant(
+              of: find.byType(EmberNowPlaying),
+              matching: find.byType(InkWell),
+            )
+            // The clip's own; the heart beside it is a button of its own.
+            .first,
       ),
       isSemantics(isButton: true),
     );

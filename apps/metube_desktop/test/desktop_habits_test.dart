@@ -9,6 +9,7 @@ import 'package:metube_desktop/data/desktop_habits.dart';
 import 'package:metube_desktop/platform/startup.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_ui/mt_ui.dart';
 
 import 'support/shell_harness.dart';
 
@@ -39,12 +40,15 @@ void main() {
     return h;
   }
 
-  Switch switchOf(WidgetTester tester, String title) => tester.widget<Switch>(
-    find.descendant(
-      of: find.ancestor(of: find.text(title), matching: find.byType(Row)).first,
-      matching: find.byType(Switch),
-    ),
-  );
+  MTSwitch switchOf(WidgetTester tester, String title) =>
+      tester.widget<MTSwitch>(
+        find.descendant(
+          of: find
+              .ancestor(of: find.text(title), matching: find.byType(Row))
+              .first,
+          matching: find.byType(MTSwitch),
+        ),
+      );
 
   Future<void> flip(WidgetTester tester, String title) async {
     await tester.tap(
@@ -52,7 +56,7 @@ void main() {
         of: find
             .ancestor(of: find.text(title), matching: find.byType(Row))
             .first,
-        matching: find.byType(Switch),
+        matching: find.byType(MTSwitch),
       ),
     );
     await tester.pumpAndSettle();

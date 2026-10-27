@@ -5,6 +5,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../data/saved_searches.dart';
 import '../features/folders/folder_tree.dart';
 import '../router.dart';
+import 'server_line.dart';
 import 'shell_metrics.dart';
 import 'sidebar_items.dart';
 
@@ -128,7 +129,7 @@ class EmberSidebar extends StatelessWidget {
               ),
               item(
                 EmberPlace.offline,
-                MTIcons.download,
+                MTIcons.offline,
                 l.filterOffline,
                 EmberRoutes.offline,
               ),
@@ -194,6 +195,7 @@ class EmberSidebar extends StatelessWidget {
             ],
           ),
         ),
+        SidebarServerLine(narrow: narrow),
         if (onToggleNarrow case final toggle?)
           SidebarItem(
             icon: MTIcons.collapse,

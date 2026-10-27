@@ -110,7 +110,12 @@ class _EmberSeekBarState extends State<EmberSeekBar> {
                   ),
                 ),
                 if (widget.trailing case final trailing?)
-                  Flexible(child: trailing),
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: trailing,
+                    ),
+                  ),
               ],
             ),
           ],

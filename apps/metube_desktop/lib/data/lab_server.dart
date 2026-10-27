@@ -51,6 +51,22 @@ String? labLocaleFrom(List<String> args) {
   return null;
 }
 
+/// The page the window opens on, `--lab-route=/settings/appearance`, and
+/// day or night, `--lab-theme=dark`: **debug builds only**, so every page
+/// can be photographed in the real window without a click and without
+/// touching what the user chose.
+String? labRouteFrom(List<String> args) => _labValue(args, '--lab-route=');
+
+String? labThemeFrom(List<String> args) => _labValue(args, '--lab-theme=');
+
+String? _labValue(List<String> args, String prefix) {
+  if (!kDebugMode) return null;
+  for (final a in args) {
+    if (a.startsWith(prefix)) return a.substring(prefix.length);
+  }
+  return null;
+}
+
 /// Every address in the lab file, the chosen one first, to seed the
 /// address list the first time; empty outside a debug build.
 List<String> labAddressesFrom(List<String> args) {

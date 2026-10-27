@@ -22,7 +22,7 @@ import 'shell/zoom_frame.dart';
 /// day or night and the language as chosen in Appearance (Windows' own by
 /// default), plus the router.
 class EmberApp extends ConsumerStatefulWidget {
-  const EmberApp({super.key, this.router, this.locale});
+  const EmberApp({super.key, this.router, this.locale, this.initialLocation});
 
   /// For tests; the app builds its own otherwise.
   final GoRouter? router;
@@ -30,6 +30,10 @@ class EmberApp extends ConsumerStatefulWidget {
   /// A language chosen for development (`--lab-locale`), over the one
   /// chosen in Appearance.
   final Locale? locale;
+
+  /// The page to open on, for development (`--lab-route`); null opens the
+  /// library.
+  final String? initialLocation;
 
   @override
   ConsumerState<EmberApp> createState() => _EmberAppState();
@@ -41,6 +45,7 @@ class _EmberAppState extends ConsumerState<EmberApp> {
   late final GoRouter _router =
       widget.router ??
       buildEmberRouter(
+        initialLocation: widget.initialLocation ?? EmberRoutes.library,
         shell: (_, state, child) =>
             EmberShell(location: state.uri, child: child),
         library: (only) =>

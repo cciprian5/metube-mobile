@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
@@ -155,7 +156,12 @@ Future<void> main(List<String> args) async {
   // Windows' places for the clip playing: the media keys and flyout, the
   // icon by the clock, the taskbar button. All read the player and command
   // it; none knows the engine.
-  final appearance = await AppearanceStore(store: store, mutex: mutex).read();
+  final stored = await AppearanceStore(store: store, mutex: mutex).read();
+  final appearance = switch (labThemeFrom(args)) {
+    'dark' => (theme: ThemeMode.dark, locale: stored.locale),
+    'light' => (theme: ThemeMode.light, locale: stored.locale),
+    _ => stored,
+  };
   final labLocale = labLocaleFrom(args);
   final words = mtLocalizationsFor(labLocale ?? appearance.locale);
   final tray = EmberTray(
@@ -280,7 +286,10 @@ Future<void> main(List<String> args) async {
         ),
         frameGrabProvider.overrideWithValue(grabFrame),
       ],
-      child: EmberApp(locale: labLocale == null ? null : Locale(labLocale)),
+      child: EmberApp(
+        locale: labLocale == null ? null : Locale(labLocale),
+        initialLocation: labRouteFrom(args),
+      ),
     ),
   );
 }

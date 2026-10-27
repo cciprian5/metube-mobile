@@ -39,6 +39,7 @@ import 'identity.dart';
 import 'platform/clip_drag.dart';
 import 'platform/clipboard_windows.dart';
 import 'platform/link_drop.dart';
+import 'platform/media_kit_debug.dart';
 import 'platform/notifications.dart';
 import 'platform/error_log.dart';
 import 'platform/frame_grab.dart';
@@ -94,6 +95,7 @@ Future<void> main(List<String> args) async {
     },
   );
   initMTL10n();
+  forgetStaleMediaKitNote();
   MediaKit.ensureInitialized();
 
   final prefs = await SharedPreferences.getInstance();

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../data/volume.dart';
+import 'ember_slider.dart';
 
 /// The player bar's volume: the speaker and a short slider. ↑ and ↓ move
 /// the same level, so either way it is kept between runs.
@@ -35,29 +36,14 @@ class EmberVolumeSlider extends ConsumerWidget {
             textDirection: TextDirection.ltr,
             child: SizedBox(
               width: width,
-              child: SliderTheme(
-                data: SliderThemeData(
-                  trackHeight: MTSpace.xxs / 2,
-                  activeTrackColor: p.accent,
-                  inactiveTrackColor: p.line2,
-                  thumbColor: p.accent,
-                  overlayColor: p.accentSoft,
-                  thumbShape: const RoundSliderThumbShape(
-                    enabledThumbRadius: MTSpace.xs,
-                  ),
-                  overlayShape: const RoundSliderOverlayShape(
-                    overlayRadius: MTSpace.md,
-                  ),
-                ),
-                child: Slider(
-                  label: l.desktopVolume,
-                  semanticFormatterCallback: (v) =>
-                      l.desktopVolumeLevel(v.round()),
-                  value: level,
-                  max: 100,
-                  onChanged: (v) =>
-                      unawaited(ref.read(volumeProvider.notifier).set(v)),
-                ),
+              child: EmberSlider(
+                value: level,
+                max: 100,
+                label: l.desktopVolume,
+                describe: (v) => l.desktopVolumeLevel(v.round()),
+                step: VolumeLevel.step,
+                onChanged: (v) =>
+                    unawaited(ref.read(volumeProvider.notifier).set(v)),
               ),
             ),
           ),

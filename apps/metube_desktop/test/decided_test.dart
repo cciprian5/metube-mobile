@@ -13,6 +13,7 @@ import 'package:metube_desktop/features/add/add_dialog.dart';
 import 'package:metube_desktop/features/reading/reading_find.dart';
 import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
+import 'package:metube_desktop/shell/ember_slider.dart';
 import 'package:metube_desktop/shell/server_line.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:metube_desktop/shell/volume_slider.dart';
@@ -91,9 +92,9 @@ void main() {
     final h = await open(tester);
     final slider = find.descendant(
       of: find.byType(EmberVolumeSlider),
-      matching: find.byType(Slider),
+      matching: find.byType(EmberSlider),
     );
-    tester.widget<Slider>(slider).onChanged!(30);
+    tester.widget<EmberSlider>(slider).onChanged!(30);
     await tester.pumpAndSettle();
     expect(containerOf(tester).read(volumeProvider), 30);
     expect(await h.store.getInt(VolumeLevel.key), 30);

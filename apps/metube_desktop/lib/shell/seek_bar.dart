@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'ember_slider.dart';
+import 'keyboard.dart' show seekStep;
+
 /// Elapsed time, the bar, and the length on one line, under the transport.
 /// The bar follows the pointer while dragged and seeks once on release, so
 /// a drag across a long clip is one seek rather than hundreds.
@@ -55,35 +58,19 @@ class _EmberSeekBarState extends State<EmberSeekBar> {
         final elapsed = mtFormatDuration(
           Duration(milliseconds: shownMs.round()),
         );
-        final bar = SliderTheme(
-          data: SliderThemeData(
-            trackHeight: MTSpace.xxs / 2,
-            activeTrackColor: p.accent,
-            inactiveTrackColor: picture ? Colors.white24 : p.line2,
-            thumbColor: p.accent,
-            overlayColor: p.accentSoft,
-            thumbShape: const RoundSliderThumbShape(
-              enabledThumbRadius: MTSpace.xs,
-            ),
-            overlayShape: const RoundSliderOverlayShape(
-              overlayRadius: MTSpace.md,
-            ),
-          ),
-          child: Slider(
-            label: context.mtl.desktopSeekBar,
-            // Read as the time it shows, not a bare percentage.
-            semanticFormatterCallback: (v) =>
-                mtFormatDuration(Duration(milliseconds: v.round())),
-            value: shownMs,
-            max: maxMs > 0 ? maxMs : 1,
-            onChanged: maxMs > 0 ? (v) => setState(() => _dragMs = v) : null,
-            onChangeEnd: maxMs > 0
-                ? (v) {
-                    setState(() => _dragMs = null);
-                    widget.player.seek(Duration(milliseconds: v.round()));
-                  }
-                : null,
-          ),
+        final bar = EmberSlider(
+          value: shownMs,
+          max: maxMs,
+          label: context.mtl.desktopSeekBar,
+          // Read as the time it shows, not a bare percentage.
+          describe: (v) => mtFormatDuration(Duration(milliseconds: v.round())),
+          step: seekStep.inMilliseconds.toDouble(),
+          inactive: picture ? Colors.white24 : null,
+          onChanged: maxMs > 0 ? (v) => setState(() => _dragMs = v) : null,
+          onChangeEnd: (v) {
+            setState(() => _dragMs = null);
+            widget.player.seek(Duration(milliseconds: v.round()));
+          },
         );
         if (!picture) {
           return Row(

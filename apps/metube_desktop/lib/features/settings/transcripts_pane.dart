@@ -45,29 +45,35 @@ class TranscriptsPane extends ConsumerWidget {
           title: l.transcriptsClips(summary?.$1 ?? 0),
           value: summary == null || none ? null : mtFormatSize(summary.$2),
         ),
-        SettingLine(
-          title: l.transcriptsExport,
-          hint: l.desktopTranscriptsExportHint,
-          trailing: MTLinkButton(
-            label: l.transcriptsExport,
-            onPressed: none ? null : () => unawaited(_export(context, ref)),
-          ),
+        Wrap(
+          spacing: MTSpace.md,
+          runSpacing: MTSpace.xs,
+          children: [
+            MTLinkButton(
+              label: l.transcriptsExport,
+              icon: MTIcons.saveTo,
+              onPressed: none ? null : () => unawaited(_export(context, ref)),
+            ),
+            MTLinkButton(
+              label: l.transcriptsImport,
+              icon: MTIcons.download,
+              onPressed: () => unawaited(_import(context, ref)),
+            ),
+            MTLinkButton(
+              label: l.transcriptsDeleteAll,
+              icon: MTIcons.trash,
+              onPressed: none
+                  ? null
+                  : () => unawaited(_deleteAll(context, ref)),
+            ),
+          ],
         ),
-        SettingLine(
-          title: l.transcriptsImport,
-          hint: l.desktopTranscriptsImportHint,
-          trailing: MTLinkButton(
-            label: l.transcriptsImport,
-            onPressed: () => unawaited(_import(context, ref)),
-          ),
-        ),
-        SettingLine(
-          title: l.transcriptsDeleteAll,
-          trailing: MTLinkButton(
-            label: l.transcriptsDeleteAll,
-            onPressed: none ? null : () => unawaited(_deleteAll(context, ref)),
-          ),
-        ),
+        const SizedBox(height: MTSpace.xs),
+        for (final hint in [
+          l.desktopTranscriptsExportHint,
+          l.desktopTranscriptsImportHint,
+        ])
+          Text(hint, style: text.labelSmall?.copyWith(color: p.ink3)),
       ],
     );
   }

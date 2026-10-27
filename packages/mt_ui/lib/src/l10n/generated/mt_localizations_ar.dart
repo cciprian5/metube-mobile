@@ -1321,8 +1321,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopUiSize => 'حجم الواجهة';
 
   @override
-  String get desktopUiSizeHint =>
-      'يتغيّر من أي مكان بـCtrl+= وCtrl+−، ويعود إلى 100% بـCtrl+0.';
+  String desktopUiSizeHint(String bigger, String smaller, String reset) {
+    return 'يتغيّر من أي مكان بـ$bigger و$smaller، ويعود إلى 100% بـ$reset.';
+  }
 
   @override
   String get desktopUiSizeTooLarge => 'لا تتسع له هذه الشاشة';

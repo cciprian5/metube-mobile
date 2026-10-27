@@ -55,7 +55,12 @@ class AppearancePane extends ConsumerWidget {
         ),
         ChoiceGroup(
           title: l.desktopUiSize,
-          hint: l.desktopUiSizeHint,
+          // Each key name read left to right inside an Arabic sentence.
+          hint: l.desktopUiSizeHint(
+            mtLtrRun('Ctrl+='),
+            mtLtrRun('Ctrl+−'),
+            mtLtrRun('Ctrl+0'),
+          ),
           children: [
             for (final step in uiZoomSteps)
               _Step(

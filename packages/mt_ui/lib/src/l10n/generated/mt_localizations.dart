@@ -2267,8 +2267,8 @@ abstract class MTLocalizations {
   /// No description provided for @desktopUiSizeHint.
   ///
   /// In en, this message translates to:
-  /// **'Ctrl+= and Ctrl+− change it from anywhere, and Ctrl+0 returns to 100%.'**
-  String get desktopUiSizeHint;
+  /// **'{bigger} and {smaller} change it from anywhere, and {reset} returns to 100%.'**
+  String desktopUiSizeHint(String bigger, String smaller, String reset);
 
   /// No description provided for @desktopUiSizeTooLarge.
   ///

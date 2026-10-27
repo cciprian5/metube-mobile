@@ -1290,8 +1290,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopUiSize => 'Interface size';
 
   @override
-  String get desktopUiSizeHint =>
-      'Ctrl+= and Ctrl+− change it from anywhere, and Ctrl+0 returns to 100%.';
+  String desktopUiSizeHint(String bigger, String smaller, String reset) {
+    return '$bigger and $smaller change it from anywhere, and $reset returns to 100%.';
+  }
 
   @override
   String get desktopUiSizeTooLarge => 'Too large for this screen';

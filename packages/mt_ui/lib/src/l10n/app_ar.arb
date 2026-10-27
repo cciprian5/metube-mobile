@@ -497,7 +497,7 @@
   "desktopTrayOpen": "فتح MeTube Ember",
   "desktopTrayQuit": "خروج",
   "desktopUiSize": "حجم الواجهة",
-  "desktopUiSizeHint": "يتغيّر من أي مكان بـCtrl+= وCtrl+−، ويعود إلى 100% بـCtrl+0.",
+  "desktopUiSizeHint": "يتغيّر من أي مكان بـ{bigger} و{smaller}، ويعود إلى 100% بـ{reset}.",
   "desktopUiSizeTooLarge": "لا تتسع له هذه الشاشة",
   "desktopUpdateInstall": "ثبّته وأعد التشغيل",
   "desktopUpdateRestartHint": "يُغلَق Ember ويثبّت التحديث ثم يُفتح من جديد، وتبقى إعداداتك ومكتبتك كما هي.",

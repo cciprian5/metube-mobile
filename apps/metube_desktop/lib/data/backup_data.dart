@@ -25,7 +25,7 @@ sealed class ImportOutcome {
   const ImportOutcome();
 }
 
-/// A phone backup, merged as a union (07 §4.6).
+/// A phone backup, merged as a union: nothing here is dropped.
 class MergedBackup extends ImportOutcome {
   const MergedBackup(this.result);
   final MergeResult result;

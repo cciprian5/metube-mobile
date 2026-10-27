@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'key_value_store.dart';
 
 /// The shared base for indexes stored as one JSON map under a single key.
-/// **The key is always canonicalUrl** (`05-DATA-SCHEMA.md` §5.5), and
+/// **The key is always canonicalUrl**, and
 /// every read-modify-write runs inside [PrefsMutex].
 abstract base class UrlKeyedIndex<V> {
   UrlKeyedIndex({

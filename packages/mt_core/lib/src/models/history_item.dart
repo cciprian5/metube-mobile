@@ -9,8 +9,8 @@ const _uuid = Uuid();
 /// normalised.
 enum ItemStatus { inProgress, completed, failed, unknown }
 
-/// One item from `GET /history`, parsed **tolerantly** per the table in
-/// `05-DATA-SCHEMA.md` §2.3. The hard rules:
+/// One item from `GET /history` (`docs/SERVER-API.md`), parsed
+/// **tolerantly**. The hard rules:
 /// - [canonicalUrl] is the primary key for all app data.
 /// - A missing [filename] stays null; it is **never invented from the
 ///   title** (trap §6.3).

@@ -32,7 +32,7 @@ const double _fieldGap = MTSpace.md;
 const _serverGuide =
     'https://github.com/sagheerys/metube-mobile/blob/main/docs/SERVER-SETUP.md';
 
-/// **The first-run setup** (07 §4.5‑b), opened at the first start with no
+/// **The first-run setup**, opened at the first start with no
 /// server and from Settings › Server: three ways to the address (a phone's
 /// backup, a search of the network, typing it) that all end in the same
 /// field, tested live before anything is kept.

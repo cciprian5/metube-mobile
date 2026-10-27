@@ -8,7 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/local_copies.dart';
 import '../../shell/pill.dart';
 
-/// The clip page's two copy actions (07 §3‑b): an **offline copy** the app
+/// The clip page's two copy actions: an **offline copy** the app
 /// keeps and plays, and **"Download…"**, a file of the user's own. Both
 /// leave the server's copy where it is.
 List<Widget> copyPills(BuildContext context, WidgetRef ref, LibraryItem item) {

@@ -14,8 +14,7 @@ import 'features/settings/settings_screen.dart';
 import 'features/settings/settings_sections.dart';
 import 'features/shell/shell_screen.dart';
 
-/// The single route table (`03-APP-FLOW.md` §1). No direct
-/// Navigator.push.
+/// The single route table. No direct Navigator.push.
 final router = GoRouter(
   // Tells the shell what has opened above it so it can hide the floating
   // add button, which used to be drawn over every bottom sheet and dialog,

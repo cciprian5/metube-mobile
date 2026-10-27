@@ -87,7 +87,7 @@ class EmberPlayerBar extends StatelessWidget {
 }
 
 /// The transport and the seek bar. **They never mirror** in Arabic: play
-/// controls keep the direction of time (brief §4, 2026-09-02).
+/// controls keep the direction of time, as media players do everywhere.
 class _Transport extends StatelessWidget {
   const _Transport({required this.player, required this.state});
 

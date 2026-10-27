@@ -1,6 +1,6 @@
 import '../urls/platform_detector.dart';
 
-/// The MeTube qualities in use (`05-DATA-SCHEMA.md` §2.2).
+/// The MeTube qualities in use.
 enum Quality {
   best('best'),
   q1080('1080'),

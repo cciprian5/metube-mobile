@@ -267,6 +267,5 @@ final platformCountsProvider = Provider<List<MapEntry<MediaPlatform, int>>>((
   return platformCounts(items);
 });
 
-/// The item to highlight, from a tap on the completion notification
-/// (`03-APP-FLOW.md` §1).
+/// The item to highlight, from a tap on the completion notification.
 final highlightedItemProvider = StateProvider<String?>((ref) => null);

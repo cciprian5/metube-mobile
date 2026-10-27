@@ -5,7 +5,7 @@ import 'package:mt_core/mt_core.dart';
 import '../../di.dart';
 
 /// Super's settings state: loaded once at startup and managed here alone.
-/// Storage key names follow `05-DATA-SCHEMA.md` §5.1 exactly.
+/// Storage key names are fixed: renaming one loses the saved value.
 class SuperSettings {
   const SuperSettings({
     this.localUrl = '',

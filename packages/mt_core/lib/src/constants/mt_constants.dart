@@ -1,6 +1,5 @@
-/// Every fixed number and list the core uses. The source is
-/// `docs/plan/05-DATA-SCHEMA.md`; no network or download number is written
-/// anywhere else.
+/// Every fixed number and list the core uses; no network or download
+/// number is written anywhere else.
 abstract final class MTConstants {
   // Network timeouts (§1).
   static const Duration connectTimeout = Duration(seconds: 30);

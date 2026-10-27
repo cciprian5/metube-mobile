@@ -7,7 +7,7 @@ import 'router.dart';
 
 /// The MeTube Lite root: the Wahaj theme with the petrol bay accent, plus
 /// localisation and the router. The identity is one and the difference is
-/// functional only (`01-PRD.md` §1.4).
+/// functional only.
 class LiteApp extends ConsumerWidget {
   const LiteApp({super.key});
 

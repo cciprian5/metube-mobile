@@ -1,5 +1,5 @@
 /// The secrets interface, implemented in the app over
-/// flutter_secure_storage. The keys (`05-DATA-SCHEMA.md` §5.2) are
+/// flutter_secure_storage. The keys are
 /// `username`, `password` and `backup_aes_key`. The password **never
 /// enters** a backup or a log.
 abstract interface class SecretStore {

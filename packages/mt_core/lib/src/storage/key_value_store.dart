@@ -2,8 +2,8 @@ import 'package:synchronized/synchronized.dart';
 
 /// The key-value storage interface, implemented in the app over
 /// SharedPreferences. The core is pure Dart, so it is tested with
-/// [MemoryKeyValueStore]. Key names come from `05-DATA-SCHEMA.md` §5.1 and
-/// nowhere else.
+/// [MemoryKeyValueStore]. Key names are fixed in one place each and never
+/// renamed: a renamed key loses what was saved under it.
 abstract interface class KeyValueStore {
   /// The raw value in whatever type was stored (String, bool, int, double,
   /// List of String).

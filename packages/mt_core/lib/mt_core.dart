@@ -1,6 +1,6 @@
 /// The MTF core in pure Dart: the MeTube API client, the tolerant models,
-/// URL tools, the download engine, storage, backup and logging. Every
-/// behaviour follows `docs/plan/05-DATA-SCHEMA.md` exactly.
+/// URL tools, the download engine, storage, backup and logging. The
+/// server's side of the contract is in `docs/SERVER-API.md`.
 library;
 
 export 'src/api/api_exceptions.dart';

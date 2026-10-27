@@ -190,8 +190,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   /// building them all at once inside a `Column` froze the app to the point
   /// of an ANR. The header and the live cards are slivers, and the items
   /// are
-  /// a `SliverList.builder` that builds only what is visible (the "large
-  /// lists stay smooth" requirement in `01-PRD.md` §2.7).
+  /// a `SliverList.builder` that builds only what is visible, so a large
+  /// list stays smooth.
   List<LocalItem> _selectedItems(Set<String> selection) {
     final visible = ref.read(visibleLibraryProvider).valueOrNull ?? const [];
     return [

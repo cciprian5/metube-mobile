@@ -4,10 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 
+import 'copy_names.dart';
 import 'folders_data.dart';
 import 'library_data.dart';
 
-/// The two kinds of copy on this computer (07 §3‑b).
+export 'copy_names.dart';
+
+/// The two kinds of copy on this computer: one the app keeps and plays,
+/// and a file of the user's own.
 enum CopyKind {
   /// Known to the app: indexed by its canonical URL, played from disk,
   /// removed with "Remove local copy".
@@ -282,31 +286,6 @@ class LocalCopies extends Notifier<List<LocalCopy>> {
 
   void _update(String id, LocalCopy Function(LocalCopy) change) =>
       state = [for (final c in state) c.id == id ? change(c) : c];
-}
-
-/// [name] as Windows accepts it: the characters it forbids become `_`, and
-/// trailing dots and spaces, which it drops silently, go.
-String windowsSafeName(String name) {
-  final safe = name
-      .replaceAll(RegExp(r'[<>:"/\\|?*\x00-\x1F]'), '_')
-      .replaceAll(RegExp(r'[. ]+$'), '');
-  return safe.isEmpty ? '_' : safe;
-}
-
-/// [path], or the same name with " (2)", " (3)"… when taken, as Explorer
-/// numbers a copy.
-String freeTarget(String path) {
-  if (!File(path).existsSync()) return path;
-  final slash = path.lastIndexOf('\\');
-  final dot = path.lastIndexOf('.');
-  final hasExt = dot > slash + 1;
-  final stem = hasExt ? path.substring(0, dot) : path;
-  final ext = hasExt ? path.substring(dot) : '';
-  for (var i = 2; i < 1000; i++) {
-    final candidate = '$stem ($i)$ext';
-    if (!File(candidate).existsSync()) return candidate;
-  }
-  return path;
 }
 
 /// How many copies and server downloads are under way, for the badge.

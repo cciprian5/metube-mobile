@@ -5,8 +5,7 @@ import 'package:mt_core/mt_core.dart';
 import '../../di.dart';
 
 /// Lite's settings state: **one** server URL, with no automatic switching,
-/// which is a Super feature. Storage key names follow `05-DATA-SCHEMA.md`
-/// §5.1 exactly, and they are the same names the old Lite used, so its
+/// which is a Super feature. Storage key names are fixed, and they are the same names the old Lite used, so its
 /// backup restores as it is.
 class LiteSettings {
   const LiteSettings({

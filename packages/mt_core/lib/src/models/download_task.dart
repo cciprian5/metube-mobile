@@ -5,8 +5,8 @@ import 'quality.dart';
 
 const _uuid = Uuid();
 
-/// The phases of a download task along the four-stage pipeline
-/// (`05-DATA-SCHEMA.md` §3): add, poll, pull, delete by policy.
+/// The phases of a download task along the four-stage pipeline: add,
+/// poll, pull, delete by policy.
 enum TaskPhase {
   queued,
   adding,

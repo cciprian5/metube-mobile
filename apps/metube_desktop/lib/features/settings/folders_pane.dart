@@ -8,7 +8,7 @@ import '../../data/choices_data.dart';
 import '../../data/folders_data.dart';
 import 'simple_panes.dart';
 
-/// The two folders of this computer (07 §3‑b): the offline copies the app
+/// The two folders of this computer: the offline copies the app
 /// keeps, and the downloads that are the user's own, each with a change
 /// and an Explorer button.
 class FoldersPane extends ConsumerWidget {

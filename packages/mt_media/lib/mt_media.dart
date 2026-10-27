@@ -1,7 +1,6 @@
 /// Shared MTF playback: the unified item, the golden source rule, the play
 /// queue, the background audio handler, the players and their widgets, and
-/// the position and state stores. Behaviour follows `01-PRD.md` and
-/// `02-TRD.md` §2.2.
+/// the position and state stores.
 library;
 
 export 'src/models/media_quality.dart';

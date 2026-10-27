@@ -1,6 +1,5 @@
 /// The Wahaj design system: tokens, themes, shared widgets, localisation.
-/// Every visual value comes from `docs/plan/04-UIUX-DESIGN-BRIEF.md` §4 and
-/// nowhere else.
+/// Every visual value comes from the tokens here and nowhere else.
 library;
 
 export 'src/gallery/gallery_screen.dart';

@@ -85,7 +85,8 @@ final desktopFoldersProvider = Provider<DesktopFolders>(
   (ref) => const NoFolders(),
 );
 
-/// The two folders of 07 §3‑b, saved on this computer only (a backup does
+/// The two folders (offline copies, own downloads), saved on this
+/// computer only (a backup does
 /// not carry them: another computer has other folders).
 ///
 /// **Offline** is a copy the app knows and plays; **download** is a file

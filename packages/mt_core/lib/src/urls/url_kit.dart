@@ -2,7 +2,7 @@ import '../constants/mt_constants.dart';
 
 /// Pure URL tools with no network: extraction from shared text,
 /// YouTube and numeric ids, normalisation, fuzzy matching, and the server
-/// filename guard. Reference: the PRD plus `05-DATA-SCHEMA.md` §2.3.
+/// filename guard.
 abstract final class UrlKit {
   static final RegExp _urlPattern = RegExp(
     r'https?://[^\s<>"]+',

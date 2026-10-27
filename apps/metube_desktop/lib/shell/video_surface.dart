@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -14,6 +15,10 @@ abstract interface class VideoSurface {
 
   /// Plays the sound alone, with no picture decoded, or the picture again.
   Future<void> setAudioOnly(bool on);
+
+  /// The playing picture's size in pixels as decoded, so the clip page can
+  /// say the quality that actually plays; null with no picture.
+  ValueListenable<Size?> get pictureSize;
 }
 
 /// A dark box in place of the picture: tests, previews and the gallery.
@@ -29,6 +34,10 @@ class InertVideoSurface implements VideoSurface {
 
   @override
   Future<void> setAudioOnly(bool on) async => calls.add('audioOnly $on');
+
+  /// Set by a test as if a picture of that size played.
+  @override
+  final ValueNotifier<Size?> pictureSize = ValueNotifier(null);
 }
 
 /// Overridden in main with the media_kit surface.

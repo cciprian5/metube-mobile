@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -14,8 +13,13 @@ import '../clip/clip_actions.dart';
 import '../clip/copy_pills.dart';
 import '../clip/tags_dialog.dart';
 import '../lists/list_dialogs.dart';
+import 'clip_keys.dart';
 
 enum ItemChoice {
+  play,
+  playNext,
+  readingRoom,
+  favorite,
   makeOffline,
   copyLink,
   showInFolder,
@@ -28,11 +32,12 @@ enum ItemChoice {
   deleteLocal,
 }
 
-/// The right-click menu of a clip in the library, by its state, **in the
-/// order of the phone's actions sheet** so nothing has to be learned
-/// twice: the phone's share is the link copied, its external player the
-/// file shown in Explorer. Deleting comes last, apart and in the error
-/// colour, behind a confirmation.
+/// The right-click menu of a clip in the library, by its state. Playing
+/// comes first, each with the key that does it on a chosen clip; then the
+/// rest **in the order of the phone's actions sheet** so nothing has to be
+/// learned twice: the phone's share is the link copied, its external
+/// player the file shown in Explorer. Deleting comes last, apart and in
+/// the error colour, behind a confirmation.
 List<EmberMenuEntry<ItemChoice>> itemMenuEntries(
   MTLocalizations l,
   LibraryItem item, {
@@ -40,9 +45,39 @@ List<EmberMenuEntry<ItemChoice>> itemMenuEntries(
 }) {
   final source = copySourceOf(item);
   return [
+    EmberMenuEntry(
+      ItemChoice.play,
+      MTIcons.play,
+      l.play,
+      shortcut: ClipKeys.play,
+    ),
+    EmberMenuEntry(
+      ItemChoice.playNext,
+      MTIcons.next,
+      l.desktopPlayNext,
+      shortcut: ClipKeys.playNext,
+    ),
+    EmberMenuEntry(
+      ItemChoice.readingRoom,
+      MTIcons.reading,
+      l.desktopReadingRoom,
+      shortcut: ClipKeys.reading,
+    ),
+    EmberMenuEntry(
+      ItemChoice.favorite,
+      item.favorite ? MTIcons.favoriteOn : MTIcons.favorite,
+      item.favorite ? l.removeFromFavorites : l.addToFavorites,
+      shortcut: ClipKeys.favorite,
+    ),
+    const EmberMenuEntry.divider(),
     if (source != null && !item.isOffline)
       EmberMenuEntry(ItemChoice.makeOffline, MTIcons.offline, l.makeOffline),
-    EmberMenuEntry(ItemChoice.copyLink, MTIcons.link, l.desktopCopyLink),
+    EmberMenuEntry(
+      ItemChoice.copyLink,
+      MTIcons.link,
+      l.desktopCopyLink,
+      shortcut: ClipKeys.copyLink,
+    ),
     if (hasFile)
       EmberMenuEntry(
         ItemChoice.showInFolder,
@@ -82,12 +117,15 @@ List<EmberMenuEntry<ItemChoice>> itemMenuEntries(
   ];
 }
 
+/// [onPlay] plays as a double click on the clip would: the list on screen
+/// from it.
 Future<void> showItemMenu(
   BuildContext context,
   WidgetRef ref,
   Offset globalPosition,
-  LibraryItem item,
-) async {
+  LibraryItem item, {
+  required VoidCallback onPlay,
+}) async {
   final l = context.mtl;
   final file = item.localPath;
   final hasFile = file != null && File(file).existsSync();
@@ -99,11 +137,18 @@ Future<void> showItemMenu(
   if (choice == null || !context.mounted) return;
   final source = copySourceOf(item);
   switch (choice) {
+    case ItemChoice.play:
+      onPlay();
+    case ItemChoice.playNext:
+      await playNextOf(context, ref, item);
+    case ItemChoice.readingRoom:
+      openReadingOf(context, item.canonicalUrl);
+    case ItemChoice.favorite:
+      await ref.read(clipActionsProvider).toggleFavorite(item.canonicalUrl);
     case ItemChoice.makeOffline:
       if (source != null) await makeOfflineCopy(context, ref, source);
     case ItemChoice.copyLink:
-      await Clipboard.setData(ClipboardData(text: item.canonicalUrl));
-      if (context.mounted) showMTNotice(context, message: l.desktopLinkCopied);
+      await copyLinkOf(context, item.canonicalUrl);
     case ItemChoice.showInFolder:
       if (file != null) await ref.read(desktopFoldersProvider).reveal(file);
     case ItemChoice.openOriginal:

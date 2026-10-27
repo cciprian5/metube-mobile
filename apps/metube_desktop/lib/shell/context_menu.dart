@@ -4,18 +4,28 @@ import 'package:mt_ui/mt_ui.dart';
 
 /// One line of a right-click menu; null [value] draws a divider.
 class EmberMenuEntry<T> {
-  const EmberMenuEntry(this.value, this.icon, this.label, {this.danger = false})
-    : assert(value != null);
+  const EmberMenuEntry(
+    this.value,
+    this.icon,
+    this.label, {
+    this.danger = false,
+    this.shortcut,
+  }) : assert(value != null);
 
   const EmberMenuEntry.divider()
     : value = null,
       icon = null,
       label = '',
-      danger = false;
+      danger = false,
+      shortcut = null;
 
   final T? value;
   final MTIconData? icon;
   final String label;
+
+  /// The key that does the same on a chosen clip, written as the
+  /// shortcuts sheet writes it ("Ctrl C"): shown so the menu teaches it.
+  final String? shortcut;
 
   /// Drawn in the error colour: deleting, unfollowing. Kept last.
   final bool danger;
@@ -75,7 +85,9 @@ Future<T?> showEmberMenu<T>(
                   ),
                   const SizedBox(width: MTSpace.sm),
                 ],
-                Flexible(
+                // Filling the row sets each hint at the menu's far edge,
+                // in one column down the menu.
+                Expanded(
                   child: Text(
                     entry.label,
                     overflow: TextOverflow.ellipsis,
@@ -84,6 +96,24 @@ Future<T?> showEmberMenu<T>(
                     ),
                   ),
                 ),
+                if (entry.shortcut case final keys?) ...[
+                  const SizedBox(width: MTSpace.lg),
+                  // Capped, so at a large text size the keys shrink rather
+                  // than push the row past the menu's edge.
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: MTSpace.xxl * 3,
+                    ),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        mtLtrRun(keys),
+                        semanticsLabel: '',
+                        style: text.labelSmall?.copyWith(color: p.ink3),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           )

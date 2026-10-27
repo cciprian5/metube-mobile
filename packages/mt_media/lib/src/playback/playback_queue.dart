@@ -161,6 +161,27 @@ class PlaybackQueue {
     return true;
   }
 
+  /// Puts [item] right after the current one, so it plays next whatever
+  /// the order, shuffled or not; the rest keeps its order. An empty queue
+  /// takes it as its only item.
+  void insertNext(PlaylistItem item) {
+    if (_items.isEmpty) {
+      _items.add(item);
+      _rebuildOrder(startAt: 0);
+      return;
+    }
+    if (_shuffle) {
+      _items.add(item);
+      _order = List.of(_order)..insert(_cursor + 1, _items.length - 1);
+      return;
+    }
+    // Sequential: the item itself moves in, so turning shuffle on and off
+    // again keeps it where it was put.
+    final at = index + 1;
+    _items.insert(at, item);
+    _order = List.generate(_items.length, (i) => i);
+  }
+
   /// Rebuilds after the items change. Shuffle is reshuffled, since an order
   /// pointing at vanished indexes cannot be preserved, and sequential keeps
   /// its position.

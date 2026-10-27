@@ -537,6 +537,30 @@ void main() {
     await expectNoOverflow(tester, () => withWords().app(), then: chapters);
   });
 
+  // The picture's controls over a video on its page, in full screen, and
+  // over a short's narrow column; paused, so they stay on screen.
+  for (final (short, full) in [(false, false), (false, true), (true, false)]) {
+    final name = short ? 'a short' : (full ? 'full screen' : 'its page');
+    testWidgets("a video's controls and facts, on $name", (tester) async {
+      late ShellHarness h;
+      await expectNoOverflow(
+        tester,
+        () => (h = withWords()).app(),
+        then: (tester) async {
+          final item = short ? _queue[2] : _queue[0];
+          h.video.pictureSize.value = short
+              ? const Size(1080, 1920)
+              : const Size(1920, 1080);
+          h.player.showPlaying([item], playing: false);
+          await tester.pumpAndSettle();
+          GoRouter.of(tester.element(find.byType(LibraryPage)))
+              .go(EmberRoutes.item(item.canonicalUrl));
+          if (full) h.controls.setFullScreen(true);
+        },
+      );
+    });
+  }
+
   testWidgets('the reading room, playing, finding', (tester) async {
     late ShellHarness h;
     await expectNoOverflow(

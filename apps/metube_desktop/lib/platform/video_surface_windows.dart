@@ -14,10 +14,25 @@ import '../shell/video_surface.dart';
 /// (measured: sound and a black stage). Made once, it lives as long as the
 /// player.
 class MediaKitVideoSurface implements VideoSurface {
-  MediaKitVideoSurface(this._player) : _controller = VideoController(_player);
+  MediaKitVideoSurface(this._player) : _controller = VideoController(_player) {
+    // Made once with the player and kept as long as it, as the controller.
+    _player.stream.width.listen((_) => _measure());
+    _player.stream.height.listen((_) => _measure());
+  }
 
   final Player _player;
   final VideoController _controller;
+
+  @override
+  final ValueNotifier<Size?> pictureSize = ValueNotifier(null);
+
+  void _measure() {
+    final width = _player.state.width;
+    final height = _player.state.height;
+    pictureSize.value = width == null || height == null || height == 0
+        ? null
+        : Size(width.toDouble(), height.toDouble());
+  }
 
   @override
   Widget build(BuildContext context) => Video(

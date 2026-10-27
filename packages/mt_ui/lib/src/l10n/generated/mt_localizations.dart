@@ -1304,11 +1304,23 @@ abstract class MTLocalizations {
   /// **'Add the link you copied'**
   String get desktopKeyAddLink;
 
+  /// No description provided for @desktopKeyFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites or remove'**
+  String get desktopKeyFavorite;
+
   /// No description provided for @desktopKeyFullScreen.
   ///
   /// In en, this message translates to:
   /// **'Full screen; for sound, the listening room'**
   String get desktopKeyFullScreen;
+
+  /// No description provided for @desktopKeyMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'The clip\'s menu'**
+  String get desktopKeyMenu;
 
   /// No description provided for @desktopKeyMini.
   ///
@@ -1664,6 +1676,18 @@ abstract class MTLocalizations {
   /// **'Pinned'**
   String get desktopPinned;
 
+  /// No description provided for @desktopPlayNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Play next'**
+  String get desktopPlayNext;
+
+  /// No description provided for @desktopPlaysNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Plays next, after this one'**
+  String get desktopPlaysNext;
+
   /// No description provided for @desktopPullAfter.
   ///
   /// In en, this message translates to:
@@ -1957,6 +1981,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'App'**
   String get desktopShortcutsApp;
+
+  /// No description provided for @desktopShortcutsClip.
+  ///
+  /// In en, this message translates to:
+  /// **'On a chosen clip'**
+  String get desktopShortcutsClip;
 
   /// No description provided for @desktopShortcutsPlayback.
   ///

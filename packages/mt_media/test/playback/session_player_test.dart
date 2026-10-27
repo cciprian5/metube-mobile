@@ -153,6 +153,34 @@ void main() {
       await player.skipToPrevious();
       expect(player.state.current!.title, 'a');
     });
+    test(
+      '"play next" queues after what plays, which goes on playing',
+      () async {
+        await player.playItems([_item('a'), _item('b')]);
+        await player.playNext(_item('x'));
+        expect(player.state.current!.title, 'a');
+        expect(port.loaded, hasLength(1));
+        expect(
+          [for (final i in player.state.ordered) i.title],
+          ['a', 'x', 'b'],
+        );
+        expect((await states.read())!.items.map((i) => i.title), [
+          'a',
+          'x',
+          'b',
+        ]);
+
+        // The one playing is not queued again behind itself.
+        await player.playNext(_item('a'));
+        expect(player.state.items, hasLength(3));
+      },
+    );
+
+    test('"play next" with nothing queued plays it now', () async {
+      await player.playNext(_item('x'));
+      expect(player.state.current!.title, 'x');
+      expect(player.state.playing, isTrue);
+    });
   });
 
   group('failures', () {

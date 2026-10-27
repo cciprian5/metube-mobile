@@ -10,6 +10,7 @@ import 'package:metube_desktop/data/downloads_data.dart';
 import 'package:metube_desktop/data/library_data.dart';
 import 'package:metube_desktop/data/transcripts_data.dart';
 import 'package:metube_desktop/features/library/artwork.dart';
+import 'package:metube_desktop/features/library/selection.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
 import 'package:metube_desktop/shell/shell_state.dart';
@@ -118,6 +119,8 @@ class FakePlayer implements MTPlayer {
   @override
   Future<void> moveQueueItem(int from, int to) => _note('move $from $to');
   @override
+  Future<void> playNext(PlaylistItem item) => _note('next ${item.title}');
+  @override
   Future<void> setSpeed(double speed) => _note('speed $speed');
   @override
   Future<void> setPlayMode(PlayMode mode) => _note('mode ${mode.name}');
@@ -219,6 +222,9 @@ class ShellHarness {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = size;
     addTearDown(tester.view.reset);
+    // Clicks judged on the test's own time, not the machine's.
+    ClickClock.now = tester.binding.clock.now;
+    addTearDown(() => ClickClock.now = DateTime.now);
   }
 
   static void useArabic(WidgetTester tester) {

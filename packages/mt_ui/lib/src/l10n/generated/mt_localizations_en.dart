@@ -722,8 +722,14 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopKeyAddLink => 'Add the link you copied';
 
   @override
+  String get desktopKeyFavorite => 'Add to favorites or remove';
+
+  @override
   String get desktopKeyFullScreen =>
       'Full screen; for sound, the listening room';
+
+  @override
+  String get desktopKeyMenu => 'The clip\'s menu';
 
   @override
   String get desktopKeyMini => 'Small window above the others, and back';
@@ -942,6 +948,12 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopPinned => 'Pinned';
 
   @override
+  String get desktopPlayNext => 'Play next';
+
+  @override
+  String get desktopPlaysNext => 'Plays next, after this one';
+
+  @override
   String get desktopPullAfter => 'Then download it to this computer';
 
   @override
@@ -1118,6 +1130,9 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopShortcutsApp => 'App';
+
+  @override
+  String get desktopShortcutsClip => 'On a chosen clip';
 
   @override
   String get desktopShortcutsPlayback => 'Playing';

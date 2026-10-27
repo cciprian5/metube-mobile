@@ -228,4 +228,36 @@ void main() {
       expect(titles(queue), ['a', 'b', 'c', 'd', 'e']);
     });
   });
+
+  group('play next', () {
+    List<String> order(PlaybackQueue q) => [for (final i in q.ordered) i.title];
+
+    test('**the guard**: it goes right after the current one, and what plays '
+        'stays current', () {
+      final queue = PlaybackQueue(items: _five, index: 1)
+        ..insertNext(_item('x'));
+      expect(queue.current!.title, 'b');
+      expect(order(queue), ['a', 'b', 'x', 'c', 'd', 'e']);
+      expect(queue.moveNext(PlayMode.autoNext), isTrue);
+      expect(queue.current!.title, 'x');
+    });
+
+    test('under shuffle too, without reshuffling the rest', () {
+      final queue = PlaybackQueue(
+        items: _five,
+        index: 2,
+        shuffle: true,
+        random: Random(5),
+      );
+      final before = order(queue);
+      queue.insertNext(_item('x'));
+      expect(queue.current!.title, 'c');
+      expect(order(queue), [before.first, 'x', ...before.skip(1)]);
+    });
+
+    test('an empty queue takes it as its only item', () {
+      final queue = PlaybackQueue(items: const [])..insertNext(_item('x'));
+      expect(queue.current!.title, 'x');
+    });
+  });
 }

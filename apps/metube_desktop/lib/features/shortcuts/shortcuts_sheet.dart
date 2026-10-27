@@ -3,12 +3,13 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../shell/key_cap.dart';
 import '../../shell/shell_metrics.dart';
+import '../library/clip_keys.dart';
 
 /// One line of the sheet: the keys as printed on the keyboard, and what
 /// they do.
 typedef ShortcutLine = ({List<String> keys, String does});
 
-/// Every key the window answers, in three groups. Key names are the
+/// Every key the window answers, in four groups. Key names are the
 /// keyboard's own and read the same in either language.
 List<(String, List<ShortcutLine>)> shortcutGroups(MTLocalizations l) => [
   (
@@ -18,6 +19,17 @@ List<(String, List<ShortcutLine>)> shortcutGroups(MTLocalizations l) => [
       (keys: ['←', '→'], does: l.desktopKeySeek),
       (keys: ['↑', '↓'], does: l.desktopKeyVolume),
       (keys: ['R'], does: l.desktopKeyRepeat),
+    ],
+  ),
+  (
+    l.desktopShortcutsClip,
+    [
+      (keys: [ClipKeys.play], does: l.play),
+      (keys: [ClipKeys.playNext], does: l.desktopPlayNext),
+      (keys: [ClipKeys.reading], does: l.desktopReadingRoom),
+      (keys: [ClipKeys.favorite], does: l.desktopKeyFavorite),
+      (keys: [ClipKeys.copyLink], does: l.desktopCopyLink),
+      (keys: ['Shift F10'], does: l.desktopKeyMenu),
     ],
   ),
   (

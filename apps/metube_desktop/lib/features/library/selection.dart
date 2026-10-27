@@ -59,12 +59,17 @@ class ClickClock {
   static DateTime _lastClick = DateTime.fromMillisecondsSinceEpoch(0);
   static String? _lastUrl;
 
+  /// The time the clicks are judged by. A widget test runs on simulated
+  /// time and sets its own, so a slow machine does not split its double
+  /// click in two.
+  static DateTime Function() now = DateTime.now;
+
   /// A mouse button went down on a card.
-  static void pointerDown() => _down = DateTime.now();
+  static void pointerDown() => _down = now();
 
   /// What an activation of [url] means, judged now.
   static ClickMeaning activate(String url) {
-    final now = DateTime.now();
+    final now = ClickClock.now();
     // An activation with no button just down came from the keyboard or a
     // screen reader.
     if (now.difference(_down) > const Duration(milliseconds: 600)) {

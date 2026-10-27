@@ -42,11 +42,7 @@ void main() {
   Future<void> click(WidgetTester tester, String title) async {
     await tester.tap(card(title), kind: PointerDeviceKind.mouse);
     // Past a double click's window, so the next click starts afresh.
-    await tester.runAsync(
-      () => Future<void>.delayed(
-        kDoubleTapTimeout + const Duration(milliseconds: 50),
-      ),
-    );
+    await tester.pump(kDoubleTapTimeout + const Duration(milliseconds: 50));
     await tester.pumpAndSettle();
   }
 
@@ -58,6 +54,20 @@ void main() {
     expect(find.text('1 selected'), findsOneWidget);
 
     await doubleClick(tester, card('Cedar Trail'));
+    await tester.pumpAndSettle();
+    expect(h.player.calls, contains('playItems'));
+  });
+
+  testWidgets('**the guard**: a slow machine does not split a double click '
+      'in two', (tester) async {
+    final h = await open(tester);
+    await tester.tap(card('Cedar Trail'), kind: PointerDeviceKind.mouse);
+    // Real time passes between the clicks, as on a loaded machine; the
+    // test's own time does not.
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 400)),
+    );
+    await tester.tap(card('Cedar Trail'), kind: PointerDeviceKind.mouse);
     await tester.pumpAndSettle();
     expect(h.player.calls, contains('playItems'));
   });

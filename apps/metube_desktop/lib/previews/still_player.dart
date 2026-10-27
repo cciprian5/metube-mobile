@@ -45,6 +45,8 @@ class StillPlayer implements MTPlayer {
   @override
   Future<void> moveQueueItem(int from, int to) async {}
   @override
+  Future<void> playNext(PlaylistItem item) async {}
+  @override
   Future<void> setSpeed(double speed) async {}
   @override
   Future<void> setPlayMode(PlayMode mode) async {}

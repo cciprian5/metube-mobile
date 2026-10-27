@@ -79,6 +79,11 @@ abstract interface class MTPlayer {
   /// Moves an item of "up next" from [from] to [to], both positions in
   /// [MTPlayerState.ordered]; what is playing goes on playing.
   Future<void> moveQueueItem(int from, int to);
+
+  /// Queues [item] to play right after the current one, leaving what plays
+  /// alone; with nothing queued it plays now. The current item itself is
+  /// left where it is.
+  Future<void> playNext(PlaylistItem item);
   Future<void> setSpeed(double speed);
   Future<void> setPlayMode(PlayMode mode);
   Future<void> setShuffle(bool value);

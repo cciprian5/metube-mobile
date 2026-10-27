@@ -751,7 +751,13 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopKeyAddLink => 'إضافة الرابط المنسوخ';
 
   @override
+  String get desktopKeyFavorite => 'إضافة إلى المفضلة أو إزالة منها';
+
+  @override
   String get desktopKeyFullScreen => 'ملء الشاشة، وفي الصوت غرفة الاستماع';
+
+  @override
+  String get desktopKeyMenu => 'قائمة المقطع';
 
   @override
   String get desktopKeyMini => 'نافذة صغيرة فوق البرامج، والعودة منها';
@@ -976,6 +982,12 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopPinned => 'مثبّتة';
 
   @override
+  String get desktopPlayNext => 'تشغيل التالي';
+
+  @override
+  String get desktopPlaysNext => 'سيُشغَّل بعد الحالي';
+
+  @override
   String get desktopPullAfter => 'ثم نزّله إلى هذا الكمبيوتر';
 
   @override
@@ -1155,6 +1167,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopShortcutsApp => 'التطبيق';
+
+  @override
+  String get desktopShortcutsClip => 'على مقطع محدد';
 
   @override
   String get desktopShortcutsPlayback => 'التشغيل';

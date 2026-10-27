@@ -12,6 +12,7 @@ import '../../data/clip_handover.dart';
 import '../../data/library_data.dart';
 import '../../shell/context_menu.dart';
 import 'artwork.dart';
+import 'clip_keys.dart';
 import 'item_menu.dart';
 import 'selection.dart';
 
@@ -55,11 +56,12 @@ class LibraryItemView extends ConsumerWidget {
   static const double _compactWidth = 64;
 
   /// A right click, or the menu key, opens the clip's menu; a drag carries
-  /// its file out of the window.
+  /// its file out of the window; the menu's keys work on it when focused.
   @override
   Widget build(BuildContext context, WidgetRef ref) => MenuKey(
-    onMenu: (at) => unawaited(showItemMenu(context, ref, at, item)),
-    child: _rightClick(context, ref),
+    onMenu: (at) =>
+        unawaited(showItemMenu(context, ref, at, item, onPlay: onPlay)),
+    child: ClipKeyArea(item: item, child: _rightClick(context, ref)),
   );
 
   Widget _rightClick(BuildContext context, WidgetRef ref) => GestureDetector(
@@ -67,8 +69,9 @@ class LibraryItemView extends ConsumerWidget {
     // Only the right click is caught here; left in, Flutter would offer a
     // screen reader a "tap" on the whole area that does nothing.
     excludeFromSemantics: true,
-    onSecondaryTapUp: (d) =>
-        unawaited(showItemMenu(context, ref, d.globalPosition, item)),
+    onSecondaryTapUp: (d) => unawaited(
+      showItemMenu(context, ref, d.globalPosition, item, onPlay: onPlay),
+    ),
     child: ref.watch(clipDragProvider)(item, _framed(context, ref)),
   );
 

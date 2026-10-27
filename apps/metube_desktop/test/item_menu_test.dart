@@ -24,11 +24,29 @@ void main() {
   group('what the menu offers, by the clip', () {
     final l = lookupMTLocalizations(const Locale('en'));
     List<ItemChoice?> choices(LibraryItem item, {bool hasFile = false}) => [
-      for (final e in itemMenuEntries(l, item, hasFile: hasFile)) e.value,
+      for (final e in itemMenuEntries(l, item, hasFile: hasFile).skip(5))
+        e.value,
     ];
 
-    test("**the guard**: the phone's order, and deleting last, apart and in "
-        'the error colour', () {
+    test('playing comes first, each with its key, apart from the rest', () {
+      final entries = itemMenuEntries(l, _clip(), hasFile: false);
+      expect(
+        [for (final e in entries.take(5)) e.value],
+        [
+          ItemChoice.play,
+          ItemChoice.playNext,
+          ItemChoice.readingRoom,
+          ItemChoice.favorite,
+          null,
+        ],
+      );
+      expect([
+        for (final e in entries.take(4)) e.shortcut,
+      ], everyElement(isNotNull));
+    });
+
+    test("**the guard**: then the phone's order, and deleting last, apart and "
+        'in the error colour', () {
       expect(choices(_clip()), [
         ItemChoice.makeOffline,
         ItemChoice.copyLink,

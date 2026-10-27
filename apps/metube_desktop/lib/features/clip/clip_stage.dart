@@ -5,9 +5,11 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../shell/video_surface.dart';
 import '../library/artwork.dart';
+import 'video_controls.dart';
 
-/// Where a clip is watched: its picture while it plays, otherwise its
-/// cover, with a play button when it is not the clip playing.
+/// Where a clip is watched: its picture while it plays, with its controls
+/// over it, otherwise its cover, with a play button when it is not the
+/// clip playing.
 class ClipStage extends ConsumerWidget {
   const ClipStage({
     super.key,
@@ -37,7 +39,10 @@ class ClipStage extends ConsumerWidget {
       child: ColoredBox(
         color: MTPalette.fullscreenScrim,
         child: picture
-            ? ref.watch(videoSurfaceProvider).build(context)
+            ? ClipVideoControls(
+                short: item.isShortForm,
+                child: ref.watch(videoSurfaceProvider).build(context),
+              )
             : LayoutBuilder(
                 builder: (context, box) => Stack(
                   fit: StackFit.expand,

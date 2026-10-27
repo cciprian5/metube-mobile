@@ -20,6 +20,7 @@ import '../library/platform_label.dart';
 import '../lists/list_dialogs.dart';
 import 'clip_actions.dart';
 import 'clip_chapters.dart';
+import 'clip_facts.dart';
 import 'clip_menu.dart';
 import 'clip_stage.dart';
 import 'clip_state.dart';
@@ -256,6 +257,11 @@ class _ClipLayout extends ConsumerWidget {
                 ),
                 const SizedBox(height: MTSpace.xxs),
                 Text(meta, style: text.bodySmall?.copyWith(color: p.ink3)),
+                if (entry case final entry?)
+                  ClipFacts(
+                    entry: entry,
+                    picture: isCurrent && !item.isAudio && !audioOnly,
+                  ),
                 const SizedBox(height: MTSpace.md),
                 Wrap(
                   spacing: MTSpace.sm,

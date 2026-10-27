@@ -195,6 +195,9 @@ class MTSessionPlayer implements MTPlayer {
   }
 
   @override
+  Future<void> playNext(PlaylistItem item) => _playNext(item);
+
+  @override
   Future<void> setSpeed(double speed) async {
     final value = PlaybackSpeeds.clamp(speed);
     await port.setSpeed(value);

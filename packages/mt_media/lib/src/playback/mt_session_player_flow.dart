@@ -126,4 +126,15 @@ extension _MTSessionFlow on MTSessionPlayer {
       await _onError(autoPlay: autoPlay);
     }
   }
+
+  /// "Play next": into the queue after what plays, which goes on playing.
+  /// The same clip as the one playing changes nothing, rather than queue
+  /// it to play twice in a row.
+  Future<void> _playNext(PlaylistItem item) async {
+    if (_queue.isEmpty) return playItems([item]);
+    if (_queue.current?.canonicalUrl == item.canonicalUrl) return;
+    _queue.insertNext(item);
+    _broadcast();
+    await persist();
+  }
 }

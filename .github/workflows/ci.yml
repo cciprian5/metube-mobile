@@ -103,3 +103,70 @@ jobs:
       - name: Build ${{ matrix.app }}
         run: flutter build apk --debug
         working-directory: apps/${{ matrix.app }}
+
+  # The Windows app on a Windows runner: its tests read Windows paths and
+  # its build needs the Visual C++ tools and Rust (two plugins compile
+  # native code with it), all of which windows-latest carries. The Android
+  # jobs above stay as they were.
+  windows:
+    name: Windows app (MeTube Ember)
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.2
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-pub
+        working-directory: apps/metube_desktop
+
+      - name: Test metube_desktop
+        run: flutter test --no-pub
+        working-directory: apps/metube_desktop
+
+      - name: Build metube_desktop
+        run: flutter build windows --release --no-pub
+        working-directory: apps/metube_desktop
+
+      # The installer script is code too: packing proves it still compiles
+      # against the build. Inno Setup 6 is on the runner; the Visual C++
+      # runtime shipped beside the app comes from its Visual Studio.
+      - name: Pack the installer
+        working-directory: apps/metube_desktop
+        run: |
+          $iscc = @(
+            "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+            "$env:ProgramFiles\Inno Setup 6\ISCC.exe"
+          ) | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $iscc) { choco install innosetup --no-progress -y; $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -property installationPath
+          $crt = Get-ChildItem "$vs\VC\Redist\MSVC" -Directory |
+            Sort-Object { try { [version]$_.Name } catch { [version]'0.0' } } -Descending |
+            ForEach-Object { Join-Path $_.FullName 'x64\Microsoft.VC143.CRT' } |
+            Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $crt) { throw 'Microsoft.VC143.CRT not found' }
+          $version = (Select-String -Path pubspec.yaml -Pattern '^version:\s*([^+\s]+)').Matches[0].Groups[1].Value
+          & $iscc /Q "/DAppVersion=$version" "/DCrtDir=$crt" windows\installer\ember.iss
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed ($LASTEXITCODE)" }
+          Get-Item build\installer\*.exe | Format-Table Name, Length
+
+      # Unsigned and for checking only; a release is built on the owner's
+      # machine.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MeTube-Ember-installer
+          path: apps/metube_desktop/build/installer/*.exe
+          retention-days: 7

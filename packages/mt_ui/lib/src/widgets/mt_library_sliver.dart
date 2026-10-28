@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import 'mt_adaptive.dart';
 import 'mt_media_row.dart';
@@ -37,6 +38,7 @@ class MTLibrarySliver extends StatelessWidget {
     required this.itemBuilder,
     this.showLocation = false,
     this.sort,
+    this.pinHeader = false,
   });
 
   final MTLibraryLayout layout;
@@ -50,6 +52,10 @@ class MTLibrarySliver extends StatelessWidget {
   /// Sorting from the table's header (the Windows app); null keeps plain
   /// titles.
   final MTTableSort? sort;
+
+  /// Whether the table's titles stay at the top while its rows scroll
+  /// under them (the Windows app); a phone or tablet lets them go.
+  final bool pinHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +99,17 @@ class MTLibrarySliver extends StatelessWidget {
           if (columns == null) return _rows();
           return SliverMainAxisGroup(
             slivers: [
-              SliverToBoxAdapter(
-                child: MTMediaRowHeader(columns: columns, sort: sort),
-              ),
+              if (pinHeader)
+                PinnedHeaderSliver(
+                  child: ColoredBox(
+                    color: MTThemeX.of(context).palette.bg,
+                    child: MTMediaRowHeader(columns: columns, sort: sort),
+                  ),
+                )
+              else
+                SliverToBoxAdapter(
+                  child: MTMediaRowHeader(columns: columns, sort: sort),
+                ),
               SliverList.builder(
                 itemCount: itemCount,
                 itemBuilder: (context, index) =>

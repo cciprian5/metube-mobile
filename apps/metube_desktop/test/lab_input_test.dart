@@ -18,4 +18,10 @@ void main() {
     expect(keys.single.$1, LogicalKeyboardKey.keyC);
     expect(keys.single.$3, const Duration(seconds: 6));
   });
+
+  test('lab wheel turns read a point, a distance and a second', () {
+    expect(labScrollsFrom(['--lab-scroll=700,500,1200@10;bad@1']), [
+      (const Offset(700, 500), 1200.0, const Duration(seconds: 10)),
+    ]);
+  });
 }

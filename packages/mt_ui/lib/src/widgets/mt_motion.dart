@@ -161,6 +161,53 @@ class MTSlidePageTransition extends PageTransitionsBuilder {
   }
 }
 
+/// Page changes on a computer: **a fade-through**, the old page gone first
+/// and the new one rising a few points as it fades in.
+///
+/// Flutter's Windows default zooms the new page out of a dark scrim from
+/// a snapshot, which inside a shell reads as a dark frame and a thin line
+/// round a shrinking page. Here nothing scales, nothing is snapshotted and
+/// the two pages barely overlap, so a playing picture never doubles.
+class MTDesktopPageTransition extends PageTransitionsBuilder {
+  const MTDesktopPageTransition();
+
+  /// Where the old page is gone and the new one starts to show.
+  static const double handOver = 0.35;
+
+  @override
+  Duration get transitionDuration => MTMotion.page;
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    if (MediaQuery.disableAnimationsOf(context)) return child;
+    final enter = CurvedAnimation(
+      parent: animation,
+      curve: const Interval(handOver, 1, curve: MTMotion.entrance),
+    );
+    final leave = CurvedAnimation(
+      parent: secondaryAnimation,
+      curve: const Interval(0, handOver, curve: MTMotion.exit),
+    );
+    return AnimatedBuilder(
+      animation: Listenable.merge([enter, leave]),
+      builder: (context, child) => Opacity(
+        opacity: enter.value * (1 - leave.value),
+        child: Transform.translate(
+          offset: Offset(0, MTMotion.slideNudge * (1 - enter.value)),
+          child: child,
+        ),
+      ),
+      child: child,
+    );
+  }
+}
+
 /// Installed on `ThemeData.pageTransitionsTheme` in both apps.
 const mtPageTransitionsTheme = PageTransitionsTheme(
   builders: {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/tokens.dart';
+import '../widgets/mt_motion.dart';
 import 'mt_theme.dart';
 
 /// The Windows app's theme: the Wahaj theme with the desktop type and
@@ -32,6 +33,14 @@ ThemeData mtDesktopTheme(
     // "Warmth" instead of Material's sparkle: a press fills with the soft
     // accent and fades, with no ripple travelling across the control.
     splashFactory: NoSplash.splashFactory,
+    // Every platform, so tests (which run as Android) see what Windows
+    // shows.
+    pageTransitionsTheme: PageTransitionsTheme(
+      builders: {
+        for (final platform in TargetPlatform.values)
+          platform: const MTDesktopPageTransition(),
+      },
+    ),
     highlightColor: p.accentSoft,
     // **A veil of the ink, never an opaque fill**: hovered, a button over
     // a picture or the ember (a play button, the controls on a video)

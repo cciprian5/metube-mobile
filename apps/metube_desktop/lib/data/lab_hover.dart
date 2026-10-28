@@ -5,11 +5,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 /// The lab's pretend input, from the command line: see [labHoverFrom],
-/// [labKeysFrom] and [labTapsFrom]. Nothing outside a debug build.
+/// [labKeysFrom], [labTapsFrom] and [labScrollsFrom]. Nothing outside a debug build.
 void runLab(List<String> args) {
   runLabHover(labHoverFrom(args));
   runLabKeys(labKeysFrom(args));
   runLabTaps(labTapsFrom(args));
+  runLabScrolls(labScrollsFrom(args));
 }
 
 /// A point the lab clicks, and when.
@@ -187,5 +188,60 @@ void runLabHover(List<Offset> points) {
       );
     });
     at += const Duration(milliseconds: 2500);
+  }
+}
+
+/// A wheel turn the lab makes: where, how far down, and when.
+typedef LabScroll = (Offset, double, Duration);
+
+/// Wheel turns, `--lab-scroll=700,500,1200@10` in logical pixels and the
+/// seconds after start: **debug builds only**, so what scrolling shows (a
+/// heading held at the top) can be checked in the real window without the
+/// user's own mouse. Empty outside a debug build.
+List<LabScroll> labScrollsFrom(List<String> args) {
+  if (!kDebugMode) return const [];
+  for (final a in args) {
+    if (!a.startsWith('--lab-scroll=')) continue;
+    return [
+      for (final turn in a.substring(13).split(';'))
+        if (turn.split('@') case [final where, final at])
+          if (where.split(',') case [final x, final y, final dy])
+            if ((
+                  double.tryParse(x),
+                  double.tryParse(y),
+                  double.tryParse(dy),
+                  int.tryParse(at),
+                )
+                case (final px?, final py?, final down?, final s?))
+              (Offset(px, py), down, Duration(seconds: s)),
+    ];
+  }
+  return const [];
+}
+
+/// Turns the wheel of a pretend mouse of its own for each of [turns].
+void runLabScrolls(List<LabScroll> turns) {
+  const device = 9003;
+  final binding = GestureBinding.instance;
+  for (final (i, (point, down, at)) in turns.indexed) {
+    Timer(at, () {
+      if (i == 0) {
+        binding.handlePointerEvent(
+          PointerAddedEvent(
+            kind: PointerDeviceKind.mouse,
+            device: device,
+            position: point,
+          ),
+        );
+      }
+      binding.handlePointerEvent(
+        PointerScrollEvent(
+          kind: PointerDeviceKind.mouse,
+          device: device,
+          position: point,
+          scrollDelta: Offset(0, down),
+        ),
+      );
+    });
   }
 }

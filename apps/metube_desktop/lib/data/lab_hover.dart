@@ -4,11 +4,78 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
-/// The lab's pretend input, from the command line: see [labHoverFrom] and
-/// [labKeysFrom]. Nothing outside a debug build.
+/// The lab's pretend input, from the command line: see [labHoverFrom],
+/// [labKeysFrom] and [labTapsFrom]. Nothing outside a debug build.
 void runLab(List<String> args) {
   runLabHover(labHoverFrom(args));
   runLabKeys(labKeysFrom(args));
+  runLabTaps(labTapsFrom(args));
+}
+
+/// A point the lab clicks, and when.
+typedef LabTap = (Offset, Duration);
+
+/// Clicks, `--lab-tap=640,520@20` in logical pixels and the seconds after
+/// start: **debug builds only**, so a button with no key (theater) can be
+/// pressed in the real window without the user's own mouse. Empty outside
+/// a debug build.
+List<LabTap> labTapsFrom(List<String> args) {
+  if (!kDebugMode) return const [];
+  for (final a in args) {
+    if (!a.startsWith('--lab-tap=')) continue;
+    return [
+      for (final tap in a.substring(10).split(';'))
+        if (tap.split('@') case [final point, final at])
+          if (point.split(',') case [final x, final y])
+            if ((double.tryParse(x), double.tryParse(y), int.tryParse(at))
+                case (final dx?, final dy?, final s?))
+              (Offset(dx, dy), Duration(seconds: s)),
+    ];
+  }
+  return const [];
+}
+
+/// Clicks each of [taps] at its time with a pretend mouse of its own, so
+/// the real pointer stays where the user left it.
+void runLabTaps(List<LabTap> taps) {
+  const device = 9002;
+  final binding = GestureBinding.instance;
+  for (final (i, (point, at)) in taps.indexed) {
+    Timer(at, () {
+      if (i == 0) {
+        binding.handlePointerEvent(
+          PointerAddedEvent(
+            kind: PointerDeviceKind.mouse,
+            device: device,
+            position: point,
+          ),
+        );
+      }
+      binding
+        ..handlePointerEvent(
+          PointerHoverEvent(
+            kind: PointerDeviceKind.mouse,
+            device: device,
+            position: point,
+          ),
+        )
+        ..handlePointerEvent(
+          PointerDownEvent(
+            kind: PointerDeviceKind.mouse,
+            device: device,
+            position: point,
+            buttons: kPrimaryMouseButton,
+          ),
+        )
+        ..handlePointerEvent(
+          PointerUpEvent(
+            kind: PointerDeviceKind.mouse,
+            device: device,
+            position: point,
+          ),
+        );
+    });
+  }
 }
 
 /// A key the lab presses, and when.

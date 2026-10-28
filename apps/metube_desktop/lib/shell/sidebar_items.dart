@@ -194,8 +194,9 @@ class SidebarItem extends StatelessWidget {
   }
 }
 
-/// Narrows or widens the sidebar: a panel with an arrow, pointing the way
-/// the sidebar will go, toward its edge in either language.
+/// Narrows or widens the sidebar, from the title bar above it: a panel
+/// with an arrow, pointing the way the sidebar will go, toward its edge in
+/// either language.
 class SidebarToggle extends StatelessWidget {
   const SidebarToggle({super.key, required this.narrow, required this.onTap});
 
@@ -221,21 +222,17 @@ class SidebarToggle extends StatelessWidget {
       excludeSemantics: true,
       child: MTShortcutTooltip(
         message: label,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: MTSpace.xxs / 2),
-          child: Material(
-            color: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: onTap,
-              child: SizedBox(
-                width: narrow ? double.infinity : MTDensity.desktop.row,
-                height: MTDensity.desktop.row,
-                child: Center(child: glyph),
-              ),
+        child: Material(
+          color: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: SizedBox.square(
+              dimension: MTDensity.desktop.row,
+              child: Center(child: glyph),
             ),
           ),
         ),

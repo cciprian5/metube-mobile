@@ -11,6 +11,7 @@ import '../shell/player_bar.dart';
 import '../shell/right_panel.dart';
 import '../shell/shell_metrics.dart';
 import '../shell/sidebar.dart';
+import '../shell/sidebar_items.dart';
 import '../shell/title_bar.dart';
 import '../shell/window_controls.dart';
 import 'still_player.dart';
@@ -139,23 +140,19 @@ final _playing = MTPlayerState(
 void _ignore([Object? _]) {}
 
 @EmberPreview('Title bar', size: Size(1280, EmberShellSize.titleBar))
-Widget titleBarPreview() => EmberTitleBar(controls: InertWindowControls());
+Widget titleBarPreview() => EmberTitleBar(
+  controls: InertWindowControls(),
+  startWidth: EmberShellSize.sidebarWide,
+  sidebarToggle: SidebarToggle(narrow: false, onTap: _ignore),
+);
 
 @EmberPreview('Sidebar, wide', size: Size(EmberShellSize.sidebarWide, 640))
-Widget sidebarPreview() => EmberSidebar(
-  narrow: false,
-  current: EmberPlace.library,
-  onGo: _ignore,
-  onToggleNarrow: _ignore,
-);
+Widget sidebarPreview() =>
+    EmberSidebar(narrow: false, current: EmberPlace.library, onGo: _ignore);
 
 @EmberPreview('Sidebar, narrow', size: Size(EmberShellSize.sidebarNarrow, 640))
-Widget sidebarNarrowPreview() => EmberSidebar(
-  narrow: true,
-  current: EmberPlace.offline,
-  onGo: _ignore,
-  onToggleNarrow: _ignore,
-);
+Widget sidebarNarrowPreview() =>
+    EmberSidebar(narrow: true, current: EmberPlace.offline, onGo: _ignore);
 
 @EmberPreview('Player bar, playing', size: Size(1280, EmberShellSize.playerBar))
 Widget playerBarPreview() => EmberPlayerBar(

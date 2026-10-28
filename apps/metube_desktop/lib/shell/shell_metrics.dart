@@ -2,7 +2,7 @@ import 'shell_layout.dart';
 
 /// The fixed measures of the Windows shell, in logical pixels.
 abstract final class EmberShellSize {
-  static const double titleBar = 40;
+  static const double titleBar = 48;
 
   /// One caption button, the width Windows itself gives them.
   static const double captionButton = 46;

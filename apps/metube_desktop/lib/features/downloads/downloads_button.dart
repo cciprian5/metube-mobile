@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/downloads_data.dart';
+import 'download_glyph.dart';
 import 'downloads_panel.dart';
 
-/// The downloads button above the content, with the count of what is
-/// under way on its corner; it opens [DownloadsPanel].
+/// The downloads button in the title bar, with the count of what is under
+/// way on its corner and its arrow moving while anything is; it opens
+/// [DownloadsPanel].
 class DownloadsButton extends ConsumerWidget {
   const DownloadsButton({super.key});
 
@@ -31,11 +33,13 @@ class DownloadsButton extends ConsumerWidget {
           icon: Stack(
             clipBehavior: Clip.none,
             children: [
-              MTIcon(
-                MTIcons.download,
-                size: MTDensity.desktop.icon,
-                color: active > 0 ? p.accentInk : p.ink2,
-                semanticLabel: label,
+              Semantics(
+                label: label,
+                child: DownloadGlyph(
+                  active: active,
+                  motion: ref.watch(downloadMotionProvider),
+                  color: active > 0 ? p.accentInk : p.ink2,
+                ),
               ),
               if (active > 0)
                 PositionedDirectional(

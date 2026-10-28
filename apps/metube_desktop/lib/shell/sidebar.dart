@@ -19,7 +19,6 @@ class EmberSidebar extends StatelessWidget {
     required this.current,
     required this.onGo,
     this.onAdd,
-    this.onToggleNarrow,
     this.pinned = const [],
     this.currentList,
     this.folders = const [],
@@ -42,9 +41,6 @@ class EmberSidebar extends StatelessWidget {
 
   /// null until the add dialog exists; the button stays, dimmed.
   final VoidCallback? onAdd;
-
-  /// null when the window is too narrow to offer the wide sidebar.
-  final VoidCallback? onToggleNarrow;
 
   /// The pinned lists, under "Playlists", each a place of its own.
   final List<SavedPlaylist> pinned;
@@ -196,32 +192,13 @@ class EmberSidebar extends StatelessWidget {
           ),
         ),
         SidebarServerLine(narrow: narrow),
-        // The way to narrow or widen is a glyph alone, as in other
-        // apps: beside Settings when wide, above it when narrow.
-        if (narrow) ...[
-          if (onToggleNarrow case final toggle?)
-            SidebarToggle(narrow: true, onTap: toggle),
-          item(
-            EmberPlace.settings,
-            MTIcons.settings,
-            l.navSettings,
-            EmberRoutes.settings,
-          ),
-        ] else
-          Row(
-            children: [
-              Expanded(
-                child: item(
-                  EmberPlace.settings,
-                  MTIcons.settings,
-                  l.navSettings,
-                  EmberRoutes.settings,
-                ),
-              ),
-              if (onToggleNarrow case final toggle?)
-                SidebarToggle(narrow: false, onTap: toggle),
-            ],
-          ),
+        // Its toggle is in the title bar, above it.
+        item(
+          EmberPlace.settings,
+          MTIcons.settings,
+          l.navSettings,
+          EmberRoutes.settings,
+        ),
       ],
     );
   }

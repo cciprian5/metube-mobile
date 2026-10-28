@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// The window's parts, **in the order Tab visits them**: the places, the
-/// bar above the content, the content, the side panel, the player, and
-/// the window's own buttons last. Left to itself, Flutter goes by where
+/// The window's parts, **in the order Tab visits them**: the places (with
+/// their toggle in the title bar), the tools over the content (in the
+/// title bar too), the content, the side panel, the player, and the
+/// window's own buttons last. Left to itself, Flutter goes by where
 /// each control sits, so Tab started in the middle of the content and
 /// reached the search box after everything else. Each part is a group and
 /// has its number: either alone keeps the parts whole and in turn, both

@@ -2,72 +2,152 @@ import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../identity.dart';
+import 'focus_regions.dart';
 import 'shell_metrics.dart';
 import 'window_controls.dart';
 
-/// The drawn title bar: Windows' own white or black strip would cut
-/// straight across the cream paper. The whole bar drags the window and a
-/// double click maximizes it; the three caption buttons sit where the
-/// reading direction puts them, as Windows does for its own windows.
+/// The drawn title bar, and the window's one bar: Windows' own white or
+/// black strip would cut straight across the cream paper, and a second bar
+/// under it for back, search and downloads cost a row of the content.
+///
+/// Above the sidebar sit its toggle and the app's name, above the content
+/// [tools], and the three caption buttons where the reading direction
+/// puts them, as Windows does for its own windows. **Every bit of bare bar
+/// moves the window** and a double click on it maximizes: the ground lies
+/// under the controls, so a click on a control never waits to learn
+/// whether it was the first of two.
 class EmberTitleBar extends StatelessWidget {
-  const EmberTitleBar({super.key, required this.controls});
+  const EmberTitleBar({
+    super.key,
+    required this.controls,
+    this.startWidth,
+    this.sidebarToggle,
+    this.tools,
+  });
 
   final WindowControls controls;
+
+  /// The width of the sidebar below, so the toggle and the name stand over
+  /// it and [tools] start where the content does. null sizes them to fit.
+  final double? startWidth;
+
+  /// Narrows or widens the sidebar; null when the window has no room for
+  /// the wide one.
+  final Widget? sidebarToggle;
+
+  /// Back and forward, the search, the downloads and the panel's button.
+  final Widget? tools;
 
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final l = context.mtl;
+    final named =
+        (startWidth ?? double.infinity) > EmberShellSize.sidebarNarrow;
     return ColoredBox(
       color: p.bg,
       child: SizedBox(
         height: EmberShellSize.titleBar,
-        child: Row(
+        child: Stack(
+          fit: StackFit.expand,
           children: [
-            Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onPanStart: (_) => controls.startDragging(),
-                onDoubleTap: controls.toggleMaximize,
-                child: Row(
-                  children: [
-                    const SizedBox(width: MTSpace.md),
-                    _Dot(color: p.accent),
-                    const SizedBox(width: MTSpace.xs),
-                    Text(
-                      EmberIdentity.displayName,
-                      style: TextStyle(
-                        fontFamily: MTType.display,
-                        package: MTType.package,
-                        fontWeight: FontWeight.w500,
-                        fontSize: MTTypeScale.desktop.secondary,
-                        color: p.ink2,
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onPanStart: (_) => controls.startDragging(),
+              onDoubleTap: controls.toggleMaximize,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: startWidth,
+                  child: Row(
+                    mainAxisSize: startWidth == null
+                        ? MainAxisSize.min
+                        : MainAxisSize.max,
+                    mainAxisAlignment: named || sidebarToggle == null
+                        ? MainAxisAlignment.start
+                        : MainAxisAlignment.center,
+                    children: [
+                      if (named || sidebarToggle == null)
+                        const SizedBox(width: MTSpace.md),
+                      ?sidebarToggle,
+                      if (named || sidebarToggle == null)
+                        Flexible(child: _Name(named: named)),
+                    ],
+                  ),
+                ),
+                Expanded(child: tools ?? const SizedBox.shrink()),
+                inRegion(
+                  EmberRegion.titleBar,
+                  Row(
+                    children: [
+                      _CaptionButton(
+                        icon: MTIcons.winMin,
+                        label: l.desktopWindowMinimize,
+                        onTap: controls.minimize,
                       ),
-                    ),
-                  ],
+                      ValueListenableBuilder<bool>(
+                        valueListenable: controls.maximized,
+                        builder: (context, maximized, _) => _MaximizeButton(
+                          controls: controls,
+                          label: maximized
+                              ? l.desktopWindowRestore
+                              : l.desktopWindowMaximize,
+                        ),
+                      ),
+                      _CaptionButton(
+                        icon: MTIcons.winClose,
+                        label: l.desktopWindowClose,
+                        onTap: controls.close,
+                        danger: true,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The ember dot and, given room, the app's name. It takes no pointer, so a
+/// drag that starts on it still moves the window.
+class _Name extends StatelessWidget {
+  const _Name({required this.named});
+
+  final bool named;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    return IgnorePointer(
+      child: inRegion(
+        EmberRegion.titleBar,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(width: MTSpace.xs),
+            _Dot(color: p.accent),
+            if (named) ...[
+              const SizedBox(width: MTSpace.xs),
+              Flexible(
+                child: Text(
+                  EmberIdentity.displayName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: MTType.display,
+                    package: MTType.package,
+                    fontWeight: FontWeight.w500,
+                    fontSize: MTTypeScale.desktop.secondary,
+                    color: p.ink2,
+                  ),
                 ),
               ),
-            ),
-            _CaptionButton(
-              icon: MTIcons.winMin,
-              label: l.desktopWindowMinimize,
-              onTap: controls.minimize,
-            ),
-            ValueListenableBuilder<bool>(
-              valueListenable: controls.maximized,
-              builder: (context, maximized, _) => _MaximizeButton(
-                controls: controls,
-                label: maximized
-                    ? l.desktopWindowRestore
-                    : l.desktopWindowMaximize,
-              ),
-            ),
-            _CaptionButton(
-              icon: MTIcons.winClose,
-              label: l.desktopWindowClose,
-              onTap: controls.close,
-              danger: true,
-            ),
+            ],
           ],
         ),
       ),

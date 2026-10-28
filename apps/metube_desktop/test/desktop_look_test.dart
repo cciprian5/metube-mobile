@@ -100,7 +100,7 @@ void main() {
         child: _host(const DownloadsButton()),
       ),
     );
-    final glyph = tester.getRect(find.byType(MTIcon));
+    final glyph = tester.getRect(find.byType(MTIcon).first);
     final count = tester.getRect(find.text('3'));
     final overlap = glyph.intersect(count);
     expect(

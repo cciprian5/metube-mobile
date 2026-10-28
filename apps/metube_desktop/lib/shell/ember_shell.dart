@@ -41,6 +41,7 @@ import 'shell_layout.dart';
 import 'shell_metrics.dart';
 import 'shell_state.dart';
 import 'sidebar.dart';
+import 'sidebar_items.dart';
 import 'title_bar.dart';
 
 /// The window's frame around every place: title bar, sidebar, content,
@@ -265,7 +266,31 @@ class _EmberShellState extends ConsumerState<EmberShell> {
         return regionsInOrder(
           Column(
             children: [
-              inRegion(EmberRegion.titleBar, EmberTitleBar(controls: controls)),
+              EmberTitleBar(
+                controls: controls,
+                startWidth: arranged.sidebarWidth,
+                sidebarToggle: arranged.canWidenSidebar
+                    ? inRegion(
+                        EmberRegion.sidebar,
+                        SidebarToggle(
+                          narrow: arranged.sidebarNarrow,
+                          onTap: () => ref
+                              .read(shellLayoutProvider.notifier)
+                              .setSidebarNarrow(!layout.sidebarNarrow),
+                        ),
+                      )
+                    : null,
+                tools: inRegion(
+                  EmberRegion.contentBar,
+                  EmberContentBar(
+                    history: _history!,
+                    onSearch: _openPalette,
+                    panelShown: panelShown,
+                    onTogglePanel: () => _togglePanel(arranged, layout),
+                    downloads: const DownloadsButton(),
+                  ),
+                ),
+              ),
               Expanded(
                 child: ListeningLayer(
                   full: false,
@@ -309,65 +334,42 @@ class _EmberShellState extends ConsumerState<EmberShell> {
                             savedSearchMenu(context, ref, search, at),
                           ),
                           onAdd: () => unawaited(_addFromButton()),
-                          onToggleNarrow: arranged.canWidenSidebar
-                              ? () => ref
-                                    .read(shellLayoutProvider.notifier)
-                                    .setSidebarNarrow(!layout.sidebarNarrow)
-                              : null,
                         ),
                       ),
+                      // The layer opens over the content only, under the
+                      // title bar with its toggle.
                       Expanded(
-                        child: Column(
+                        child: Stack(
                           children: [
-                            inRegion(
-                              EmberRegion.contentBar,
-                              EmberContentBar(
-                                history: _history!,
-                                onSearch: _openPalette,
-                                panelShown: panelShown,
-                                onTogglePanel: () =>
-                                    _togglePanel(arranged, layout),
-                                downloads: const DownloadsButton(),
+                            Positioned.fill(
+                              child: inRegion(
+                                EmberRegion.content,
+                                widget.child,
+                                focus: ref.watch(contentFocusProvider),
                               ),
                             ),
-                            // The layer opens over the content only, so the
-                            // bar with its own toggle stays reachable.
-                            Expanded(
-                              child: Stack(
-                                children: [
-                                  Positioned.fill(
-                                    child: inRegion(
-                                      EmberRegion.content,
-                                      widget.child,
-                                      focus: ref.watch(contentFocusProvider),
-                                    ),
+                            if (!arranged.panelBeside &&
+                                _overlayOpen &&
+                                !theater) ...[
+                              Positioned.fill(
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () =>
+                                      setState(() => _overlayOpen = false),
+                                ),
+                              ),
+                              PositionedDirectional(
+                                top: 0,
+                                bottom: 0,
+                                end: 0,
+                                child: DecoratedBox(
+                                  decoration: const BoxDecoration(
+                                    boxShadow: MTShadow.card,
                                   ),
-                                  if (!arranged.panelBeside &&
-                                      _overlayOpen &&
-                                      !theater) ...[
-                                    Positioned.fill(
-                                      child: GestureDetector(
-                                        behavior: HitTestBehavior.opaque,
-                                        onTap: () => setState(
-                                          () => _overlayOpen = false,
-                                        ),
-                                      ),
-                                    ),
-                                    PositionedDirectional(
-                                      top: 0,
-                                      bottom: 0,
-                                      end: 0,
-                                      child: DecoratedBox(
-                                        decoration: const BoxDecoration(
-                                          boxShadow: MTShadow.card,
-                                        ),
-                                        child: panel,
-                                      ),
-                                    ),
-                                  ],
-                                ],
+                                  child: panel,
+                                ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       ),

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/data/downloads_data.dart';
 import 'package:metube_desktop/features/downloads/downloads_button.dart';
+import 'package:metube_desktop/features/settings/keep_in_view.dart';
 import 'package:metube_desktop/features/settings/simple_panes.dart';
 import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/now_playing_bars.dart';
@@ -235,9 +236,15 @@ void main() {
     final router = GoRouter.of(tester.element(find.byType(EmberSidebar)));
     router.go(EmberSettingsPane.appearance.route);
     await tester.pumpAndSettle();
-    final list = tester.state(find.byType(Scrollable).first);
+    Finder sections() => find
+        .descendant(
+          of: find.byType(KeepChosenInView),
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    final list = tester.state(sections());
     router.go(EmberSettingsPane.about.route);
     await tester.pumpAndSettle();
-    expect(tester.state(find.byType(Scrollable).first), same(list));
+    expect(tester.state(sections()), same(list));
   });
 }

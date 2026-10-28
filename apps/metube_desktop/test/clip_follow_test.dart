@@ -83,7 +83,8 @@ void main() {
 
   testWidgets('**the guard**: the picture fits the window\'s height with '
       'the title in view', (tester) async {
-    await watching(tester, window: const Size(1440, 760));
+    // Wide and short: 16:9 of the width alone is taller than the page.
+    await watching(tester, window: const Size(1920, 640));
     final stage = tester.getRect(
       find.byKey(InertVideoSurface.pictureKey).first,
     );

@@ -7,8 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/library_data.dart';
 import '../../router.dart';
 import '../../shell/context_menu.dart';
+import '../../shell/error_text.dart';
 import '../lists/list_dialogs.dart';
 import 'clip_actions.dart';
 
@@ -16,7 +18,8 @@ enum _ClipChoice { addToList, copyLink, openOriginal, delete }
 
 /// The right-click menu of a clip's page: the actions that do not earn a
 /// button, in the phone's order, **deleting from the server last** and only
-/// here, behind a confirmation.
+/// here, behind a confirmation. A clip only on this computer is not
+/// offered it, as in the library's menu: there is nothing there to delete.
 Future<void> showClipMenu(
   BuildContext context,
   WidgetRef ref,
@@ -24,6 +27,11 @@ Future<void> showClipMenu(
   PlaylistItem item,
 ) async {
   final l = context.mtl;
+  final listed = (ref.read(libraryItemsProvider).valueOrNull ?? const [])
+      .where((i) => i.canonicalUrl == item.canonicalUrl)
+      .firstOrNull;
+  // Unknown to the library (a session from before) keeps the old offer.
+  final onServer = listed?.onServer ?? true;
   final choice = await showEmberMenu(context, globalPosition, [
     EmberMenuEntry(_ClipChoice.addToList, MTIcons.queue, l.addToPlaylist),
     EmberMenuEntry(_ClipChoice.copyLink, MTIcons.link, l.desktopCopyLink),
@@ -32,13 +40,15 @@ Future<void> showClipMenu(
       MTIcons.external,
       l.openOriginalLink,
     ),
-    const EmberMenuEntry.divider(),
-    EmberMenuEntry(
-      _ClipChoice.delete,
-      MTIcons.trash,
-      l.deleteFromServer,
-      danger: true,
-    ),
+    if (onServer) ...[
+      const EmberMenuEntry.divider(),
+      EmberMenuEntry(
+        _ClipChoice.delete,
+        MTIcons.trash,
+        l.deleteFromServer,
+        danger: true,
+      ),
+    ],
   ]);
   if (choice == null || !context.mounted) return;
   final actions = ref.read(clipActionsProvider);
@@ -61,7 +71,19 @@ Future<void> showClipMenu(
       );
       if (!sure || !context.mounted) return;
       final router = GoRouter.of(context);
-      await actions.deleteFromServer(item.canonicalUrl);
+      try {
+        await actions.deleteFromServer(item.canonicalUrl);
+      } on Object catch (e) {
+        // The server said no or did not answer: say why, and stay.
+        if (context.mounted) {
+          showMTNotice(
+            context,
+            message: errorText(l, e),
+            kind: MTNoticeKind.failed,
+          );
+        }
+        return;
+      }
       if (!context.mounted) return;
       showMTNotice(context, message: l.deletedFromServer);
       router.go(EmberRoutes.library);

@@ -217,6 +217,51 @@ void main() {
     expect(find.byType(ClipPage), findsNothing);
   });
 
+  testWidgets('**the guard**: a server that refuses the delete leaves the '
+      'clip playing and its page open, and says why', (tester) async {
+    final h = await onVideo(tester);
+    h.api.deleteError = const NetworkException('down');
+    await rightClick(
+      tester,
+      tester.getCenter(find.byKey(InertVideoSurface.pictureKey)),
+    );
+    await tester.tap(find.text('Delete From Server'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    expect(h.api.deleted, isEmpty);
+    expect(h.player.calls, isNot(contains('stop')));
+    expect(find.byType(ClipPage), findsOneWidget);
+    expect(find.byType(MTNotice), findsOneWidget);
+  });
+
+  testWidgets('**the guard**: a clip only on this computer is not offered '
+      'deleting from the server on its page', (tester) async {
+    ShellHarness.useWindow(tester, const Size(1440, 900));
+    final local = LibraryItem(
+      canonicalUrl: _video,
+      title: 'Homelab Hour - Ep. 12',
+      localPath: r'C:\Videos\MeTube\Offline\homelab.mp4',
+      timestamp: DateTime(2026, 10, 22),
+      duration: _s(2500),
+    );
+    final h = ShellHarness(
+      library: [local],
+      server: ServerConfig(baseUrl: 'http://nas:8081'),
+    );
+    await tester.pumpWidget(h.app());
+    await tester.pumpAndSettle();
+    h.player.showPlaying([toPlaylistItem(local)], playing: false);
+    await doubleClick(tester, cardOf('Homelab Hour - Ep. 12'));
+    await tester.pumpAndSettle();
+    await rightClick(
+      tester,
+      tester.getCenter(find.byKey(InertVideoSurface.pictureKey)),
+    );
+    expect(find.text('Copy link'), findsOneWidget);
+    expect(find.text('Delete From Server'), findsNothing);
+  });
+
   testWidgets('**the guard**: a clip with a copy here keeps its tags', (
     tester,
   ) async {

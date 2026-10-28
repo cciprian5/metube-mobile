@@ -4,10 +4,52 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Both apps share this file: an entry says which one it affects when it affects
-only one.
+The apps share this file: an entry says which ones it affects when it does
+not affect them all. From 2.7.0 there are three: MeTube Lite and MeTube Super
+for Android, and MeTube Ember for Windows.
 
 ## [Unreleased]
+
+## [2.7.0] - 2026-10-30
+
+### Added
+
+- **MeTube Ember, for Windows.** The owner's app on a computer: your
+  server's library in a grid, a table or a compact list, with the player
+  in the window and its own mini window, the transcript beside the video,
+  a reading room for long talks, chapters, channels and arrivals, playlists,
+  tags and favourites, and downloads to this computer. Ctrl+K searches the
+  titles and what was said in them; `?` lists every key. It installs per
+  user with no administrator rights, updates itself, and finds your server
+  on the home network when you set it up.
+- **A "To Ember" button for your browser (Ember).** Settings › Desktop opens
+  a page with the button ready to drag to the bookmarks bar; on any video's
+  page, one click opens the add dialog with that link. Nothing is sent until
+  you press Add.
+- **Sync with your computer (Super).** Optional and off until you choose a
+  folder: tags, favourites, playlists, resume positions and transcripts
+  travel between Super and MeTube Ember through a folder a program of your
+  choice keeps in sync (Syncthing at home, or a cloud folder). It is not a
+  backup. Lite does not sync.
+- **Covers stay when YouTube deletes a video.** YouTube removes a video's
+  picture with the video; the apps now keep each cover on the device, and a
+  clip whose cover is already gone takes a frame from its own file. All
+  three apps.
+
+### Changed
+
+- **A clip card is one button for a screen reader.** TalkBack reads the
+  title and length once and opens the clip on a double tap; the heart is a
+  button of its own. Both phone apps.
+
+### Fixed
+
+- **A shared log kept some file names, Windows paths and cookies.** Only the
+  first word of a file name was hidden, and paths on a computer or a memory
+  card were not; they are now hidden whole, with any cookie the log held.
+  All three apps.
+- **The seven backups could fill with the same copy.** A backup with nothing
+  new in it now leaves the older ones in place. All three apps.
 
 ## [2.6.0] - 2026-10-23
 

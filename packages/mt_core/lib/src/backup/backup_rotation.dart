@@ -139,7 +139,9 @@ class BackupRotation {
   ///
   /// Returns `null` when the content is **identical to the newest copy**:
   /// nothing changed, so there is no reason to spend one of the seven
-  /// slots.
+  /// slots. The date the copy was made is not content: compared with it,
+  /// no two copies were ever alike, and an app that backs up at each start
+  /// filled the seven with one state and pushed the real history out.
   Future<BackupFile?> write(String contents, {DateTime? at}) async {
     final dir = Directory(directory);
     await dir.create(recursive: true);
@@ -148,7 +150,7 @@ class BackupRotation {
     final newest = await latest();
     if (newest != null) {
       final previous = await File(newest.path).readAsString();
-      if (previous == contents) return null;
+      if (_undated(previous) == _undated(contents)) return null;
     }
 
     // **Replacement rather than addition** inside the same time slot: the
@@ -209,6 +211,12 @@ class BackupRotation {
     }
     return deleted;
   }
+
+  static final _dateLine = RegExp(r'"backupDate"\s*:\s*"[^"]*"');
+
+  /// [contents] without the moment it was written.
+  static String _undated(String contents) =>
+      contents.replaceFirst(_dateLine, '');
 
   Future<String> read(BackupFile file) => File(file.path).readAsString();
 }

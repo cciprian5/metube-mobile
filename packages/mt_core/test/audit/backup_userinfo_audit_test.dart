@@ -25,6 +25,5 @@ void main() {
       ).exportToString();
       expect(out, isNot(contains('s3cret')));
     },
-    skip: 'Known defect found by the pre-release audit; unskip with the fix',
   );
 }

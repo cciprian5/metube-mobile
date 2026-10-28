@@ -32,15 +32,16 @@ class ClipActions {
 
   /// Deletes from the server **by the canonical URL from /history and
   /// nothing else**, then forgets what this computer kept about the clip.
-  /// A clip still playing stops first: its stream is about to vanish.
+  /// A clip still playing stops once the server has deleted it, not
+  /// before: a refusal leaves it playing, and throws for the caller to say.
   Future<void> deleteFromServer(String canonicalUrl) async {
     final api = _ref.read(apiClientProvider);
     if (api == null) return;
+    await api.delete([canonicalUrl]);
     final player = _ref.read(playerProvider);
     if (player.state.current?.canonicalUrl == canonicalUrl) {
       await player.stop();
     }
-    await api.delete([canonicalUrl]);
     await _prune(canonicalUrl);
     _ref.invalidate(historyProvider);
   }

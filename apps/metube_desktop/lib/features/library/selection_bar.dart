@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../shell/error_text.dart';
 import '../../shell/player_controls.dart';
 import '../clip/clip_actions.dart';
 import '../clip/clip_state.dart';
@@ -189,8 +190,20 @@ class _Bar extends ConsumerWidget {
     );
     if (!sure) return;
     final actions = ref.read(clipActionsProvider);
-    for (final item in onServer) {
-      await actions.deleteFromServer(item.canonicalUrl);
+    try {
+      for (final item in onServer) {
+        await actions.deleteFromServer(item.canonicalUrl);
+      }
+    } on Object catch (e) {
+      // Those deleted before the refusal are gone; the rest stay chosen.
+      if (context.mounted) {
+        showMTNotice(
+          context,
+          message: errorText(l, e),
+          kind: MTNoticeKind.failed,
+        );
+      }
+      return;
     }
     ref.read(librarySelectionProvider.notifier).clear();
     if (context.mounted) {

@@ -13,6 +13,7 @@ import '../../data/library_data.dart';
 import '../../shell/pill.dart';
 import '../setup/setup_dialog.dart';
 import 'appearance_pane.dart';
+import 'browser_button.dart';
 
 /// One setting: its name, a line saying what it does, and its control at
 /// the line's far end, with a hairline under it, so a pane reads as a list
@@ -255,6 +256,7 @@ class DesktopPane extends ConsumerWidget {
           onChanged: (on) =>
               unawaited(ref.read(offerCopiedLinksProvider.notifier).set(on)),
         ),
+        const BrowserButtonLine(),
         SwitchLine(
           title: l.desktopHints,
           hint: l.desktopHintsHint,

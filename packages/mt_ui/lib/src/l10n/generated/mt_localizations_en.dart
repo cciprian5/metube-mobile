@@ -525,6 +525,54 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopBackupsNone => 'No backup yet';
 
   @override
+  String get desktopBrowserButton => '“To Ember” button in the browser';
+
+  @override
+  String get desktopBrowserButtonCopied =>
+      'Code copied. Make a new bookmark and paste it as its address (URL).';
+
+  @override
+  String get desktopBrowserButtonCopy => 'Copy the code';
+
+  @override
+  String get desktopBrowserButtonFailed =>
+      'The page could not be opened; copy the code instead.';
+
+  @override
+  String get desktopBrowserButtonHint =>
+      'A button on your bookmarks bar: one click on any video\'s page opens the add dialog here with its link. Nothing is sent until you press Add.';
+
+  @override
+  String get desktopBrowserButtonName => 'To Ember';
+
+  @override
+  String get desktopBrowserButtonOpen => 'Open the setup page';
+
+  @override
+  String get desktopBrowserPageCopyInstead =>
+      'If dragging does not work, make a new bookmark and paste this as its address:';
+
+  @override
+  String get desktopBrowserPageDragHint =>
+      'Drag it to the bar; a click here does nothing.';
+
+  @override
+  String get desktopBrowserPageStep1 =>
+      'Show the bookmarks bar if it is hidden:';
+
+  @override
+  String get desktopBrowserPageStep2 =>
+      'Drag the button below onto the bar with the mouse.';
+
+  @override
+  String get desktopBrowserPageStep3 =>
+      'On any video\'s page, click it: MeTube Ember opens its add dialog with the link. The first time, the browser asks whether to open the app; allow it.';
+
+  @override
+  String get desktopBrowserPageTitle =>
+      'Add the “To Ember” button to your browser';
+
+  @override
   String get desktopChangeFolder => 'Change…';
 
   @override
@@ -623,7 +671,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopDiscoverBrowserLine =>
-      'MeTube\'s browser extensions send a link straight to the app.';
+      'The “To Ember” button on your bookmarks bar opens the add dialog with the page you are on.';
 
   @override
   String get desktopDiscoverChapters => 'Chapters';

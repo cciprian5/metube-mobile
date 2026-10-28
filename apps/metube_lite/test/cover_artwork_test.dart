@@ -14,6 +14,18 @@ void main() {
     );
   });
 
+  test('**the guard**: a cover kept on the phone still asks for the wide '
+      'thumbnail, by the clip, so the square shows no black bands', () {
+    final cover = coverArtworkFor(
+      '/data/user/0/com.yasir.metubelite/files/kept_covers/a1b2.jpg',
+      canonicalUrl: 'https://www.youtube.com/watch?v=MfDROnE8FG8',
+    );
+    expect(
+      (cover! as CachedNetworkImage).imageUrl,
+      'https://i.ytimg.com/vi/MfDROnE8FG8/maxresdefault.jpg',
+    );
+  });
+
   test('a list row keeps the thumbnail it had', () {
     expect((artworkFor(thumb)! as CachedNetworkImage).imageUrl, thumb);
   });

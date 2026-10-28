@@ -9,11 +9,17 @@ class FakeApi extends MeTubeApiClient {
 
   final List<List<String>> deleted = [];
 
+  /// What the server answers a delete with instead; null deletes.
+  Object? deleteError;
+
   @override
   Future<void> delete(
     List<String> canonicalUrls, {
     String where = 'done',
-  }) async => deleted.add(canonicalUrls);
+  }) async {
+    if (deleteError case final error?) throw error;
+    deleted.add(canonicalUrls);
+  }
 
   /// The server's folders, as its socket would list them; null is a
   /// server too old to say.

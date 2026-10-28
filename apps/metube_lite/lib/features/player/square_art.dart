@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mt_core/mt_core.dart' show UrlKit;
+import 'package:mt_core/mt_core.dart' show youtubeWideCover;
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,10 +21,12 @@ Future<Uri?> squareArtFor(PlaylistItem item) async {
   final art = item.artworkUrl;
   if (art == null || art.isEmpty) return null;
   final folder = Directory('${(await getTemporaryDirectory()).path}/covers');
-  final file = File('${folder.path}/${_name(art)}.png');
+  // "2:" since the squares cut from a kept cover lost their bands: the
+  // ones made before kept them, and are not reused.
+  final file = File('${folder.path}/${_name('2:$art')}.png');
   if (await file.exists()) return Uri.file(file.path);
 
-  final wide = UrlKit.youtubeWideThumbnail(art);
+  final wide = youtubeWideCover(art, item.canonicalUrl);
   Uint8List? png;
   if (wide != null) png = await mtSquarePng(CachedNetworkImageProvider(wide));
   png ??= await mtSquarePng(

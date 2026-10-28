@@ -22,6 +22,13 @@ void main() {
     expect(field('CompanyName'), isEmpty);
   });
 
+  test("**the guard**: the program's properties name its maker and its "
+      'free license, not the template\'s "all rights reserved"', () {
+    expect(field('LegalCopyright'), contains('Yasir Sagheer'));
+    expect(field('LegalCopyright'), contains('GPL-3.0'));
+    expect(field('LegalCopyright'), isNot(contains('reserved')));
+  });
+
   test('Windows shows the same name for the program and its window', () {
     expect(field('FileDescription'), EmberIdentity.displayName);
     final runner = File('windows/runner/main.cpp').readAsStringSync();

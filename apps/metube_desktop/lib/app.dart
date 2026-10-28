@@ -19,6 +19,7 @@ import 'features/stats/stats_page.dart';
 import 'router.dart';
 import 'shell/shell_metrics.dart';
 import 'shell/ember_shell.dart';
+import 'shell/key_gate.dart';
 import 'shell/zoom_frame.dart';
 
 /// The MeTube Ember root: the Wahaj desktop theme in Super's identity,
@@ -108,9 +109,11 @@ class _EmberAppState extends ConsumerState<EmberApp> {
         supportedLocales: MTLocalizations.supportedLocales,
         localeListResolutionCallback: mtLocaleResolution,
         routerConfig: _router,
-        builder: (context, child) => EmberZoomFrame(
-          onChangeZoom: () => _router.go(EmberSettingsPane.appearance.route),
-          child: child!,
+        builder: (context, child) => KeyGate(
+          child: EmberZoomFrame(
+            onChangeZoom: () => _router.go(EmberSettingsPane.appearance.route),
+            child: child!,
+          ),
         ),
       ),
     );

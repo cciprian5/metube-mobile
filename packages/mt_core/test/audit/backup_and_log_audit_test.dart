@@ -26,7 +26,7 @@ void main() {
       at: DateTime(2026, 1, 1, 12),
     );
     expect(second, isNull);
-  }, skip: 'Known defect found by the pre-release audit; unskip with the fix');
+  });
 
   test('a shared log keeps no file title, user folder or cookie', () {
     final out = MTLogger.sanitizeForShare(
@@ -43,5 +43,5 @@ void main() {
     ]) {
       expect(out, isNot(contains(leak)), reason: leak);
     }
-  }, skip: 'Known defect found by the pre-release audit; unskip with the fix');
+  });
 }

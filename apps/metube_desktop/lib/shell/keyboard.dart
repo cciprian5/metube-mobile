@@ -12,6 +12,7 @@ import '../data/volume.dart';
 import '../di.dart';
 import '../features/listening/listening_room.dart';
 import '../features/shortcuts/shortcuts_sheet.dart';
+import 'key_gate.dart';
 import 'player_bar.dart';
 import 'shell_state.dart';
 
@@ -44,7 +45,9 @@ enum EmberKey {
       this == leaveFullScreen;
 
   /// Held down, only seeking and the volume go on.
-  bool get repeats =>
+  bool get repeats => arrow;
+
+  bool get arrow =>
       this == back || this == forward || this == up || this == down;
 }
 
@@ -89,11 +92,14 @@ EmberKey? emberKeyFor(
 /// How far ← and → move.
 const seekStep = Duration(seconds: 10);
 
-/// **The keyboard over the whole window.** One handler ahead of the focus
-/// system, as Ctrl+K's, so a key works wherever focus happens to be; and
-/// it stands aside for a dialog, for typing, and for Space on a focused
-/// button. Seeking, the volume and play/pause wait for a clip: with none,
-/// the arrows scroll and Space presses as usual.
+/// **The keyboard over the whole window.** It reads each key before the
+/// focus system does, so a key works wherever focus happens to be, and a
+/// key it uses goes no further: a handler on [HardwareKeyboard] runs
+/// beside the focus system, not ahead of it, so ↑ used to raise the volume
+/// and move the focus at once. It stands aside for a dialog, for typing,
+/// for Space on a focused button, and for the arrows while a control holds
+/// focus (the keyboard is walking the window). Seeking, the volume and
+/// play/pause wait for a clip: with none, the keys go on as usual.
 class EmberKeyboard extends ConsumerStatefulWidget {
   const EmberKeyboard({
     super.key,
@@ -131,6 +137,13 @@ class _EmberKeyboardState extends ConsumerState<EmberKeyboard> {
   }
 
   bool _onKey(KeyEvent event) {
+    final used = _use(event);
+    // The focus system hears the same key next; [KeyGate] stops it there.
+    if (used) KeyGate.used(event);
+    return used;
+  }
+
+  bool _use(KeyEvent event) {
     if (event is KeyUpEvent || !mounted) return false;
     if (ModalRoute.of(context)?.isCurrent == false) return false;
     final keyboard = HardwareKeyboard.instance;
@@ -145,7 +158,15 @@ class _EmberKeyboardState extends ConsumerState<EmberKeyboard> {
     final focused = FocusManager.instance.primaryFocus?.context;
     if (key.plain && _typing(focused)) return false;
     if (key == EmberKey.playPause && _pressable(focused)) return false;
+    if (key.arrow && _onControl()) return false;
     return _run(key);
+  }
+
+  /// A real control holds focus, not the window or a page as a whole: the
+  /// arrows are the keyboard's way around, as the focus ring shows.
+  static bool _onControl() {
+    final node = FocusManager.instance.primaryFocus;
+    return node != null && node is! FocusScopeNode && node.context != null;
   }
 
   /// A text field has the keys.

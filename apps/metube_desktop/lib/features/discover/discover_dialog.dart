@@ -141,7 +141,7 @@ List<(String, List<DiscoverLine>)> discoverGroups(
         title: l.desktopDiscoverBrowser,
         line: l.desktopDiscoverBrowserLine,
         keys: const [],
-        tryIt: null,
+        tryIt: () => go(EmberSettingsPane.desktop.route),
       ),
       (
         title: l.desktopShortcutsTitle,

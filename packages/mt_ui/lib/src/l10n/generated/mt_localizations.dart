@@ -986,6 +986,84 @@ abstract class MTLocalizations {
   /// **'No backup yet'**
   String get desktopBackupsNone;
 
+  /// No description provided for @desktopBrowserButton.
+  ///
+  /// In en, this message translates to:
+  /// **'“To Ember” button in the browser'**
+  String get desktopBrowserButton;
+
+  /// No description provided for @desktopBrowserButtonCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied. Make a new bookmark and paste it as its address (URL).'**
+  String get desktopBrowserButtonCopied;
+
+  /// No description provided for @desktopBrowserButtonCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the code'**
+  String get desktopBrowserButtonCopy;
+
+  /// No description provided for @desktopBrowserButtonFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The page could not be opened; copy the code instead.'**
+  String get desktopBrowserButtonFailed;
+
+  /// No description provided for @desktopBrowserButtonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A button on your bookmarks bar: one click on any video\'s page opens the add dialog here with its link. Nothing is sent until you press Add.'**
+  String get desktopBrowserButtonHint;
+
+  /// No description provided for @desktopBrowserButtonName.
+  ///
+  /// In en, this message translates to:
+  /// **'To Ember'**
+  String get desktopBrowserButtonName;
+
+  /// No description provided for @desktopBrowserButtonOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the setup page'**
+  String get desktopBrowserButtonOpen;
+
+  /// No description provided for @desktopBrowserPageCopyInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'If dragging does not work, make a new bookmark and paste this as its address:'**
+  String get desktopBrowserPageCopyInstead;
+
+  /// No description provided for @desktopBrowserPageDragHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag it to the bar; a click here does nothing.'**
+  String get desktopBrowserPageDragHint;
+
+  /// No description provided for @desktopBrowserPageStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the bookmarks bar if it is hidden:'**
+  String get desktopBrowserPageStep1;
+
+  /// No description provided for @desktopBrowserPageStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the button below onto the bar with the mouse.'**
+  String get desktopBrowserPageStep2;
+
+  /// No description provided for @desktopBrowserPageStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'On any video\'s page, click it: MeTube Ember opens its add dialog with the link. The first time, the browser asks whether to open the app; allow it.'**
+  String get desktopBrowserPageStep3;
+
+  /// No description provided for @desktopBrowserPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the “To Ember” button to your browser'**
+  String get desktopBrowserPageTitle;
+
   /// No description provided for @desktopChangeFolder.
   ///
   /// In en, this message translates to:
@@ -1157,7 +1235,7 @@ abstract class MTLocalizations {
   /// No description provided for @desktopDiscoverBrowserLine.
   ///
   /// In en, this message translates to:
-  /// **'MeTube\'s browser extensions send a link straight to the app.'**
+  /// **'The “To Ember” button on your bookmarks bar opens the add dialog with the page you are on.'**
   String get desktopDiscoverBrowserLine;
 
   /// No description provided for @desktopDiscoverChapters.

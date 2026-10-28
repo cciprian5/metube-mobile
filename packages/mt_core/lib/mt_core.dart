@@ -72,3 +72,4 @@ export 'src/urls/playlist_detector.dart';
 export 'src/urls/server_path.dart';
 export 'src/urls/short_link_resolver.dart';
 export 'src/urls/url_kit.dart';
+export 'src/urls/wide_cover.dart';

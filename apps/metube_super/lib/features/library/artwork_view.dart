@@ -3,7 +3,7 @@ import 'dart:math' show max;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mt_core/mt_core.dart' show UrlKit;
+import 'package:mt_core/mt_core.dart' show youtubeWideCover;
 
 /// An artwork value may be a **generated local file path**, a frame
 /// capture or an embedded audio cover (see `MediaProbe.kt`), or a network
@@ -52,9 +52,14 @@ Widget? artworkFor(
 /// player asks for the wide thumbnail, which has none. Where an upload has
 /// no wide one, the 4:3 picture is enlarged by 4/3 so the bands fall
 /// outside the square. Anything that is not a YouTube thumbnail is drawn
-/// as [artworkFor] draws it.
-Widget? coverArtworkFor(String? value, {Map<String, String>? headers}) {
-  final wide = UrlKit.youtubeWideThumbnail(value);
+/// as [artworkFor] draws it. A cover kept on this device takes the wide
+/// one from [canonicalUrl] (see `youtubeWideCover`).
+Widget? coverArtworkFor(
+  String? value, {
+  String? canonicalUrl,
+  Map<String, String>? headers,
+}) {
+  final wide = youtubeWideCover(value, canonicalUrl);
   if (wide == null) return artworkFor(value, headers: headers);
   return CachedNetworkImage(
     imageUrl: wide,

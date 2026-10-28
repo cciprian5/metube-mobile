@@ -88,6 +88,7 @@ MTArtworkBuilder artworkBuilderFor(WidgetRef ref) =>
 MTArtworkBuilder coverBuilderFor(WidgetRef ref) =>
     (context, item) => coverArtworkFor(
       item.artworkUrl,
+      canonicalUrl: item.canonicalUrl,
       headers: switch (item.artworkUrl) {
         final url? => ref.read(apiClientProvider)?.imageHeadersFor(url),
         null => null,

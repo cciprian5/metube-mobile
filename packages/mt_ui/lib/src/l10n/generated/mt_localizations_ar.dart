@@ -546,6 +546,53 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopBackupsNone => 'لا نسخة بعد';
 
   @override
+  String get desktopBrowserButton => 'زر «إلى Ember» في المتصفح';
+
+  @override
+  String get desktopBrowserButtonCopied =>
+      'نُسخ الرمز. أنشئ إشارة مرجعية جديدة، والصقه في خانة عنوانها (URL).';
+
+  @override
+  String get desktopBrowserButtonCopy => 'انسخ الرمز';
+
+  @override
+  String get desktopBrowserButtonFailed =>
+      'تعذّر فتح الصفحة؛ انسخ الرمز بدلاً منها.';
+
+  @override
+  String get desktopBrowserButtonHint =>
+      'زرّ في شريط الإشارات المرجعية: نقرة عليه في صفحة أي مقطع تفتح نافذة الإضافة هنا بالرابط، ولا يُرسَل شيء قبل أن تضغط «إضافة».';
+
+  @override
+  String get desktopBrowserButtonName => 'إلى Ember';
+
+  @override
+  String get desktopBrowserButtonOpen => 'افتح صفحة الإعداد';
+
+  @override
+  String get desktopBrowserPageCopyInstead =>
+      'إن لم ينجح السحب، فأنشئ إشارة مرجعية جديدة والصق هذا في خانة عنوانها:';
+
+  @override
+  String get desktopBrowserPageDragHint =>
+      'اسحبه إلى الشريط؛ النقر عليه هنا لا يفعل شيئاً.';
+
+  @override
+  String get desktopBrowserPageStep1 =>
+      'أظهر شريط الإشارات المرجعية إن كان مخفياً:';
+
+  @override
+  String get desktopBrowserPageStep2 =>
+      'اسحب الزر الذي تحت هذا السطر بالفأرة، وأفلته على الشريط.';
+
+  @override
+  String get desktopBrowserPageStep3 =>
+      'في صفحة أي مقطع انقره، فيفتح MeTube Ember نافذة الإضافة بالرابط. وفي المرة الأولى يسألك المتصفح هل يفتح التطبيق، فاسمح له.';
+
+  @override
+  String get desktopBrowserPageTitle => 'أضف زر «إلى Ember» إلى متصفحك';
+
+  @override
   String get desktopChangeFolder => 'تغيير…';
 
   @override
@@ -649,7 +696,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopDiscoverBrowserLine =>
-      'إضافات MeTube للمتصفح ترسل الرابط إلى التطبيق مباشرة.';
+      'زر «إلى Ember» في شريط الإشارات المرجعية يفتح نافذة الإضافة بالصفحة التي أنت فيها.';
 
   @override
   String get desktopDiscoverChapters => 'الفصول';

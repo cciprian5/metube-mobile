@@ -9,6 +9,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/folders_data.dart';
 import '../../data/local_copies.dart';
 import '../../shell/context_menu.dart';
+import '../../shell/error_text.dart';
 import '../clip/clip_actions.dart';
 import '../clip/copy_pills.dart';
 import '../clip/tags_dialog.dart';
@@ -168,7 +169,18 @@ Future<void> showItemMenu(
         l.deleteFromServerConfirm,
       );
       if (!sure) return;
-      await ref.read(clipActionsProvider).deleteFromServer(item.canonicalUrl);
+      try {
+        await ref.read(clipActionsProvider).deleteFromServer(item.canonicalUrl);
+      } on Object catch (e) {
+        if (context.mounted) {
+          showMTNotice(
+            context,
+            message: errorText(l, e),
+            kind: MTNoticeKind.failed,
+          );
+        }
+        return;
+      }
       if (context.mounted) {
         showMTNotice(context, message: l.deletedFromServer);
       }

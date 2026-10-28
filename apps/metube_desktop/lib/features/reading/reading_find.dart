@@ -48,7 +48,11 @@ class ReadingFindBar extends StatelessWidget {
         onPressed: onTap,
         icon: RotatedBox(
           quarterTurns: up ? 2 : 0,
-          child: MTIcon(icon, size: MTSpace.lg, semanticLabel: label),
+          child: MTIcon(
+            icon,
+            size: MTDensity.desktop.icon,
+            semanticLabel: label,
+          ),
         ),
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 
@@ -13,8 +15,18 @@ class DesktopPlayer {
     required PlaybackSourceResolver resolver,
     required KeyValueStore store,
     required PrefsMutex mutex,
+    MTLogger? logger,
   }) {
-    final port = MediaKitPort.create();
+    // What the player did, in the diagnostic log: a clip that fails on
+    // another computer can then be read there, in Settings.
+    void trace(String line, {bool problem = false}) => unawaited(
+      logger?.log(
+        line,
+        level: problem ? LogLevel.warn : LogLevel.info,
+        tag: 'player',
+      ),
+    );
+    final port = MediaKitPort.create(trace: trace);
     return DesktopPlayer._(
       port,
       MTSessionPlayer(
@@ -27,6 +39,7 @@ class DesktopPlayer {
         ),
         prefs: PlaybackPrefs(store: store, mutex: mutex),
         stateStore: AudioStateStore(store: store, mutex: mutex),
+        onTrace: (event) => trace(event, problem: true),
       ),
     );
   }

@@ -1034,6 +1034,12 @@ abstract class MTLocalizations {
   /// **'Check all'**
   String get desktopCheckAll;
 
+  /// No description provided for @desktopChooseClip.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get desktopChooseClip;
+
   /// No description provided for @desktopClearFilters.
   ///
   /// In en, this message translates to:
@@ -1499,7 +1505,7 @@ abstract class MTLocalizations {
   /// No description provided for @desktopNoChannelNames.
   ///
   /// In en, this message translates to:
-  /// **'Your server\'s history doesn\'t say which channel each clip came from, so its clips can\'t be shown here.'**
+  /// **'Your server doesn\'t record which channel each clip came from, so this channel\'s clips can\'t be picked out. Follow it with its own folder, and whatever arrives there shows here.'**
   String get desktopNoChannelNames;
 
   /// No description provided for @desktopNoFavoritesMessage.

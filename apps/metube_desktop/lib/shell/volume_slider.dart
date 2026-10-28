@@ -10,7 +10,10 @@ import 'ember_slider.dart';
 /// The player bar's volume: the speaker and a short slider. ↑ and ↓ move
 /// the same level, so either way it is kept between runs.
 class EmberVolumeSlider extends ConsumerWidget {
-  const EmberVolumeSlider({super.key});
+  const EmberVolumeSlider({super.key, this.onPicture = false});
+
+  /// Light on the picture's dark shade, in full screen.
+  final bool onPicture;
 
   static const double width = 96;
 
@@ -27,8 +30,10 @@ class EmberVolumeSlider extends ConsumerWidget {
         children: [
           MTIcon(
             MTIcons.volume,
-            size: MTSpace.lg,
-            color: level == 0 ? p.ink3 : p.ink2,
+            size: MTDensity.desktop.icon,
+            color: onPicture
+                ? (level == 0 ? Colors.white54 : Colors.white)
+                : (level == 0 ? p.ink3 : p.ink2),
           ),
           // Low to high from left to right, as the seek bar runs, in
           // either language.
@@ -42,6 +47,7 @@ class EmberVolumeSlider extends ConsumerWidget {
                 label: l.desktopVolume,
                 describe: (v) => l.desktopVolumeLevel(v.round()),
                 step: VolumeLevel.step,
+                inactive: onPicture ? Colors.white24 : null,
                 onChanged: (v) =>
                     unawaited(ref.read(volumeProvider.notifier).set(v)),
               ),

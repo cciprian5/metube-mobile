@@ -173,7 +173,7 @@ class _ListeningRoomState extends ConsumerState<ListeningRoom> {
                   onPressed: widget.onClose,
                   icon: MTIcon(
                     MTIcons.close,
-                    size: MTSpace.lg,
+                    size: MTDensity.desktop.icon,
                     color: p.ink2,
                     semanticLabel: l.desktopListeningClose,
                   ),

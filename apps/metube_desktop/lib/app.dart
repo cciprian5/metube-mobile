@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import 'data/appearance_data.dart';
+import 'data/system_media.dart';
+import 'features/library/artwork.dart';
 import 'identity.dart';
 import 'features/channels/channel_page.dart';
 import 'features/channels/channels_page.dart';
@@ -15,6 +17,7 @@ import 'features/lists/playlist_page.dart';
 import 'features/settings/settings_place.dart';
 import 'features/stats/stats_page.dart';
 import 'router.dart';
+import 'shell/shell_metrics.dart';
 import 'shell/ember_shell.dart';
 import 'shell/zoom_frame.dart';
 
@@ -40,6 +43,14 @@ class EmberApp extends ConsumerStatefulWidget {
 }
 
 class _EmberAppState extends ConsumerState<EmberApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Windows' media flyout reads the clip's cover from this computer.
+    ref.read(systemMediaBridgeProvider)?.coverFile = (url, artwork) =>
+        coverFileOf(ref, url, artwork);
+  }
+
   // Built once for the life of the app: a router rebuilt with the widget
   // would reset the navigation and everything living under the shell.
   late final GoRouter _router =
@@ -74,6 +85,7 @@ class _EmberAppState extends ConsumerState<EmberApp> {
     final look = ref.watch(appearanceProvider);
     final chosen = look.locale;
     return MTDesktopApp(
+      noticeLift: EmberShellSize.playerBar,
       child: MaterialApp.router(
         title: EmberIdentity.displayName,
         debugShowCheckedModeBanner: false,

@@ -134,7 +134,7 @@ class _Transport extends StatelessWidget {
                 onTap: when(player.skipToNext),
               ),
               EmberPlayerControl(
-                icon: MTIcons.repeat,
+                icon: playModeIcon(state.mode),
                 label: mtPlayModeLabel(context, state.mode),
                 selected: state.mode != PlayMode.autoNext,
                 onTap: when(() => player.setPlayMode(nextPlayMode(state.mode))),
@@ -229,3 +229,11 @@ class _Extras extends StatelessWidget {
 /// The repeat button's next mode, and R's: round the four in order.
 PlayMode nextPlayMode(PlayMode mode) =>
     PlayMode.values[(mode.index + 1) % PlayMode.values.length];
+
+/// Each mode its own glyph, so the button says which is on: a "1" in the
+/// loop for one clip, an arrow to a bar for stopping after it.
+MTIconData playModeIcon(PlayMode mode) => switch (mode) {
+  PlayMode.repeatOne => MTIcons.repeatOne,
+  PlayMode.stopAtEnd => MTIcons.stopAfter,
+  PlayMode.autoNext || PlayMode.repeatAll => MTIcons.repeat,
+};

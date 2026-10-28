@@ -111,21 +111,27 @@ class _BarButton extends StatelessWidget {
     return MTShortcutTooltip(
       message: label,
       shortcut: shortcut,
-      child: IconButton(
-        onPressed: onTap,
-        isSelected: selected,
-        icon: Transform.flip(
-          flipX: mirrored && Directionality.of(context) == TextDirection.rtl,
-          child: MTIcon(
-            icon,
-            size: MTSpace.lg,
-            color: ink,
-            semanticLabel: label,
-          ),
-        ),
+      // Space each side, as in the player bar: two veils never touch.
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: MTSpace.xxs / 2),
+        child: _button(context, ink),
       ),
     );
   }
+
+  Widget _button(BuildContext context, Color ink) => IconButton(
+    onPressed: onTap,
+    isSelected: selected,
+    icon: Transform.flip(
+      flipX: mirrored && Directionality.of(context) == TextDirection.rtl,
+      child: MTIcon(
+        icon,
+        size: MTDensity.desktop.icon,
+        color: ink,
+        semanticLabel: label,
+      ),
+    ),
+  );
 }
 
 /// Looks like a field and opens the search place; the real search, with
@@ -162,7 +168,11 @@ class _SearchBox extends StatelessWidget {
             child: Row(
               children: [
                 const SizedBox(width: MTSpace.md),
-                MTIcon(MTIcons.search, size: MTSpace.lg, color: p.ink3),
+                MTIcon(
+                  MTIcons.search,
+                  size: MTDensity.desktop.icon,
+                  color: p.ink3,
+                ),
                 const SizedBox(width: MTSpace.sm),
                 Expanded(
                   child: Text(

@@ -53,6 +53,9 @@ class FakePlayer implements MTPlayer {
     _states.add(state);
   }
 
+  /// Tells the listeners [state] as a test set it.
+  void emit() => _states.add(state);
+
   /// As if playback reached [at].
   void reach(Duration at) {
     position = at;

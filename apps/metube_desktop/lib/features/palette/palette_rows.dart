@@ -109,7 +109,7 @@ class _Row extends StatelessWidget {
           lead ??
               MTIcon(
                 icon,
-                size: MTSpace.lg,
+                size: MTDensity.desktop.icon,
                 color: selected ? p.accentInk : p.ink2,
               ),
           const SizedBox(width: MTSpace.sm),

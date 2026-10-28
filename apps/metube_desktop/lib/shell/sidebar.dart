@@ -196,20 +196,32 @@ class EmberSidebar extends StatelessWidget {
           ),
         ),
         SidebarServerLine(narrow: narrow),
-        if (onToggleNarrow case final toggle?)
-          SidebarItem(
-            icon: MTIcons.collapse,
-            label: narrow ? l.desktopWidenSidebar : l.desktopNarrowSidebar,
-            narrow: narrow,
-            selected: false,
-            onTap: toggle,
+        // The way to narrow or widen is a glyph alone, as in other
+        // apps: beside Settings when wide, above it when narrow.
+        if (narrow) ...[
+          if (onToggleNarrow case final toggle?)
+            SidebarToggle(narrow: true, onTap: toggle),
+          item(
+            EmberPlace.settings,
+            MTIcons.settings,
+            l.navSettings,
+            EmberRoutes.settings,
           ),
-        item(
-          EmberPlace.settings,
-          MTIcons.settings,
-          l.navSettings,
-          EmberRoutes.settings,
-        ),
+        ] else
+          Row(
+            children: [
+              Expanded(
+                child: item(
+                  EmberPlace.settings,
+                  MTIcons.settings,
+                  l.navSettings,
+                  EmberRoutes.settings,
+                ),
+              ),
+              if (onToggleNarrow case final toggle?)
+                SidebarToggle(narrow: false, onTap: toggle),
+            ],
+          ),
       ],
     );
   }

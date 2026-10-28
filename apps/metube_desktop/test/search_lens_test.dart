@@ -38,6 +38,6 @@ void main() {
       ),
     );
     expect(lens, findsOneWidget);
-    expect(tester.getSize(lens).width, MTSpace.lg);
+    expect(tester.getSize(lens).width, MTDensity.desktop.icon);
   });
 }

@@ -3,48 +3,45 @@ import 'dart:async';
 import 'package:media_kit/media_kit.dart';
 import 'package:mt_media/mt_media.dart';
 
-/// Refuses a second player for the life of the app.
-///
-/// media_kit leaves COM uninitialised when a player is disposed, and after
-/// a few disposals drag and drop stops working in the whole window. The
-/// cure is to never dispose: one player opens clip after clip, and this
-/// guard turns a second one into an error at the first test run instead of
-/// a broken window weeks later.
-abstract final class OnePlayerGuard {
-  static bool _taken = false;
+import 'one_player_guard.dart';
+import 'player_trace.dart';
 
-  static void claim() {
-    if (_taken) {
-      throw StateError('The Windows app keeps exactly one player.');
-    }
-    _taken = true;
-  }
-
-  /// For tests only: each test starts as a fresh process would.
-  static void resetForTest() => _taken = false;
-}
+export 'one_player_guard.dart';
 
 /// [MediaPlayerPort] over a media_kit [Player], so the shared session
 /// player drives libmpv exactly as it drives just_audio on the phones.
 class MediaKitPort implements MediaPlayerPort {
-  MediaKitPort._(this._player) {
+  MediaKitPort._(this._player, this._trace) {
     final s = _player.stream;
     _subs
       ..add(s.playing.listen((_) => _changed()))
       ..add(s.buffering.listen((_) => _changed()))
       ..add(s.duration.listen((_) => _changed()))
       ..add(s.rate.listen((_) => _changed()))
-      ..add(s.completed.listen((done) => _changed(completed: done)))
-      ..add(s.error.listen(_errors.add));
+      ..add(s.completed.listen(_onCompleted))
+      ..add(s.error.listen(_onEngineError))
+      ..add(s.log.listen(_onLog));
+    unawaited(_reconnectDroppedStreams());
   }
 
   /// The one player of the app; a second call throws.
-  factory MediaKitPort.create() {
+  factory MediaKitPort.create({PlayerTrace? trace}) {
     OnePlayerGuard.claim();
-    return MediaKitPort._(Player());
+    return MediaKitPort._(
+      // Warnings too, for the log: a fault on another computer is seen
+      // only through it.
+      Player(
+        configuration: const PlayerConfiguration(logLevel: MPVLogLevel.warn),
+      ),
+      trace ?? silentTrace,
+    );
   }
 
   final Player _player;
+  final PlayerTrace _trace;
+  final _repeats = LogRepeats();
+  Timer? _judging;
+  bool _streaming = false;
 
   /// The engine itself, for the video surface.
   Player get player => _player;
@@ -65,6 +62,80 @@ class MediaKitPort implements MediaPlayerPort {
     if (completed) _states.add(MediaPlaybackState.completed);
   }
 
+  /// **mpv's own reconnection for a dropped stream**: off by default in
+  /// ffmpeg, so a connection the network or a tunnel cut ended the clip
+  /// where it was.
+  Future<void> _reconnectDroppedStreams() async {
+    final native = _player.platform;
+    if (native is! NativePlayer) return;
+    await native.setProperty(
+      'stream-lavf-o',
+      'reconnect=1,reconnect_streamed=1,reconnect_on_network_error=1,'
+          'reconnect_delay_max=5',
+    );
+  }
+
+  void _onLog(PlayerLog log) {
+    if (log.level != 'error' && log.level != 'warn') return;
+    // media_kit asks every start for an option this mpv lacks: noise.
+    if (log.text.contains('property not found')) return;
+    final line = _repeats.pass('${log.prefix}: ${log.text}');
+    if (line != null) _trace('mpv $line', problem: log.level == 'error');
+  }
+
+  /// **The end of a stream well before its length is a failure**, not
+  /// the clip ending: mpv reads a dropped connection as the end of the
+  /// file, and the queue moved on (or a looping short started over) from
+  /// the middle.
+  void _onCompleted(bool done) {
+    final length = _player.state.duration;
+    final at = _player.state.position;
+    if (done &&
+        _streaming &&
+        length > Duration.zero &&
+        length - at > earlyEnd) {
+      _trace(
+        'stream ended early at ${traceClock(at)} of ${traceClock(length)}',
+        problem: true,
+      );
+      _changed();
+      if (!_errors.isClosed) _errors.add('ended early');
+      return;
+    }
+    if (done) _trace('ended at ${traceClock(at)} of ${traceClock(length)}');
+    _changed(completed: done);
+  }
+
+  /// How far from its length a stream may stop and still count as ended.
+  static const Duration earlyEnd = Duration(seconds: 5);
+
+  /// **An error message is not a failure until playback stops**: media_kit
+  /// passes on every error line mpv logs, and most (a frame the decoder
+  /// dropped, a hardware decoder falling back to software) leave the clip
+  /// playing. Treated as failures, they reloaded the clip from the start.
+  void _onEngineError(String error) {
+    if (_loading) return; // The load in progress judges its own.
+    _judging ??= Timer(judgeAfter, () => unawaited(_judge(error)));
+  }
+
+  /// How long after an error the player is looked at again.
+  static const Duration judgeAfter = Duration(seconds: 2);
+
+  Future<void> _judge(String error) async {
+    _judging = null;
+    if (_loading || await _stillPlaying()) return;
+    _trace('playback failed: $error', problem: true);
+    if (!_errors.isClosed) _errors.add(error);
+  }
+
+  Future<bool> _stillPlaying() async {
+    final native = _player.platform;
+    if (native is! NativePlayer) return true;
+    final idle = await native.getProperty('idle-active');
+    final path = await native.getProperty('path');
+    return idle != 'yes' && path.isNotEmpty;
+  }
+
   /// **Completes once the source is loaded**, like the phone port: a load
   /// that fails or never reports a length throws, and the session player's
   /// recovery takes over.
@@ -74,10 +145,18 @@ class MediaKitPort implements MediaPlayerPort {
     Duration initialPosition = Duration.zero,
   }) async {
     _loading = true;
+    _judging?.cancel();
+    _judging = null;
+    _streaming = !source.isLocal;
     _changed();
     final resource = source.isLocal
         ? source.uri.toFilePath()
         : source.uri.toString();
+    final clock = Stopwatch()..start();
+    _trace(
+      'open ${source.isLocal ? 'file' : 'stream'} ${traceKindOf(resource)}'
+      '${initialPosition > Duration.zero ? ' at ${traceClock(initialPosition)}' : ''}',
+    );
     Object? error;
     final errors = _player.stream.error.listen((e) => error ??= e);
     try {
@@ -90,6 +169,12 @@ class MediaKitPort implements MediaPlayerPort {
         play: false,
       );
       await _untilLoaded(resource, () => error);
+      _trace(
+        'loaded in ${clock.elapsedMilliseconds} ms${await tracePicture(_player)}',
+      );
+    } on Object catch (e) {
+      _trace('load failed: $e', problem: true);
+      rethrow;
     } finally {
       await errors.cancel();
       _loading = false;
@@ -193,6 +278,7 @@ class MediaKitPort implements MediaPlayerPort {
   /// only by the process ending (see [OnePlayerGuard]).
   @override
   Future<void> dispose() async {
+    _judging?.cancel();
     for (final sub in _subs) {
       await sub.cancel();
     }

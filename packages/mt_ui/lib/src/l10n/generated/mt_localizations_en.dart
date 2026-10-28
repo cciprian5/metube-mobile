@@ -549,6 +549,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopCheckAll => 'Check all';
 
   @override
+  String get desktopChooseClip => 'Select';
+
+  @override
   String get desktopClearFilters => 'Clear filters';
 
   @override
@@ -833,7 +836,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopNoChannelNames =>
-      'Your server\'s history doesn\'t say which channel each clip came from, so its clips can\'t be shown here.';
+      'Your server doesn\'t record which channel each clip came from, so this channel\'s clips can\'t be picked out. Follow it with its own folder, and whatever arrives there shows here.';
 
   @override
   String get desktopNoFavoritesMessage =>

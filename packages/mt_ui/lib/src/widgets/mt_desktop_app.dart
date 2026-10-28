@@ -8,10 +8,18 @@ import 'package:flutter/widgets.dart';
 /// can stand in either app, and the phone apps, which never place it, can
 /// never take a desktop branch whatever their window size.
 class MTDesktopApp extends InheritedWidget {
-  const MTDesktopApp({super.key, required super.child});
+  const MTDesktopApp({super.key, this.noticeLift = 0, required super.child});
+
+  /// How far above the window's foot a notice floats: the height of what
+  /// stays there (the player bar), so a notice never covers its buttons.
+  final double noticeLift;
 
   static bool isDesktop(BuildContext context) =>
       context.getInheritedWidgetOfExactType<MTDesktopApp>() != null;
+
+  /// [noticeLift] of the app, or null on a phone.
+  static double? noticeLiftOf(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<MTDesktopApp>()?.noticeLift;
 
   @override
   bool updateShouldNotify(MTDesktopApp oldWidget) => false;

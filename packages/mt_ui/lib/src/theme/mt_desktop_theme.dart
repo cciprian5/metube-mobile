@@ -33,7 +33,11 @@ ThemeData mtDesktopTheme(
     // accent and fades, with no ripple travelling across the control.
     splashFactory: NoSplash.splashFactory,
     highlightColor: p.accentSoft,
-    hoverColor: p.cardAlt,
+    // **A veil of the ink, never an opaque fill**: hovered, a button over
+    // a picture or the ember (a play button, the controls on a video)
+    // kept its glyph in sight. The opaque card fill covered a white glyph
+    // in the day and turned a dark square at night.
+    hoverColor: p.ink.withValues(alpha: mtHoverVeil),
     // No filled square on keyboard focus: the ring drawn by
     // MTFocusRingLayer marks it instead, and only for the keyboard.
     focusColor: Colors.transparent,
@@ -66,9 +70,9 @@ ThemeData mtDesktopTheme(
         ),
         overlayColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.pressed)
-              ? p.accentSoft
+              ? p.accent.withValues(alpha: mtPressVeil)
               : states.contains(WidgetState.hovered)
-              ? p.cardAlt
+              ? p.ink.withValues(alpha: mtHoverVeil)
               : null,
         ),
       ),
@@ -128,3 +132,10 @@ ThemeData mtDesktopTheme(
     ),
   );
 }
+
+/// How much of the ink a hovered control is veiled with: about the card's
+/// own step from the page, in day and night alike.
+const double mtHoverVeil = 0.07;
+
+/// How much of the ember a pressed control is veiled with.
+const double mtPressVeil = 0.16;

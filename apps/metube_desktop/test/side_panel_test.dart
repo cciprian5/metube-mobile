@@ -48,7 +48,8 @@ void main() {
     final h = ShellHarness(transcripts: transcripts);
     await tester.pumpWidget(h.app());
     await tester.pumpAndSettle();
-    h.player.showPlaying(queue ?? [_homelab]);
+    // Paused: the playing line's bars would never let the test settle.
+    h.player.showPlaying(queue ?? [_homelab], playing: false);
     await tester.pumpAndSettle();
     return h;
   }

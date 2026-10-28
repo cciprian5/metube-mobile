@@ -164,9 +164,8 @@ class _EmberShellState extends ConsumerState<EmberShell> {
       body: ValueListenableBuilder<bool>(
         valueListenable: controls.fullScreen,
         builder: (context, full, _) => full
-            // The whole screen for the picture, or the listening room for
-            // sound; the player bar stays, so the clip can still be paused
-            // and sought.
+            // The whole screen for the picture, with its controls over it,
+            // or the listening room for sound, with the player bar.
             ? ListeningLayer(
                 full: true,
                 onClose: () => toggleListening(ref),

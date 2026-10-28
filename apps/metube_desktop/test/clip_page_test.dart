@@ -146,7 +146,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(h.controls.calls, contains('fullScreen true'));
     expect(find.byType(EmberSidebar), findsNothing);
-    expect(find.byType(EmberPlayerBar), findsOneWidget);
+    // The picture's own controls take the bar's place (the owner's
+    // choice, 2026-10-28).
+    expect(find.byType(EmberPlayerBar), findsNothing);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();

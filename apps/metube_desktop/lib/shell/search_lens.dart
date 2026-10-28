@@ -8,5 +8,5 @@ import 'package:mt_ui/mt_ui.dart';
 Widget searchLens(MTPalette p) => Center(
   widthFactor: 1,
   heightFactor: 1,
-  child: MTIcon(MTIcons.search, size: MTSpace.lg, color: p.ink3),
+  child: MTIcon(MTIcons.search, size: MTDensity.desktop.icon, color: p.ink3),
 );

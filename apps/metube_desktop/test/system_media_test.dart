@@ -141,6 +141,33 @@ void main() {
       await Future<void>.delayed(Duration.zero);
       expect(player.calls, ['pause', 'next']);
     });
+
+    test("**the guard**: a clip whose cover is on the user's server shows "
+        'its own cover from this computer, never the last clip\'s', () async {
+      final player = FakePlayer();
+      final media = _Surface();
+      final bridge = SystemMediaBridge(player, [media]);
+      addTearDown(bridge.dispose);
+      const private = 'http://192.168.1.10:8081/thumbnails/b.jpg';
+      final asked = <String>[];
+      bridge.coverFile = (url, art) async {
+        asked.add('$url $art');
+        return r'C:\cache\covers\b.jpg';
+      };
+      player.showPlaying([
+        _clip('Night Drive', art: 'https://i.ytimg.com/vi/a/hq.jpg'),
+      ]);
+      await Future<void>.delayed(Duration.zero);
+      player.showPlaying([_clip('Blue Hour', art: private)]);
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
+      expect(asked, ['https://youtu.be/Blue Hour $private']);
+      final now = media.shown.last!;
+      expect(now.title, 'Blue Hour');
+      expect(now.thumbnail, Uri.file(r'C:\cache\covers\b.jpg').toString());
+      // Never the server's address itself.
+      expect(media.shown.map((n) => n?.thumbnail), isNot(contains(private)));
+    });
   });
 
   group('the taskbar', () {

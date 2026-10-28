@@ -61,6 +61,22 @@ abstract final class MTIcons {
     'grid',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.6" height="6.6" rx="1.7"/><rect x="13.4" y="4" width="6.6" height="6.6" rx="1.7"/><rect x="4" y="13.4" width="6.6" height="6.6" rx="1.7"/><rect x="13.4" y="13.4" width="6.6" height="6.6" rx="1.7"/></svg>''',
   );
+  static const table = MTIconData(
+    'table',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.4"/><path d="M3.5 9.6h17"/><path d="M3.5 14.6h17"/><path d="M9.4 9.6v9.9"/></svg>''',
+  );
+  static const stats = MTIconData(
+    'stats',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5h15"/><path d="M7.6 16.4v-4.2"/><path d="M12 16.4V7.6"/><path d="M16.4 16.4v-6.2"/><circle fill="{ember}" stroke="none" cx="12" cy="4.4" r="1.1"/></svg>''',
+  );
+  static const sidebarClose = MTIconData(
+    'sidebar_close',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.6"/><path d="M9.4 4.5v15"/><path d="M15.6 9.4L13 12l2.6 2.6"/></svg>''',
+  );
+  static const sidebarOpen = MTIconData(
+    'sidebar_open',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.6"/><path d="M9.4 4.5v15"/><path d="M13 9.4l2.6 2.6-2.6 2.6"/></svg>''',
+  );
   static const list = MTIconData(
     'list',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle fill="{ink}" stroke="none" cx="5" cy="7" r="1.05"/><circle fill="{ink}" stroke="none" cx="5" cy="12" r="1.05"/><circle fill="{ink}" stroke="none" cx="5" cy="17" r="1.05"/><path d="M8.6 7h11"/><path d="M8.6 12h11"/><path d="M8.6 17h11"/></svg>''',
@@ -92,6 +108,14 @@ abstract final class MTIcons {
   static const repeat = MTIconData(
     'repeat',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11.2V9.6A2.6 2.6 0 0 1 7.6 7H18.4"/><path d="M16 4.6L18.4 7 16 9.4"/><path d="M19 12.8v1.6a2.6 2.6 0 0 1-2.6 2.6H5.6"/><path d="M8 19.4L5.6 17 8 14.6"/></svg>''',
+  );
+  static const repeatOne = MTIconData(
+    'repeat_one',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11.2V9.6A2.6 2.6 0 0 1 7.6 7H18.4"/><path d="M16 4.6L18.4 7 16 9.4"/><path d="M19 12.8v1.6a2.6 2.6 0 0 1-2.6 2.6H5.6"/><path d="M8 19.4L5.6 17 8 14.6"/><path stroke="{ember}" d="M11.2 10.9l1.3-.9v4.4"/></svg>''',
+  );
+  static const stopAfter = MTIconData(
+    'stop_after',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h10.6"/><path d="M11.4 8.6L14.8 12l-3.4 3.4"/><path d="M19 6v12"/></svg>''',
   );
   static const volume = MTIconData(
     'volume',
@@ -225,6 +249,10 @@ abstract final class MTIcons {
     close,
     check,
     grid,
+    table,
+    stats,
+    sidebarClose,
+    sidebarOpen,
     list,
     play,
     playFill,
@@ -233,6 +261,8 @@ abstract final class MTIcons {
     prev,
     shuffle,
     repeat,
+    repeatOne,
+    stopAfter,
     volume,
     queue,
     transcript,

@@ -42,6 +42,32 @@ class _FolderFileSystem implements FileSystem {
   }
 }
 
+/// **The cover of the clip at [url] as a file on this computer**, for
+/// Windows' media flyout: [artwork] or else the library's cover for it; a
+/// path as it is, an address from the cover cache, fetched into it with
+/// the server's headers when it is the server's own (they go to the server
+/// alone, as for the cards). Null when there is none.
+Future<String?> coverFileOf(WidgetRef ref, String url, String? artwork) async {
+  final library = ref.read(libraryItemsProvider).valueOrNull ?? const [];
+  final picture =
+      artwork ??
+      library.where((i) => i.canonicalUrl == url).firstOrNull?.thumbnail;
+  if (picture == null || picture.isEmpty) return null;
+  return _coverFile(ref, picture);
+}
+
+Future<String?> _coverFile(WidgetRef ref, String artwork) async {
+  if (!artwork.startsWith('http')) {
+    return io.File(artwork).existsSync() ? artwork : null;
+  }
+  final cache = ref.read(artworkCacheProvider) ?? DefaultCacheManager();
+  final file = await cache.getSingleFile(
+    artwork,
+    headers: ref.read(apiClientProvider)?.imageHeadersFor(artwork) ?? const {},
+  );
+  return file.path;
+}
+
 /// A clip's cover, or null when it has none, so the card draws its own
 /// placeholder instead of an empty box.
 ///

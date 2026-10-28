@@ -5,6 +5,7 @@ import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../grip.dart';
+import '../now_playing_bars.dart';
 
 /// What comes next, in play order, with the clip playing marked: drag a
 /// line by its grip to reorder, click it to play it now.
@@ -36,6 +37,7 @@ class QueueView extends StatelessWidget {
               index: i,
               item: ordered[i],
               current: i == at,
+              playing: state.playing,
               onTap: () => unawaited(
                 player.skipToQueueItem(state.items.indexOf(ordered[i])),
               ),
@@ -63,12 +65,14 @@ class _QueueLine extends StatelessWidget {
     required this.index,
     required this.item,
     required this.current,
+    required this.playing,
     required this.onTap,
   });
 
   final int index;
   final PlaylistItem item;
   final bool current;
+  final bool playing;
   final VoidCallback onTap;
 
   @override
@@ -106,6 +110,10 @@ class _QueueLine extends StatelessWidget {
                   ),
                 ),
               ),
+              if (current) ...[
+                NowPlayingBars(playing: playing, onCover: false),
+                const SizedBox(width: MTSpace.sm),
+              ],
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

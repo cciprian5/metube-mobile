@@ -240,8 +240,11 @@ class _Head extends ConsumerWidget {
           },
         ),
         // Said rather than shown as nothing: the server's history may not
-        // name channels at all, and then no clip can be matched.
-        if (stats == null && !namesChannels) ...[
+        // name channels at all, and then only a folder of its own matches
+        // a channel's clips. A channel that has one says nothing.
+        if (stats == null &&
+            !namesChannels &&
+            (sub.folder?.isEmpty ?? true)) ...[
           const SizedBox(height: MTSpace.sm),
           Text(
             l.desktopNoChannelNames,
@@ -291,9 +294,13 @@ class _Clips extends ConsumerWidget {
               playing: isCurrent,
               paused: isCurrent && !state.playing,
               selected: chosen.contains(item.canonicalUrl),
+              choosing: chosen.isNotEmpty,
               onChoose: () => ref
                   .read(librarySelectionProvider.notifier)
                   .click(item.canonicalUrl, order),
+              onToggle: () => ref
+                  .read(librarySelectionProvider.notifier)
+                  .toggle(item.canonicalUrl),
               onPlay: () => unawaited(
                 openFromList(ref, GoRouter.of(context), [
                   for (final i in items) toPlaylistItem(i),

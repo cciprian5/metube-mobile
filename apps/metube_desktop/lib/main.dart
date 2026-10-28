@@ -114,11 +114,11 @@ Future<void> main(List<String> args) async {
     resolver: resolver,
     store: store,
     mutex: mutex,
+    logger: logger,
   );
   final player = desktop.session;
   await player.loadPreferences();
-  // The last queue comes back once the shell has wired the server in
-  // (sessionRestoreProvider), not here.
+  // The last queue comes back with the server (sessionRestoreProvider).
 
   final layout = await ShellLayoutStore(store: store, mutex: mutex).read();
   final zooms = UiZoomStore(store: store, mutex: mutex);
@@ -260,6 +260,7 @@ Future<void> main(List<String> args) async {
           unawaited(tray.setOn(on));
         }),
         taskbarPortProvider.overrideWithValue(taskbar),
+        systemMediaBridgeProvider.overrideWithValue(bridge),
         volumeControlProvider.overrideWithValue(volume),
         noticePortProvider.overrideWithValue(notices ?? const NoNotices()),
         windowInFrontProvider.overrideWithValue(EmberWindow.inFront),
@@ -295,5 +296,5 @@ Future<void> main(List<String> args) async {
       ),
     ),
   );
-  runLabHover(labHoverFrom(args));
+  runLab(args);
 }

@@ -10,7 +10,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/library_data.dart';
 import '../../di.dart';
 import '../../router.dart';
-import '../../shell/pill.dart';
+import '../../shell/player_controls.dart';
 import '../clip/clip_state.dart';
 import '../setup/setup_dialog.dart';
 import 'library_chips.dart';
@@ -225,9 +225,13 @@ class _Items extends ConsumerWidget {
               playing: isCurrent,
               paused: isCurrent && !state.playing,
               selected: chosen.contains(item.canonicalUrl),
+              choosing: chosen.isNotEmpty,
               onChoose: () => ref
                   .read(librarySelectionProvider.notifier)
                   .click(item.canonicalUrl, order),
+              onToggle: () => ref
+                  .read(librarySelectionProvider.notifier)
+                  .toggle(item.canonicalUrl),
               // The list on screen becomes the queue, from the clip
               // clicked, as on the phone; a video opens its page and a
               // short its lane.
@@ -281,23 +285,31 @@ class _Heading extends StatelessWidget {
                     style: text.bodySmall?.copyWith(color: p.ink3),
                   ),
                 ),
-                // The figures behind the counts, a page of their own.
-                MTLinkButton(
-                  label: l.desktopStatsLink,
-                  onPressed: () => GoRouter.of(context).go(EmberRoutes.stats),
-                ),
               ],
             ],
           ),
         ),
-        for (final (m, label) in [
-          (LibraryViewMode.grid, l.viewGrid),
-          (LibraryViewMode.list, l.desktopViewTable),
-          (LibraryViewMode.compact, l.desktopViewCompact),
-        ]) ...[
-          const SizedBox(width: MTSpace.xxs),
-          EmberPill(label: label, selected: mode == m, onTap: () => onMode(m)),
+        // The figures behind the counts, a page of their own; then the
+        // layouts, each a glyph with its name under the mouse.
+        if (counts != null) ...[
+          EmberPlayerControl(
+            icon: MTIcons.stats,
+            label: l.desktopStatsLink,
+            onTap: () => GoRouter.of(context).go(EmberRoutes.stats),
+          ),
+          const SizedBox(width: MTSpace.sm),
         ],
+        for (final (m, icon, label) in [
+          (LibraryViewMode.grid, MTIcons.grid, l.viewGrid),
+          (LibraryViewMode.list, MTIcons.table, l.desktopViewTable),
+          (LibraryViewMode.compact, MTIcons.list, l.desktopViewCompact),
+        ])
+          EmberPlayerControl(
+            icon: icon,
+            label: label,
+            selected: mode == m,
+            onTap: () => onMode(m),
+          ),
       ],
     );
   }

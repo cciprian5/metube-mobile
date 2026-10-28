@@ -32,15 +32,42 @@ class EmberPlayerControl extends StatelessWidget {
     final ink = onTap == null
         ? p.ink3
         : (selected ? color ?? p.accentInk : this.ink ?? p.ink2);
+    // The veil under the mouse is of the glyph's own colour: white over a
+    // picture, the ink elsewhere.
+    final veil = switch (this.ink) {
+      final light? => light.withValues(alpha: mtHoverVeil * 3),
+      null => p.ink.withValues(alpha: mtHoverVeil),
+    };
     return MTShortcutTooltip(
       message: label,
       shortcut: shortcut,
-      child: IconButton(
-        onPressed: onTap,
-        icon: MTIcon(icon, size: MTSpace.lg, color: ink, semanticLabel: label),
+      // A hair of space each side, so the veils of two neighbours under
+      // the mouse never touch.
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: MTSpace.xxs / 2),
+        child: _button(p, ink, veil),
       ),
     );
   }
+
+  Widget _button(MTPalette p, Color ink, Color veil) => IconButton(
+    onPressed: onTap,
+    // A mode or a layout that is on is read as on.
+    isSelected: selected,
+    // **On is filled, not only tinted**: a mode turned on (repeat,
+    // shuffle) showed only as a change of the glyph's colour, which
+    // could not be told apart at a glance.
+    style: IconButton.styleFrom(
+      backgroundColor: selected && this.ink == null ? p.accentSoft : null,
+      hoverColor: veil,
+    ),
+    icon: MTIcon(
+      icon,
+      size: MTDensity.desktop.icon,
+      color: ink,
+      semanticLabel: label,
+    ),
+  );
 }
 
 /// The player bar's play and pause, filled with the accent.
@@ -88,7 +115,7 @@ class EmberPlayButton extends StatelessWidget {
           child: Center(
             child: MTIcon(
               playing ? MTIcons.pause : MTIcons.playFill,
-              size: MTSpace.lg,
+              size: MTDensity.desktop.icon,
               color: onTap == null ? p.ink3 : ink,
               semanticLabel: label,
             ),

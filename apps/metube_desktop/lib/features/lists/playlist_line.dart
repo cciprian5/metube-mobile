@@ -4,6 +4,7 @@ import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../shell/grip.dart';
+import '../../shell/now_playing_bars.dart';
 import '../library/artwork.dart';
 
 /// One clip of a saved list: the grip it is dragged by, its cover, title
@@ -16,6 +17,7 @@ class PlaylistLine extends ConsumerWidget {
     required this.item,
     required this.missing,
     required this.current,
+    this.playing = true,
     required this.onTap,
     required this.onRemove,
   });
@@ -24,6 +26,9 @@ class PlaylistLine extends ConsumerWidget {
   final PlaylistItem item;
   final bool missing;
   final bool current;
+
+  /// The player runs: the current line's bars sway, or stand still.
+  final bool playing;
   final VoidCallback onTap;
   final VoidCallback onRemove;
 
@@ -67,17 +72,23 @@ class PlaylistLine extends ConsumerWidget {
                 ),
                 Opacity(
                   opacity: missing ? 0.5 : 1,
-                  child: MTMediaThumb(
-                    width: _thumbWidth,
-                    height: _thumbWidth * 9 / 16,
-                    audio: item.isAudio,
-                    playing: current,
-                    child: artworkFor(
-                      ref,
-                      context,
-                      item.artworkUrl,
-                      width: _thumbWidth,
-                    ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      MTMediaThumb(
+                        width: _thumbWidth,
+                        height: _thumbWidth * 9 / 16,
+                        audio: item.isAudio,
+                        playing: current,
+                        child: artworkFor(
+                          ref,
+                          context,
+                          item.artworkUrl,
+                          width: _thumbWidth,
+                        ),
+                      ),
+                      if (current) NowPlayingBars(playing: playing),
+                    ],
                   ),
                 ),
                 const SizedBox(width: MTSpace.sm),

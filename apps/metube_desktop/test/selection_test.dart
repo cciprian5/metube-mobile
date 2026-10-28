@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metube_desktop/features/library/choose_mark.dart';
 import 'package:metube_desktop/features/library/selection.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
@@ -46,16 +47,46 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('**the guard**: a click chooses and does not play; a double '
-      'click plays', (tester) async {
+  testWidgets('**the guard**: a click opens the clip and chooses nothing; '
+      'its second click of a double click does not start it again', (
+    tester,
+  ) async {
     final h = await open(tester);
     await click(tester, 'Blue Hour');
-    expect(h.player.calls, isEmpty);
-    expect(find.text('1 selected'), findsOneWidget);
+    expect(h.player.calls, ['loop false', 'playItems']);
+    expect(find.textContaining('selected'), findsNothing);
 
+    h.player.calls.clear();
     await doubleClick(tester, card('Cedar Trail'));
     await tester.pumpAndSettle();
-    expect(h.player.calls, contains('playItems'));
+    expect(h.player.calls.where((c) => c == 'playItems'), hasLength(1));
+  });
+
+  testWidgets('**the guard**: the round mark chooses without opening, and '
+      'while any is chosen a click chooses too', (tester) async {
+    final h = await open(tester);
+    // Under the mouse, the mark shows on the card's corner.
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: tester.getCenter(card('Amber Skies')));
+    await tester.pumpAndSettle();
+    final mark = find.descendant(
+      of: find.ancestor(
+        of: card('Amber Skies'),
+        matching: find.byType(ChooseMark),
+      ),
+      matching: find.byKey(ChooseMark.markKey),
+    );
+    await mouse.moveTo(tester.getCenter(mark));
+    await tester.pumpAndSettle();
+    await tester.tap(mark, kind: PointerDeviceKind.mouse);
+    await tester.pumpAndSettle();
+    expect(find.text('1 selected'), findsOneWidget);
+    await click(tester, 'Blue Hour');
+    expect(find.text('2 selected'), findsOneWidget);
+    await click(tester, 'Blue Hour');
+    expect(find.text('1 selected'), findsOneWidget);
+    expect(h.player.calls, isNot(contains('playItems')));
   });
 
   testWidgets('**the guard**: a slow machine does not split a double click '
@@ -69,15 +100,16 @@ void main() {
     );
     await tester.tap(card('Cedar Trail'), kind: PointerDeviceKind.mouse);
     await tester.pumpAndSettle();
-    expect(h.player.calls, contains('playItems'));
+    // One double click, one start.
+    expect(h.player.calls.where((c) => c == 'playItems'), hasLength(1));
   });
 
   testWidgets('Ctrl adds one, Shift takes the run, Esc lets go', (
     tester,
   ) async {
     await open(tester);
-    await click(tester, 'Amber Skies');
     await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+    await click(tester, 'Amber Skies');
     await click(tester, 'Cedar Trail');
     await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
     expect(find.text('2 selected'), findsOneWidget);
@@ -105,8 +137,8 @@ void main() {
   testWidgets('deleting the chosen clips asks once, then goes by each one\'s '
       'canonical link', (tester) async {
     final h = await open(tester);
-    await click(tester, 'Amber Skies');
     await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+    await click(tester, 'Amber Skies');
     await click(tester, 'Blue Hour');
     await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
     await tester.tap(byLabel('Delete From Server'));
@@ -121,12 +153,14 @@ void main() {
   });
 
   test('**the guard**: Enter and a screen reader play, as they always did; '
-      'only a mouse click chooses', () {
+      'a mouse click plays, and chooses while a choice is being made', () {
     // No button went down: the keyboard or a screen reader.
-    expect(ClickClock.activate('x'), ClickMeaning.play);
-    ClickClock.pointerDown();
-    expect(ClickClock.activate('y'), ClickMeaning.choose);
+    expect(ClickClock.activate('x', choosing: true), ClickMeaning.play);
     ClickClock.pointerDown();
     expect(ClickClock.activate('y'), ClickMeaning.play);
+    ClickClock.pointerDown();
+    expect(ClickClock.activate('y'), ClickMeaning.none);
+    ClickClock.pointerDown();
+    expect(ClickClock.activate('z', choosing: true), ClickMeaning.choose);
   });
 }

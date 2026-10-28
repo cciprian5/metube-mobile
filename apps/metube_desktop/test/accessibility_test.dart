@@ -8,6 +8,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/shell/sidebar_items.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:metube_desktop/features/folders/folder_widgets.dart';
 import 'package:metube_desktop/features/library/library_item_view.dart';
@@ -424,7 +425,7 @@ void main() {
     // Wide enough for the wide sidebar and its button.
     ShellHarness.useWindow(tester, const Size(1920, 1080));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Collapse sidebar'));
+    await tester.tap(find.byType(SidebarToggle));
     await still('the sidebar narrowed');
     h.player.showPlaying([_video], playing: false);
     await tester.pumpAndSettle();

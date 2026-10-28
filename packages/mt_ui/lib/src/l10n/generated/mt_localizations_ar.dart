@@ -570,6 +570,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopCheckAll => 'افحص الكل';
 
   @override
+  String get desktopChooseClip => 'تحديد';
+
+  @override
   String get desktopClearFilters => 'إلغاء التصفية';
 
   @override
@@ -864,7 +867,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopNoChannelNames =>
-      'سجل سيرفرك لا يذكر قناة كل مقطع، فلا يمكن عرض مقاطع القناة هنا.';
+      'لا يحفظ سيرفرك اسم القناة مع كل مقطع، فلا يُعرف هنا ما نزل منها. لتظهر مقاطعها، تابِعها بمجلد خاص بها: كل ما ينزل في مجلدها يظهر هنا.';
 
   @override
   String get desktopNoFavoritesMessage => 'ضع ♥ على مقطع فيبقى لك هنا.';

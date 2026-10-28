@@ -38,11 +38,13 @@ class MTSessionPlayer implements MTPlayer {
       Duration(seconds: 5),
       Duration(seconds: 10),
     ],
+    this.onTrace,
   }) {
     _subs
       ..add(port.events.listen((_) => _broadcast()))
       ..add(port.stateStream.listen(_onPhase))
-      ..add(port.errors.listen((_) => unawaited(_onError())));
+      // Where it was: a stream that drops mid-way is picked up there.
+      ..add(port.errors.listen((e) => unawaited(_onError(at: port.position))));
     _saveTimer = Timer.periodic(saveInterval, (_) => unawaited(persist()));
   }
 
@@ -55,6 +57,10 @@ class MTSessionPlayer implements MTPlayer {
   /// The waits before retrying a failed stream, longest last; `const []`
   /// disables retrying.
   final List<Duration> networkRetryBackoff;
+
+  /// Told each retry, skip and stop a failure leads to, for the log: a
+  /// fault seen on someone else's computer is otherwise invisible.
+  final void Function(String event)? onTrace;
 
   /// Consecutive skips before giving up: a systemic fault fails every item,
   /// and marching silently through a hundred of them is worse than
@@ -263,19 +269,6 @@ class MTSessionPlayer implements MTPlayer {
     _subs.clear();
     await _states.close();
     await port.dispose();
-  }
-
-  Future<void> _skip({required bool forward}) async {
-    await _savePosition();
-    final moved = forward
-        ? _queue.moveNext(_playMode, userInitiated: true)
-        : _queue.movePrevious(_playMode);
-    if (!moved) return;
-    await _loadCurrent(autoPlay: true);
-  }
-
-  void _onPhase(MediaPlaybackState phase) {
-    if (phase == MediaPlaybackState.completed) unawaited(_onCompleted());
   }
 
   void _broadcast() {

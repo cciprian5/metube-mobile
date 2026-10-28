@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metube_desktop/shell/sidebar_items.dart';
 import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/player_bar.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
@@ -78,7 +79,7 @@ void main() {
   testWidgets('folding a column is saved for the next start', (tester) async {
     final h = await open(tester, const Size(1440, 900));
     await tester.tap(byLabel('Hide side panel'));
-    await tester.tap(find.text('Collapse sidebar'));
+    await tester.tap(find.byType(SidebarToggle));
     await tester.pumpAndSettle();
     expect(find.byType(EmberRightPanel), findsNothing);
     expect(

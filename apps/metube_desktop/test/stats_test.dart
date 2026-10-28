@@ -100,7 +100,7 @@ void main() {
     );
     await tester.pumpWidget(h.app());
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Statistics'));
+    await tester.tap(find.bySemanticsLabel('Statistics'));
     await tester.pumpAndSettle();
     expect(find.byType(StatsPage), findsOneWidget);
     expect(find.text('Running time'), findsNothing);
@@ -136,7 +136,7 @@ void main() {
       tester,
     ) async {
       final h = await open(tester);
-      await tester.tap(find.text('Statistics'));
+      await tester.tap(find.bySemanticsLabel('Statistics'));
       await tester.pumpAndSettle();
       expect(find.byType(StatsPage), findsOneWidget);
       expect(find.text('Library statistics'), findsOneWidget);
@@ -190,7 +190,7 @@ void main() {
     testWidgets('every control on the page has a name', (tester) async {
       final semantics = tester.ensureSemantics();
       await open(tester);
-      await tester.tap(find.text('Statistics'));
+      await tester.tap(find.bySemanticsLabel('Statistics'));
       await tester.pumpAndSettle();
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       semantics.dispose();

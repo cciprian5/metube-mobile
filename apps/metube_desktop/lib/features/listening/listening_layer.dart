@@ -103,7 +103,9 @@ class _ListeningLayerState extends ConsumerState<ListeningLayer> {
                 ],
               ),
             ),
-            _Dimmed(dim: open, child: widget.bar),
+            // A picture in full screen has its own controls over it (see
+            // ClipVideoControls); the bar would only cut the picture short.
+            if (!widget.full || open) _Dimmed(dim: open, child: widget.bar),
           ],
         );
       },

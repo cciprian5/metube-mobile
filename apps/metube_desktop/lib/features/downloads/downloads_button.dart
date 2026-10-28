@@ -22,20 +22,57 @@ class DownloadsButton extends ConsumerWidget {
         : l.desktopDownloads;
     return MTShortcutTooltip(
       message: label,
-      child: IconButton(
-        onPressed: () => unawaited(showDownloadsPanel(context)),
-        icon: Badge(
-          isLabelVisible: active > 0,
-          backgroundColor: p.accent,
-          textColor: p.onAccent,
-          label: Text('$active'),
-          child: MTIcon(
-            MTIcons.download,
-            size: MTSpace.lg,
-            color: active > 0 ? p.accentInk : p.ink2,
-            semanticLabel: label,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: MTSpace.xxs / 2),
+        child: IconButton(
+          onPressed: () => unawaited(showDownloadsPanel(context)),
+          // The count beside the arrow's corner, not over the arrow: Material's
+          // badge sat on the glyph and hid it.
+          icon: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              MTIcon(
+                MTIcons.download,
+                size: MTDensity.desktop.icon,
+                color: active > 0 ? p.accentInk : p.ink2,
+                semanticLabel: label,
+              ),
+              if (active > 0)
+                PositionedDirectional(
+                  top: -MTSpace.xs,
+                  end: -MTSpace.sm,
+                  child: ExcludeSemantics(child: _Count(active)),
+                ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The small ember pill with the number under way.
+class _Count extends StatelessWidget {
+  const _Count(this.count);
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    return Container(
+      constraints: const BoxConstraints(minWidth: MTSpace.lg),
+      padding: const EdgeInsets.symmetric(horizontal: MTSpace.xxs),
+      decoration: BoxDecoration(
+        color: p.accent,
+        borderRadius: BorderRadius.circular(MTSpace.lg),
+        border: Border.all(color: p.bg, width: MTSpace.xxs / 2),
+      ),
+      child: Text(
+        '$count',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.labelSmall?.tabular
+            .copyWith(color: p.onAccent, height: 1.3),
       ),
     );
   }

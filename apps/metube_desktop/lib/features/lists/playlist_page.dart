@@ -117,6 +117,7 @@ class _Lines extends ConsumerWidget {
           item: item,
           missing: missing,
           current: !missing && item.canonicalUrl == current,
+          playing: state.playing,
           onTap: () {
             if (missing) {
               showMTNotice(

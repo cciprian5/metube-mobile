@@ -155,7 +155,7 @@ void main() {
     tester,
   ) async {
     final h = await open(tester, library: _library, server: server);
-    await tester.tap(find.text('Table'));
+    await tester.tap(find.bySemanticsLabel('Table'));
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaRow), findsNWidgets(4));
     expect(await h.store.getString(EmberLibraryNotifier.modeKey), 'list');
@@ -267,7 +267,7 @@ void main() {
     // catches the shared widgets it draws.
     await open(tester, library: _library, server: server);
     for (final mode in ['Grid', 'Table', 'Compact']) {
-      await tester.tap(find.text(mode));
+      await tester.tap(find.bySemanticsLabel(mode));
       await tester.pumpAndSettle();
       expect(find.byType(Icon), findsNothing, reason: mode);
     }
@@ -290,7 +290,7 @@ void main() {
             await tester.pumpWidget(h.app());
             await tester.pumpAndSettle();
             await tester.tap(
-              find.text(switch ((mode, arabic)) {
+              find.bySemanticsLabel(switch ((mode, arabic)) {
                 ('Grid', false) => 'Grid',
                 ('Grid', true) => 'شبكة',
                 ('Table', false) => 'Table',

@@ -22,7 +22,7 @@ void main() {
   ];
 
   test('**the guard**: the engine is built in one place only', () {
-    expect(filesMatching(RegExp(r'\bPlayer\(\)')), [
+    expect(filesMatching(RegExp(r'\bPlayer\(')), [
       'lib/platform/media_kit_port.dart',
     ]);
   });

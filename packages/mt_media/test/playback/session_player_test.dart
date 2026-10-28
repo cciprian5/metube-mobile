@@ -205,6 +205,52 @@ void main() {
       expect(player.state.current!.title, 'a');
       expect(port.loaded.single.uri.toString(), _url('a'));
     });
+
+    test('**the guard**: a stream that drops mid-way is picked up where it '
+        'dropped, not started over', () async {
+      await player.dispose();
+      final events = <String>[];
+      player = MTSessionPlayer(
+        port: port = FakePlayerPort(),
+        resolver: PlaybackSourceResolver(
+          endpoint: ServerStreamEndpoint(
+            buildUrl: (name) => 'https://srv/download/$name',
+            headers: const {},
+          ),
+        ),
+        positions: positions,
+        prefs: prefs,
+        stateStore: states,
+        saveInterval: const Duration(hours: 1),
+        networkRetryBackoff: const [Duration.zero, Duration.zero],
+        onTrace: events.add,
+      );
+      await player.playItems([
+        _item('song', duration: const Duration(minutes: 4)),
+      ]);
+      port.position = const Duration(minutes: 1, seconds: 2);
+      port.emitError('tcp: connection reset');
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+      expect(port.loaded, hasLength(2));
+      expect(port.position, const Duration(minutes: 1, seconds: 2));
+      expect(events.single, contains('at 1:02'));
+    });
+
+    test('a stream that drops at the same place every time runs out of '
+        'retries rather than looping', () async {
+      await player.dispose();
+      player = build(retries: const [Duration.zero, Duration.zero]);
+      await player.playItems([
+        _item('a', duration: const Duration(minutes: 4)),
+        _item('b'),
+      ]);
+      for (var i = 0; i < 3; i++) {
+        port.position = const Duration(minutes: 1);
+        port.emitError('tcp: connection reset');
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
+      expect(player.state.current!.title, 'b');
+    });
   });
 
   group('continuity', () {

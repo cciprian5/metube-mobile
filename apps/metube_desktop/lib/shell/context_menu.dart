@@ -80,7 +80,7 @@ Future<T?> showEmberMenu<T>(
                 if (entry.icon case final icon?) ...[
                   MTIcon(
                     icon,
-                    size: MTSpace.lg,
+                    size: MTDensity.desktop.icon,
                     color: entry.danger ? p.err : p.ink2,
                   ),
                   const SizedBox(width: MTSpace.sm),

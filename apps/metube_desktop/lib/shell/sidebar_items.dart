@@ -20,7 +20,7 @@ class SidebarAddButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final ink = onTap == null ? p.ink3 : p.onAccent;
-    final plus = MTIcon(MTIcons.plus, size: MTSpace.lg, color: ink);
+    final plus = MTIcon(MTIcons.plus, size: MTDensity.desktop.icon, color: ink);
     return MTShortcutTooltip(
       message: label,
       shortcut: 'Ctrl+V',
@@ -115,7 +115,7 @@ class SidebarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final ink = selected ? p.accentInk : p.ink2;
-    final glyph = MTIcon(icon, size: MTSpace.lg, color: ink);
+    final glyph = MTIcon(icon, size: MTDensity.desktop.icon, color: ink);
     final row = Material(
       color: selected ? p.accentSoft : Colors.transparent,
       shape: RoundedRectangleBorder(
@@ -183,7 +183,62 @@ class SidebarItem extends StatelessWidget {
       label: narrow ? label : null,
       child: MenuKey(
         onMenu: onMenu,
-        child: narrow ? MTShortcutTooltip(message: label, child: row) : row,
+        // A hair of space above and below: the chosen place and the one
+        // under the mouse are two marks, not one block.
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: MTSpace.xxs / 2),
+          child: narrow ? MTShortcutTooltip(message: label, child: row) : row,
+        ),
+      ),
+    );
+  }
+}
+
+/// Narrows or widens the sidebar: a panel with an arrow, pointing the way
+/// the sidebar will go, toward its edge in either language.
+class SidebarToggle extends StatelessWidget {
+  const SidebarToggle({super.key, required this.narrow, required this.onTap});
+
+  final bool narrow;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    final l = context.mtl;
+    final label = narrow ? l.desktopWidenSidebar : l.desktopNarrowSidebar;
+    final glyph = Transform.flip(
+      flipX: Directionality.of(context) == TextDirection.rtl,
+      child: MTIcon(
+        narrow ? MTIcons.sidebarOpen : MTIcons.sidebarClose,
+        size: MTDensity.desktop.icon,
+        color: p.ink2,
+      ),
+    );
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: MTShortcutTooltip(
+        message: label,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: MTSpace.xxs / 2),
+          child: Material(
+            color: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onTap,
+              child: SizedBox(
+                width: narrow ? double.infinity : MTDensity.desktop.row,
+                height: MTDensity.desktop.row,
+                child: Center(child: glyph),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

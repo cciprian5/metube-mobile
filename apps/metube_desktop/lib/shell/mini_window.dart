@@ -278,7 +278,7 @@ class _Buttons extends StatelessWidget {
             onPressed: onTap,
             icon: MTIcon(
               icon,
-              size: MTSpace.lg,
+              size: MTDensity.desktop.icon,
               color: onTap == null ? ink.withValues(alpha: 0.4) : ink,
               semanticLabel: label,
             ),

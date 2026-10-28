@@ -13,7 +13,9 @@ import '../../shell/pill.dart';
 import '../setup/setup_dialog.dart';
 import 'appearance_pane.dart';
 
-/// One setting: its name, a line saying what it does, and its control.
+/// One setting: its name, a line saying what it does, and its control at
+/// the line's far end, with a hairline under it, so a pane reads as a list
+/// of separate settings (the settings design, Desktop 08).
 class SettingLine extends StatelessWidget {
   const SettingLine({
     super.key,
@@ -30,37 +32,61 @@ class SettingLine extends StatelessWidget {
   final String? value;
   final Widget? trailing;
 
+  /// The most of the line the control may take; the name has the rest.
+  static const double controlShare = 0.45;
+
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: MTSpace.sm),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: text.bodyLarge?.copyWith(color: p.ink)),
-                if (value case final value?)
-                  Text(
-                    value,
-                    textDirection: TextDirection.ltr,
-                    style: text.bodySmall?.copyWith(color: p.ink2),
-                  ),
-                if (hint case final hint?)
-                  Text(hint, style: text.labelSmall?.copyWith(color: p.ink3)),
-              ],
-            ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: p.line,
+            width: MTThemeX.of(context).hairline,
           ),
-          if (trailing case final trailing?) ...[
-            const SizedBox(width: MTSpace.md),
-            // Shares the line rather than taking what it likes: a long
-            // label at a large text size shrinks instead of spilling.
-            Flexible(child: trailing),
-          ],
-        ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: MTSpace.md),
+        child: LayoutBuilder(
+          builder: (context, box) => Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: text.bodyLarge?.copyWith(color: p.ink)),
+                    if (value case final value?)
+                      Text(
+                        value,
+                        textDirection: TextDirection.ltr,
+                        style: text.bodySmall?.copyWith(color: p.ink2),
+                      ),
+                    if (hint case final hint?)
+                      Text(
+                        hint,
+                        style: text.labelSmall?.copyWith(color: p.ink3),
+                      ),
+                  ],
+                ),
+              ),
+              if (trailing case final trailing?) ...[
+                const SizedBox(width: MTSpace.lg),
+                // At the far end, as wide as it needs up to its share: a
+                // long label at a large text size wraps instead of
+                // spilling.
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: box.maxWidth * controlShare,
+                  ),
+                  child: trailing,
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

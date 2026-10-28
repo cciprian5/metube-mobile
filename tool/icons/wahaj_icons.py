@@ -78,6 +78,14 @@ ICONS = {
     "check": '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
     "grid": '<rect x="4" y="4" width="6.6" height="6.6" rx="1.7"/><rect x="13.4" y="4" width="6.6" height="6.6" rx="1.7"/>'
             '<rect x="4" y="13.4" width="6.6" height="6.6" rx="1.7"/><rect x="13.4" y="13.4" width="6.6" height="6.6" rx="1.7"/>',
+    "table": '<rect x="3.5" y="4.5" width="17" height="15" rx="2.4"/><path d="M3.5 9.6h17"/><path d="M3.5 14.6h17"/>'
+             '<path d="M9.4 9.6v9.9"/>',
+    "stats": '<path d="M4.5 19.5h15"/><path d="M7.6 16.4v-4.2"/><path d="M12 16.4V7.6"/><path d="M16.4 16.4v-6.2"/>'
+             '<circle class="e" cx="12" cy="4.4" r="1.1"/>',
+    "sidebar_close": '<rect x="3.5" y="4.5" width="17" height="15" rx="2.6"/><path d="M9.4 4.5v15"/>'
+                     '<path d="M15.6 9.4L13 12l2.6 2.6"/>',
+    "sidebar_open": '<rect x="3.5" y="4.5" width="17" height="15" rx="2.6"/><path d="M9.4 4.5v15"/>'
+                    '<path d="M13 9.4l2.6 2.6-2.6 2.6"/>',
     "list": '<circle class="f" cx="5" cy="7" r="1.05"/><circle class="f" cx="5" cy="12" r="1.05"/><circle class="f" cx="5" cy="17" r="1.05"/>'
             '<path d="M8.6 7h11"/><path d="M8.6 12h11"/><path d="M8.6 17h11"/>',
     # playback
@@ -90,6 +98,10 @@ ICONS = {
                '<path d="M4 17h3.2c1.1 0 2-.3 2.8-.9"/><path d="M13.9 7.9c.8-.6 1.7-.9 2.8-.9H20"/><path d="M17.6 4.6L20 7l-2.4 2.4"/>',
     "repeat": '<path d="M5 11.2V9.6A2.6 2.6 0 0 1 7.6 7H18.4"/><path d="M16 4.6L18.4 7 16 9.4"/>'
               '<path d="M19 12.8v1.6a2.6 2.6 0 0 1-2.6 2.6H5.6"/><path d="M8 19.4L5.6 17 8 14.6"/>',
+    "repeat_one": '<path d="M5 11.2V9.6A2.6 2.6 0 0 1 7.6 7H18.4"/><path d="M16 4.6L18.4 7 16 9.4"/>'
+                  '<path d="M19 12.8v1.6a2.6 2.6 0 0 1-2.6 2.6H5.6"/><path d="M8 19.4L5.6 17 8 14.6"/>'
+                  '<path class="es" d="M11.2 10.9l1.3-.9v4.4"/>',
+    "stop_after": '<path d="M4 12h10.6"/><path d="M11.4 8.6L14.8 12l-3.4 3.4"/><path d="M19 6v12"/>',
     "volume": '<path d="M4.5 9.6h3l4.2-3.6v12l-4.2-3.6h-3z"/><path d="M15.2 9.4a3.6 3.6 0 0 1 0 5.2"/><path d="M17.8 6.8a7.2 7.2 0 0 1 0 10.4"/>',
     "queue": '<circle cx="14" cy="17" r="3"/><path d="M17 17V4h4"/><path d="M13 5H3"/><path d="M3 9h10"/><path d="M9 13H3"/>',
     "transcript": '<circle class="e" cx="5" cy="7" r="1.25"/><circle class="f" cx="5" cy="12" r="1.05"/><circle class="f" cx="5" cy="17" r="1.05"/>'

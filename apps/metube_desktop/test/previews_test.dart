@@ -17,6 +17,13 @@ void main() {
         ShellHarness.useWindow(tester, const Size(1280, 800));
         tester.platformDispatcher.platformBrightnessTestValue = brightness;
         addTearDown(tester.platformDispatcher.clearAllTestValues);
+        // Still: a playing clip's bars would sway for ever and the
+        // pictures would never settle; this checks they build.
+        tester.platformDispatcher.accessibilityFeaturesTestValue =
+            const FakeAccessibilityFeatures(disableAnimations: true);
+        addTearDown(
+          tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+        );
         for (final (i, preview) in shellPreviews.indexed) {
           await tester.pumpWidget(
             MaterialApp(

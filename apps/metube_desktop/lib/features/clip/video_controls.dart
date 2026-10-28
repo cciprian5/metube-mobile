@@ -9,6 +9,7 @@ import '../../di.dart';
 import '../../shell/player_controls.dart';
 import '../../shell/seek_bar.dart';
 import '../../shell/shell_state.dart';
+import '../../shell/volume_slider.dart';
 import 'clip_state.dart';
 
 /// The controls over a playing picture: the seek bar with its times, the
@@ -17,8 +18,10 @@ import 'clip_state.dart';
 /// so nothing covers what is watched; paused, they stay.
 ///
 /// The player bar keeps every one of these too: this is the same player
-/// within reach of the picture, above all in full screen, where the bar
-/// is gone.
+/// within reach of the picture. **In full screen the bar is gone** and
+/// these take its place: previous, play, next and the volume join them,
+/// so a clip that ends goes on to the next in full screen and can still be
+/// stepped through, paused or turned down without leaving it.
 class ClipVideoControls extends ConsumerStatefulWidget {
   const ClipVideoControls({
     super.key,
@@ -144,6 +147,7 @@ class _Bar extends ConsumerWidget {
               player: player,
               duration: state.duration,
               onPicture: true,
+              leading: full ? _transport(context, l) : null,
               // A narrow short's column shrinks the buttons rather than
               // spill past its edge.
               trailing: FittedBox(
@@ -152,6 +156,10 @@ class _Bar extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    if (full) ...[
+                      const EmberVolumeSlider(onPicture: true),
+                      const SizedBox(width: MTSpace.xs),
+                    ],
                     MTShortcutTooltip(
                       message: l.playbackSpeed,
                       child: TextButton(
@@ -197,4 +205,31 @@ class _Bar extends ConsumerWidget {
       ),
     );
   }
+
+  /// Previous, play and next, in full screen where the player bar is not.
+  Widget _transport(BuildContext context, MTLocalizations l) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      EmberPlayerControl(
+        icon: MTIcons.prev,
+        label: l.previous,
+        ink: Colors.white,
+        onTap: player.skipToPrevious,
+      ),
+      EmberPlayerControl(
+        icon: state.playing ? MTIcons.pause : MTIcons.playFill,
+        label: state.playing ? l.pause : l.play,
+        shortcut: 'Space',
+        ink: Colors.white,
+        onTap: state.playing ? player.pause : player.play,
+      ),
+      EmberPlayerControl(
+        icon: MTIcons.next,
+        label: l.next,
+        ink: Colors.white,
+        onTap: player.skipToNext,
+      ),
+      const SizedBox(width: MTSpace.xs),
+    ],
+  );
 }

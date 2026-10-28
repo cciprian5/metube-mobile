@@ -30,6 +30,10 @@ class SettingsPlace extends StatelessWidget {
 
   static const double listWidth = 260;
 
+  /// How far a section rises as it comes in, as a share of its height:
+  /// a few points, glimpsed rather than watched.
+  static const double _rise = 0.012;
+
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
@@ -108,46 +112,71 @@ class SettingsPlace extends StatelessWidget {
         ),
         VerticalDivider(width: 1, color: p.line),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(MTSpace.xl),
-            children: [
-              Align(
-                alignment: AlignmentDirectional.topStart,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: MTBreakpoint.readable,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        paneTitle(l, pane),
-                        style: text.headlineSmall?.copyWith(color: p.ink),
-                      ),
-                      const SizedBox(height: MTSpace.lg),
-                      switch (pane) {
-                        EmberSettingsPane.server => const ServerPane(),
-                        EmberSettingsPane.network => const AddressesPane(),
-                        EmberSettingsPane.downloads => const DownloadsPane(),
-                        EmberSettingsPane.folders => const FoldersPane(),
-                        EmberSettingsPane.desktop => const DesktopPane(),
-                        EmberSettingsPane.backup => const BackupPane(),
-                        EmberSettingsPane.cookies => const CookiesPane(),
-                        EmberSettingsPane.sync => const SyncPane(),
-                        EmberSettingsPane.subscriptions =>
-                          const SubscriptionsPane(),
-                        EmberSettingsPane.appearance => const AppearancePane(),
-                        EmberSettingsPane.transcripts =>
-                          const TranscriptsPane(),
-                        EmberSettingsPane.updates => const UpdatesPane(),
-                        EmberSettingsPane.logs => const LogsPane(),
-                        EmberSettingsPane.about => const AboutPane(),
-                      },
-                    ],
+          // **The section changes, the page does not**: the new one rises a
+          // little as it fades in, the old one fades out quickly, and the
+          // list beside stays still.
+          child: AnimatedSwitcher(
+            duration: mtMotionDuration(context, MTMotion.medium),
+            reverseDuration: mtMotionDuration(context, MTMotion.fast),
+            switchInCurve: MTMotion.entrance,
+            switchOutCurve: MTMotion.exit,
+            transitionBuilder: (child, motion) => FadeTransition(
+              opacity: motion,
+              child: SlideTransition(
+                position: Tween(
+                  begin: const Offset(0, _rise),
+                  end: Offset.zero,
+                ).animate(motion),
+                child: child,
+              ),
+            ),
+            layoutBuilder: (current, previous) => Stack(
+              alignment: AlignmentDirectional.topStart,
+              children: [...previous, ?current],
+            ),
+            child: ListView(
+              key: ValueKey(pane),
+              padding: const EdgeInsets.all(MTSpace.xl),
+              children: [
+                Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: MTBreakpoint.readable,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          paneTitle(l, pane),
+                          style: text.headlineSmall?.copyWith(color: p.ink),
+                        ),
+                        const SizedBox(height: MTSpace.lg),
+                        switch (pane) {
+                          EmberSettingsPane.server => const ServerPane(),
+                          EmberSettingsPane.network => const AddressesPane(),
+                          EmberSettingsPane.downloads => const DownloadsPane(),
+                          EmberSettingsPane.folders => const FoldersPane(),
+                          EmberSettingsPane.desktop => const DesktopPane(),
+                          EmberSettingsPane.backup => const BackupPane(),
+                          EmberSettingsPane.cookies => const CookiesPane(),
+                          EmberSettingsPane.sync => const SyncPane(),
+                          EmberSettingsPane.subscriptions =>
+                            const SubscriptionsPane(),
+                          EmberSettingsPane.appearance =>
+                            const AppearancePane(),
+                          EmberSettingsPane.transcripts =>
+                            const TranscriptsPane(),
+                          EmberSettingsPane.updates => const UpdatesPane(),
+                          EmberSettingsPane.logs => const LogsPane(),
+                          EmberSettingsPane.about => const AboutPane(),
+                        },
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -223,7 +252,11 @@ class _PaneEntry extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                MTIcon(_paneIcon(pane), size: MTSpace.lg, color: ink),
+                MTIcon(
+                  _paneIcon(pane),
+                  size: MTDensity.desktop.icon,
+                  color: ink,
+                ),
                 const SizedBox(width: MTSpace.sm),
                 Expanded(
                   child: Column(

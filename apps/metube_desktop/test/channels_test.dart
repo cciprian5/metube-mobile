@@ -333,7 +333,26 @@ void main() {
       ],
       at: EmberRoutes.channel('a'),
     );
-    expect(find.textContaining("doesn't say which channel"), findsOneWidget);
+    expect(find.textContaining("doesn't record which channel"), findsOneWidget);
+  });
+
+  testWidgets('**the guard**: a channel that saves into its own folder says '
+      'nothing of the kind, even before anything arrives there', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      subs: [_sub('a', 'Alpha - Videos', folder: 'Alpha')],
+      library: [
+        LibraryItem(
+          canonicalUrl: 'https://youtu.be/x',
+          title: 'No uploader',
+          onServer: true,
+        ),
+      ],
+      at: EmberRoutes.channel('a'),
+    );
+    expect(find.textContaining("doesn't record which channel"), findsNothing);
   });
 
   testWidgets('a channel the library has and nobody follows can be followed', (

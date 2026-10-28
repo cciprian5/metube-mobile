@@ -5,6 +5,19 @@ part of 'mt_session_player.dart';
 /// A `part` file for the size limit: these work on the player's private
 /// queue and counters, which an extension in another library cannot reach.
 extension _MTSessionFlow on MTSessionPlayer {
+  Future<void> _skip({required bool forward}) async {
+    await _savePosition();
+    final moved = forward
+        ? _queue.moveNext(_playMode, userInitiated: true)
+        : _queue.movePrevious(_playMode);
+    if (!moved) return;
+    await _loadCurrent(autoPlay: true);
+  }
+
+  void _onPhase(MediaPlaybackState phase) {
+    if (phase == MediaPlaybackState.completed) unawaited(_onCompleted());
+  }
+
   /// The item ended by itself, so the mode decides what follows.
   Future<void> _onCompleted() async {
     final url = _queue.current?.canonicalUrl;
@@ -50,29 +63,45 @@ extension _MTSessionFlow on MTSessionPlayer {
   /// source that fails every time is skipped, and repeated skips stop the
   /// session. [autoPlay] is inherited, so a restored session whose first
   /// item fails never starts the next one out loud.
-  Future<void> _onError({bool autoPlay = true}) async {
+  ///
+  /// **A retry picks up at [at]**, where the stream failed. It used to
+  /// start the clip over, so a stream that failed at the same minute every
+  /// time played its beginning again and again (seen on another computer:
+  /// "it reaches a quarter and starts over until it stops").
+  Future<void> _onError({bool autoPlay = true, Duration? at}) async {
     _openRetryBudget();
+    final resume = at != null && at > Duration.zero ? at : null;
     if (_networkRetries < networkRetryBackoff.length && _isRetryableSource()) {
       final generation = _generation;
       final wait = networkRetryBackoff[_networkRetries];
       _networkRetries++;
+      onTrace?.call(
+        'stream failed${resume == null ? '' : ' at ${_clock(resume)}'}; '
+        'retry $_networkRetries of ${networkRetryBackoff.length} '
+        'in ${wait.inSeconds} s',
+      );
       await Future<void>.delayed(wait);
       if (_isStale(generation)) return;
-      return _loadCurrent(autoPlay: autoPlay);
+      return _loadCurrent(autoPlay: autoPlay, startAt: resume);
     }
     _networkRetries = 0;
     _consecutiveErrors++;
     if (_queue.isEmpty ||
         _consecutiveErrors >= _queue.length ||
         _consecutiveErrors >= MTSessionPlayer.maxConsecutiveSkips) {
+      onTrace?.call('failed $_consecutiveErrors in a row; stopped');
       return stop();
     }
+    onTrace?.call('failed; skipped to the next');
     if (_queue.moveNext(PlayMode.repeatAll)) {
       await _loadCurrent(autoPlay: autoPlay);
     } else {
       await stop();
     }
   }
+
+  static String _clock(Duration d) =>
+      '${d.inMinutes}:${(d.inSeconds % 60).toString().padLeft(2, '0')}';
 
   Future<void> _savePosition() async {
     final item = _queue.current;
@@ -121,9 +150,11 @@ extension _MTSessionFlow on MTSessionPlayer {
       if (_isStale(generation)) return;
       _broadcast();
       await persist();
-    } on Object {
+    } on Object catch (e) {
       if (_isStale(generation)) return;
-      await _onError(autoPlay: autoPlay);
+      onTrace?.call('load failed: $e');
+      // A retry that failed to load tries the same place again.
+      await _onError(autoPlay: autoPlay, at: startAt);
     }
   }
 

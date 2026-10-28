@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../shell/shell_state.dart';
 import '../../shell/video_surface.dart';
 import '../library/artwork.dart';
 import 'video_controls.dart';
@@ -31,63 +32,71 @@ class ClipStage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final p = MTThemeX.of(context).palette;
-    final corner = BorderRadius.circular(MTCorners.desktop.card);
     final picture = isCurrent && !item.isAudio && !audioOnly;
-    return ClipRRect(
-      borderRadius: corner,
-      child: ColoredBox(
-        color: MTPalette.fullscreenScrim,
-        child: picture
-            ? ClipVideoControls(
-                short: item.isShortForm,
-                child: ref.watch(videoSurfaceProvider).build(context),
-              )
-            : LayoutBuilder(
-                builder: (context, box) => Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    artworkFor(
-                          ref,
-                          context,
-                          cover,
-                          width: box.maxWidth,
-                          height: box.maxHeight,
-                        ) ??
-                        Center(
-                          child: mtCoverPlaceholder(
-                            context,
-                            size: MTSpace.xxl,
-                            color: p.ink3,
-                            audio: item.isAudio,
-                          ),
-                        ),
-                    if (!isCurrent)
+    // Square in full screen, where the picture meets the screen's edges.
+    return ValueListenableBuilder<bool>(
+      valueListenable: ref.watch(windowControlsProvider).fullScreen,
+      builder: (context, full, child) => ClipRRect(
+        borderRadius: BorderRadius.circular(full ? 0 : MTCorners.desktop.card),
+        child: child,
+      ),
+      child: _stage(context, ref, picture),
+    );
+  }
+
+  Widget _stage(BuildContext context, WidgetRef ref, bool picture) {
+    final p = MTThemeX.of(context).palette;
+    return ColoredBox(
+      color: MTPalette.fullscreenScrim,
+      child: picture
+          ? ClipVideoControls(
+              short: item.isShortForm,
+              child: ref.watch(videoSurfaceProvider).build(context),
+            )
+          : LayoutBuilder(
+              builder: (context, box) => Stack(
+                fit: StackFit.expand,
+                children: [
+                  artworkFor(
+                        ref,
+                        context,
+                        cover,
+                        width: box.maxWidth,
+                        height: box.maxHeight,
+                      ) ??
                       Center(
-                        child: MTShortcutTooltip(
-                          message: context.mtl.play,
-                          child: Material(
-                            color: p.accent,
-                            shape: const CircleBorder(),
-                            child: InkWell(
-                              customBorder: const CircleBorder(),
-                              onTap: onPlay,
-                              child: Padding(
-                                padding: const EdgeInsets.all(MTSpace.lg),
-                                child: MTIcon(
-                                  MTIcons.play,
-                                  size: MTSpace.xxl,
-                                  color: p.onAccent,
-                                ),
+                        child: mtCoverPlaceholder(
+                          context,
+                          size: MTSpace.xxl,
+                          color: p.ink3,
+                          audio: item.isAudio,
+                        ),
+                      ),
+                  if (!isCurrent)
+                    Center(
+                      child: MTShortcutTooltip(
+                        message: context.mtl.play,
+                        child: Material(
+                          color: p.accent,
+                          shape: const CircleBorder(),
+                          child: InkWell(
+                            customBorder: const CircleBorder(),
+                            onTap: onPlay,
+                            child: Padding(
+                              padding: const EdgeInsets.all(MTSpace.lg),
+                              child: MTIcon(
+                                MTIcons.play,
+                                size: MTSpace.xxl,
+                                color: p.onAccent,
                               ),
                             ),
                           ),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
-      ),
+            ),
     );
   }
 }

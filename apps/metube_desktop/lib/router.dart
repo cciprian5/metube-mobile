@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show MaterialPage;
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
@@ -169,18 +170,34 @@ GoRouter buildEmberRouter({
           builder: (_, state) => reading(state.pathParameters['id']),
         ),
         GoRoute(path: EmberRoutes.stats, builder: (_, _) => stats(null)),
+        // **One page for every section**, under one key: moving between
+        // sections updates the page in place, so the list of sections
+        // stays still and only the open section changes (with its own
+        // fade, see SettingsPlace). As routes nested in one another, each
+        // section was a new page sliding in whole.
         GoRoute(
           path: EmberRoutes.settings,
-          builder: (_, _) => settings(null),
-          routes: [
-            for (final pane in EmberSettingsPane.values)
-              GoRoute(path: pane.name, builder: (_, _) => settings(pane.name)),
-          ],
+          pageBuilder: (_, _) => _settingsPage(settings(null)),
+        ),
+        GoRoute(
+          path: '${EmberRoutes.settings}/:pane',
+          // A section that does not exist names no place.
+          redirect: (_, state) =>
+              EmberSettingsPane.values.asNameMap().containsKey(
+                state.pathParameters['pane'],
+              )
+              ? null
+              : EmberRoutes.library,
+          pageBuilder: (_, state) =>
+              _settingsPage(settings(state.pathParameters['pane'])),
         ),
       ],
     ),
   ],
 );
+
+Page<void> _settingsPage(Widget child) =>
+    MaterialPage(key: const ValueKey('settings'), child: child);
 
 GoRoute _place(String path, String name) =>
     GoRoute(path: path, builder: (_, _) => PendingPlace(name));

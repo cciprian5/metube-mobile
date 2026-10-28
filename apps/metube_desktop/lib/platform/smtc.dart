@@ -14,7 +14,7 @@ class SmtcSurface implements SystemMediaSurface {
   final SMTCWindows _smtc;
   final _buttons = StreamController<SystemMediaButton>.broadcast();
   StreamSubscription<PressedButton>? _presses;
-  String? _shownTitle;
+  String? _shownKey;
 
   /// Null when Windows' media service cannot be reached; the app plays on
   /// without it.
@@ -59,14 +59,18 @@ class SmtcSurface implements SystemMediaSurface {
   Future<void> show(SystemNowPlaying? now) async {
     try {
       if (now == null) {
-        _shownTitle = null;
+        _shownKey = null;
         await _smtc.disableSmtc();
         return;
       }
       // The picture is fetched again on every metadata write, so it is
-      // written when the clip changes, not on every play and pause.
-      if (now.title != _shownTitle) {
-        _shownTitle = now.title;
+      // written when the clip or its picture changes, not on every play
+      // and pause. **Cleared first**: a write with no picture keeps the
+      // last one, which showed the previous clip's cover by this one.
+      final key = '${now.title}\n${now.thumbnail}';
+      if (key != _shownKey) {
+        _shownKey = key;
+        await _smtc.clearMetadata();
         await _smtc.updateMetadata(
           MusicMetadata(
             title: now.title,

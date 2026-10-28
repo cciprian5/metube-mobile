@@ -18,6 +18,7 @@ class EmberSeekBar extends StatefulWidget {
     required this.player,
     required this.duration,
     this.onPicture = false,
+    this.leading,
     this.trailing,
   });
 
@@ -26,6 +27,10 @@ class EmberSeekBar extends StatefulWidget {
 
   /// Light on the picture's own shade, which is dark in either theme.
   final bool onPicture;
+
+  /// Set before the times over the picture: the transport, in full
+  /// screen.
+  final Widget? leading;
 
   /// Set at the end of the times' line over the picture.
   final Widget? trailing;
@@ -87,6 +92,7 @@ class _EmberSeekBarState extends State<EmberSeekBar> {
             bar,
             Row(
               children: [
+                ?widget.leading,
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerLeft,

@@ -206,6 +206,7 @@ class MTTypeScale {
 class MTDensity {
   const MTDensity({
     required this.row,
+    required this.icon,
     required this.iconButton,
     required this.gap,
     required this.scrollbar,
@@ -214,6 +215,10 @@ class MTDensity {
 
   /// The height of a list or table row.
   final double row;
+
+  /// An icon on its own in a bar or a list: a little larger than the
+  /// body text, so a glyph reads at a glance.
+  final double icon;
 
   /// The square an icon button occupies, its hit area included.
   final double iconButton;
@@ -230,6 +235,7 @@ class MTDensity {
   /// The Windows app. The phones keep their own spacing (`MTSpace`).
   static const desktop = MTDensity(
     row: 36,
+    icon: 18,
     iconButton: 32,
     gap: 12,
     scrollbar: 6,

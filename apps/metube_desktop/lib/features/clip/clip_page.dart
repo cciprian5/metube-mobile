@@ -48,17 +48,49 @@ class ClipPage extends ConsumerStatefulWidget {
 class _ClipPageState extends ConsumerState<ClipPage> {
   late final MTPlayer _player = ref.read(playerProvider);
   DateTime _lastWheel = DateTime.fromMillisecondsSinceEpoch(0);
+  late final StreamSubscription<MTPlayerState> _follow;
+  String? _playing;
+
+  /// The clip this page shows, as last built.
+  String? _shown;
 
   /// One wheel notch is one short; a flick of the wheel sends a burst.
   static const _wheelPause = Duration(milliseconds: 350);
 
   @override
+  void initState() {
+    super.initState();
+    // Taken now, not when first read: the first change would otherwise be
+    // compared with itself.
+    _playing = _player.state.current?.canonicalUrl;
+    _follow = _player.states.listen(_onPlayer);
+  }
+
+  @override
   void dispose() {
+    unawaited(_follow.cancel());
     // The loop belongs to watching shorts here; left playing in the bar,
     // the lane moves on by itself.
     unawaited(_player.setLooping(false));
     super.dispose();
   }
+
+  /// **The page goes with the player**: watching the clip that plays, a
+  /// next, a previous or the end of the clip opens the clip that follows,
+  /// as a video site does. It stayed behind on the cover of the clip that
+  /// had ended, which read as a picture frozen while the sound went on.
+  /// A short to a short stays in the lane, which follows by itself.
+  void _onPlayer(MTPlayerState state) {
+    final now = state.current;
+    final was = _playing;
+    _playing = now?.canonicalUrl;
+    if (now == null || now.canonicalUrl == was || was != _shown) return;
+    if (_inLane && now.isShortForm) return;
+    if (mounted) GoRouter.of(context).go(EmberRoutes.item(now.canonicalUrl));
+  }
+
+  /// The page was opened on a short, so its lane follows the player.
+  bool _inLane = false;
 
   void _fullScreen(bool on) =>
       ref.read(windowControlsProvider).setFullScreen(on);
@@ -102,9 +134,11 @@ class _ClipPageState extends ConsumerState<ClipPage> {
         }
         // In the lane the page follows the player from short to short.
         final short = opened.isShortForm;
+        _inLane = short;
         final item = short && (current?.isShortForm ?? false)
             ? current!
             : opened;
+        _shown = item.canonicalUrl;
         final entry = library
             .where((i) => i.canonicalUrl == item.canonicalUrl)
             .firstOrNull;
@@ -204,6 +238,28 @@ class _ShortsLayout extends StatelessWidget {
   }
 }
 
+/// **The stage's width, from the height it is given as well**: 16:9 of the
+/// width alone was taller than the window, so the picture's top or its
+/// controls were cut off, and the title was out of sight. Now the picture
+/// and the title's first lines fit, and a page that is short gives a
+/// smaller picture, never one too small to watch.
+double stageWidth(double width, double height) {
+  final byHeight = (height - MTSpace.xl * 2 - ClipStageRoom.title) * 16 / 9;
+  return math.min(
+    math.min(EmberShellSize.clipMax, width),
+    math.max(ClipStageRoom.least, byHeight),
+  );
+}
+
+/// The room the stage leaves and keeps.
+abstract final class ClipStageRoom {
+  /// Under the picture: the title and its line, in sight.
+  static const double title = MTSpace.xxl * 3;
+
+  /// The narrowest picture, however short the window.
+  static const double least = EmberShellSize.listCard * 2;
+}
+
 class _ClipLayout extends ConsumerWidget {
   const _ClipLayout({
     required this.stage,
@@ -240,7 +296,7 @@ class _ClipLayout extends ConsumerWidget {
         child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: math.min(EmberShellSize.clipMax, box.maxWidth),
+              maxWidth: stageWidth(box.maxWidth, box.maxHeight),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

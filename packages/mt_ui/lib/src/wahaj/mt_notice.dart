@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../icons/mt_icon.dart';
@@ -5,6 +7,7 @@ import '../icons/mt_icon_data.dart';
 import '../icons/mt_icons.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import '../widgets/mt_desktop_app.dart';
 
 /// What a notice reports, which sets its colour.
 enum MTNoticeKind { done, failed, info }
@@ -28,6 +31,7 @@ void showMTNotice(
     ..showSnackBar(
       SnackBar(
         duration: duration,
+        margin: _desktopPlace(context),
         padding: EdgeInsets.zero,
         backgroundColor: p.miniBg,
         shape: RoundedRectangleBorder(
@@ -43,6 +47,26 @@ void showMTNotice(
         ),
       ),
     );
+}
+
+/// **On the computer, a card in the corner**, the width of a sentence and
+/// above the player bar. Across the whole window it ran from edge to edge
+/// over the play button, far longer than anything it says. Null on a
+/// phone, which keeps its own.
+EdgeInsets? _desktopPlace(BuildContext context) {
+  final lift = MTDesktopApp.noticeLiftOf(context);
+  if (lift == null) return null;
+  final width = MediaQuery.sizeOf(context).width;
+  final away = math.max(MTSpace.xl, width - MTNotice.desktopWidth - MTSpace.xl);
+  // Resolved here, in the page's direction: the messenger that lays the
+  // notice out sits above the app's language and reads it as left to
+  // right, which put an Arabic notice over the sidebar.
+  final rtl = Directionality.of(context) == TextDirection.rtl;
+  return EdgeInsets.only(
+    left: rtl ? MTSpace.xl : away,
+    right: rtl ? away : MTSpace.xl,
+    bottom: lift + MTSpace.sm,
+  );
 }
 
 class MTNotice extends StatelessWidget {
@@ -66,6 +90,9 @@ class MTNotice extends StatelessWidget {
 
   /// How long the bottom line takes to run out.
   final Duration duration;
+
+  /// The widest a notice gets on the computer.
+  static const double desktopWidth = 400;
 
   static Color stateColor(MTPalette p, MTNoticeKind kind) => switch (kind) {
     MTNoticeKind.done => p.ok,

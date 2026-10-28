@@ -1,6 +1,19 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
+
+/// A cover kept on this computer for the clip at [canonicalUrl], whose
+/// queue entry names [artwork] (often nothing: the library has it), as a
+/// file Windows can read itself, or null.
+typedef CoverFile = Future<String?> Function(
+  String canonicalUrl,
+  String? artwork,
+);
+
+/// The bridge to Windows' places, so the app can hand it [CoverFile] once
+/// the server is known. Overridden in main; null in tests.
+final systemMediaBridgeProvider = Provider<SystemMediaBridge?>((ref) => null);
 
 /// What Windows shows of the clip playing, in its media flyout, the tray
 /// menu and the taskbar preview.
@@ -9,6 +22,8 @@ class SystemNowPlaying {
     required this.title,
     this.artist,
     this.thumbnail,
+    this.canonicalUrl,
+    this.artwork,
     required this.playing,
     required this.canNext,
     required this.canPrevious,
@@ -17,8 +32,15 @@ class SystemNowPlaying {
   final String title;
   final String? artist;
 
-  /// A picture Windows may fetch on its own: see [publicThumbnail].
+  /// A picture Windows may fetch on its own: see [publicThumbnail], or a
+  /// cover file on this computer.
   final String? thumbnail;
+
+  /// The clip, and its own picture as the queue names it (an address or a
+  /// path), which is never handed to Windows as it is: see
+  /// [SystemMediaBridge.coverFile].
+  final String? canonicalUrl;
+  final String? artwork;
   final bool playing;
   final bool canNext;
   final bool canPrevious;
@@ -31,11 +53,25 @@ class SystemNowPlaying {
       title: item.title,
       artist: item.uploader,
       thumbnail: publicThumbnail(item.artworkUrl),
+      canonicalUrl: item.canonicalUrl,
+      artwork: item.artworkUrl,
       playing: state.playing,
       canNext: state.index < state.items.length - 1,
       canPrevious: state.items.length > 1,
     );
   }
+
+  /// The same, with [file] (a `file:` address) for its picture.
+  SystemNowPlaying withCover(String file) => SystemNowPlaying(
+    title: title,
+    artist: artist,
+    thumbnail: file,
+    canonicalUrl: canonicalUrl,
+    artwork: artwork,
+    playing: playing,
+    canNext: canNext,
+    canPrevious: canPrevious,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -43,13 +79,23 @@ class SystemNowPlaying {
       other.title == title &&
       other.artist == artist &&
       other.thumbnail == thumbnail &&
+      other.canonicalUrl == canonicalUrl &&
+      other.artwork == artwork &&
       other.playing == playing &&
       other.canNext == canNext &&
       other.canPrevious == canPrevious;
 
   @override
-  int get hashCode =>
-      Object.hash(title, artist, thumbnail, playing, canNext, canPrevious);
+  int get hashCode => Object.hash(
+    title,
+    artist,
+    thumbnail,
+    canonicalUrl,
+    artwork,
+    playing,
+    canNext,
+    canPrevious,
+  );
 }
 
 /// **A cover Windows may fetch itself**, or null. Windows asks for the
@@ -127,8 +173,23 @@ class SystemMediaBridge {
   SystemNowPlaying? _shown;
   var _first = true;
 
+  /// **The cover of a clip whose picture Windows may not fetch itself**
+  /// (one on the user's server, which needs the password): the copy
+  /// already saved on this computer. Without it the flyout kept showing
+  /// the cover of the last clip that had a public one.
+  CoverFile? coverFile;
+  ({String clip, String file})? _cover;
+  String? _finding;
+
   void _show(MTPlayerState state) {
-    final now = SystemNowPlaying.of(state);
+    var now = SystemNowPlaying.of(state);
+    if (now case SystemNowPlaying(thumbnail: null, canonicalUrl: final url?)) {
+      if (_cover?.clip == url) {
+        now = now.withCover(_cover!.file);
+      } else if (coverFile != null) {
+        unawaited(_findCover(url, now.artwork));
+      }
+    }
     // A position tick repeats the same state; Windows needs telling once.
     if (!_first && now == _shown) return;
     _first = false;
@@ -136,6 +197,21 @@ class SystemMediaBridge {
     for (final surface in surfaces) {
       unawaited(surface.show(now));
     }
+  }
+
+  Future<void> _findCover(String url, String? artwork) async {
+    if (_finding == url) return;
+    _finding = url;
+    String? file;
+    try {
+      file = await coverFile!(url, artwork);
+    } on Object {
+      // No cover then: the flyout shows the app's own picture.
+    }
+    _finding = null;
+    if (file == null) return;
+    _cover = (clip: url, file: Uri.file(file).toString());
+    _show(player.state);
   }
 
   /// What a button does, the same from every place.

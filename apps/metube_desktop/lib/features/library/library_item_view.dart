@@ -14,6 +14,7 @@ import '../../shell/context_menu.dart';
 import 'artwork.dart';
 import 'clip_keys.dart';
 import 'item_menu.dart';
+import 'choose_mark.dart';
 import 'selection.dart';
 
 /// One library item in the current layout: a grid card, a table row, or a
@@ -29,7 +30,9 @@ class LibraryItemView extends ConsumerWidget {
     required this.paused,
     required this.onPlay,
     this.selected = false,
+    this.choosing = false,
     this.onChoose,
+    this.onToggle,
   });
 
   final LibraryItem item;
@@ -46,9 +49,15 @@ class LibraryItemView extends ConsumerWidget {
   /// Chosen in the list's selection: framed in the accent.
   final bool selected;
 
-  /// A mouse click, which chooses rather than plays; a double click, Enter
-  /// and a screen reader still play. Null plays on a click, as before.
+  /// Some clip of the list is chosen, so a click chooses too.
+  final bool choosing;
+
+  /// A click with Ctrl or Shift, or any click while [choosing]; a plain
+  /// click, Enter and a screen reader play. Null plays on every click.
   final VoidCallback? onChoose;
+
+  /// The round mark on the clip: adds it to the choice or takes it out.
+  final VoidCallback? onToggle;
 
   /// The cover boxes of the grid and the compact row (`MTLibrarySliver`
   /// and `MTMediaCard`), for decoding at the size actually drawn.
@@ -82,20 +91,29 @@ class LibraryItemView extends ConsumerWidget {
       onPointerDown: (e) {
         if (e.buttons == kPrimaryButton) ClickClock.pointerDown();
       },
-      child: Container(
-        foregroundDecoration: selected
-            ? BoxDecoration(
-                border: Border.all(color: p.accent, width: 2),
-                borderRadius: BorderRadius.circular(MTCorners.desktop.card),
-              )
-            : null,
-        child: _view(
-          context,
-          ref,
-          () => switch (ClickClock.activate(item.canonicalUrl)) {
-            ClickMeaning.play => onPlay(),
-            ClickMeaning.choose => onChoose!(),
-          },
+      child: ChooseMark(
+        chosen: selected,
+        choosing: choosing,
+        onToggle: onToggle,
+        child: Container(
+          foregroundDecoration: selected
+              ? BoxDecoration(
+                  border: Border.all(color: p.accent, width: 2),
+                  borderRadius: BorderRadius.circular(MTCorners.desktop.card),
+                )
+              : null,
+          child: _view(
+            context,
+            ref,
+            () => switch (ClickClock.activate(
+              item.canonicalUrl,
+              choosing: choosing,
+            )) {
+              ClickMeaning.play => onPlay(),
+              ClickMeaning.choose => onChoose!(),
+              ClickMeaning.none => null,
+            },
+          ),
         ),
       ),
     );

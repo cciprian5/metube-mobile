@@ -5,7 +5,7 @@ import 'library_models.dart';
 
 /// The unified library: the server's done list merged with the local index
 /// on canonicalUrl, with fuzzy matching, the user's tags and favourites,
-/// and what the artwork and shape indexes know.
+/// and what the artwork, kept-cover and shape indexes know.
 ///
 /// Pure, so the phone and the Windows app merge exactly alike; each only
 /// decides where the inputs come from. A null [history] (no server, or no
@@ -16,6 +16,7 @@ List<LibraryItem> mergeLibrary({
   required Map<String, List<String>> tags,
   required Map<String, String> artwork,
   required Map<String, MediaShape> shapes,
+  Map<String, String> kept = const {},
 }) {
   List<String> userTags(String url) => [
     for (final t in tags[url] ?? const <String>[])
@@ -72,6 +73,7 @@ List<LibraryItem> mergeLibrary({
         duration: shape?.duration,
         aspectRatio: shape?.aspectRatio,
         cachedThumb: artwork[entry.canonicalUrl],
+        keptCover: kept[entry.canonicalUrl],
       ),
     );
   }
@@ -87,6 +89,7 @@ List<LibraryItem> mergeLibrary({
         favorite: isFavorite(key),
         tags: userTags(key),
         cachedThumb: artwork[key],
+        keptCover: kept[key],
         duration: shapes[key]?.duration,
         aspectRatio: shapes[key]?.aspectRatio,
       ),

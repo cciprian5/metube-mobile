@@ -130,6 +130,25 @@ void main() {
       expect(item.onServer, isTrue);
     });
 
+    test('**the guard**: a cover kept on the device comes before the '
+        'online one, which YouTube deletes with the video', () {
+      LibraryItem from({String? kept, String? frame}) =>
+          LibraryItem.fromHistory(
+            HistoryItem.fromJson({
+              'url': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+              'title': 'Gone',
+              'status': 'finished',
+            }),
+            keptCover: kept,
+            cachedThumb: frame,
+          );
+      expect(from(kept: r'C:\covers\a.jpg').thumbnail, r'C:\covers\a.jpg');
+      expect(from().thumbnail, contains('i.ytimg.com'));
+      // A frame the phone took of the clip never takes the official
+      // cover's place.
+      expect(from(frame: '/data/thumbs/f.jpg').thumbnail, contains('ytimg'));
+    });
+
     test('the platform is derived from the canonical URL', () {
       expect(items[0].platform, MediaPlatform.youtube);
       expect(items[2].platform, MediaPlatform.vimeo);

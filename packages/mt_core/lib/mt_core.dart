@@ -42,6 +42,7 @@ export 'src/resolvers/innertube_parser.dart';
 export 'src/resolvers/soundcloud_resolver.dart';
 export 'src/resolvers/youtube_playlist_resolver.dart';
 export 'src/storage/artwork_index.dart';
+export 'src/storage/cover_keeper.dart';
 export 'src/storage/batch_playlist_collector.dart';
 export 'src/storage/key_value_store.dart';
 export 'src/storage/memory_key_value_store.dart';

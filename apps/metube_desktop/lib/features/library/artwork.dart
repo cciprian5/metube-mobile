@@ -18,16 +18,20 @@ import '../../data/library_data.dart';
 final artworkCacheProvider = Provider<BaseCacheManager?>((ref) => null);
 
 /// The cover cache under [dir]: up to a thousand covers, each kept a month
-/// after it was last shown.
-BaseCacheManager artworkCacheIn(String dir) => CacheManager(
-  Config(
-    'covers',
-    stalePeriod: const Duration(days: 30),
-    maxNrOfCacheObjects: 1000,
-    repo: JsonCacheInfoRepository.withFile(io.File('$dir/covers.json')),
-    fileSystem: _FolderFileSystem('$dir/covers'),
-  ),
-);
+/// after it was last shown. A cover worth keeping for good is copied out
+/// of it (see CoverKeeper), since the cache forgets and deletes. Tests
+/// pass their own [fileService].
+BaseCacheManager artworkCacheIn(String dir, {FileService? fileService}) =>
+    CacheManager(
+      Config(
+        'covers',
+        stalePeriod: const Duration(days: 30),
+        maxNrOfCacheObjects: 1000,
+        repo: JsonCacheInfoRepository.withFile(io.File('$dir/covers.json')),
+        fileSystem: _FolderFileSystem('$dir/covers'),
+        fileService: fileService ?? HttpFileService(),
+      ),
+    );
 
 class _FolderFileSystem implements FileSystem {
   _FolderFileSystem(String path)

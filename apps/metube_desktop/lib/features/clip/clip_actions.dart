@@ -54,6 +54,7 @@ class ClipActions {
     final path = (await offline.readAll())[url];
     if (path != null && path.isNotEmpty && await File(path).exists()) return;
     await _ref.read(artworkIndexProvider).removeKeysAndFiles([url]);
+    await _ref.read(keptCoverIndexProvider).removeKeysAndFiles([url]);
     await _ref.read(tagsIndexProvider).removeKey(url);
     await _ref.read(mediaShapeIndexProvider).removeKey(url);
     await PlaybackPositionStore(

@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 
 import '../../di.dart';
+import '../../features/library/artwork.dart';
 import '../library_data.dart';
 import 'cover_enricher.dart';
 import 'cover_shrink.dart';
@@ -80,6 +82,30 @@ FrameFor videoFrameFor(
   return grab(api.downloadUrl(name), api.streamingHeaders);
 };
 
+/// Fetches an online cover through the cards' own cache: a picture the
+/// cache still holds is used as it is, however old (it may be the last
+/// copy left); otherwise it is downloaded, with the server's headers only
+/// when the address is the server's.
+CoverFetcher cachedCoverFetcher(
+  BaseCacheManager cache,
+  Map<String, String> Function(String url) headersFor,
+) => (url) async {
+  if (await cache.getFileFromCache(url) case final held?) {
+    return FetchedCover.found(await held.file.readAsBytes());
+  }
+  try {
+    final got = await cache.downloadFile(url, authHeaders: headersFor(url));
+    return FetchedCover.found(await got.file.readAsBytes());
+  } on HttpExceptionWithStatus catch (e) {
+    return e.statusCode == HttpStatus.notFound ||
+            e.statusCode == HttpStatus.gone
+        ? const FetchedCover.gone()
+        : const FetchedCover.failed();
+  } on Object {
+    return const FetchedCover.failed();
+  }
+};
+
 /// Looks for missing covers in the background whenever the library is
 /// read, one clip at a time so the library never waits, and shows what it
 /// found every few covers and at the end. Watched by the shell.
@@ -102,6 +128,10 @@ final coverEnrichmentProvider = Provider<void>((ref) {
       null => null,
     },
   );
+  final fetch = cachedCoverFetcher(
+    ref.watch(artworkCacheProvider) ?? DefaultCacheManager(),
+    api.imageHeadersFor,
+  );
   var running = false;
   var stopped = false;
   ref.onDispose(() => stopped = true);
@@ -112,10 +142,47 @@ final coverEnrichmentProvider = Provider<void>((ref) {
     var found = 0;
     var shown = 0;
     var missed = 0;
+    // A kept file looks the same as the online cover, but the library
+    // should read it from now on.
+    var keptAny = false;
     try {
       // Black covers taken before frames were checked, once: forgotten
       // here, they are taken again below from further in.
       await forgetDarkCovers(folder, ref.read(artworkIndexProvider));
+      // Online covers kept as files first, so a clip taken down at its
+      // source keeps its face; one already gone gets a picture from the
+      // clip's own file instead.
+      final byUrl = {for (final item in items) item.canonicalUrl: item};
+      final keeper = CoverKeeper(
+        kept: ref.read(keptCoverIndexProvider),
+        failures: ref.read(probeFailureIndexProvider),
+        folder: folder,
+        shrink: shrinkCover,
+        fetch: fetch,
+        fallback: (url) async => switch (byUrl[url]) {
+          final item? => enricher.pictureOf(item),
+          null => null,
+        },
+      );
+      for (final url in await keeper.candidates({
+        for (final item in items) item.canonicalUrl: item.thumbnail,
+      })) {
+        if (stopped) return;
+        final outcome = await keeper.keep(url, byUrl[url]!.thumbnail!);
+        if (outcome == CoverOutcome.failed) {
+          // Offline, most likely: the rest waits for the next reading.
+          if (++missed >= _missesBeforeRest) break;
+          continue;
+        }
+        missed = 0;
+        if (outcome == CoverOutcome.replaced) found++;
+        if (outcome == CoverOutcome.kept) keptAny = true;
+        if (found - shown >= _showEvery) {
+          shown = found;
+          ref.invalidate(libraryItemsProvider);
+        }
+      }
+      missed = 0;
       for (final item in await enricher.candidates(items)) {
         if (stopped) return;
         if (await enricher.enrich(item)) {
@@ -137,7 +204,9 @@ final coverEnrichmentProvider = Provider<void>((ref) {
     } finally {
       running = false;
     }
-    if (found > shown && !stopped) ref.invalidate(libraryItemsProvider);
+    if ((found > shown || keptAny) && !stopped) {
+      ref.invalidate(libraryItemsProvider);
+    }
   }
 
   ref.listen(libraryItemsProvider, (_, next) {

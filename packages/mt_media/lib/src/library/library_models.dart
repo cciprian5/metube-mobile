@@ -86,6 +86,9 @@ class LibraryItem {
     _ => MTMediaLocation.none,
   };
 
+  /// [keptCover] is the online cover kept as a file on this device, first
+  /// when there is one (see `CoverKeeper`).
+  ///
   /// [cachedThumb] is the cover from the artwork index, **in practice the
   /// only source on a real server**: `/history` returns no `thumbnail` for
   /// any item (zero out of 252), and the cover is generated locally by
@@ -98,13 +101,16 @@ class LibraryItem {
     Duration? duration,
     double? aspectRatio,
     String? cachedThumb,
+    String? keptCover,
   }) => LibraryItem(
     duration: duration,
     aspectRatio: aspectRatio,
     canonicalUrl: item.canonicalUrl,
     title: item.title ?? item.filename ?? item.canonicalUrl,
     uploader: item.uploader,
-    thumbnail: item.thumbnail ?? cachedThumb,
+    // A cover kept on this device comes first: the online one it was
+    // taken from may be gone (YouTube deletes it with the video).
+    thumbnail: keptCover ?? item.thumbnail ?? cachedThumb,
     serverFilename: item.serverPath,
     localPath: localPath,
     timestamp: item.timestamp,
@@ -123,6 +129,7 @@ class LibraryItem {
     bool favorite = false,
     List<String> tags = const [],
     String? cachedThumb,
+    String? keptCover,
     Duration? duration,
     double? aspectRatio,
   }) {
@@ -134,7 +141,7 @@ class LibraryItem {
       canonicalUrl: canonicalUrl,
       title: dot > 0 ? basename.substring(0, dot) : basename,
       localPath: localPath,
-      thumbnail: cachedThumb,
+      thumbnail: keptCover ?? cachedThumb,
       isAudio: _looksAudio(null, null, basename),
       favorite: favorite,
       tags: tags,

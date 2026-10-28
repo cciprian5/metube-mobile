@@ -61,6 +61,14 @@ final artworkIndexProvider = Provider(
   ),
 );
 
+/// Online covers kept as files on this computer (see CoverKeeper).
+final keptCoverIndexProvider = Provider(
+  (ref) => KeptCoverIndex(
+    store: ref.watch(keyValueStoreProvider),
+    mutex: ref.watch(prefsMutexProvider),
+  ),
+);
+
 final mediaShapeIndexProvider = Provider(
   (ref) => MediaShapeIndex(
     store: ref.watch(keyValueStoreProvider),
@@ -92,6 +100,7 @@ final libraryItemsProvider = FutureProvider<List<LibraryItem>>((ref) async {
     tags: await ref.watch(tagsIndexProvider).readAll(),
     artwork: await ref.watch(artworkIndexProvider).readAll(),
     shapes: await ref.watch(mediaShapeIndexProvider).readAll(),
+    kept: await ref.watch(keptCoverIndexProvider).readAll(),
   );
 });
 

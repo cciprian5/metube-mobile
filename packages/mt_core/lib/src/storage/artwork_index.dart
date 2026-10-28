@@ -5,9 +5,15 @@ import 'url_keyed_index.dart';
 /// The artwork index: canonicalUrl to the cover URL captured at add time.
 /// The only fallback allowed for non-YouTube sources, since ytimg URLs are
 /// never invented (trap §6.3). Prefs key: `artwork_index` (§5.1).
-final class ArtworkIndex extends UrlKeyedIndex<String> {
+base class ArtworkIndex extends UrlKeyedIndex<String> {
   ArtworkIndex({required super.store, required super.mutex})
     : super(prefsKey: 'artwork_index');
+
+  ArtworkIndex._under(
+    String prefsKey, {
+    required super.store,
+    required super.mutex,
+  }) : super(prefsKey: prefsKey);
 
   @override
   String? decodeValue(dynamic raw) {
@@ -56,4 +62,17 @@ final class ArtworkIndex extends UrlKeyedIndex<String> {
     }
     await mutate((map) => map.removeWhere((k, _) => doomed.contains(k)));
   }
+}
+
+/// **Online covers kept as files on this device**: the clip's own cover
+/// (YouTube's, which YouTube deletes with the video), or, when that was
+/// already gone, a picture of the clip's file standing in for it. Prefs
+/// key: `kept_covers`.
+///
+/// Apart from [ArtworkIndex] on purpose: that one also holds frames the
+/// phone takes of every clip, YouTube's included, which must never take
+/// the place of the official cover. A kept one may.
+final class KeptCoverIndex extends ArtworkIndex {
+  KeptCoverIndex({required super.store, required super.mutex})
+    : super._under('kept_covers');
 }

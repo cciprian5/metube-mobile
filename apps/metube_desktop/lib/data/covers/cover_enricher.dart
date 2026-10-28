@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -77,24 +76,12 @@ class CoverEnricher {
   /// through [frameFor], whose engine shows an audio file's embedded cover
   /// as its one frame.
   Future<bool> enrich(LibraryItem item) async {
-    Uint8List? picture;
-    final read = item.isAudio && _isMp4(item) ? readerFor(item) : null;
-    if (read != null) {
-      try {
-        picture = await Mp4Cover.find(read);
-      } on Object {
-        picture = null;
-      }
+    // Nothing to read it with is not a clip without a cover.
+    final mp4Audio = item.isAudio && _isMp4(item);
+    if (frameFor == null && !(mp4Audio && readerFor(item) != null)) {
+      return false;
     }
-    if (picture == null || picture.isEmpty) {
-      final frame = frameFor;
-      if (frame == null && read == null) return false;
-      try {
-        picture = await frame?.call(item);
-      } on Object {
-        picture = null;
-      }
-    }
+    var picture = await pictureOf(item);
     final url = item.canonicalUrl;
     if (picture == null || picture.isEmpty) {
       await failures.put(url, _now());
@@ -105,10 +92,33 @@ class CoverEnricher {
     // elsewhere while this one was being read.
     if (await artwork.artworkOf(url) != null) return false;
     await folder.create(recursive: true);
-    final file = File('${folder.path}/${_nameFor(url, picture)}');
+    final file = File(
+      '${folder.path}/${CoverKeeper.fileNameFor(url, picture)}',
+    );
     await file.writeAsBytes(picture, flush: true);
     await artwork.put(url, file.path);
     return true;
+  }
+
+  /// The picture in or of the clip's own file, without keeping it: the
+  /// embedded cover of an audio file or a video's frame; null when none
+  /// came. Also what stands in for an online cover gone at its source.
+  Future<Uint8List?> pictureOf(LibraryItem item) async {
+    Uint8List? picture;
+    final read = item.isAudio && _isMp4(item) ? readerFor(item) : null;
+    if (read != null) {
+      try {
+        picture = await Mp4Cover.find(read);
+      } on Object {
+        picture = null;
+      }
+    }
+    if (picture != null && picture.isNotEmpty) return picture;
+    try {
+      return await frameFor?.call(item);
+    } on Object {
+      return null;
+    }
   }
 
   /// Whether the clip's file is an MP4 container, by its name; a name not
@@ -124,23 +134,5 @@ class CoverEnricher {
       '.mov',
       '.m4b',
     }.contains(name.substring(dot));
-  }
-
-  /// A stable name from the canonical URL, which holds characters no file
-  /// system accepts. 64-bit FNV-1a, as the transcripts' file names.
-  static String _nameFor(String url, Uint8List picture) {
-    var hash = (0xcbf29ce4 << 32) | 0x84222325;
-    for (final byte in utf8.encode(url)) {
-      hash ^= byte;
-      hash *= 0x100000001b3;
-    }
-    String half(int v) => v.toRadixString(16).padLeft(8, '0');
-    final png =
-        picture.length > 4 &&
-        picture[0] == 0x89 &&
-        picture[1] == 0x50 &&
-        picture[2] == 0x4E &&
-        picture[3] == 0x47;
-    return '${half(hash >>> 32)}${half(hash & 0xFFFFFFFF)}.${png ? 'png' : 'jpg'}';
   }
 }

@@ -14,8 +14,16 @@ const coverWidth = 640;
 /// [picture] no wider than [coverWidth], as JPEG; unchanged when it is
 /// already that small or cannot be read. Off the main isolate: a large
 /// frame takes a moment to decode.
-Future<Uint8List> shrinkCover(Uint8List picture) async =>
-    await Isolate.run<Uint8List?>(() => shrinkCoverNow(picture)) ?? picture;
+Future<Uint8List> shrinkCover(Uint8List picture) async {
+  try {
+    return await Isolate.run<Uint8List?>(() => shrinkCoverNow(picture)) ??
+        picture;
+  } on Object {
+    // A picture the decoder chokes on (a cut-off download) is kept as it
+    // came; the card shows what it can of it.
+    return picture;
+  }
+}
 
 /// [picture] made smaller on the calling isolate, or null when it needs no
 /// change or cannot be read.

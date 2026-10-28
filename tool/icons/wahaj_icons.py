@@ -102,6 +102,10 @@ ICONS = {
                   '<path d="M19 12.8v1.6a2.6 2.6 0 0 1-2.6 2.6H5.6"/><path d="M8 19.4L5.6 17 8 14.6"/>'
                   '<path class="es" d="M11.2 10.9l1.3-.9v4.4"/>',
     "stop_after": '<path d="M4 12h10.6"/><path d="M11.4 8.6L14.8 12l-3.4 3.4"/><path d="M19 6v12"/>',
+    "captions": '<rect x="3" y="5.5" width="18" height="13" rx="2.8"/>'
+                '<path d="M10.6 10.3a2.1 2.1 0 1 0 0 3.4"/><path d="M16.6 10.3a2.1 2.1 0 1 0 0 3.4"/>',
+    "sort": '<path d="M4.5 7h9"/><path d="M4.5 12h6.5"/><path d="M4.5 17h4"/>'
+            '<path d="M17.5 6v12"/><path d="M15 15.6l2.5 2.5 2.5-2.5"/>',
     "volume": '<path d="M4.5 9.6h3l4.2-3.6v12l-4.2-3.6h-3z"/><path d="M15.2 9.4a3.6 3.6 0 0 1 0 5.2"/><path d="M17.8 6.8a7.2 7.2 0 0 1 0 10.4"/>',
     "queue": '<circle cx="14" cy="17" r="3"/><path d="M17 17V4h4"/><path d="M13 5H3"/><path d="M3 9h10"/><path d="M9 13H3"/>',
     "transcript": '<circle class="e" cx="5" cy="7" r="1.25"/><circle class="f" cx="5" cy="12" r="1.05"/><circle class="f" cx="5" cy="17" r="1.05"/>'

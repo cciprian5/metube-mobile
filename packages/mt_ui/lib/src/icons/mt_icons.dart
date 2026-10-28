@@ -117,6 +117,14 @@ abstract final class MTIcons {
     'stop_after',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h10.6"/><path d="M11.4 8.6L14.8 12l-3.4 3.4"/><path d="M19 6v12"/></svg>''',
   );
+  static const captions = MTIconData(
+    'captions',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2.8"/><path d="M10.6 10.3a2.1 2.1 0 1 0 0 3.4"/><path d="M16.6 10.3a2.1 2.1 0 1 0 0 3.4"/></svg>''',
+  );
+  static const sort = MTIconData(
+    'sort',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 7h9"/><path d="M4.5 12h6.5"/><path d="M4.5 17h4"/><path d="M17.5 6v12"/><path d="M15 15.6l2.5 2.5 2.5-2.5"/></svg>''',
+  );
   static const volume = MTIconData(
     'volume',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.6h3l4.2-3.6v12l-4.2-3.6h-3z"/><path d="M15.2 9.4a3.6 3.6 0 0 1 0 5.2"/><path d="M17.8 6.8a7.2 7.2 0 0 1 0 10.4"/></svg>''',
@@ -263,6 +271,8 @@ abstract final class MTIcons {
     repeat,
     repeatOne,
     stopAfter,
+    captions,
+    sort,
     volume,
     queue,
     transcript,

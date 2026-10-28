@@ -110,10 +110,6 @@ class _QueueLine extends StatelessWidget {
                   ),
                 ),
               ),
-              if (current) ...[
-                NowPlayingBars(playing: playing, onCover: false),
-                const SizedBox(width: MTSpace.sm),
-              ],
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -142,6 +138,12 @@ class _QueueLine extends StatelessWidget {
                   ],
                 ),
               ),
+              // At the line's end, after the title, as the phone marks it.
+              if (current)
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(start: MTSpace.sm),
+                  child: NowPlayingBars(playing: playing),
+                ),
               if (item.duration case final length?)
                 Padding(
                   padding: const EdgeInsetsDirectional.only(

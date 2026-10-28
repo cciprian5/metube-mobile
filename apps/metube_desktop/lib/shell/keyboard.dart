@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../data/subtitles_data.dart';
 import '../data/volume.dart';
 import '../di.dart';
 import '../features/listening/listening_room.dart';
@@ -21,6 +22,7 @@ enum EmberKey {
   up,
   down,
   repeat,
+  captions,
   search,
   fullScreen,
   leaveFullScreen,
@@ -75,7 +77,11 @@ EmberKey? emberKeyFor(
     LogicalKeyboardKey.arrowDown => EmberKey.down,
     LogicalKeyboardKey.f11 => EmberKey.fullScreen,
     LogicalKeyboardKey.escape => EmberKey.leaveFullScreen,
-    _ => physical == PhysicalKeyboardKey.keyR ? EmberKey.repeat : null,
+    _ => switch (physical) {
+      PhysicalKeyboardKey.keyR => EmberKey.repeat,
+      PhysicalKeyboardKey.keyC => EmberKey.captions,
+      _ => null,
+    },
   };
 }
 
@@ -182,6 +188,8 @@ class _EmberKeyboardState extends ConsumerState<EmberKeyboard> {
         final mode = nextPlayMode(state.mode);
         unawaited(player.setPlayMode(mode));
         showMTNotice(context, message: _modeName(context.mtl, mode));
+      case EmberKey.captions when loaded:
+        ref.read(emberSubtitlesProvider).toggle();
       case EmberKey.search:
         widget.onSearch();
       case EmberKey.fullScreen:

@@ -166,6 +166,7 @@ class LibraryItemView extends ConsumerWidget {
         favorite: item.favorite,
         audio: item.isAudio,
         highlighted: playing,
+        paused: paused,
         onFavoriteToggle: favorite,
         onTap: onTap,
       );

@@ -72,23 +72,17 @@ class PlaylistLine extends ConsumerWidget {
                 ),
                 Opacity(
                   opacity: missing ? 0.5 : 1,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      MTMediaThumb(
-                        width: _thumbWidth,
-                        height: _thumbWidth * 9 / 16,
-                        audio: item.isAudio,
-                        playing: current,
-                        child: artworkFor(
-                          ref,
-                          context,
-                          item.artworkUrl,
-                          width: _thumbWidth,
-                        ),
-                      ),
-                      if (current) NowPlayingBars(playing: playing),
-                    ],
+                  child: MTMediaThumb(
+                    width: _thumbWidth,
+                    height: _thumbWidth * 9 / 16,
+                    audio: item.isAudio,
+                    playing: current,
+                    child: artworkFor(
+                      ref,
+                      context,
+                      item.artworkUrl,
+                      width: _thumbWidth,
+                    ),
                   ),
                 ),
                 const SizedBox(width: MTSpace.sm),
@@ -124,6 +118,14 @@ class PlaylistLine extends ConsumerWidget {
                     ],
                   ),
                 ),
+                // At the line's end, after the title, as the phone marks it.
+                if (current)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      start: MTSpace.sm,
+                    ),
+                    child: NowPlayingBars(playing: playing),
+                  ),
                 if (item.duration case final length?)
                   Padding(
                     padding: const EdgeInsetsDirectional.only(

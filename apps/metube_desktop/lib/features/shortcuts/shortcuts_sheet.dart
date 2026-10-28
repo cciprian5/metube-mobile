@@ -19,6 +19,7 @@ List<(String, List<ShortcutLine>)> shortcutGroups(MTLocalizations l) => [
       (keys: ['←', '→'], does: l.desktopKeySeek),
       (keys: ['↑', '↓'], does: l.desktopKeyVolume),
       (keys: ['R'], does: l.desktopKeyRepeat),
+      (keys: ['C'], does: l.subtitles),
     ],
   ),
   (

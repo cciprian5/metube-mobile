@@ -10,6 +10,7 @@ import '../tokens/tokens.dart';
 import 'mt_highlight_surface.dart';
 import 'mt_location_badge.dart';
 import 'mt_media_card.dart' show MTMediaLocation;
+import 'mt_equalizer.dart';
 import 'mt_media_thumb.dart';
 import 'mt_platform_chip.dart';
 import 'mt_polish.dart';
@@ -35,6 +36,7 @@ class MTMediaRow extends StatelessWidget {
     this.locationLabel,
     this.selected = false,
     this.highlighted = false,
+    this.paused,
     this.favorite = false,
     this.audio = false,
     this.onTap,
@@ -61,6 +63,10 @@ class MTMediaRow extends StatelessWidget {
   final String? locationLabel;
   final bool selected;
   final bool highlighted;
+
+  /// The playing row's bars by the heart, still when true; null (the
+  /// phones) draws none.
+  final bool? paused;
   final bool favorite;
   final bool audio;
   final VoidCallback? onTap;
@@ -217,6 +223,11 @@ class MTMediaRow extends StatelessWidget {
                   actions: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      if ((highlighted, paused) case (true, final still?))
+                        Padding(
+                          padding: const EdgeInsets.all(MTSpace.xs),
+                          child: MTEqualizer(animate: !still),
+                        ),
                       if (onFavoriteToggle != null)
                         IconButton(
                           tooltip: favorite

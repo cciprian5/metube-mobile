@@ -48,6 +48,7 @@ Future<T?> showEmberMenu<T>(
   final overlay = Overlay.of(context).context.findRenderObject()! as RenderBox;
   final at = overlay.globalToLocal(globalPosition);
   final size = overlay.size;
+  final iconRoom = entries.any((e) => e.icon != null);
   return showMenu<T>(
     context: context,
     // The menu opens on the reading side of the pointer, as Windows' own
@@ -84,7 +85,10 @@ Future<T?> showEmberMenu<T>(
                     color: entry.danger ? p.err : p.ink2,
                   ),
                   const SizedBox(width: MTSpace.sm),
-                ],
+                ] else if (iconRoom)
+                  // Its icon's room kept, so the labels line up (a check by
+                  // the chosen one alone).
+                  SizedBox(width: MTDensity.desktop.icon + MTSpace.sm),
                 // Filling the row sets each hint at the menu's far edge,
                 // in one column down the menu.
                 Expanded(

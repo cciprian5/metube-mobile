@@ -6,6 +6,7 @@ import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/folders_data.dart';
+import '../../data/subtitles_data.dart';
 import '../../data/transcripts_data.dart';
 import 'backup_actions.dart';
 import 'simple_panes.dart';
@@ -41,6 +42,15 @@ class TranscriptsPane extends ConsumerWidget {
           style: text.bodyMedium?.copyWith(color: p.ink2),
         ),
         const SizedBox(height: MTSpace.md),
+        ValueListenableBuilder<bool>(
+          valueListenable: ref.watch(emberSubtitlesProvider).shown,
+          builder: (context, on, _) => SwitchLine(
+            title: l.subtitlesShow,
+            hint: l.subtitlesShowHelp,
+            value: on,
+            onChanged: (v) => ref.read(emberSubtitlesProvider).shown.value = v,
+          ),
+        ),
         SettingLine(
           title: l.transcriptsClips(summary?.$1 ?? 0),
           value: summary == null || none ? null : mtFormatSize(summary.$2),

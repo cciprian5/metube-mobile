@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/subtitles_data.dart';
 import '../../di.dart';
 import '../../shell/player_controls.dart';
 import '../../shell/seek_bar.dart';
@@ -44,12 +45,18 @@ class ClipVideoControls extends ConsumerStatefulWidget {
 
 class _ClipVideoControlsState extends ConsumerState<ClipVideoControls> {
   late final MTPlayer _player = ref.read(playerProvider);
+  late final _clock = PlayerCaptionClock(_player);
   bool _awake = false;
   Timer? _rest;
+
+  /// The room the controls take at the picture's foot while they show:
+  /// the subtitles rise above it, and come down when it fades.
+  static const double _barRoom = MTSpace.xxl * 3 + MTSpace.sm;
 
   @override
   void dispose() {
     _rest?.cancel();
+    _clock.dispose();
     super.dispose();
   }
 
@@ -80,6 +87,7 @@ class _ClipVideoControlsState extends ConsumerState<ClipVideoControls> {
           fit: StackFit.expand,
           children: [
             widget.child,
+            ?_captions(state.current, lift: shown ? _barRoom : MTSpace.lg),
             Align(
               alignment: Alignment.bottomCenter,
               // Never in the focus order, shown or not: the arrows are
@@ -105,6 +113,28 @@ class _ClipVideoControlsState extends ConsumerState<ClipVideoControls> {
       );
     },
   );
+
+  /// The clip's subtitles over the picture, as the phone draws them, when
+  /// it has a transcript; null without one.
+  Widget? _captions(PlaylistItem? item, {required double lift}) {
+    if (item == null) return null;
+    final lines = ref.watch(
+      captionLinesProvider((
+        canonicalUrl: item.canonicalUrl,
+        serverFilename: item.serverFilename,
+      )),
+    );
+    if (lines == null) return null;
+    return MTCaptionsLayer(
+      key: ValueKey(item.canonicalUrl),
+      clock: _clock,
+      captions: MTCaptions(
+        lines: lines,
+        shown: ref.watch(emberSubtitlesProvider).shown,
+      ),
+      lift: lift,
+    );
+  }
 }
 
 /// The row itself, on the picture's own shade. It keeps the direction of
@@ -160,6 +190,7 @@ class _Bar extends ConsumerWidget {
                       const EmberVolumeSlider(onPicture: true),
                       const SizedBox(width: MTSpace.xs),
                     ],
+                    ?_ccButton(ref, l),
                     MTShortcutTooltip(
                       message: l.playbackSpeed,
                       child: TextButton(
@@ -202,6 +233,30 @@ class _Bar extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// CC: the subtitles on or off, for a clip that has a transcript.
+  Widget? _ccButton(WidgetRef ref, MTLocalizations l) {
+    final item = state.current;
+    if (item == null) return null;
+    final key = (
+      canonicalUrl: item.canonicalUrl,
+      serverFilename: item.serverFilename,
+    );
+    if (ref.watch(captionLinesProvider(key)) == null) return null;
+    final subtitles = ref.watch(emberSubtitlesProvider);
+    return ValueListenableBuilder<bool>(
+      valueListenable: subtitles.shown,
+      builder: (context, on, _) => EmberPlayerControl(
+        icon: MTIcons.captions,
+        label: on ? l.subtitlesHide : l.subtitlesShow,
+        shortcut: 'C',
+        selected: on,
+        ink: Colors.white,
+        color: MTThemeX.of(context).palette.accent,
+        onTap: subtitles.toggle,
       ),
     );
   }

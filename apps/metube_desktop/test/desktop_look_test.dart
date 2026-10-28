@@ -146,7 +146,66 @@ void main() {
         ),
       ),
     );
-    expect(find.byType(NowPlayingBars), findsOneWidget);
+    // At the line's end, after the title, as the phone marks it.
+    final bars = tester.getRect(find.byType(NowPlayingBars));
+    final title = tester.getRect(find.text(_clip.title));
+    expect(bars.left, greaterThan(title.right));
+  });
+
+  testWidgets('**the guard**: the table marks the clip playing too', (
+    tester,
+  ) async {
+    ShellHarness.useWindow(tester, const Size(1440, 900));
+    final h = ShellHarness(
+      library: [_clip],
+      server: ServerConfig(baseUrl: 'http://nas:8081'),
+    );
+    await tester.pumpWidget(h.app());
+    await tester.pumpAndSettle();
+    h.player.showPlaying([toPlaylistItem(_clip)], playing: false);
+    await tester.tap(find.bySemanticsLabel('Table'));
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(
+        of: find.byType(MTMediaRow),
+        matching: find.byType(MTEqualizer),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('**the guard**: the library sorts from its heading in every '
+      'layout, as the phone does', (tester) async {
+    ShellHarness.useWindow(tester, const Size(1440, 900));
+    final older = LibraryItem(
+      canonicalUrl: 'https://youtu.be/bbbbbbbbbbb',
+      title: 'Blue Hour',
+      onServer: true,
+      isAudio: true,
+      timestamp: DateTime(2026, 10, 1),
+    );
+    final h = ShellHarness(
+      library: [_clip, older],
+      server: ServerConfig(baseUrl: 'http://nas:8081'),
+    );
+    await tester.pumpWidget(h.app());
+    await tester.pumpAndSettle();
+    double topOf(String title) => tester
+        .getTopLeft(
+          find
+              .descendant(
+                of: find.byType(MTMediaGridCard),
+                matching: find.text(title),
+              )
+              .first,
+        )
+        .dx;
+    expect(topOf('Amber Skies'), lessThan(topOf('Blue Hour')));
+    await tester.tap(find.bySemanticsLabel('Sort by · Newest'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Oldest').last);
+    await tester.pumpAndSettle();
+    expect(topOf('Blue Hour'), lessThan(topOf('Amber Skies')));
   });
 
   testWidgets('**the guard**: the layouts and the figures are glyphs, '

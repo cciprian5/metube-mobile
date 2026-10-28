@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/features/clip/clip_page.dart';
+import 'package:metube_desktop/features/clip/clip_stage.dart';
 import 'package:metube_desktop/features/clip/video_controls.dart';
 import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/player_bar.dart';

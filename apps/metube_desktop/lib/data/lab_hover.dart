@@ -27,6 +27,7 @@ List<LabKey> labKeysFrom(List<String> args) {
     'escape': (LogicalKeyboardKey.escape, PhysicalKeyboardKey.escape),
     'up': (LogicalKeyboardKey.arrowUp, PhysicalKeyboardKey.arrowUp),
     'down': (LogicalKeyboardKey.arrowDown, PhysicalKeyboardKey.arrowDown),
+    'c': (LogicalKeyboardKey.keyC, PhysicalKeyboardKey.keyC),
   };
   for (final a in args) {
     if (!a.startsWith('--lab-keys=')) continue;

@@ -17,6 +17,7 @@ import 'library_chips.dart';
 import 'library_item_view.dart';
 import 'library_state.dart';
 import 'selection.dart';
+import 'sort_button.dart';
 import 'selection_bar.dart';
 
 /// The library: the whole unified library, or the favourites or the
@@ -80,6 +81,10 @@ class LibraryPage extends ConsumerWidget {
                   mode: options.mode,
                   onMode: (m) => unawaited(
                     ref.read(libraryViewProvider.notifier).setMode(m),
+                  ),
+                  sort: options.sort,
+                  onSort: (s) => unawaited(
+                    ref.read(libraryViewProvider.notifier).setSort(s),
                   ),
                 ),
                 const SizedBox(height: MTSpace.md),
@@ -254,12 +259,16 @@ class _Heading extends StatelessWidget {
     required this.counts,
     required this.mode,
     required this.onMode,
+    required this.sort,
+    required this.onSort,
   });
 
   final String title;
   final String? counts;
   final LibraryViewMode mode;
   final ValueChanged<LibraryViewMode> onMode;
+  final LibrarySort sort;
+  final ValueChanged<LibrarySort> onSort;
 
   @override
   Widget build(BuildContext context) {
@@ -292,6 +301,7 @@ class _Heading extends StatelessWidget {
         // The figures behind the counts, a page of their own; then the
         // layouts, each a glyph with its name under the mouse.
         if (counts != null) ...[
+          SortButton(sort: sort, onSort: onSort),
           EmberPlayerControl(
             icon: MTIcons.stats,
             label: l.desktopStatsLink,

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,6 @@ import '../../data/library_data.dart';
 import '../../di.dart';
 import '../../router.dart';
 import '../../shell/pill.dart';
-import '../../shell/shell_metrics.dart';
 import '../../shell/shell_state.dart';
 import '../library/platform_label.dart';
 import '../lists/list_dialogs.dart';
@@ -238,28 +236,6 @@ class _ShortsLayout extends StatelessWidget {
   }
 }
 
-/// **The stage's width, from the height it is given as well**: 16:9 of the
-/// width alone was taller than the window, so the picture's top or its
-/// controls were cut off, and the title was out of sight. Now the picture
-/// and the title's first lines fit, and a page that is short gives a
-/// smaller picture, never one too small to watch.
-double stageWidth(double width, double height) {
-  final byHeight = (height - MTSpace.xl * 2 - ClipStageRoom.title) * 16 / 9;
-  return math.min(
-    math.min(EmberShellSize.clipMax, width),
-    math.max(ClipStageRoom.least, byHeight),
-  );
-}
-
-/// The room the stage leaves and keeps.
-abstract final class ClipStageRoom {
-  /// Under the picture: the title and its line, in sight.
-  static const double title = MTSpace.xxl * 3;
-
-  /// The narrowest picture, however short the window.
-  static const double least = EmberShellSize.listCard * 2;
-}
-
 class _ClipLayout extends ConsumerWidget {
   const _ClipLayout({
     required this.stage,
@@ -296,7 +272,11 @@ class _ClipLayout extends ConsumerWidget {
         child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: stageWidth(box.maxWidth, box.maxHeight),
+              maxWidth: stageWidth(
+                box.maxWidth,
+                box.maxHeight,
+                theater: theater && !item.isAudio,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

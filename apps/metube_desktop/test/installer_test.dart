@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -127,6 +128,48 @@ void main() {
     }
     for (final side in [58, 77, 97, 124]) {
       expect(names, contains('wizard_small_$side.png'));
+    }
+  });
+
+  test('**the guard**: it starts by asking for its language, with '
+      "Windows' own already chosen, then welcomes with the logo", () {
+    expect(directive('ShowLanguageDialog'), 'yes');
+    expect(directive('LanguageDetectionMethod'), 'uilanguage');
+    expect(directive('DisableWelcomePage'), 'no');
+    expect(directive('WizardImageFile'), 'wizard_large_*.bmp');
+  });
+
+  test('**the guard**: the welcome page says who makes the app and links '
+      'to the project', () {
+    expect(define('Developer'), 'sagheerys');
+    expect(define('ProjectPage'), 'https://sagheerys.github.io/metube-mobile/');
+    expect(iss, contains('english.WelcomeLabel2=This will install'));
+    expect(
+      RegExp(
+        r'^(english|arabic)\.WelcomeLabel2=.*\{#Developer\}',
+        multiLine: true,
+      ).allMatches(iss),
+      hasLength(2),
+    );
+    expect(iss, contains("CustomMessage('AboutLink')"));
+    expect(iss, contains("ShellExecAsOriginalUser('open', '{#ProjectPage}'"));
+    expect(directive('AppCopyright'), contains('{#Developer}'));
+    expect(directive('VersionInfoCompany'), '{#Developer}');
+  });
+
+  test('**the guard**: each language has its terms and license page, and '
+      'each carries the GNU GPL v3 word for word', () {
+    final license = const LineSplitter()
+        .convert(File('../../LICENSE').readAsStringSync())
+        .where((line) => line.trim().isNotEmpty);
+    for (final lang in ['en', 'ar']) {
+      expect(iss, contains('LicenseFile: "license_$lang.rtf"'));
+      final page = File('windows/installer/license_$lang.rtf')
+          .readAsStringSync();
+      expect(page, startsWith(r'{\rtf1'));
+      for (final line in license) {
+        expect(page, contains(line), reason: '$lang lacks: $line');
+      }
     }
   });
 }

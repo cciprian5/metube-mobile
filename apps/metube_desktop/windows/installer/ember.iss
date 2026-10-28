@@ -31,6 +31,8 @@
 #define AppExe "metube_desktop.exe"
 ; Created by the runner while the app is open (windows/runner/main.cpp).
 #define RunningMutex "MeTubeEmber.Running"
+#define Developer "sagheerys"
+#define ProjectPage "https://sagheerys.github.io/metube-mobile/"
 
 #ifndef BuildDir
   #define BuildDir "..\..\build\windows\x64\runner\Release"
@@ -48,18 +50,26 @@ AppId={{{#AppIdGuid}}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
-AppPublisher=sagheerys
-AppPublisherURL=https://sagheerys.github.io/metube-mobile/
+AppPublisher={#Developer}
+AppPublisherURL={#ProjectPage}
 AppSupportURL=https://github.com/sagheerys/metube-mobile/issues
 AppUpdatesURL=https://github.com/sagheerys/metube-mobile/releases
+AppCopyright=Copyright (C) 2026 {#Developer}
 VersionInfoVersion={#AppVersion}
 VersionInfoDescription={#AppName} Setup
+VersionInfoCompany={#Developer}
+VersionInfoCopyright=Copyright (C) 2026 {#Developer}
+VersionInfoProductName={#AppName}
+VersionInfoProductVersion={#AppVersion}
 PrivilegesRequired=lowest
 DefaultDirName={autopf}\{#AppName}
 DisableProgramGroupPage=yes
-; The language follows Windows; the choice appears only when Windows uses
-; neither English nor Arabic.
-ShowLanguageDialog=auto
+; Every install starts by asking for its language, with Windows' own
+; already chosen, as most installers do; then a welcome page with the
+; logo and who makes the app, and the terms and license to accept.
+ShowLanguageDialog=yes
+LanguageDetectionMethod=uilanguage
+DisableWelcomePage=no
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
@@ -80,10 +90,37 @@ OutputDir=..\..\build\installer
 OutputBaseFilename=MeTube-Ember-{#AppVersion}-windows-x64-setup
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"
+; The license pages are written by tool/make_installer_license.py: a
+; preface in each language, then the GNU GPL v3 as it stands.
+Name: "english"; MessagesFile: "compiler:Default.isl"; LicenseFile: "license_en.rtf"
+Name: "arabic"; MessagesFile: "compiler:Languages\Arabic.isl"; LicenseFile: "license_ar.rtf"
+
+[Messages]
+english.WelcomeLabel2=This will install [name/ver] on your computer.%n%n[name] is free, open-source software by {#Developer}, made to work with a MeTube server you run yourself.%n%nIt is recommended that you close all other applications before continuing.
+; The pages on the way, in plainer Arabic than the stock translation.
+arabic.SelectLanguageTitle=اختر لغة التثبيت
+arabic.SelectLanguageLabel=اختر اللغة التي تريدها أثناء التثبيت.
+arabic.ClickNext=انقر «التالي» للمتابعة، أو «إلغاء الأمر» للخروج من التثبيت.
+arabic.WelcomeLabel1=مرحباً بك في تثبيت [name]
+arabic.WelcomeLabel2=سيُثبَّت [name/ver] على هذا الكمبيوتر.%n%n[name] برنامج حرّ مفتوح المصدر من {#Developer}، يعمل مع سيرفر MeTube الذي تشغّله أنت.%n%nيُستحسن أن تغلق البرامج الأخرى قبل المتابعة.
+arabic.WizardLicense=الشروط والرخصة
+arabic.LicenseLabel=اقرأ المعلومات المهمة التالية قبل المتابعة.
+arabic.LicenseLabel3=اقرأ الشروط والرخصة التالية، فلا بد من قبولها قبل متابعة التثبيت.
+arabic.LicenseAccepted=&أوافق على الشروط والرخصة
+arabic.LicenseNotAccepted=&لا أوافق
+arabic.ReadyLabel1=كل شيء جاهز لتثبيت [name] على هذا الكمبيوتر.
+arabic.ReadyLabel2a=انقر «تثبيت» للمتابعة، أو «السابق» لمراجعة اختياراتك أو تغييرها.
+arabic.ReadyLabel2b=انقر «تثبيت» للمتابعة.
+arabic.WizardInstalling=جارٍ التثبيت
+arabic.InstallingLabel=انتظر قليلاً ريثما يُثبَّت [name] على هذا الكمبيوتر.
+arabic.FinishedHeadingLabel=اكتمل تثبيت [name]
+arabic.FinishedLabelNoIcons=ثُبِّت [name] على هذا الكمبيوتر.
+arabic.FinishedLabel=ثُبِّت [name] على هذا الكمبيوتر، ويمكنك فتحه من اختصاراته.
+arabic.ClickFinish=انقر «إنهاء» لإغلاق التثبيت.
 
 [CustomMessages]
+english.AboutLink=About the developer and the project: sagheerys.github.io/metube-mobile
+arabic.AboutLink=عن المطوّر والمشروع: sagheerys.github.io/metube-mobile
 english.AppRunning={#AppName} is still running. Close it, including from its icon by the clock, then click OK.
 arabic.AppRunning=ما زال {#AppName} يعمل. أغلقه، ومن أيقونته بجانب الساعة أيضاً، ثم انقر «موافق».
 english.DeleteData=Also delete the {#AppName} settings, tags, playlists and saved transcripts on this computer?%n%nYour downloaded files and everything on the server stay as they are.
@@ -124,6 +161,30 @@ Filename: "{app}\{#AppExe}"; Flags: nowait; Check: WizardSilent
 #endif
 
 [Code]
+procedure AboutLinkClick(Sender: TObject);
+var
+  Code: Integer;
+begin
+  ShellExecAsOriginalUser('open', '{#ProjectPage}', '', '', SW_SHOWNORMAL, ewNoWait, Code);
+end;
+
+// Who makes the app, on the welcome page under its text: a link to the
+// project page, where the developer, the source and the issues are.
+procedure InitializeWizard();
+var
+  Link: TNewStaticText;
+begin
+  Link := TNewStaticText.Create(WizardForm);
+  Link.Parent := WizardForm.WelcomePage;
+  Link.Caption := CustomMessage('AboutLink');
+  Link.Left := WizardForm.WelcomeLabel2.Left;
+  Link.Top := WizardForm.WelcomeLabel2.Top + WizardForm.WelcomeLabel2.Height + ScaleY(16);
+  Link.Font.Color := clHotLight;
+  Link.Font.Style := [fsUnderline];
+  Link.Cursor := crHand;
+  Link.OnClick := @AboutLinkClick;
+end;
+
 function InitializeUninstall(): Boolean;
 begin
   Result := True;

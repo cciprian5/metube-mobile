@@ -15,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'apps' / 'metube_desktop' / 'windows' / 'installer'
 
-DEVELOPER = 'sagheerys'
+DEVELOPER = {'en': 'Yasir Sagheer', 'ar': 'ياسر صغير'}
 PAGE = 'https://sagheerys.github.io/metube-mobile/'
 SOURCE = 'https://github.com/sagheerys/metube-mobile'
 
@@ -23,7 +23,7 @@ PREFACE = {
     'en': [
         ('h', 'Terms of use and license'),
         ('p', 'MeTube Ember is free, open-source software by '
-              f'{DEVELOPER}, made to work with a MeTube server you run '
+              f'{DEVELOPER["en"]}, made to work with a MeTube server you run '
               'yourself.'),
         ('b', 'License: the GNU General Public License, version 3, below. '
               'You may use, copy, change and share the program under its '
@@ -39,14 +39,14 @@ PREFACE = {
               'comes from.'),
         ('b', 'Third-party libraries and their licenses: in the app, under '
               'Settings → About → Open-source licenses.'),
-        ('p', f'Developer: {DEVELOPER}'),
+        ('p', f'Developer: {DEVELOPER["en"]}'),
         ('l', f'Project page: {PAGE}'),
         ('l', f'Source and issues: {SOURCE}'),
     ],
     'ar': [
         ('h', 'شروط الاستخدام والرخصة'),
         ('p', 'MeTube Ember برنامج حرّ مفتوح المصدر من '
-              f'{DEVELOPER}، يعمل مع سيرفر MeTube الذي تشغّله أنت.'),
+              f'{DEVELOPER["ar"]}، يعمل مع سيرفر MeTube الذي تشغّله أنت.'),
         ('b', 'الرخصة: رخصة جنو العمومية العامة، الإصدار الثالث (GNU GPL v3)، '
               'ونصها أدناه. لك أن تستعمل البرنامج وتنسخه وتعدّله وتنشره '
               'بشروطها، والنص الإنجليزي هو المعتمد.'),
@@ -59,7 +59,7 @@ PREFACE = {
               'وشروط المواقع التي يأتي منها.'),
         ('b', 'مكتبات الطرف الثالث ورخصها: في البرنامج نفسه، من الإعدادات '
               '← عن التطبيق ← تراخيص البرمجيات مفتوحة المصدر.'),
-        ('p', f'المطوّر: {DEVELOPER}'),
+        ('p', f'المطوّر: {DEVELOPER["ar"]}'),
         ('l', f'صفحة المشروع: {PAGE}'),
         ('l', f'المصدر والبلاغات: {SOURCE}'),
     ],

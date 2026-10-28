@@ -46,6 +46,10 @@ abstract interface class WindowControls {
   /// window; called again, it only resizes it. Null brings the window back
   /// as it was, maximized or not.
   void setMini(Size? logical);
+
+  /// Counts the times the window was asked to close (its button, Alt+F4,
+  /// the taskbar): with the tray on, each one hides it instead.
+  ValueListenable<int> get closeRequests;
 }
 
 /// A window that does nothing: tests, previews and the component sheet.
@@ -63,7 +67,13 @@ class InertWindowControls implements WindowControls {
   @override
   void toggleMaximize() => calls.add('toggleMaximize');
   @override
-  void close() => calls.add('close');
+  void close() {
+    calls.add('close');
+    closeRequests.value++;
+  }
+
+  @override
+  final ValueNotifier<int> closeRequests = ValueNotifier(0);
   @override
   void startDragging() => calls.add('startDragging');
   @override

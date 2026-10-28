@@ -16,6 +16,7 @@ import '../../data/notices.dart';
 import '../../di.dart';
 import '../../router.dart';
 import '../../shell/error_text.dart';
+import '../../shell/hints_wiring.dart';
 
 /// **Windows notifications** for what ends while the window is away: a
 /// download done or failed on the server, a copy saved to this computer,
@@ -178,5 +179,6 @@ class _NoticesWiringState extends ConsumerState<NoticesWiring> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  // The app's two tips come from here too.
+  Widget build(BuildContext context) => HintsWiring(child: widget.child);
 }

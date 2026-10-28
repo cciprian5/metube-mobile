@@ -89,6 +89,14 @@ class WindowManagerControls with WindowListener implements WindowControls {
   @override
   void onWindowLeaveFullScreen() => fullScreen.value = false;
 
+  @override
+  final ValueNotifier<int> closeRequests = ValueNotifier(0);
+
+  // Every close reaches here, the window's own button and Windows' alike,
+  // since the app holds the close back to decide (see EmberWindow).
+  @override
+  void onWindowClose() => closeRequests.value++;
+
   /// The smallest the full window may be, kept while the small card sets
   /// its own.
   Size _minimum = Size.zero;

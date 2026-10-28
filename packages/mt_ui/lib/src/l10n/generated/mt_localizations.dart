@@ -1124,6 +1124,198 @@ abstract class MTLocalizations {
   /// **'Desktop'**
   String get desktopDesktopSection;
 
+  /// No description provided for @desktopDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover MeTube Ember'**
+  String get desktopDiscover;
+
+  /// No description provided for @desktopDiscoverAddLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste or drop a link'**
+  String get desktopDiscoverAddLink;
+
+  /// No description provided for @desktopDiscoverAddLinkLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl+V anywhere, or drop a link on the window, to add it.'**
+  String get desktopDiscoverAddLinkLine;
+
+  /// No description provided for @desktopDiscoverAdding.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding and sharing'**
+  String get desktopDiscoverAdding;
+
+  /// No description provided for @desktopDiscoverBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'From the browser'**
+  String get desktopDiscoverBrowser;
+
+  /// No description provided for @desktopDiscoverBrowserLine.
+  ///
+  /// In en, this message translates to:
+  /// **'MeTube\'s browser extensions send a link straight to the app.'**
+  String get desktopDiscoverBrowserLine;
+
+  /// No description provided for @desktopDiscoverChapters.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapters'**
+  String get desktopDiscoverChapters;
+
+  /// No description provided for @desktopDiscoverChaptersLine.
+  ///
+  /// In en, this message translates to:
+  /// **'A clip\'s parts, from its transcript, on its page.'**
+  String get desktopDiscoverChaptersLine;
+
+  /// No description provided for @desktopDiscoverChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose many'**
+  String get desktopDiscoverChoose;
+
+  /// No description provided for @desktopDiscoverChooseLine.
+  ///
+  /// In en, this message translates to:
+  /// **'The round mark, or Ctrl or Shift with a click; then add them to a list or delete them together.'**
+  String get desktopDiscoverChooseLine;
+
+  /// No description provided for @desktopDiscoverDragOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a clip out'**
+  String get desktopDiscoverDragOut;
+
+  /// No description provided for @desktopDiscoverDragOutLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Onto a folder or another app, as a file.'**
+  String get desktopDiscoverDragOutLine;
+
+  /// No description provided for @desktopDiscoverExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export a transcript'**
+  String get desktopDiscoverExport;
+
+  /// No description provided for @desktopDiscoverExportLine.
+  ///
+  /// In en, this message translates to:
+  /// **'As text, or as SRT subtitles for another player.'**
+  String get desktopDiscoverExportLine;
+
+  /// No description provided for @desktopDiscoverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything the app can do, a line each, with its keys.'**
+  String get desktopDiscoverHint;
+
+  /// No description provided for @desktopDiscoverLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'The library'**
+  String get desktopDiscoverLibrary;
+
+  /// No description provided for @desktopDiscoverListening.
+  ///
+  /// In en, this message translates to:
+  /// **'For sound: a quiet room with the cover large, in full screen.'**
+  String get desktopDiscoverListening;
+
+  /// No description provided for @desktopDiscoverMini.
+  ///
+  /// In en, this message translates to:
+  /// **'Small window'**
+  String get desktopDiscoverMini;
+
+  /// No description provided for @desktopDiscoverMiniLine.
+  ///
+  /// In en, this message translates to:
+  /// **'A small card above every other window, by the clock.'**
+  String get desktopDiscoverMiniLine;
+
+  /// No description provided for @desktopDiscoverPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'With your phone'**
+  String get desktopDiscoverPhone;
+
+  /// No description provided for @desktopDiscoverPhoneLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags, lists and resume points, shared with MeTube Super through a folder you choose.'**
+  String get desktopDiscoverPhoneLine;
+
+  /// No description provided for @desktopDiscoverReading.
+  ///
+  /// In en, this message translates to:
+  /// **'The transcript as an article: click a sentence to hear it from there.'**
+  String get desktopDiscoverReading;
+
+  /// No description provided for @desktopDiscoverSaid.
+  ///
+  /// In en, this message translates to:
+  /// **'What was said'**
+  String get desktopDiscoverSaid;
+
+  /// No description provided for @desktopDiscoverSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search what was said'**
+  String get desktopDiscoverSearch;
+
+  /// No description provided for @desktopDiscoverSearchLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Find the clips where a word was spoken, not only in titles.'**
+  String get desktopDiscoverSearchLine;
+
+  /// No description provided for @desktopDiscoverShortcutsLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Every key the window answers, on one sheet.'**
+  String get desktopDiscoverShortcutsLine;
+
+  /// No description provided for @desktopDiscoverShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get desktopDiscoverShow;
+
+  /// No description provided for @desktopDiscoverStatsLine.
+  ///
+  /// In en, this message translates to:
+  /// **'The library counted: by site, channel and month.'**
+  String get desktopDiscoverStatsLine;
+
+  /// No description provided for @desktopDiscoverSubtitles.
+  ///
+  /// In en, this message translates to:
+  /// **'The transcript over the picture, the spoken word lit up.'**
+  String get desktopDiscoverSubtitles;
+
+  /// No description provided for @desktopDiscoverTheater.
+  ///
+  /// In en, this message translates to:
+  /// **'A larger picture that takes the side panel\'s place.'**
+  String get desktopDiscoverTheater;
+
+  /// No description provided for @desktopDiscoverTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try it'**
+  String get desktopDiscoverTry;
+
+  /// No description provided for @desktopDiscoverWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Watching and listening'**
+  String get desktopDiscoverWatching;
+
   /// No description provided for @desktopDownloadFolder.
   ///
   /// In en, this message translates to:
@@ -1267,6 +1459,48 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Hide side panel'**
   String get desktopHidePanel;
+
+  /// No description provided for @desktopHintShortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: press ? for the keyboard shortcuts. Space plays and pauses, ← and → seek.'**
+  String get desktopHintShortcuts;
+
+  /// No description provided for @desktopHintShortcutsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcuts'**
+  String get desktopHintShortcutsAction;
+
+  /// No description provided for @desktopHintTrayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It keeps playing from its icon by the clock. To quit, right-click the icon.'**
+  String get desktopHintTrayBody;
+
+  /// No description provided for @desktopHintTrayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'MeTube Ember is still running'**
+  String get desktopHintTrayTitle;
+
+  /// No description provided for @desktopHints.
+  ///
+  /// In en, this message translates to:
+  /// **'Show tips'**
+  String get desktopHints;
+
+  /// No description provided for @desktopHintsAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Show them again'**
+  String get desktopHintsAgain;
+
+  /// No description provided for @desktopHintsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Two short tips, each shown once: the shortcuts at the first clip, the icon by the clock at the first close.'**
+  String get desktopHintsHint;
 
   /// No description provided for @desktopImportFromPhone.
   ///
@@ -2407,6 +2641,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Volume {percent}%'**
   String desktopVolumeLevel(int percent);
+
+  /// No description provided for @desktopWhatsNewAllFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything Ember can do'**
+  String get desktopWhatsNewAllFeatures;
 
   /// No description provided for @desktopWidenSidebar.
   ///

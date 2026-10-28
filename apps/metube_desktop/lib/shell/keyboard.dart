@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../data/hints_data.dart';
 import '../data/subtitles_data.dart';
 import '../data/volume.dart';
 import '../di.dart';
@@ -206,6 +207,8 @@ class _EmberKeyboardState extends ConsumerState<EmberKeyboard> {
       default:
         return false;
     }
+    // Someone using the keys needs no tip about them.
+    unawaited(ref.read(hintsProvider.notifier).learned(EmberHint.shortcuts));
     return true;
   }
 

@@ -606,6 +606,118 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopDesktopSection => 'Desktop';
 
   @override
+  String get desktopDiscover => 'Discover MeTube Ember';
+
+  @override
+  String get desktopDiscoverAddLink => 'Paste or drop a link';
+
+  @override
+  String get desktopDiscoverAddLinkLine =>
+      'Ctrl+V anywhere, or drop a link on the window, to add it.';
+
+  @override
+  String get desktopDiscoverAdding => 'Adding and sharing';
+
+  @override
+  String get desktopDiscoverBrowser => 'From the browser';
+
+  @override
+  String get desktopDiscoverBrowserLine =>
+      'MeTube\'s browser extensions send a link straight to the app.';
+
+  @override
+  String get desktopDiscoverChapters => 'Chapters';
+
+  @override
+  String get desktopDiscoverChaptersLine =>
+      'A clip\'s parts, from its transcript, on its page.';
+
+  @override
+  String get desktopDiscoverChoose => 'Choose many';
+
+  @override
+  String get desktopDiscoverChooseLine =>
+      'The round mark, or Ctrl or Shift with a click; then add them to a list or delete them together.';
+
+  @override
+  String get desktopDiscoverDragOut => 'Drag a clip out';
+
+  @override
+  String get desktopDiscoverDragOutLine =>
+      'Onto a folder or another app, as a file.';
+
+  @override
+  String get desktopDiscoverExport => 'Export a transcript';
+
+  @override
+  String get desktopDiscoverExportLine =>
+      'As text, or as SRT subtitles for another player.';
+
+  @override
+  String get desktopDiscoverHint =>
+      'Everything the app can do, a line each, with its keys.';
+
+  @override
+  String get desktopDiscoverLibrary => 'The library';
+
+  @override
+  String get desktopDiscoverListening =>
+      'For sound: a quiet room with the cover large, in full screen.';
+
+  @override
+  String get desktopDiscoverMini => 'Small window';
+
+  @override
+  String get desktopDiscoverMiniLine =>
+      'A small card above every other window, by the clock.';
+
+  @override
+  String get desktopDiscoverPhone => 'With your phone';
+
+  @override
+  String get desktopDiscoverPhoneLine =>
+      'Tags, lists and resume points, shared with MeTube Super through a folder you choose.';
+
+  @override
+  String get desktopDiscoverReading =>
+      'The transcript as an article: click a sentence to hear it from there.';
+
+  @override
+  String get desktopDiscoverSaid => 'What was said';
+
+  @override
+  String get desktopDiscoverSearch => 'Search what was said';
+
+  @override
+  String get desktopDiscoverSearchLine =>
+      'Find the clips where a word was spoken, not only in titles.';
+
+  @override
+  String get desktopDiscoverShortcutsLine =>
+      'Every key the window answers, on one sheet.';
+
+  @override
+  String get desktopDiscoverShow => 'Show';
+
+  @override
+  String get desktopDiscoverStatsLine =>
+      'The library counted: by site, channel and month.';
+
+  @override
+  String get desktopDiscoverSubtitles =>
+      'The transcript over the picture, the spoken word lit up.';
+
+  @override
+  String get desktopDiscoverTheater =>
+      'A larger picture that takes the side panel\'s place.';
+
+  @override
+  String get desktopDiscoverTry => 'Try it';
+
+  @override
+  String get desktopDiscoverWatching => 'Watching and listening';
+
+  @override
   String get desktopDownloadFolder => 'Download folder';
 
   @override
@@ -688,6 +800,30 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopHidePanel => 'Hide side panel';
+
+  @override
+  String get desktopHintShortcuts =>
+      'Tip: press ? for the keyboard shortcuts. Space plays and pauses, ← and → seek.';
+
+  @override
+  String get desktopHintShortcutsAction => 'Shortcuts';
+
+  @override
+  String get desktopHintTrayBody =>
+      'It keeps playing from its icon by the clock. To quit, right-click the icon.';
+
+  @override
+  String get desktopHintTrayTitle => 'MeTube Ember is still running';
+
+  @override
+  String get desktopHints => 'Show tips';
+
+  @override
+  String get desktopHintsAgain => 'Show them again';
+
+  @override
+  String get desktopHintsHint =>
+      'Two short tips, each shown once: the shortcuts at the first clip, the icon by the clock at the first close.';
 
   @override
   String get desktopImportFromPhone => 'Import from the phone…';
@@ -1386,6 +1522,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String desktopVolumeLevel(int percent) {
     return 'Volume $percent%';
   }
+
+  @override
+  String get desktopWhatsNewAllFeatures => 'Everything Ember can do';
 
   @override
   String get desktopWidenSidebar => 'Expand sidebar';

@@ -632,6 +632,115 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopDesktopSection => 'سطح المكتب';
 
   @override
+  String get desktopDiscover => 'اكتشف MeTube Ember';
+
+  @override
+  String get desktopDiscoverAddLink => 'الصق رابطاً أو اسحبه';
+
+  @override
+  String get desktopDiscoverAddLinkLine =>
+      'Ctrl+V في أي مكان، أو اسحب الرابط إلى النافذة لتضيفه.';
+
+  @override
+  String get desktopDiscoverAdding => 'الإضافة والمشاركة';
+
+  @override
+  String get desktopDiscoverBrowser => 'من المتصفح';
+
+  @override
+  String get desktopDiscoverBrowserLine =>
+      'إضافات MeTube للمتصفح ترسل الرابط إلى التطبيق مباشرة.';
+
+  @override
+  String get desktopDiscoverChapters => 'الفصول';
+
+  @override
+  String get desktopDiscoverChaptersLine => 'أقسام المقطع من نصه، في صفحته.';
+
+  @override
+  String get desktopDiscoverChoose => 'حدّد عدة مقاطع';
+
+  @override
+  String get desktopDiscoverChooseLine =>
+      'بالدائرة عند المرور، أو Ctrl أو Shift مع النقر، ثم أضفها إلى قائمة أو احذفها معاً.';
+
+  @override
+  String get desktopDiscoverDragOut => 'اسحب مقطعاً إلى الخارج';
+
+  @override
+  String get desktopDiscoverDragOutLine => 'إلى مجلد أو برنامج آخر، ملفاً.';
+
+  @override
+  String get desktopDiscoverExport => 'صدّر النص';
+
+  @override
+  String get desktopDiscoverExportLine =>
+      'نصاً، أو ترجمةً بصيغة SRT لمشغّل آخر.';
+
+  @override
+  String get desktopDiscoverHint =>
+      'كل ما يستطيعه التطبيق، سطراً لكل ميزة، مع اختصاراتها.';
+
+  @override
+  String get desktopDiscoverLibrary => 'المكتبة';
+
+  @override
+  String get desktopDiscoverListening =>
+      'للصوت: غرفة هادئة بغلاف كبير، بملء الشاشة.';
+
+  @override
+  String get desktopDiscoverMini => 'النافذة الصغيرة';
+
+  @override
+  String get desktopDiscoverMiniLine =>
+      'بطاقة صغيرة فوق كل النوافذ، بجانب الساعة.';
+
+  @override
+  String get desktopDiscoverPhone => 'مع جوالك';
+
+  @override
+  String get desktopDiscoverPhoneLine =>
+      'الوسوم والقوائم ومواضع الاستئناف، تُزامَن مع MeTube Super عبر مجلد تختاره.';
+
+  @override
+  String get desktopDiscoverReading =>
+      'النص مقالةً: انقر جملة لتسمعها من مكانها.';
+
+  @override
+  String get desktopDiscoverSaid => 'ما قيل في المقاطع';
+
+  @override
+  String get desktopDiscoverSearch => 'ابحث في ما قيل';
+
+  @override
+  String get desktopDiscoverSearchLine =>
+      'اعثر على المقاطع التي قيلت فيها كلمة، لا في العناوين وحدها.';
+
+  @override
+  String get desktopDiscoverShortcutsLine =>
+      'كل اختصارات النافذة في ورقة واحدة.';
+
+  @override
+  String get desktopDiscoverShow => 'اعرضها';
+
+  @override
+  String get desktopDiscoverStatsLine =>
+      'المكتبة بالأرقام: حسب الموقع والقناة والشهر.';
+
+  @override
+  String get desktopDiscoverSubtitles =>
+      'النص على الصورة، والكلمة المنطوقة تضيء.';
+
+  @override
+  String get desktopDiscoverTheater => 'صورة أكبر تأخذ مكان اللوحة الجانبية.';
+
+  @override
+  String get desktopDiscoverTry => 'جرّبها';
+
+  @override
+  String get desktopDiscoverWatching => 'المشاهدة والاستماع';
+
+  @override
   String get desktopDownloadFolder => 'مجلد التنزيل';
 
   @override
@@ -714,6 +823,30 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopHidePanel => 'إخفاء اللوحة الجانبية';
+
+  @override
+  String get desktopHintShortcuts =>
+      'تلميح: اضغط ? لترى اختصارات لوحة المفاتيح. المسافة للتشغيل والإيقاف، والسهمان الأيمن والأيسر للتقديم والتأخير.';
+
+  @override
+  String get desktopHintShortcutsAction => 'الاختصارات';
+
+  @override
+  String get desktopHintTrayBody =>
+      'يكمل التشغيل من أيقونته بجانب الساعة. للخروج، انقر الأيقونة بالزر الأيمن.';
+
+  @override
+  String get desktopHintTrayTitle => 'ما زال MeTube Ember يعمل';
+
+  @override
+  String get desktopHints => 'إظهار التلميحات';
+
+  @override
+  String get desktopHintsAgain => 'أعد عرضها';
+
+  @override
+  String get desktopHintsHint =>
+      'تلميحان قصيران، يظهر كل منهما مرة واحدة: الاختصارات مع أول مقطع، وأيقونة الساعة مع أول إغلاق.';
 
   @override
   String get desktopImportFromPhone => 'استيراد من الجوال…';
@@ -1423,6 +1556,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String desktopVolumeLevel(int percent) {
     return 'الصوت $percent٪';
   }
+
+  @override
+  String get desktopWhatsNewAllFeatures => 'وكل مزايا Ember';
 
   @override
   String get desktopWidenSidebar => 'توسيع الشريط الجانبي';

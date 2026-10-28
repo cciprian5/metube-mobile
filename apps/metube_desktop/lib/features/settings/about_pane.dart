@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/update_data.dart';
 import '../../identity.dart';
+import '../discover/discover_dialog.dart';
 import 'simple_panes.dart';
 import 'whats_new.dart';
 
@@ -58,6 +59,14 @@ class AboutPane extends ConsumerWidget {
           trailing: MTLinkButton(
             label: l.whatsNewThisVersion,
             onPressed: () => unawaited(showWhatsNewNow(context, ref)),
+          ),
+        ),
+        SettingLine(
+          title: l.desktopDiscover,
+          hint: l.desktopDiscoverHint,
+          trailing: MTLinkButton(
+            label: l.desktopDiscoverShow,
+            onPressed: () => unawaited(showDiscoverDialog(context)),
           ),
         ),
         heading(l.developer),

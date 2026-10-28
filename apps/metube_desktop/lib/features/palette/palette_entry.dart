@@ -10,6 +10,7 @@ import '../../data/lists_data.dart';
 import '../../data/saved_searches.dart';
 import '../../router.dart';
 import '../../shell/context_menu.dart';
+import '../discover/discover_dialog.dart';
 import '../settings/settings_place.dart';
 import 'command_palette.dart';
 import 'palette_model.dart';
@@ -38,6 +39,11 @@ Future<void> openPalette(
       go(l.navPlaylists, MTIcons.queue, EmberRoutes.playlists),
       go(l.desktopChannels, MTIcons.subscriptions, EmberRoutes.channels),
       go(l.desktopStats, MTIcons.library, EmberRoutes.stats),
+      PaletteCommand(
+        label: l.desktopDiscover,
+        icon: MTIcons.info,
+        run: () => unawaited(showDiscoverDialog(context)),
+      ),
       for (final list in lists)
         go(
           l.desktopPaletteList(mtName(list.name)),

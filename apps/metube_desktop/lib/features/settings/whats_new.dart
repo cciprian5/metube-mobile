@@ -6,9 +6,11 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/hints_data.dart';
 import '../../data/update_data.dart';
 import '../../di.dart';
 import '../../shell/shell_metrics.dart';
+import '../discover/discover_dialog.dart';
 
 final whatsNewServiceProvider = Provider(
   (ref) => WhatsNewService(
@@ -36,6 +38,7 @@ Future<void> maybeShowWhatsNew(BuildContext context, WidgetRef ref) async {
     return;
   }
   if (pending == null || !context.mounted) return;
+  ref.read(hintsProvider.notifier).interrupted();
   await ref.read(whatsNewServiceProvider).markSeen(pending.version);
   if (context.mounted) unawaited(showWhatsNewDialog(context, pending));
 }
@@ -84,6 +87,14 @@ Future<void> showWhatsNewDialog(BuildContext context, WhatsNew notes) {
         ),
       ),
       actions: [
+        // The rest of what the app does, for whoever wants it.
+        MTLinkButton(
+          label: l.desktopWhatsNewAllFeatures,
+          onPressed: () {
+            Navigator.of(dialog).pop();
+            if (context.mounted) unawaited(showDiscoverDialog(context));
+          },
+        ),
         MTLinkButton(
           label: l.whatsNewReleasePage,
           icon: MTIcons.external,

@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/choices_data.dart';
 import '../../data/desktop_habits.dart';
 import '../../data/downloads_data.dart';
+import '../../data/hints_data.dart';
 import '../../data/library_data.dart';
 import '../../shell/pill.dart';
 import '../setup/setup_dialog.dart';
@@ -212,6 +213,7 @@ class DesktopPane extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.mtl;
+    final hints = ref.watch(hintsProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -253,6 +255,22 @@ class DesktopPane extends ConsumerWidget {
           onChanged: (on) =>
               unawaited(ref.read(offerCopiedLinksProvider.notifier).set(on)),
         ),
+        SwitchLine(
+          title: l.desktopHints,
+          hint: l.desktopHintsHint,
+          value: hints.on,
+          onChanged: (on) =>
+              unawaited(ref.read(hintsProvider.notifier).setOn(on)),
+        ),
+        if (hints.on && hints.seen.isNotEmpty)
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: MTLinkButton(
+              label: l.desktopHintsAgain,
+              onPressed: () =>
+                  unawaited(ref.read(hintsProvider.notifier).showAgain()),
+            ),
+          ),
       ],
     );
   }

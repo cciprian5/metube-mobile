@@ -6,6 +6,7 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/hints_data.dart';
 import '../../data/setup_data.dart';
 import '../../shell/error_text.dart';
 import '../../shell/shell_metrics.dart';
@@ -36,8 +37,14 @@ const _serverGuide =
 /// server and from Settings › Server: three ways to the address (a phone's
 /// backup, a search of the network, typing it) that all end in the same
 /// field, tested live before anything is kept.
-Future<void> showSetupDialog(BuildContext context) =>
-    showDialog<void>(context: context, builder: (_) => const _SetupDialog());
+Future<void> showSetupDialog(BuildContext context) {
+  // The session's one interruption: no tip after it.
+  ProviderScope.containerOf(context).read(hintsProvider.notifier).interrupted();
+  return showDialog<void>(
+    context: context,
+    builder: (_) => const _SetupDialog(),
+  );
+}
 
 class _SetupDialog extends ConsumerStatefulWidget {
   const _SetupDialog();

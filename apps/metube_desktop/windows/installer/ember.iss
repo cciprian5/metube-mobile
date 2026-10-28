@@ -31,7 +31,7 @@
 #define AppExe "metube_desktop.exe"
 ; Created by the runner while the app is open (windows/runner/main.cpp).
 #define RunningMutex "MeTubeEmber.Running"
-#define Developer "sagheerys"
+#define Developer "Yasir Sagheer"
 #define ProjectPage "https://sagheerys.github.io/metube-mobile/"
 
 #ifndef BuildDir
@@ -104,7 +104,7 @@ arabic.SelectLanguageTitle=اختر لغة التثبيت
 arabic.SelectLanguageLabel=اختر اللغة التي تريدها أثناء التثبيت.
 arabic.ClickNext=انقر «التالي» للمتابعة، أو «إلغاء الأمر» للخروج من التثبيت.
 arabic.WelcomeLabel1=مرحباً بك في تثبيت [name]
-arabic.WelcomeLabel2=سيُثبَّت [name/ver] على هذا الكمبيوتر.%n%n[name] برنامج حرّ مفتوح المصدر من {#Developer}، يعمل مع سيرفر MeTube الذي تشغّله أنت.%n%nيُستحسن أن تغلق البرامج الأخرى قبل المتابعة.
+arabic.WelcomeLabel2=سيُثبَّت [name/ver] على هذا الكمبيوتر.%n%n[name] برنامج حرّ مفتوح المصدر من ياسر صغير، يعمل مع سيرفر MeTube الذي تشغّله أنت.%n%nيُستحسن أن تغلق البرامج الأخرى قبل المتابعة.
 arabic.WizardLicense=الشروط والرخصة
 arabic.LicenseLabel=اقرأ المعلومات المهمة التالية قبل المتابعة.
 arabic.LicenseLabel3=اقرأ الشروط والرخصة التالية، فلا بد من قبولها قبل متابعة التثبيت.

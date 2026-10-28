@@ -141,15 +141,17 @@ void main() {
 
   test('**the guard**: the welcome page says who makes the app and links '
       'to the project', () {
-    expect(define('Developer'), 'sagheerys');
+    // The name the app's About gives, in both languages.
+    expect(define('Developer'), 'Yasir Sagheer');
+    expect(iss, contains('مفتوح المصدر من ياسر صغير'));
     expect(define('ProjectPage'), 'https://sagheerys.github.io/metube-mobile/');
     expect(iss, contains('english.WelcomeLabel2=This will install'));
     expect(
       RegExp(
-        r'^(english|arabic)\.WelcomeLabel2=.*\{#Developer\}',
+        r'^english\.WelcomeLabel2=.*\{#Developer\}',
         multiLine: true,
       ).allMatches(iss),
-      hasLength(2),
+      hasLength(1),
     );
     expect(iss, contains("CustomMessage('AboutLink')"));
     expect(iss, contains("ShellExecAsOriginalUser('open', '{#ProjectPage}'"));

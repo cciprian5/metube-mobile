@@ -17,6 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/features/add/add_entry.dart';
 import 'package:metube_desktop/features/add/batch_dialog.dart';
+import 'package:metube_desktop/features/discover/discover_dialog.dart';
 import 'package:metube_desktop/features/library/item_menu.dart';
 import 'package:metube_desktop/features/library/library_item_view.dart';
 import 'package:metube_desktop/features/library/library_page.dart';
@@ -28,6 +29,7 @@ import 'package:metube_desktop/shell/key_cap.dart';
 import 'package:metube_desktop/shell/pill.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
+import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:metube_desktop/shell/ui_zoom.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
@@ -412,6 +414,21 @@ void main() {
         await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
         await tester.sendKeyEvent(LogicalKeyboardKey.slash);
         await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+        await tester.pumpAndSettle();
+        expect(find.byType(KeyCap), findsWidgets);
+      },
+    );
+  });
+
+  testWidgets('Discover MeTube Ember, with every feature', (tester) async {
+    _emptyClipboard(tester);
+    await expectNoOverflow(
+      tester,
+      () => _stocked().app(),
+      then: (tester) async {
+        unawaited(
+          showDiscoverDialog(tester.element(find.byType(EmberSidebar))),
+        );
         await tester.pumpAndSettle();
         expect(find.byType(KeyCap), findsWidgets);
       },

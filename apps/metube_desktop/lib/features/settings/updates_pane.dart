@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/hints_data.dart';
 import '../../data/update_data.dart';
 import '../../router.dart';
 import 'simple_panes.dart';
@@ -18,6 +19,7 @@ Future<void> startupNotes(BuildContext context, WidgetRef ref) async {
   await ref.read(updateProvider.notifier).checkSilently();
   final release = ref.read(updateProvider).release;
   if (release == null || !context.mounted) return;
+  ref.read(hintsProvider.notifier).interrupted();
   final router = GoRouter.of(context);
   showMTNotice(
     context,

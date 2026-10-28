@@ -104,9 +104,8 @@ class BrowserButtonLine extends StatelessWidget {
       rtl: Directionality.of(context) == TextDirection.rtl,
     );
     try {
-      final file = File(
-        '${Directory.systemTemp.path}${Platform.pathSeparator}'
-        'metube-ember-browser-button.html',
+      final file = File.fromUri(
+        Directory.systemTemp.uri.resolve('metube-ember-browser-button.html'),
       );
       await file.writeAsString(page, flush: true);
       if (await launchUrl(Uri.file(file.path))) return;

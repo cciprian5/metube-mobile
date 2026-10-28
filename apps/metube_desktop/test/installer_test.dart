@@ -131,9 +131,9 @@ void main() {
     }
   });
 
-  test('**the guard**: it starts by asking for its language, with '
-      "Windows' own already chosen, then welcomes with the logo", () {
-    expect(directive('ShowLanguageDialog'), 'yes');
+  test('**the guard**: it speaks Windows\' language without asking, '
+      'as the app does, then welcomes with the logo', () {
+    expect(directive('ShowLanguageDialog'), 'no');
     expect(directive('LanguageDetectionMethod'), 'uilanguage');
     expect(directive('DisableWelcomePage'), 'no');
     expect(directive('WizardImageFile'), 'wizard_large_*.bmp');

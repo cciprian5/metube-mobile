@@ -64,10 +64,12 @@ VersionInfoProductVersion={#AppVersion}
 PrivilegesRequired=lowest
 DefaultDirName={autopf}\{#AppName}
 DisableProgramGroupPage=yes
-; Every install starts by asking for its language, with Windows' own
-; already chosen, as most installers do; then a welcome page with the
-; logo and who makes the app, and the terms and license to accept.
-ShowLanguageDialog=yes
+; No language question, as today's Windows apps do: the wizard speaks
+; Windows' language, English when that is neither of its two, the same
+; rule the app follows (Settings changes the app's). Then a welcome page
+; with the logo and who makes the app, and the terms and license to
+; accept.
+ShowLanguageDialog=no
 LanguageDetectionMethod=uilanguage
 DisableWelcomePage=no
 ArchitecturesAllowed=x64compatible

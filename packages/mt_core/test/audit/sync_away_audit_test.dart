@@ -20,25 +20,21 @@ SyncSnapshot _device(
 /// bring back what others deleted; with nobody else to say anything, its
 /// own data must survive the return.
 void main() {
-  test(
-    'alone in the folder, a device away 91 days keeps its own tags',
-    () {
-      final me = _device(
-        'ember-c3d4',
-        tags: {
-          _trip: {'travel': const Stamped(true, 1 * _day)},
-        },
-      );
-      final out = SyncMerge.forDevice(
-        mine: me,
-        others: const [],
-        now: 95 * _day,
-        lastSync: 2 * _day,
-      );
-      expect(out.snapshot.tags[_trip]?['travel']?.removed, isFalse);
-    },
-    skip: 'Known defect found by the pre-release audit; unskip with the fix',
-  );
+  test('alone in the folder, a device away 91 days keeps its own tags', () {
+    final me = _device(
+      'ember-c3d4',
+      tags: {
+        _trip: {'travel': const Stamped(true, 1 * _day)},
+      },
+    );
+    final out = SyncMerge.forDevice(
+      mine: me,
+      others: const [],
+      now: 95 * _day,
+      lastSync: 2 * _day,
+    );
+    expect(out.snapshot.tags[_trip]?['travel']?.removed, isFalse);
+  }, skip: 'Known defect found by the pre-release audit; unskip with the fix');
 
   test(
     "a quiet device's old file does not bring back a removal once forgotten",

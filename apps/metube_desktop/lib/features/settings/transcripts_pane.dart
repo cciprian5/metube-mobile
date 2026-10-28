@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/folders_data.dart';
 import '../../data/subtitles_data.dart';
 import '../../data/transcripts_data.dart';
+import '../clip/caption_controls.dart';
 import 'backup_actions.dart';
 import 'simple_panes.dart';
 
@@ -51,6 +52,7 @@ class TranscriptsPane extends ConsumerWidget {
             onChanged: (v) => ref.read(emberSubtitlesProvider).shown.value = v,
           ),
         ),
+        const CaptionStyleChoices(),
         SettingLine(
           title: l.transcriptsClips(summary?.$1 ?? 0),
           value: summary == null || none ? null : mtFormatSize(summary.$2),

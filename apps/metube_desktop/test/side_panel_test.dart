@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/shell/panel/queue_view.dart';
 import 'package:metube_desktop/shell/panel/transcript_view.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
+import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
 
@@ -187,5 +189,50 @@ void main() {
     await tester.pumpAndSettle();
     expect(copied, _url);
     expect(find.text('Link copied'), findsOneWidget);
+  });
+
+  testWidgets('**the guard**: the details say what the phone says: the '
+      'size, the format, the video and sound as played, where it is kept '
+      'and its tags', (tester) async {
+    ShellHarness.useWindow(tester, const Size(1440, 900));
+    final h = ShellHarness(
+      library: [
+        LibraryItem(
+          canonicalUrl: _url,
+          title: 'Homelab Hour - Ep. 12',
+          serverFilename: 'Homelab Hour [aaaaaaaaaaa].mkv',
+          onServer: true,
+          sizeBytes: 412 * 1024 * 1024,
+          timestamp: DateTime(2026, 10, 20),
+          tags: const ['homelab', MTConstants.favoritesSystemTag],
+        ),
+      ],
+    );
+    h.video.playing = const MediaQuality(
+      width: 1920,
+      height: 1080,
+      videoMime: 'video/av01',
+      frameRate: 30,
+      audioMime: 'audio/opus',
+      channels: 2,
+    );
+    await tester.pumpWidget(h.app());
+    await tester.pumpAndSettle();
+    h.player.showPlaying([_homelab], playing: false);
+    await tester.pumpAndSettle();
+    await tester.tap(inPanel(find.text('Details')));
+    await tester.pumpAndSettle();
+    // The engine is asked once the clip has had a moment to open.
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    expect(inPanel(find.text('File Size')), findsOneWidget);
+    expect(inPanel(find.textContaining('412')), findsOneWidget);
+    expect(inPanel(find.text('MKV')), findsOneWidget);
+    expect(inPanel(find.textContaining('1080p')), findsOneWidget);
+    expect(inPanel(find.textContaining('AV1')), findsOneWidget);
+    expect(inPanel(find.textContaining('Opus')), findsOneWidget);
+    expect(inPanel(find.text('Server (stream)')), findsOneWidget);
+    expect(inPanel(find.text('homelab')), findsOneWidget);
+    expect(inPanel(find.textContaining('__favorites__')), findsNothing);
   });
 }

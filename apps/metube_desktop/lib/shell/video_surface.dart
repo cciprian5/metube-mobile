@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_media/mt_media.dart' show MediaQuality;
 import 'package:mt_ui/mt_ui.dart';
 
 /// Where the playing clip's picture comes from. The pages know only this,
@@ -19,6 +20,12 @@ abstract interface class VideoSurface {
   /// The playing picture's size in pixels as decoded, so the clip page can
   /// say the quality that actually plays; null with no picture.
   ValueListenable<Size?> get pictureSize;
+
+  /// What the playing file is, as the engine decodes it: the picture's
+  /// size, codec and frame rate, and the sound's. The phone reads this
+  /// from the file's header; here the one engine already knows it. Null
+  /// with nothing loaded.
+  Future<MediaQuality?> quality();
 }
 
 /// A dark box in place of the picture: tests, previews and the gallery.
@@ -38,6 +45,12 @@ class InertVideoSurface implements VideoSurface {
   /// Set by a test as if a picture of that size played.
   @override
   final ValueNotifier<Size?> pictureSize = ValueNotifier(null);
+
+  /// Set by a test as what the engine would say.
+  MediaQuality? playing;
+
+  @override
+  Future<MediaQuality?> quality() async => playing;
 }
 
 /// Overridden in main with the media_kit surface.

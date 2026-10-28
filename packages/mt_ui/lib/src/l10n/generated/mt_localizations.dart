@@ -2492,6 +2492,12 @@ abstract class MTLocalizations {
   /// **'Worth a look'**
   String get desktopStatsWorthALook;
 
+  /// No description provided for @desktopSubtitleOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitle options'**
+  String get desktopSubtitleOptions;
+
   /// No description provided for @desktopSync.
   ///
   /// In en, this message translates to:

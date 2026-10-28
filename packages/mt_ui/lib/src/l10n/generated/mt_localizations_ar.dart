@@ -1465,6 +1465,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopStatsWorthALook => 'قد تستحق نظرة';
 
   @override
+  String get desktopSubtitleOptions => 'خيارات الترجمة';
+
+  @override
   String get desktopSync => 'المزامنة';
 
   @override

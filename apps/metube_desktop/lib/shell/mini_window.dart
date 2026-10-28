@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../di.dart';
+import '../router.dart';
 import '../features/clip/clip_state.dart';
 import '../features/library/artwork.dart';
 import 'shell_state.dart';
@@ -18,14 +20,33 @@ abstract final class EmberMiniSize {
   static const video = Size(360, 203);
 }
 
+/// The clip whose page was open on the clip playing when the card took the
+/// window's place; null when another page was.
+String? _miniFrom;
+
 /// Ctrl+M and the player bar's button: the small card above every window,
 /// sized for what plays, or the full window again.
-void toggleMiniWindow(WidgetRef ref) {
+///
+/// **Back from the card, the page goes with the player**, as it does in
+/// the window: the card stands in for the whole window, the clip's page
+/// included, so a next pressed on the card went unheard and the window came
+/// back on the clip that had ended, its cover still as a frozen picture.
+void toggleMiniWindow(WidgetRef ref, GoRouter router) {
   final controls = ref.read(windowControlsProvider);
+  final current = ref.read(playerProvider).state.current;
   if (controls.mini.value) {
     controls.setMini(null);
+    final from = _miniFrom;
+    _miniFrom = null;
+    if (from != null && current != null && current.canonicalUrl != from) {
+      router.go(EmberRoutes.item(current.canonicalUrl));
+    }
     return;
   }
+  final path = router.routerDelegate.currentConfiguration.uri.path;
+  _miniFrom = current != null && path == EmberRoutes.item(current.canonicalUrl)
+      ? current.canonicalUrl
+      : null;
   final picture = miniShowsPicture(
     ref.read(playerProvider).state,
     audioOnly: ref.read(audioOnlyProvider),

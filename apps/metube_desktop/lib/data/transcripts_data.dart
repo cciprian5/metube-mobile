@@ -4,6 +4,7 @@ import 'dart:ui' show PlatformDispatcher;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
 
+import 'appearance_data.dart';
 import 'library_data.dart';
 import 'sync_data.dart';
 
@@ -69,7 +70,7 @@ final transcriptForProvider = FutureProvider.family<Transcript?, TranscriptKey>(
   (ref, key) async {
     final store = ref.watch(transcriptStoreProvider);
     if (store == null) return null;
-    final languages = _readerLanguages();
+    final languages = readerLanguages(ref.watch(appearanceProvider).locale);
     final stored = await store.readFor(key.canonicalUrl);
     if (stored.isNotEmpty) return _pick(stored, languages);
 
@@ -108,9 +109,12 @@ final readingLanguageProvider = StateProvider.family<String?, String>(
   (ref, canonicalUrl) => null,
 );
 
-/// The reader's language first, then English, which most clips have.
-List<String> _readerLanguages() {
-  final own = PlatformDispatcher.instance.locale.languageCode;
+/// The reader's language first, then English, which most clips have. The
+/// reader's is **the one chosen in Appearance**, else Windows': with
+/// Windows in English and the app in Arabic, the Arabic transcript came
+/// second.
+List<String> readerLanguages(String? chosen) {
+  final own = chosen ?? PlatformDispatcher.instance.locale.languageCode;
   return {own, 'en'}.toList();
 }
 

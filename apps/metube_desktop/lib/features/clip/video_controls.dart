@@ -11,6 +11,7 @@ import '../../shell/player_controls.dart';
 import '../../shell/seek_bar.dart';
 import '../../shell/shell_state.dart';
 import '../../shell/volume_slider.dart';
+import 'caption_controls.dart';
 import 'clip_state.dart';
 
 /// The controls over a playing picture: the seek bar with its times, the
@@ -115,24 +116,19 @@ class _ClipVideoControlsState extends ConsumerState<ClipVideoControls> {
   );
 
   /// The clip's subtitles over the picture, as the phone draws them, when
-  /// it has a transcript; null without one.
+  /// it has a transcript; null without one. Redrawn when their size or
+  /// background changes.
   Widget? _captions(PlaylistItem? item, {required double lift}) {
-    if (item == null) return null;
-    final lines = ref.watch(
-      captionLinesProvider((
-        canonicalUrl: item.canonicalUrl,
-        serverFilename: item.serverFilename,
-      )),
-    );
-    if (lines == null) return null;
-    return MTCaptionsLayer(
-      key: ValueKey(item.canonicalUrl),
-      clock: _clock,
-      captions: MTCaptions(
-        lines: lines,
-        shown: ref.watch(emberSubtitlesProvider).shown,
+    if (item == null || emberCaptionsFor(ref, item) == null) return null;
+    final subtitles = ref.watch(emberSubtitlesProvider);
+    return ListenableBuilder(
+      listenable: Listenable.merge([subtitles.size, subtitles.background]),
+      builder: (context, _) => MTCaptionsLayer(
+        key: ValueKey(item.canonicalUrl),
+        clock: _clock,
+        captions: emberCaptionsFor(ref, item)!,
+        lift: lift,
       ),
-      lift: lift,
     );
   }
 }
@@ -190,7 +186,8 @@ class _Bar extends ConsumerWidget {
                       const EmberVolumeSlider(onPicture: true),
                       const SizedBox(width: MTSpace.xs),
                     ],
-                    ?_ccButton(ref, l),
+                    if (state.current case final item?)
+                      EmberCaptionButtons(item: item),
                     MTShortcutTooltip(
                       message: l.playbackSpeed,
                       child: TextButton(
@@ -233,30 +230,6 @@ class _Bar extends ConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  /// CC: the subtitles on or off, for a clip that has a transcript.
-  Widget? _ccButton(WidgetRef ref, MTLocalizations l) {
-    final item = state.current;
-    if (item == null) return null;
-    final key = (
-      canonicalUrl: item.canonicalUrl,
-      serverFilename: item.serverFilename,
-    );
-    if (ref.watch(captionLinesProvider(key)) == null) return null;
-    final subtitles = ref.watch(emberSubtitlesProvider);
-    return ValueListenableBuilder<bool>(
-      valueListenable: subtitles.shown,
-      builder: (context, on, _) => EmberPlayerControl(
-        icon: MTIcons.captions,
-        label: on ? l.subtitlesHide : l.subtitlesShow,
-        shortcut: 'C',
-        selected: on,
-        ink: Colors.white,
-        color: MTThemeX.of(context).palette.accent,
-        onTap: subtitles.toggle,
       ),
     );
   }

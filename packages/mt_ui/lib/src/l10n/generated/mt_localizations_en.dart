@@ -1430,6 +1430,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopStatsWorthALook => 'Worth a look';
 
   @override
+  String get desktopSubtitleOptions => 'Subtitle options';
+
+  @override
   String get desktopSync => 'Sync';
 
   @override

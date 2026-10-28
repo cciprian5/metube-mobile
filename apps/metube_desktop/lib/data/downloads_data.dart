@@ -1,11 +1,10 @@
-import 'dart:ui' show PlatformDispatcher;
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
 
 import '../di.dart';
 import '../platform/desktop_policy.dart';
+import 'appearance_data.dart';
 import 'library_data.dart';
 import 'local_copies.dart';
 import 'lists_data.dart';
@@ -147,8 +146,7 @@ Future<void> _transcriptFirst(Ref ref, DownloadTask task, MeTubeApi api) async {
   if (store == null || PlaylistDetector.isPlaylist(url)) return;
   if (UrlKit.youtubeVideoId(url) == null) return;
   final fetcher = ref.read(captionsFetcherFactoryProvider)(api);
-  final own = PlatformDispatcher.instance.locale.languageCode;
-  for (final language in {own, 'en'}) {
+  for (final language in readerLanguages(ref.read(appearanceProvider).locale)) {
     try {
       final result = await fetcher.fetch(url, language: language);
       if (result.transcript case final transcript?) {

@@ -2,7 +2,10 @@ import 'package:flutter/gestures.dart' show kDoubleTapMinTime;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/features/clip/clip_page.dart';
 import 'package:metube_desktop/features/library/library_page.dart';
+import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/mini_window.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
@@ -129,4 +132,42 @@ void main() {
       );
     }
   }
+
+  testWidgets('**the guard**: back from the card after a next, the page is '
+      "the clip playing now, not the last one's frozen cover", (tester) async {
+    const next = PlaylistItem(
+      canonicalUrl: 'https://youtu.be/bbbbbbbbbbb',
+      title: 'Second Episode',
+      uploader: 'Field Notes',
+    );
+    final h = await open(tester, playing: video);
+    GoRouter.of(tester.element(find.byType(LibraryPage)))
+        .go(EmberRoutes.item(video.canonicalUrl));
+    await tester.pumpAndSettle();
+    await ctrl(tester, LogicalKeyboardKey.keyM);
+    // The card's next: the player moves on while the page is not there.
+    h.player.showPlaying([next], playing: false);
+    await tester.pumpAndSettle();
+    await ctrl(tester, LogicalKeyboardKey.keyM);
+    expect(
+      tester.widget<ClipPage>(find.byType(ClipPage)).canonicalUrl,
+      next.canonicalUrl,
+    );
+  });
+
+  testWidgets('back from the card on another page, that page stays', (
+    tester,
+  ) async {
+    const next = PlaylistItem(
+      canonicalUrl: 'https://youtu.be/bbbbbbbbbbb',
+      title: 'Second Episode',
+    );
+    final h = await open(tester, playing: video);
+    await ctrl(tester, LogicalKeyboardKey.keyM);
+    h.player.showPlaying([next], playing: false);
+    await tester.pumpAndSettle();
+    await ctrl(tester, LogicalKeyboardKey.keyM);
+    expect(find.byType(LibraryPage), findsOneWidget);
+    expect(find.byType(ClipPage), findsNothing);
+  });
 }

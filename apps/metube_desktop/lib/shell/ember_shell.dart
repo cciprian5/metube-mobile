@@ -9,12 +9,10 @@ import 'package:mt_ui/mt_ui.dart';
 import '../data/backup_data.dart';
 import '../data/covers/covers_data.dart';
 import '../data/library_data.dart';
-import '../data/setup_data.dart';
 import '../data/sync_runner.dart';
 import '../data/taskbar_data.dart';
 import '../data/lists_data.dart';
 import '../data/saved_searches.dart';
-import '../data/update_data.dart';
 import '../di.dart';
 import '../features/add/add_dialog.dart';
 import '../features/add/add_entry.dart';
@@ -29,8 +27,7 @@ import '../features/notices/copied_links_wiring.dart';
 import '../features/notices/notices_wiring.dart';
 import '../features/palette/palette_entry.dart';
 import '../features/settings/backup_actions.dart';
-import '../features/settings/updates_pane.dart';
-import '../features/setup/setup_dialog.dart';
+import '../features/discover/discover_once.dart';
 import '../router.dart';
 import 'content_bar.dart';
 import 'focus_regions.dart';
@@ -76,19 +73,10 @@ class _EmberShellState extends ConsumerState<EmberShell> {
   @override
   void initState() {
     super.initState();
-    // The first start with no server opens the setup, once; "Later" leaves
-    // the library's own button to open it again.
-    if (ref.read(offerSetupAtStartProvider) &&
-        ref.read(serverSetupProvider) == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) unawaited(showSetupDialog(context));
-      });
-    } else if (ref.read(offerWhatsNewProvider)) {
-      // Not over the setup: a first start has nothing new to tell.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) unawaited(startupNotes(context, ref));
-      });
-    }
+    // The setup, Discover or what is new: one at most (see there).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(startupOffers(context, ref));
+    });
   }
 
   @override
@@ -227,7 +215,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     ),
   );
 
-  void _toggleMini() => toggleMiniWindow(ref);
+  void _toggleMini() => toggleMiniWindow(ref, GoRouter.of(context));
 
   void _openAdd([String text = '']) =>
       unawaited(openAddDialog(context, text: text));

@@ -8,6 +8,7 @@ import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../di.dart';
+import '../downloads_library/cover_keeping.dart';
 import '../downloads_library/library_enricher.dart';
 import '../downloads_library/library_providers.dart';
 import '../downloads_library/pending_recovery.dart';
@@ -76,7 +77,12 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
   /// Probing migrated files for covers and dimensions, for the life of the
   /// app. It is watched here rather than in the library screen so it does
   /// not stop when that screen is left.
-  void _watchEnrichment() => ref.watch(libraryEnrichmentProvider);
+  void _watchEnrichment() {
+    ref.watch(libraryEnrichmentProvider);
+    // Keeps the online covers on the phone, so a clip taken down at its
+    // source keeps its face.
+    ref.watch(coverKeepingProvider);
+  }
 
   @override
   void initState() {

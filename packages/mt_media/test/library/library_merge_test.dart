@@ -19,13 +19,31 @@ void main() {
     Map<String, List<String>> tags = const {},
     Map<String, String> artwork = const {},
     Map<String, MediaShape> shapes = const {},
+    Map<String, String> kept = const {},
   }) => mergeLibrary(
     history: history,
     offline: offline,
     tags: tags,
     artwork: artwork,
     shapes: shapes,
+    kept: kept,
   );
+
+  test('**the guard**: a kept cover is the face of its clip, on the server '
+      'or left on this device alone', () {
+    const onServer = 'https://www.youtube.com/watch?v=aaaaaaaaaaa';
+    const localOnly = 'https://youtu.be/zzzzzzzzzzz';
+    final items = merge(
+      history: HistoryResponse(done: [done(onServer)]),
+      offline: {localOnly: r'C:\Offline\Gone Clip.mp4'},
+      artwork: {onServer: '/data/thumbs/frame.jpg'},
+      kept: {onServer: r'C:\kept\a.jpg', localOnly: r'C:\kept\z.jpg'},
+    );
+    expect(
+      [for (final i in items) i.thumbnail],
+      [r'C:\kept\a.jpg', r'C:\kept\z.jpg'],
+    );
+  });
 
   test('only finished server items join the library', () {
     final items = merge(

@@ -3,6 +3,7 @@
 /// the position and state stores.
 library;
 
+export 'src/covers/cached_cover_fetcher.dart';
 export 'src/models/media_quality.dart';
 export 'src/models/play_mode.dart';
 export 'src/models/playback_source.dart';

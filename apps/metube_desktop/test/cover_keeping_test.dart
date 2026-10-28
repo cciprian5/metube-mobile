@@ -13,6 +13,7 @@ import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:metube_desktop/features/library/artwork.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
+import 'package:mt_media/mt_media.dart' show cachedCoverFetcher;
 
 import 'support/shell_harness.dart';
 

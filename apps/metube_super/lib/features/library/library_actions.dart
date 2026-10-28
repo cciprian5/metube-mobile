@@ -167,6 +167,7 @@ class LibraryActions {
     // the entry, or it stays orphaned in `filesDir/thumbs`, which Android
     // never sweeps.
     await artwork.removeKeysAndFiles(gone);
+    await _ref.read(keptCoverIndexProvider).removeKeysAndFiles(gone);
     for (final url in gone) {
       await tags.removeKey(url);
       await shapes.removeKey(url);

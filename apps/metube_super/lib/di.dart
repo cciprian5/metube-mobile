@@ -79,6 +79,14 @@ final artworkIndexProvider = Provider(
   ),
 );
 
+/// Online covers kept as files on the phone (see CoverKeeper).
+final keptCoverIndexProvider = Provider(
+  (ref) => KeptCoverIndex(
+    store: ref.watch(keyValueStoreProvider),
+    mutex: ref.watch(prefsMutexProvider),
+  ),
+);
+
 /// **A single choke point for the automatic backup** (2026-09-04): every
 /// playlist write, from any screen, requests a backup, so no screen can be
 /// forgotten.

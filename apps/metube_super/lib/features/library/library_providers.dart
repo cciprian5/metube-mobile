@@ -44,6 +44,7 @@ final libraryItemsProvider = FutureProvider<List<LibraryItem>>((ref) async {
     tags: tags,
     artwork: artwork,
     shapes: shapes,
+    kept: await ref.watch(keptCoverIndexProvider).readAll(),
   );
 });
 

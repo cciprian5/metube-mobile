@@ -15,6 +15,7 @@ import '../home/download_watcher.dart';
 import '../home/network_gate.dart';
 import '../home/quick_download.dart';
 import '../home/reception.dart';
+import '../library/cover_keeping.dart';
 import '../library/library_enricher.dart';
 import '../library/library_providers.dart'
     show completionGlowProvider, libraryViewProvider;
@@ -253,6 +254,9 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     // Returning to the app asks the server again; the card is not truthful
     // without this.
     ref.watch(libraryEnrichmentProvider);
+    // Keeps the online covers on the phone, so a clip taken down at its
+    // source keeps its face.
+    ref.watch(coverKeepingProvider);
     // Stores each item's quality ahead of time, after the enricher has
     // shown its file is readable.
     ref.watch(qualityBackfillRunProvider);

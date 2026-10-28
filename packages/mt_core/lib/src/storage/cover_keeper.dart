@@ -130,6 +130,38 @@ final class CoverKeeper {
     return CoverOutcome.gone;
   }
 
+  /// One round over [covers] (canonical URL to the cover's address), one
+  /// clip at a time so nothing else waits: what was kept and what was
+  /// replaced. It rests after [restAfter] failures in a row, the network
+  /// most likely gone, and stops when [stopped] says so.
+  Future<({int kept, int replaced})> keepAll(
+    Map<String, String?> covers, {
+    bool Function()? stopped,
+    int restAfter = 6,
+  }) async {
+    var kept = 0;
+    var replaced = 0;
+    var failedInRow = 0;
+    for (final url in await candidates(covers)) {
+      if (stopped?.call() ?? false) break;
+      switch (await keep(url, covers[url]!)) {
+        case CoverOutcome.kept:
+          kept++;
+          failedInRow = 0;
+        case CoverOutcome.replaced:
+          replaced++;
+          failedInRow = 0;
+        case CoverOutcome.gone:
+          failedInRow = 0;
+        case CoverOutcome.failed:
+          if (++failedInRow >= restAfter) {
+            return (kept: kept, replaced: replaced);
+          }
+      }
+    }
+    return (kept: kept, replaced: replaced);
+  }
+
   Future<bool> _write(String canonicalUrl, Uint8List picture) async {
     final small = await _shrink(picture);
     // Checked again just before writing: a file may have been kept from

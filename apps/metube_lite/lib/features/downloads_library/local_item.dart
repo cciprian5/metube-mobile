@@ -69,6 +69,16 @@ class LocalItem {
       aspectRatio != null &&
       aspectRatio! < 1;
 
+  /// A file's cover: **one kept on the phone first**, since the online one
+  /// it was kept from may be gone (YouTube deletes it with the video);
+  /// then the artwork index's, under the item key or the bare path.
+  static String? coverOf(
+    String key,
+    String path, {
+    required Map<String, String> kept,
+    required Map<String, String> artwork,
+  }) => kept[key] ?? artwork[key] ?? artwork[path];
+
   /// The default title when the title index has none: the filename without
   /// its extension and without the `_HHmmss` time stamp the name builder
   /// adds (§2.4).

@@ -33,6 +33,7 @@ final localMediaProvider = FutureProvider<List<LocalItem>>((ref) async {
   final offline = await ref.watch(offlineIndexProvider).readAll();
   final titles = await ref.watch(titleIndexProvider).readAll();
   final artwork = await ref.watch(artworkIndexProvider).readAll();
+  final kept = await ref.watch(keptCoverIndexProvider).readAll();
   final tags = await ref.watch(tagsIndexProvider).readAll();
   final Map<String, MediaShape> shapes = await ref
       .watch(mediaShapeIndexProvider)
@@ -77,7 +78,7 @@ final localMediaProvider = FutureProvider<List<LocalItem>>((ref) async {
             LocalItem.titleFromFilename(path.split('/').last),
         sizeBytes: stat.size,
         modified: stat.modified,
-        thumbnail: artwork[key] ?? artwork[path],
+        thumbnail: LocalItem.coverOf(key, path, kept: kept, artwork: artwork),
         favorite: (tags[key] ?? tags[path] ?? const []).contains(
           MTConstants.favoritesSystemTag,
         ),

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
+import 'package:mt_media/mt_media.dart' show cachedCoverFetcher;
 
 import '../../di.dart';
 import '../../features/library/artwork.dart';
@@ -82,30 +82,6 @@ FrameFor videoFrameFor(
   return grab(api.downloadUrl(name), api.streamingHeaders);
 };
 
-/// Fetches an online cover through the cards' own cache: a picture the
-/// cache still holds is used as it is, however old (it may be the last
-/// copy left); otherwise it is downloaded, with the server's headers only
-/// when the address is the server's.
-CoverFetcher cachedCoverFetcher(
-  BaseCacheManager cache,
-  Map<String, String> Function(String url) headersFor,
-) => (url) async {
-  if (await cache.getFileFromCache(url) case final held?) {
-    return FetchedCover.found(await held.file.readAsBytes());
-  }
-  try {
-    final got = await cache.downloadFile(url, authHeaders: headersFor(url));
-    return FetchedCover.found(await got.file.readAsBytes());
-  } on HttpExceptionWithStatus catch (e) {
-    return e.statusCode == HttpStatus.notFound ||
-            e.statusCode == HttpStatus.gone
-        ? const FetchedCover.gone()
-        : const FetchedCover.failed();
-  } on Object {
-    return const FetchedCover.failed();
-  }
-};
-
 /// Looks for missing covers in the background whenever the library is
 /// read, one clip at a time so the library never waits, and shows what it
 /// found every few covers and at the end. Watched by the shell.
@@ -128,10 +104,12 @@ final coverEnrichmentProvider = Provider<void>((ref) {
       null => null,
     },
   );
-  final fetch = cachedCoverFetcher(
-    ref.watch(artworkCacheProvider) ?? DefaultCacheManager(),
-    api.imageHeadersFor,
-  );
+  // The app always names its cover cache; without one (a test) nothing is
+  // fetched.
+  final cache = ref.watch(artworkCacheProvider);
+  final CoverFetcher fetch = cache == null
+      ? (_) async => const FetchedCover.failed()
+      : cachedCoverFetcher(cache, api.imageHeadersFor);
   var running = false;
   var stopped = false;
   ref.onDispose(() => stopped = true);

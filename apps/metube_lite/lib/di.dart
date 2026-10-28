@@ -64,6 +64,23 @@ final artworkIndexProvider = Provider(
   ),
 );
 
+/// Online covers kept as files on the phone (see CoverKeeper).
+final keptCoverIndexProvider = Provider(
+  (ref) => KeptCoverIndex(
+    store: ref.watch(keyValueStoreProvider),
+    mutex: ref.watch(prefsMutexProvider),
+  ),
+);
+
+/// Clips whose cover was gone with nothing to stand in for it, left alone
+/// for a day.
+final probeFailureIndexProvider = Provider(
+  (ref) => ProbeFailureIndex(
+    store: ref.watch(keyValueStoreProvider),
+    mutex: ref.watch(prefsMutexProvider),
+  ),
+);
+
 /// Display titles, under the same key as the old Lite:
 /// `video_title_metadata`.
 final titleIndexProvider = Provider(

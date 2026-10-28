@@ -79,4 +79,28 @@ void main() {
     await kept.removeKeysAndFiles([url]);
     expect(File(path).existsSync(), isFalse);
   });
+
+  test(
+    'a round keeps what it can, and rests when the network is gone',
+    () async {
+      var asked = 0;
+      final k = CoverKeeper(
+        kept: kept,
+        failures: failures,
+        folder: folder,
+        fetch: (_) async {
+          asked++;
+          return const FetchedCover.failed();
+        },
+      );
+      final covers = {for (var i = 0; i < 20; i++) 'u$i': cover};
+      expect(await k.keepAll(covers, restAfter: 3), (kept: 0, replaced: 0));
+      expect(asked, 3);
+      final good = keeper(FetchedCover.found(jpeg));
+      expect(await good.keepAll({url: cover, 'none': null}), (
+        kept: 1,
+        replaced: 0,
+      ));
+    },
+  );
 }

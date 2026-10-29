@@ -9,7 +9,7 @@ import '../widgets/mt_queue_panel.dart';
 import '../widgets/mt_up_next_list.dart';
 import 'mt_video_screen.dart';
 
-/// The cream sheet under the portrait video (Wahaj reference B): title,
+/// The light sheet under the portrait video (Wahaj reference B): title,
 /// then metadata, then actions, then mode and speed, then the "up next"
 /// section.
 class MTVideoInfoSheet extends StatelessWidget {

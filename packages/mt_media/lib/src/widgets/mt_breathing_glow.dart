@@ -199,8 +199,8 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
     // they cross reads warmer than either. Both from the palette, so the
     // petrol app gets two petrols.
     final colors = desktop ? [p.accentDeep, p.accent] : [p.accent, p.accent];
-    // Night needs more of it to be seen on espresso than day needs on
-    // cream, where a moving light too strong reads as a travelling stain;
+    // Night needs more of it to be seen on charcoal than day needs on
+    // stone, where a moving light too strong reads as a travelling stain;
     // on a large screen by day, more so.
     final dark = Theme.of(context).brightness == Brightness.dark;
     final peak = dark ? 0.34 : (desktop ? 0.18 : 0.26);

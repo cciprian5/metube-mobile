@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 
-/// The Wahaj confirmation: a cream card with the heading in Kufi, and
+/// The Wahaj confirmation: a light card with the heading in Kufi, and
 /// **the clip itself shown before anything is deleted**, so nobody removes
 /// the wrong item from a list of look-alike titles.
 ///

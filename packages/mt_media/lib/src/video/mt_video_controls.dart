@@ -86,7 +86,7 @@ class _MTVideoControlsState extends State<MTVideoControls> {
   }
 
   /// Clear of the bottom bar while it shows, near the edge when it hides:
-  /// above the cream sheet, which overlaps the small player by 14px.
+  /// above the light sheet, which overlaps the small player by 14px.
   double get _captionLift => _visible && !_locked
       ? (widget.fullscreen ? MTSpace.xs : MTSpace.xl) + 76
       : (widget.fullscreen ? MTSpace.lg : MTSpace.xxl);
@@ -165,7 +165,7 @@ class _MTVideoControlsState extends State<MTVideoControls> {
         child: Center(child: MTVideoCenterControls(session: widget.session)),
       ),
       PositionedDirectional(
-        // Above the rounded edge of the cream sheet, which overlaps the
+        // Above the rounded edge of the light sheet, which overlaps the
         // video by 14px.
         bottom: widget.fullscreen ? MTSpace.xs : MTSpace.xl,
         start: MTSpace.md,

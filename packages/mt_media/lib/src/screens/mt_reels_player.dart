@@ -234,7 +234,7 @@ class _MTReelsPlayerState extends State<MTReelsPlayer> {
     // **The bar was present and unreadable** (field report "it covers the
     // top bar", diagnosed with `dumpsys window` 2026-09-02): `vsysui=…
     // LIGHT_STATUS_BAR`, meaning the system was drawing its icons **black**
-    // because the daylight theme is cream, on top of the black reels
+    // because the daylight theme is light, on top of the black reels
     // background. The result was a bar that existed and showed nothing: the
     // clock and battery were black on black (pixel measurement: the entire
     // top row was 0,0,0).

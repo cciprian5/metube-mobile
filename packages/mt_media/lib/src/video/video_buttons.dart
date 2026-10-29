@@ -10,7 +10,7 @@ import 'mt_video_session.dart';
 /// size limit).
 
 /// The chrome buttons over the video: semi-transparent dark squares with
-/// cream ink.
+/// light ink.
 class MTVideoIconButton extends StatelessWidget {
   const MTVideoIconButton({
     super.key,

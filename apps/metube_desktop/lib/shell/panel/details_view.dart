@@ -73,12 +73,15 @@ class DetailsView extends ConsumerWidget {
           if (lists.isNotEmpty)
             row(l.inPlaylists, lists.map(mtName).join(l.listSeparator)),
           if (tags.isNotEmpty) row(l.tags, tags.join(l.listSeparator)),
-          row(
-            l.source,
-            item.localPath != null
-                ? l.playingFromDevice
-                : l.streamingFromServer,
-          ),
+          // Where it plays from only when the availability above is missing:
+          // beside it, the two read as the same line twice.
+          if (entry == null)
+            row(
+              l.source,
+              item.localPath != null
+                  ? l.playingFromDevice
+                  : l.streamingFromServer,
+            ),
           const SizedBox(height: MTSpace.md),
           _LinkRow(url: url),
         ],

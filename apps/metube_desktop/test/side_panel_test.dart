@@ -232,6 +232,9 @@ void main() {
     expect(inPanel(find.textContaining('AV1')), findsOneWidget);
     expect(inPanel(find.textContaining('Opus')), findsOneWidget);
     expect(inPanel(find.text('Server (stream)')), findsOneWidget);
+    // **The guard**: said once. Beside the availability, a "source" line
+    // only said the same thing again.
+    expect(inPanel(find.text('Streaming from the server')), findsNothing);
     expect(inPanel(find.text('homelab')), findsOneWidget);
     expect(inPanel(find.textContaining('__favorites__')), findsNothing);
   });

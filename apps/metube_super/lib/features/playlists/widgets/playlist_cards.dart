@@ -4,7 +4,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../playlists_providers.dart';
 
-/// A smart playlist card: a small espresso-dark card with a glow at the
+/// A smart playlist card: a small charcoal-dark card with a glow at the
 /// top. It builds itself with no maintenance, and its colour follows its
 /// meaning (favourites crimson, offline olive).
 class SmartPlaylistCard extends StatelessWidget {

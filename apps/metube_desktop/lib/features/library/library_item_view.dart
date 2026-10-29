@@ -126,12 +126,14 @@ class LibraryItemView extends ConsumerWidget {
       if (item.timestamp != null && columns?.added != true)
         mtTimeAgo(context, item.timestamp!),
     ]);
+    // A server's library is on the server row after row, so only a copy on
+    // this computer earns a mark; and the platform has its own filter, so
+    // no coloured letters beside every title either (as on the grid).
     final locationLabel = switch (item.location) {
       MTMediaLocation.offline || MTMediaLocation.both => l.availabilityOffline,
-      MTMediaLocation.onServer => l.filterServer,
-      MTMediaLocation.none => null,
+      MTMediaLocation.onServer || MTMediaLocation.none => null,
     };
-    final platform = platformKindOf(item.platform);
+    const platform = MTPlatformKind.other;
     final duration = item.duration == null
         ? null
         : mtFormatDuration(item.duration!);

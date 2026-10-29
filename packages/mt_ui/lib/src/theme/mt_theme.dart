@@ -39,7 +39,7 @@ class MTThemeX extends ThemeExtension<MTThemeX> {
 
 /// The Wahaj theme. **A documented lesson**: the five surfaceContainer*
 /// roles must be set explicitly, or Material 3 imposes its own greys over
-/// the cream ground.
+/// the stone ground.
 ThemeData mtTheme(
   MTVariant variant,
   Brightness brightness, {
@@ -50,7 +50,7 @@ ThemeData mtTheme(
   final p = MTPalette.of(variant, brightness);
   final isDark = brightness == Brightness.dark;
 
-  // The warm surface ladder, derived from bg to card to cardAlt at the
+  // The surface ladder, derived from bg to card to cardAlt at the
   // palette's own hue.
   final (lowest, low, container, high, highest) = isDark
       ? variant == MTVariant.lite
@@ -62,18 +62,18 @@ ThemeData mtTheme(
                 const Color(0xFF2C3839),
               )
             : (
-                const Color(0xFF16100C),
-                const Color(0xFF1F1712),
-                const Color(0xFF241B15),
-                const Color(0xFF2B211A),
-                const Color(0xFF332720),
+                const Color(0xFF121110),
+                const Color(0xFF1B1917),
+                const Color(0xFF211E1B),
+                const Color(0xFF2A2622),
+                const Color(0xFF322E2A),
               )
       : (
-          const Color(0xFFFFFDF9),
-          const Color(0xFFFAF3E7),
-          const Color(0xFFF6EFE2),
-          const Color(0xFFF1E8D8),
-          const Color(0xFFECE1CE),
+          const Color(0xFFFFFFFF),
+          const Color(0xFFF8F6F3),
+          const Color(0xFFEFECE7),
+          const Color(0xFFEAE7E1),
+          const Color(0xFFE3DFD8),
         );
 
   final scheme = ColorScheme(

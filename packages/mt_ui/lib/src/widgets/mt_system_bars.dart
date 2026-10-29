@@ -30,8 +30,8 @@ double mtSheetBottomPad(BuildContext context, [double extra = MTSpace.xl]) =>
 /// never appears, because that bar is thin and transparent already, which
 /// is why it went unseen for so long.
 ///
-/// Icon brightness follows the theme: dark icons over cream by day, light
-/// icons over espresso by night. Full-screen players declare their own
+/// Icon brightness follows the theme: dark icons over stone by day, light
+/// icons over charcoal by night. Full-screen players declare their own
 /// style deeper in the tree and win over this one, since the nearest
 /// `AnnotatedRegion` takes precedence.
 class MTSystemBars extends StatelessWidget {

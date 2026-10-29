@@ -78,7 +78,7 @@ class MTPalette {
   /// **The mini player is inverted by day and consistent by night**
   /// (decision 2026-09-05, after seeing it on a device).
   ///
-  /// It used to be inverted in both: an elegant dark bar under a cream
+  /// It used to be inverted in both: an elegant dark bar under a light
   /// interface by day, and a **bright pale bar** under a black screen by
   /// night, a glare in a dark room. Inversion is a daylight idea by nature,
   /// so at night it follows the card instead.
@@ -86,20 +86,20 @@ class MTPalette {
   Color get miniInk => night ? ink : bg;
   Color get miniInkMuted => (night ? ink : bg).withValues(alpha: 0.55);
 
-  /// The server status card stays espresso-dark in both themes (log §4).
-  static const Color serverCardBg = Color(0xFF241B15);
-  static const Color serverCardInk = Color(0xFFF4EBDF);
+  /// The server status card stays charcoal-dark in both themes (log §4).
+  static const Color serverCardBg = Color(0xFF211E1B);
+  static const Color serverCardInk = Color(0xFFF0EBE4);
 
   // Always-dark constants. Full review 2026-09-02 found these hard-coded in
   // the screens, against rule 5: every colour comes from tokens, no
   // literals.
 
-  /// The far end of the espresso playlist-card gradient, lighter than
+  /// The far end of the charcoal playlist-card gradient, lighter than
   /// [serverCardBg].
-  static const Color serverCardBgLift = Color(0xFF443327);
+  static const Color serverCardBgLift = Color(0xFF3B3631);
 
-  /// The immersive landscape player scrim: near-opaque espresso over video.
-  static const Color fullscreenScrim = Color(0xEB140F0C);
+  /// The immersive landscape player scrim: near-opaque charcoal over video.
+  static const Color fullscreenScrim = Color(0xEB121110);
 
   /// System notification red. Used outside the widget tree, where there is
   /// no `context` and no `MTThemeX`, so it has to be an explicit constant.
@@ -115,11 +115,12 @@ class MTPalette {
 
   // The shared daylight base.
   static const MTPalette superDay = MTPalette(
-    bg: Color(0xFFFBF6EE),
-    card: Color(0xFFFFFDF9),
-    cardAlt: Color(
-      0xFFF6EFE2,
-    ), // derived: between bg and card, for a secondary ground
+    // Warm stone, not yellowed cream (log §4, 2026-10-30): cream beside
+    // the ember read as generated, and the cards now part from the ground
+    // without a frame.
+    bg: Color(0xFFF4F2EE),
+    card: Color(0xFFFFFFFF),
+    cardAlt: Color(0xFFEAE7E1), // a secondary ground, one step below bg
     ink: Color(0xFF2B211B),
     ink2: Color(0xAD2B211B), // rgba(43,33,27,.68)
     ink3: Color(0x732B211B), // rgba(43,33,27,.45)
@@ -142,16 +143,17 @@ class MTPalette {
     grainOpacity: 0.035,
   );
 
-  // Espresso night.
+  // Warm charcoal night (log §4, 2026-10-30): a brown-tinted black beside
+  // an orange accent tinted every cover around it.
   static const MTPalette superNight = MTPalette(
-    bg: Color(0xFF1A130F),
-    card: Color(0xFF241B15),
-    cardAlt: Color(0xFF2B211A),
-    ink: Color(0xFFF4EBDF),
-    ink2: Color(0xA8F4EBDF), // rgba(.66)
-    ink3: Color(0x6BF4EBDF), // rgba(.42)
-    line: Color(0x17F4EBDF), // rgba(.09)
-    line2: Color(0x2BF4EBDF), // rgba(.17)
+    bg: Color(0xFF171513),
+    card: Color(0xFF211E1B),
+    cardAlt: Color(0xFF2A2622),
+    ink: Color(0xFFF0EBE4),
+    ink2: Color(0xA8F0EBE4), // rgba(.66)
+    ink3: Color(0x6BF0EBE4), // rgba(.42)
+    line: Color(0x1CF0EBE4), // rgba(.11)
+    line2: Color(0x2BF0EBE4), // rgba(.17)
     accent: Color(0xFFE0784A),
     accentDeep: Color(0xFFC25E2E),
     accentSoft: Color(0x24E0784A), // rgba(224,120,74,.14)
@@ -174,11 +176,11 @@ class MTPalette {
     night: true,
   );
 
-  // Lite by day: the same base plus petrol bay.
+  // Lite by day: the same stone base plus petrol bay.
   static const MTPalette liteDay = MTPalette(
-    bg: Color(0xFFFBF6EE),
-    card: Color(0xFFFFFDF9),
-    cardAlt: Color(0xFFF6EFE2), // derived
+    bg: Color(0xFFF4F2EE),
+    card: Color(0xFFFFFFFF),
+    cardAlt: Color(0xFFEAE7E1),
     ink: Color(0xFF2B211B),
     ink2: Color(0xAD2B211B),
     ink3: Color(0x732B211B),

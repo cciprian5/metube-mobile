@@ -121,7 +121,7 @@ ThemeData mtDesktopTheme(
         (states) => states.contains(WidgetState.selected) ? p.accent : p.line2,
       ),
     ),
-    // An espresso card rather than Material's grey slab, with room for a
+    // A charcoal card rather than Material's grey slab, with room for a
     // shortcut beside the label (see MTShortcutTooltip).
     tooltipTheme: TooltipThemeData(
       decoration: BoxDecoration(

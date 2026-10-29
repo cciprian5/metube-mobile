@@ -16,7 +16,7 @@ Future<T?> showEmberDialog<T>({
       closing: mtMotionDuration(context, MTMotion.fast),
       barrierDismissible: barrierDismissible,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      // The espresso of the full-screen player, thinned: dark behind a
+      // The charcoal of the full-screen player, thinned: dark behind a
       // dialog by day and by night alike.
       barrierColor: MTPalette.fullscreenScrim.withValues(alpha: _scrim),
       pageBuilder: (context, _, _) =>

@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 ///
 /// Below [smallBelow] points the small cut is drawn, as the icon is:
 /// without the perforations, which blur into a smudge there. Both carry a
-/// faint cream rim, so the dark tile does not melt into the night theme.
+/// faint light rim, so the dark tile does not melt into the night theme.
 class EmberMark extends StatelessWidget {
   const EmberMark({super.key, required this.size});
 

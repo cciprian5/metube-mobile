@@ -174,6 +174,10 @@ void main() {
     await tester.tap(find.bySemanticsLabel('Table'));
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaRow), findsNWidgets(4));
+    // **The guard**: only the copy on this computer is marked, not
+    // "Server" on every row, and no platform letters beside the titles.
+    expect(find.byType(MTLocationBadge), findsOneWidget);
+    expect(find.byType(MTPlatformChip), findsNothing);
     expect(await h.store.getString(EmberLibraryNotifier.modeKey), 'list');
 
     await tester.tap(find.text('Size'));

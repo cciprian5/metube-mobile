@@ -22,7 +22,7 @@ class MTProgressSlider extends StatefulWidget {
   final Duration? buffered;
   final ValueChanged<Duration> onSeek;
 
-  /// Over dark video: cream ink instead of the brown ink.
+  /// Over dark video: light ink instead of the brown ink.
   final bool dark;
 
   /// The audio screen shows the remaining time as a negative; video shows

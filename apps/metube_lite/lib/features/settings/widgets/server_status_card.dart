@@ -32,7 +32,7 @@ final serverStatusProvider = FutureProvider<MTEndpointStatus?>((ref) async {
   }
 });
 
-/// The server status card, always espresso-dark (log §4).
+/// The server status card, always charcoal-dark (log §4).
 class ServerStatusCard extends ConsumerWidget {
   const ServerStatusCard({super.key});
 

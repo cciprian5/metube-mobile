@@ -9,7 +9,7 @@ import 'shell_metrics.dart';
 import 'window_controls.dart';
 
 /// The drawn title bar, and the window's one bar: Windows' own white or
-/// black strip would cut straight across the cream paper, and a second bar
+/// black strip would cut straight across the stone paper, and a second bar
 /// under it for back, search and downloads cost a row of the content.
 ///
 /// Above the sidebar sit its toggle and the app's name, above the content

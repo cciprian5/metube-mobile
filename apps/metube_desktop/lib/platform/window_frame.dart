@@ -69,7 +69,7 @@ class EmberWindow with WindowListener {
         size: bounds.size,
         minimumSize: minimumWindowAt(window.zoom),
         title: EmberIdentity.displayName,
-        // The shell draws its own title bar on the cream paper.
+        // The shell draws its own title bar on the stone paper.
         titleBarStyle: TitleBarStyle.hidden,
       ),
       () async {

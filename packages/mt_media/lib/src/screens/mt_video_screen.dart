@@ -32,7 +32,7 @@ class MTPlayerAction {
 }
 
 /// The portrait video player (Wahaj reference B): the video leads with a
-/// cream sheet beneath it, running title, then actions, then mode, then the
+/// light sheet beneath it, running title, then actions, then mode, then the
 /// "up next" list. Going back offers "continue as background audio?" from
 /// the same second.
 class MTVideoScreen extends StatelessWidget {
@@ -163,7 +163,7 @@ class MTVideoScreen extends StatelessWidget {
       // and the
       // app shows sideways"). Leaving manually disarms tilt so full
       // screen is
-      // not reopened, and the result was a cream sheet with a squeezed
+      // not reopened, and the result was a light sheet with a squeezed
       // video on
       // a wide screen. Landscape is now **a form** of this screen
       // rather than a
@@ -175,7 +175,7 @@ class MTVideoScreen extends StatelessWidget {
         // report 2026-09-05: "I leave full screen with the device in
         // landscape and the app shows sideways"). Leaving manually
         // disarms tilt so full screen is not reopened, and the result
-        // was a cream sheet with a squeezed video on a wide screen.
+        // was a light sheet with a squeezed video on a wide screen.
         // Landscape is now **a form** of this screen rather than a
         // fault in it.
         builder: (context, _) => _isWide(context)

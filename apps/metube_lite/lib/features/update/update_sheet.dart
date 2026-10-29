@@ -169,7 +169,7 @@ class _Actions extends ConsumerWidget {
               // **Both colours come from the palette explicitly**:
               // Material's default track is derived from
               // `secondaryContainer` and comes out greenish over the Wahaj
-              // cream, a colour that does not exist in the identity
+              // ground, a colour that does not exist in the identity
               // (measured on the emulator).
               backgroundColor: p.accent.withValues(alpha: 0.16),
               valueColor: AlwaysStoppedAnimation(p.accent),

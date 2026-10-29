@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metube_desktop/shell/panel_reveal.dart';
 import 'package:metube_desktop/features/downloads/downloads_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/features/settings/about_pane.dart';
@@ -112,6 +113,12 @@ void main() {
       h.controls.calls.clear();
       await tester.tap(panelButton);
       await tester.pump();
+      // Closing on this very frame: the panel is on its way out.
+      expect(
+        tester.widget<PanelReveal>(find.byType(PanelReveal).first).shown,
+        isFalse,
+      );
+      await tester.pumpAndSettle();
       expect(find.byType(EmberRightPanel), findsNothing);
       expect(h.controls.calls, isEmpty);
     });

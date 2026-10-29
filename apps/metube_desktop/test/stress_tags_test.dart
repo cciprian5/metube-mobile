@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/features/clip/clip_action_row.dart';
 import 'package:metube_desktop/features/library/library_chips.dart';
 import 'package:metube_desktop/router.dart';
-import 'package:metube_desktop/shell/pill.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';
@@ -110,7 +110,11 @@ Future<void> pillDialog(
   String label,
   List<String> found,
 ) async {
-  final target = find.widgetWithText(EmberPill, pill);
+  // A round button under the title, named in its tooltip.
+  final target = find.descendant(
+    of: find.byType(ClipActionRow),
+    matching: find.bySemanticsLabel(pill),
+  );
   // The pills sit under the title; a long one pushes them below the fold.
   final visible =
       tester.getRect(target).bottom <= tester.view.physicalSize.height;

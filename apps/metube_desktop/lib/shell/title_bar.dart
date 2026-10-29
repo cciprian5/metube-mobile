@@ -28,6 +28,11 @@ class EmberTitleBar extends StatelessWidget {
 
   final WindowControls controls;
 
+  /// The start column's width from which the mark and the name fit beside
+  /// the sidebar's toggle.
+  static const double _nameRoom =
+      EmberShellSize.sidebarNarrow + MTSpace.xxl * 2;
+
   /// The width of the sidebar below, so the toggle and the name stand over
   /// it and [tools] start where the content does. null sizes them to fit.
   final double? startWidth;
@@ -66,20 +71,29 @@ class EmberTitleBar extends StatelessWidget {
                   duration: mtMotionDuration(context, MTMotion.medium),
                   curve: MTMotion.ease,
                   width: startWidth,
-                  child: Row(
-                    mainAxisSize: startWidth == null
-                        ? MainAxisSize.min
-                        : MainAxisSize.max,
-                    mainAxisAlignment: named || sidebarToggle == null
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.center,
-                    children: [
-                      if (named || sidebarToggle == null)
-                        const SizedBox(width: MTSpace.md),
-                      ?sidebarToggle,
-                      if (named || sidebarToggle == null)
-                        Flexible(child: _Name(named: named)),
-                    ],
+                  // The name comes in once the moving column has room for
+                  // it, not on the first frame of a widening, where it
+                  // spilled past the narrow width.
+                  child: LayoutBuilder(
+                    builder: (context, box) {
+                      final room =
+                          named && box.maxWidth >= EmberTitleBar._nameRoom;
+                      return Row(
+                        mainAxisSize: startWidth == null
+                            ? MainAxisSize.min
+                            : MainAxisSize.max,
+                        mainAxisAlignment: room || sidebarToggle == null
+                            ? MainAxisAlignment.start
+                            : MainAxisAlignment.center,
+                        children: [
+                          if (room || sidebarToggle == null)
+                            const SizedBox(width: MTSpace.md),
+                          ?sidebarToggle,
+                          if (room || sidebarToggle == null)
+                            Flexible(child: _Name(named: room)),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 Expanded(child: tools ?? const SizedBox.shrink()),

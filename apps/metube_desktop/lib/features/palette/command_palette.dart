@@ -16,7 +16,7 @@ import '../../shell/focus_regions.dart';
 import 'palette_model.dart';
 import 'palette_rows.dart';
 import '../../shell/search_lens.dart';
-import '../../shell/key_cap.dart';
+import 'palette_keys.dart';
 
 /// **The command palette** (Ctrl+K): it drops from the top of the window
 /// and searches titles and what was said inside clips together, and runs
@@ -156,7 +156,6 @@ class _PaletteState extends ConsumerState<_Palette> {
   Widget build(BuildContext context) {
     final l = context.mtl;
     final p = MTThemeX.of(context).palette;
-    final text = Theme.of(context).textTheme;
     final results = _results();
     final actions = _actions(results);
     _pages = results.titles.length + results.said.length;
@@ -285,31 +284,7 @@ class _PaletteState extends ConsumerState<_Palette> {
                     horizontal: MTSpace.md,
                     vertical: MTSpace.xs,
                   ),
-                  // Drawn keys and plain words, not a line of arrows and
-                  // dots.
-                  child: Wrap(
-                    spacing: MTSpace.xs,
-                    runSpacing: MTSpace.xxs,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      for (final (key, what) in [
-                        ('↑ ↓', l.desktopPaletteMove),
-                        ('Enter', l.desktopPaletteOpen),
-                        ('Esc', l.desktopPaletteClose),
-                      ]) ...[
-                        KeyCap(label: key),
-                        Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                            end: MTSpace.sm,
-                          ),
-                          child: Text(
-                            what,
-                            style: text.labelSmall?.copyWith(color: p.ink3),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+                  child: const PaletteKeys(),
                 ),
               ],
             ),

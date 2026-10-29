@@ -192,8 +192,10 @@ void main() {
         .map((r) => r.sub.id);
     expect(rows, ['e', 'a', 'z']);
     expect(find.text('HTTP Error 404'), findsOneWidget);
+    // **The guard**: only the paused one is announced; an active channel
+    // carries no mark of its own beside its switch.
     expect(find.text('Paused'), findsOneWidget);
-    expect(find.text('Active'), findsNWidgets(2));
+    expect(find.text('Active'), findsNothing);
   });
 
   testWidgets('a channel with clips here says so; one without never says 0', (

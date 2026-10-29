@@ -76,8 +76,13 @@ class InertWindowControls implements WindowControls {
   final ValueNotifier<int> closeRequests = ValueNotifier(0);
   @override
   void startDragging() => calls.add('startDragging');
+
+  /// Where the drawn maximize button last said it was; empty once it is
+  /// gone from the screen.
+  Rect? maximizeButton;
+
   @override
-  void reportMaximizeButton(Rect physical) {}
+  void reportMaximizeButton(Rect physical) => maximizeButton = physical;
 
   /// Set by a test to stand for a screen.
   @override

@@ -25,6 +25,7 @@ dependencies:
   file: ^7.0.1
   flutter_cache_manager: ^3.4.1
   flutter_riverpod: ^2.6.1
+  flutter_svg: 2.3.0
   # The server password, encrypted for this Windows user (DPAPI); the
   # phones' own range.
   flutter_secure_storage: ^9.2.2
@@ -98,3 +99,6 @@ flutter:
     # The tray icon, the taskbar preview's buttons and its count badges,
     # drawn by tool/icons/make_tray_icons.py.
     - assets/tray/
+    # The mark, from tool/icons/ember_kit.py: the title bar and About.
+    - brand/ember-symbol-dark.svg
+    - brand/ember-symbol-small.svg

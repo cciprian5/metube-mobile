@@ -38,6 +38,9 @@ for Android, and MeTube Ember for Windows.
 
 ### Changed
 
+- **The app's logo in the title bar and in About (Ember)**, in place of
+  the small orange dot.
+
 - **A clip card is one button for a screen reader.** TalkBack reads the
   title and length once and opens the clip on a double tap; the heart is a
   button of its own. Both phone apps.
@@ -48,9 +51,11 @@ for Android, and MeTube Ember for Windows.
   in the field was dropped unless Enter was pressed, so tags and lists
   seemed never to be made; Done now adds it, and a button beside the field
   adds it too.
-- **The mini window keeps its size (Ember).** Maximizing it (Win+Up, a drag
-  to the top edge) stretched the card over the whole screen and broke the
-  window that came back; the card can no longer be resized or maximized.
+- **The mini window keeps its size, and its Next button works (Ember).**
+  The place of the window's maximize button outlived the title bar: on the
+  small card for sound, in Arabic, it lay over Next, so Next maximized the
+  card. Full screen had the same hidden spot in its corner. The card can no
+  longer be resized or maximized either.
 - **A download shows its title and cover while it is still coming.** The
   list showed a bare link and a blank picture until the file was done. All
   three apps.

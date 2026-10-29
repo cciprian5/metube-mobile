@@ -96,6 +96,25 @@ void main() {
     expect(h.controls.calls.last, 'mini off');
   });
 
+  for (final arabic in [false, true]) {
+    testWidgets('**the guard**: the card and full screen take the maximize '
+        "button's place away, so the card's next is not the window's "
+        'maximize${arabic ? ', in Arabic' : ''}', (tester) async {
+      if (arabic) ShellHarness.useArabic(tester);
+      final h = await open(tester, playing: song);
+      expect(h.controls.maximizeButton?.isEmpty, isFalse);
+
+      await ctrl(tester, LogicalKeyboardKey.keyM);
+      expect(h.controls.maximizeButton, Rect.zero);
+      await ctrl(tester, LogicalKeyboardKey.keyM);
+      expect(h.controls.maximizeButton?.isEmpty, isFalse);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.f11);
+      await tester.pumpAndSettle();
+      expect(h.controls.maximizeButton, Rect.zero);
+    });
+  }
+
   testWidgets('the player bar offers it once something plays', (tester) async {
     final h = await open(tester);
     await tester.tap(byLabel('Small window'));

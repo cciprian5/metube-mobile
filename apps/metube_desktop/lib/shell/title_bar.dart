@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../identity.dart';
+import 'ember_mark.dart';
 import 'focus_regions.dart';
 import 'shell_metrics.dart';
 import 'window_controls.dart';
@@ -113,7 +114,7 @@ class EmberTitleBar extends StatelessWidget {
   }
 }
 
-/// The ember dot and, given room, the app's name. It takes no pointer, so a
+/// The mark and, given room, the app's name. It takes no pointer, so a
 /// drag that starts on it still moves the window.
 class _Name extends StatelessWidget {
   const _Name({required this.named});
@@ -130,7 +131,7 @@ class _Name extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(width: MTSpace.xs),
-            _Dot(color: p.accent),
+            const EmberMark(size: MTSpace.xl),
             if (named) ...[
               const SizedBox(width: MTSpace.xs),
               Flexible(
@@ -153,20 +154,6 @@ class _Name extends StatelessWidget {
       ),
     );
   }
-}
-
-class _Dot extends StatelessWidget {
-  const _Dot({required this.color});
-
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) => SizedBox.square(
-    dimension: MTSpace.xs,
-    child: DecoratedBox(
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-    ),
-  );
 }
 
 /// The maximize button tells Windows where it is after every layout, so
@@ -208,6 +195,18 @@ class _ReportPlace extends StatefulWidget {
 
 class _ReportPlaceState extends State<_ReportPlace> {
   Rect? _sent;
+
+  /// **Gone from the screen, the button gives its place back.** The runner
+  /// keeps the last place it was told and answers Windows there as the
+  /// maximize button. The small card and full screen draw no title bar, so
+  /// that corner of the card, or of the picture, went on acting as one: in
+  /// Arabic it lay over the card's next button, which maximized the card,
+  /// and once the card could not be, did nothing.
+  @override
+  void dispose() {
+    widget.onPlaced(Rect.zero);
+    super.dispose();
+  }
 
   void _report() {
     if (!mounted) return;

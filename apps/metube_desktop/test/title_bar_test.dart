@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/features/downloads/downloads_button.dart';
+import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/features/settings/about_pane.dart';
+import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/content_bar.dart';
+import 'package:metube_desktop/shell/ember_mark.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
 import 'package:metube_desktop/shell/shell_metrics.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
@@ -112,6 +116,32 @@ void main() {
       expect(h.controls.calls, isEmpty);
     });
   }
+
+  testWidgets("**the guard**: the app's mark stands in the title bar, the "
+      'small cut there, and the full one beside the name in About', (
+    tester,
+  ) async {
+    await open(tester);
+    final inBar = find.descendant(
+      of: find.byType(EmberTitleBar),
+      matching: find.byType(EmberMark),
+    );
+    expect(inBar, findsOneWidget);
+    expect(tester.getSize(inBar).width, lessThan(EmberMark.smallBelow));
+
+    GoRouter.of(tester.element(find.byType(EmberSidebar)))
+        .go(EmberSettingsPane.about.route);
+    await tester.pumpAndSettle();
+    final inAbout = find.descendant(
+      of: find.byType(AboutPane),
+      matching: find.byType(EmberMark),
+    );
+    expect(inAbout, findsOneWidget);
+    expect(
+      tester.getSize(inAbout).width,
+      greaterThanOrEqualTo(EmberMark.smallBelow),
+    );
+  });
 
   testWidgets('**the guard**: given room the search is a box; cramped, a '
       'button that still opens it', (tester) async {

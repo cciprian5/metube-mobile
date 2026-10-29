@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/update_data.dart';
 import '../../identity.dart';
+import '../../shell/ember_mark.dart';
 import '../discover/discover_dialog.dart';
 import 'simple_panes.dart';
 import 'whats_new.dart';
@@ -23,6 +24,8 @@ class AboutPane extends ConsumerWidget {
   static const _repo = 'https://github.com/sagheerys/metube-mobile';
   static const _metube = 'https://github.com/alexta69/metube';
   static const _ytdlp = 'https://github.com/yt-dlp/yt-dlp';
+
+  static const _markSize = 56.0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,16 +53,25 @@ class AboutPane extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SettingLine(
-          title: EmberIdentity.displayName,
-          // Without the build number: "+1" is the build tool's counter and
-          // means nothing to the reader.
-          value: version == null ? null : '${l.version} $version',
-          hint: '${l.copyright} · ${l.licensedUnder}',
-          trailing: MTLinkButton(
-            label: l.whatsNewThisVersion,
-            onPressed: () => unawaited(showWhatsNewNow(context, ref)),
-          ),
+        // The app's mark beside its name, as on its icon.
+        Row(
+          children: [
+            const EmberMark(size: _markSize),
+            const SizedBox(width: MTSpace.md),
+            Expanded(
+              child: SettingLine(
+                title: EmberIdentity.displayName,
+                // Without the build number: "+1" is the build tool's counter
+                // and means nothing to the reader.
+                value: version == null ? null : '${l.version} $version',
+                hint: '${l.copyright} · ${l.licensedUnder}',
+                trailing: MTLinkButton(
+                  label: l.whatsNewThisVersion,
+                  onPressed: () => unawaited(showWhatsNewNow(context, ref)),
+                ),
+              ),
+            ),
+          ],
         ),
         SettingLine(
           title: l.desktopDiscover,

@@ -120,7 +120,9 @@ class AppearancePane extends ConsumerWidget {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: choices),
+            // The choices as wide as their words, so the preview stands
+            // beside them and not across an empty middle.
+            Flexible(child: IntrinsicWidth(child: choices)),
             const SizedBox(width: MTSpace.xxl),
             Padding(
               padding: const EdgeInsets.only(top: MTSpace.lg),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/features/settings/appearance_pane.dart';
 import 'package:metube_desktop/features/settings/appearance_preview.dart';
 import 'package:metube_desktop/data/channels_data.dart';
 import 'package:metube_desktop/data/choices_data.dart';
@@ -46,9 +47,10 @@ void main() {
     WidgetTester tester,
     String to, {
     Size? workArea,
+    Size window = const Size(1440, 900),
     List<Override> overrides = const [],
   }) async {
-    ShellHarness.useWindow(tester, const Size(1440, 900));
+    ShellHarness.useWindow(tester, window);
     final h = ShellHarness(
       library: const [],
       server: ServerConfig(baseUrl: 'http://nas:8081'),
@@ -87,6 +89,31 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('المظهر واللغة'), findsWidgets);
       expect(await h.store.getString('ember_locale'), 'ar');
+    });
+
+    testWidgets('**the guard**: the preview stands right beside the '
+        'choices, not across an empty middle', (tester) async {
+      // The test font is wide enough for the size hint alone to fill the
+      // column; at half its size the words are shorter than the room.
+      tester.platformDispatcher.textScaleFactorTestValue = 0.5;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await open(
+        tester,
+        '/settings/appearance',
+        window: const Size(2560, 1440),
+      );
+      final preview = tester.getRect(find.byType(AppearancePreview));
+      final words = find.descendant(
+        of: find.byType(ChoiceGroup),
+        matching: find.byWidgetPredicate(
+          (w) => w is Text || w is EmberSegments,
+        ),
+      );
+      final widest = [
+        for (final e in words.evaluate())
+          tester.getRect(find.byWidget(e.widget)).right,
+      ].reduce((a, b) => a > b ? a : b);
+      expect(preview.left - widest, lessThanOrEqualTo(MTSpace.xxl + 1));
     });
 
     testWidgets('a size this screen cannot hold cannot be chosen', (

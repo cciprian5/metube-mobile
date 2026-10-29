@@ -59,6 +59,8 @@ class DownloadPoller {
   /// Without it, or when the change is ambiguous, matching is by URL
   /// exactly as before. [onIdentified] reports the key the moment it is
   /// known, so the task can be deleted, cancelled and recorded by it.
+  /// [onSeen] reports the item as the server lists it on every reading, so
+  /// its title and thumbnail can be shown while it is still coming.
   Future<HistoryItem> pollUntilDone({
     required String url,
     required Set<String> before,
@@ -66,6 +68,7 @@ class DownloadPoller {
     required void Function(double progress) onProgress,
     Map<String, String>? fingerprintsBefore,
     void Function(String key)? onIdentified,
+    void Function(HistoryItem item)? onSeen,
     Stream<MTLiveUpdate>? live,
   }) async {
     var failuresInARow = 0;
@@ -141,6 +144,7 @@ class DownloadPoller {
           // skip our own item: what we adopted, we adopted **because** its
           // fingerprint was not there before.
           if (before.contains(HistoryMatcher.signature(item))) continue;
+          onSeen?.call(item);
           if (item.hasError) {
             final detail = item.error ?? item.rawStatus;
             throw item.isPlatformBlocked

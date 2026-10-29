@@ -10,7 +10,10 @@ import '../../shell/shell_metrics.dart';
 
 /// One clip's tags: every tag in the library to tick or untick, and a
 /// field for a new one. Each change is written at once, as on the phone,
-/// so closing the dialog any way keeps it.
+/// so closing the dialog any way keeps it. **A name still in the field
+/// counts too**: Done, and the button beside the field, add it; typed and
+/// closed without Enter, it used to vanish, which read as "tags are never
+/// made".
 Future<void> showTagsDialog(BuildContext context, String canonicalUrl) =>
     showTagsDialogFor(context, [canonicalUrl]);
 
@@ -92,6 +95,13 @@ class _TagsDialogState extends ConsumerState<_TagsDialog> {
     await _toggle(tag);
   }
 
+  /// What is still in the field is added before the dialog closes.
+  Future<void> _done(BuildContext context) async {
+    final navigator = Navigator.of(context);
+    if (_field.text.trim().isNotEmpty) await _add(_field.text);
+    navigator.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = context.mtl;
@@ -108,7 +118,14 @@ class _TagsDialogState extends ConsumerState<_TagsDialog> {
             TextField(
               controller: _field,
               autofocus: true,
-              decoration: InputDecoration(hintText: l.newTagHint),
+              decoration: InputDecoration(
+                hintText: l.newTagHint,
+                suffixIcon: IconButton(
+                  tooltip: l.create,
+                  icon: MTIcon(MTIcons.plus, color: p.accentInk),
+                  onPressed: () => unawaited(_add(_field.text)),
+                ),
+              ),
               onSubmitted: (v) => unawaited(_add(v)),
             ),
             const SizedBox(height: MTSpace.sm),
@@ -136,7 +153,7 @@ class _TagsDialogState extends ConsumerState<_TagsDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => unawaited(_done(context)),
           child: Text(l.done),
         ),
       ],

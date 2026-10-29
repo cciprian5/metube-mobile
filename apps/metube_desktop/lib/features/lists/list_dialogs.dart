@@ -43,7 +43,8 @@ Future<bool> confirmDeletePlaylist(BuildContext context, String name) {
 
 /// One clip's lists: every saved list to tick or untick, and a field for a
 /// new one that starts with the clip in it. Each change is written at
-/// once, as the tags dialog does, so closing it any way keeps it.
+/// once, as the tags dialog does, so closing it any way keeps it, and a
+/// name still in the field is made on Done or with the button beside it.
 Future<void> showAddToPlaylistDialog(BuildContext context, PlaylistItem item) =>
     showAddAllToPlaylistDialog(context, [item]);
 
@@ -111,7 +112,14 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
             TextField(
               controller: _field,
               autofocus: true,
-              decoration: InputDecoration(hintText: l.newPlaylistAction),
+              decoration: InputDecoration(
+                hintText: l.newPlaylistAction,
+                suffixIcon: IconButton(
+                  tooltip: l.create,
+                  icon: MTIcon(MTIcons.plus, color: p.accentInk),
+                  onPressed: () => unawaited(_create(_field.text)),
+                ),
+              ),
               onSubmitted: (v) => unawaited(_create(v)),
             ),
             const SizedBox(height: MTSpace.sm),
@@ -157,10 +165,17 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => unawaited(_done(context)),
           child: Text(l.done),
         ),
       ],
     );
+  }
+
+  /// A name still in the field is made before the dialog closes.
+  Future<void> _done(BuildContext context) async {
+    final navigator = Navigator.of(context);
+    if (_field.text.trim().isNotEmpty) await _create(_field.text);
+    navigator.pop();
   }
 }

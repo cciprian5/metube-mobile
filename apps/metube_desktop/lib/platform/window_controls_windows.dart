@@ -128,16 +128,27 @@ class WindowManagerControls with WindowListener implements WindowControls {
   Rect? _before;
   bool _wasMaximized = false;
 
+  /// The card's size while the window is the card; null otherwise.
+  Size? _card;
+
   @override
   void setMini(Size? logical) => unawaited(_setMini(logical));
 
   /// The card sits in the corner by the clock, over everything. The card
   /// is drawn before the window shrinks and the page after it grows back,
   /// so neither is ever laid out in the other's size.
+  ///
+  /// **The card has one size.** Its edges cannot be dragged and it cannot
+  /// be maximized (Win+Up, a drag to the top edge, Snap): maximized, the
+  /// card was stretched over the whole screen, and the window that came
+  /// back from it was broken.
   Future<void> _setMini(Size? logical) async {
     if (logical == null) {
       if (!mini.value) return;
+      _card = null;
       await windowManager.setAlwaysOnTop(false);
+      await windowManager.setResizable(true);
+      await windowManager.setMaximizable(true);
       await windowManager.setMinimumSize(_minimum);
       if (_before case final before?) await windowManager.setBounds(before);
       if (_wasMaximized) await windowManager.maximize();
@@ -150,7 +161,14 @@ class WindowManagerControls with WindowListener implements WindowControls {
       if (_wasMaximized) await windowManager.unmaximize();
       _before = await windowManager.getBounds();
       mini.value = true;
+      await windowManager.setResizable(false);
+      await windowManager.setMaximizable(false);
     }
+    _card = logical;
+    await _placeCard(logical);
+  }
+
+  Future<void> _placeCard(Size logical) async {
     final bounds = await windowManager.getBounds();
     final areas = [
       for (final d in await screenRetriever.getAllDisplays()) workAreaOf(d),
@@ -166,6 +184,13 @@ class WindowManagerControls with WindowListener implements WindowControls {
       ),
     );
     await windowManager.setAlwaysOnTop(true);
+  }
+
+  /// Should Windows maximize the card all the same, it goes back to its
+  /// corner at its size.
+  Future<void> _unmaximizeCard(Size card) async {
+    await windowManager.unmaximize();
+    await _placeCard(card);
   }
 
   static const _cardMargin = 16.0;
@@ -185,7 +210,12 @@ class WindowManagerControls with WindowListener implements WindowControls {
   void onWindowMoved() => unawaited(_readWorkArea());
 
   @override
-  void onWindowMaximize() => maximized.value = true;
+  void onWindowMaximize() {
+    maximized.value = true;
+    final card = _card;
+    if (mini.value && card != null) unawaited(_unmaximizeCard(card));
+  }
+
   @override
   void onWindowUnmaximize() => maximized.value = false;
   @override

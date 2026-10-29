@@ -44,6 +44,17 @@ for Android, and MeTube Ember for Windows.
 
 ### Fixed
 
+- **A tag or playlist typed and closed with Done is kept (Ember).** The name
+  in the field was dropped unless Enter was pressed, so tags and lists
+  seemed never to be made; Done now adds it, and a button beside the field
+  adds it too.
+- **The mini window keeps its size (Ember).** Maximizing it (Win+Up, a drag
+  to the top edge) stretched the card over the whole screen and broke the
+  window that came back; the card can no longer be resized or maximized.
+- **A download shows its title and cover while it is still coming.** The
+  list showed a bare link and a blank picture until the file was done. All
+  three apps.
+
 - **A shared log kept some file names, Windows paths and cookies.** Only the
   first word of a file name was hidden, and paths on a computer or a memory
   card were not; they are now hidden whole, with any cookie the log held.

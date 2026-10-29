@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../identity.dart';
+import 'caption_button.dart';
 import 'ember_mark.dart';
 import 'focus_regions.dart';
 import 'shell_metrics.dart';
@@ -101,7 +102,7 @@ class EmberTitleBar extends StatelessWidget {
                   EmberRegion.titleBar,
                   Row(
                     children: [
-                      _CaptionButton(
+                      CaptionButton(
                         icon: MTIcons.winMin,
                         label: l.desktopWindowMinimize,
                         onTap: controls.minimize,
@@ -115,7 +116,7 @@ class EmberTitleBar extends StatelessWidget {
                               : l.desktopWindowMaximize,
                         ),
                       ),
-                      _CaptionButton(
+                      CaptionButton(
                         icon: MTIcons.winClose,
                         label: l.desktopWindowClose,
                         onTap: controls.close,
@@ -190,7 +191,7 @@ class _MaximizeButton extends StatelessWidget {
       onPlaced: controls.reportMaximizeButton,
       child: ValueListenableBuilder<bool>(
         valueListenable: controls.maximizeHovered,
-        builder: (context, hovered, _) => _CaptionButton(
+        builder: (context, hovered, _) => CaptionButton(
           icon: MTIcons.winMax,
           label: label,
           onTap: controls.toggleMaximize,
@@ -247,60 +248,5 @@ class _ReportPlaceState extends State<_ReportPlace> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _report());
     return widget.child;
-  }
-}
-
-class _CaptionButton extends StatefulWidget {
-  const _CaptionButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.danger = false,
-    this.forceHover = false,
-  });
-
-  final MTIconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  /// The close button turns red under the pointer, as Windows' does.
-  final bool danger;
-  final bool forceHover;
-
-  @override
-  State<_CaptionButton> createState() => _CaptionButtonState();
-}
-
-class _CaptionButtonState extends State<_CaptionButton> {
-  bool _hover = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final lit = _hover || widget.forceHover;
-    final fill = !lit ? null : (widget.danger ? p.err : p.cardAlt);
-    final ink = lit && widget.danger ? p.bg : p.ink2;
-    return Semantics(
-      button: true,
-      label: widget.label,
-      child: MTShortcutTooltip(
-        message: widget.label,
-        child: MouseRegion(
-          onEnter: (_) => setState(() => _hover = true),
-          onExit: (_) => setState(() => _hover = false),
-          child: GestureDetector(
-            onTap: widget.onTap,
-            child: AnimatedContainer(
-              duration: mtMotionDuration(context, MTMotion.fast),
-              width: EmberShellSize.captionButton,
-              height: EmberShellSize.titleBar,
-              color: fill ?? p.bg,
-              alignment: Alignment.center,
-              child: MTIcon(widget.icon, size: MTSpace.lg, color: ink),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

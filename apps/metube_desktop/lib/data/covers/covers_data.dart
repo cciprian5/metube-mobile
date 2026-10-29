@@ -127,6 +127,8 @@ final coverEnrichmentProvider = Provider<void>((ref) {
       // Black covers taken before frames were checked, once: forgotten
       // here, they are taken again below from further in.
       await forgetDarkCovers(folder, ref.read(artworkIndexProvider));
+      // Gone while that ran (the window closed): nothing is left to read.
+      if (stopped) return;
       // Online covers kept as files first, so a clip taken down at its
       // source keeps its face; one already gone gets a picture from the
       // clip's own file instead.

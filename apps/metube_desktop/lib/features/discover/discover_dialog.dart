@@ -12,6 +12,7 @@ import '../../shell/key_cap.dart';
 import '../../shell/shell_metrics.dart';
 import '../library/clip_keys.dart';
 import '../shortcuts/shortcuts_sheet.dart';
+import '../../shell/ember_dialog.dart';
 
 /// One feature: its name, a line on what it does, the keys that reach it,
 /// and where "Try it" goes, when it can go somewhere with nothing chosen.
@@ -159,7 +160,7 @@ List<(String, List<DiscoverLine>)> discoverGroups(
 Future<void> showDiscoverDialog(BuildContext context) {
   final router = GoRouter.of(context);
   final container = ProviderScope.containerOf(context);
-  return showDialog<void>(
+  return showEmberDialog<void>(
     context: context,
     builder: (dialog) {
       final l = dialog.mtl;

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import '../widgets/mt_polish.dart';
 
 /// A tooltip that teaches the keyboard: the label, then the shortcut in a
 /// small key cap ("Download to this computer  Ctrl+D"). Its card comes
@@ -90,7 +91,7 @@ class _MTShortcutTooltipState extends State<MTShortcutTooltip> {
                 delegate: _Below(target: target, gap: gap),
                 child: TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0, end: 1),
-                  duration: MTMotion.fast,
+                  duration: mtMotionDuration(context, MTMotion.fast),
                   builder: (context, t, child) =>
                       Opacity(opacity: t, child: child),
                   child: card,

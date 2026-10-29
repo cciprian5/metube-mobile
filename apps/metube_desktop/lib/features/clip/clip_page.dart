@@ -12,18 +12,15 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/library_data.dart';
 import '../../di.dart';
 import '../../router.dart';
-import '../../shell/pill.dart';
 import '../../shell/shell_state.dart';
 import '../library/platform_label.dart';
-import '../lists/list_dialogs.dart';
+import 'clip_action_row.dart';
 import 'clip_actions.dart';
 import 'clip_chapters.dart';
 import 'clip_facts.dart';
 import 'clip_menu.dart';
 import 'clip_stage.dart';
 import 'clip_state.dart';
-import 'copy_pills.dart';
-import 'tags_dialog.dart';
 
 /// One clip: its picture in the content (a 16:9 stage, or a 9:16 column
 /// for a short), its title, and what can be done with it. The side panel
@@ -256,10 +253,8 @@ class _ClipLayout extends ConsumerWidget {
     final l = context.mtl;
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
-    final actions = ref.read(clipActionsProvider);
     final audioOnly = ref.watch(audioOnlyProvider);
     final theater = ref.watch(theaterProvider);
-    final favorite = entry?.favorite ?? false;
     final url = item.canonicalUrl;
     final meta = mtMetaLine([
       ?item.uploader,
@@ -299,71 +294,11 @@ class _ClipLayout extends ConsumerWidget {
                     picture: isCurrent && !item.isAudio && !audioOnly,
                   ),
                 const SizedBox(height: MTSpace.md),
-                Wrap(
-                  spacing: MTSpace.sm,
-                  runSpacing: MTSpace.sm,
-                  children: [
-                    if (entry case final entry?)
-                      ...copyPills(context, ref, entry),
-                    EmberPill(
-                      label: favorite
-                          ? l.removeFromFavorites
-                          : l.addToFavorites,
-                      icon: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
-                      selected: favorite,
-                      onTap: () => unawaited(actions.toggleFavorite(url)),
-                    ),
-                    EmberPill(
-                      label: l.tags,
-                      icon: MTIcons.tags,
-                      selected: false,
-                      onTap: () => unawaited(showTagsDialog(context, url)),
-                    ),
-                    EmberPill(
-                      label: l.addToPlaylist,
-                      icon: MTIcons.queue,
-                      selected: false,
-                      onTap: () =>
-                          unawaited(showAddToPlaylistDialog(context, item)),
-                    ),
-                    if (isCurrent && !item.isAudio)
-                      EmberPill(
-                        label: l.audioOnly,
-                        icon: MTIcons.headphones,
-                        selected: audioOnly,
-                        onTap: () => unawaited(
-                          ref.read(audioOnlyProvider.notifier).set(!audioOnly),
-                        ),
-                      ),
-                    if (!item.isAudio) ...[
-                      EmberPill(
-                        label: l.desktopTheater,
-                        icon: MTIcons.theater,
-                        selected: theater,
-                        onTap: () =>
-                            ref.read(theaterProvider.notifier).state = !theater,
-                      ),
-                      EmberPill(
-                        label: l.enterFullscreen,
-                        icon: MTIcons.fullscreen,
-                        selected: false,
-                        onTap: onFullScreen,
-                      ),
-                    ],
-                    EmberPill(
-                      label: l.desktopReadingRoom,
-                      icon: MTIcons.reading,
-                      selected: false,
-                      onTap: () =>
-                          GoRouter.of(context).go(EmberRoutes.reading(url)),
-                    ),
-                    EmberPill(
-                      label: l.openOriginalLink,
-                      icon: MTIcons.external,
-                      selected: false,
-                      onTap: () => unawaited(actions.openOriginal(url)),
-                    ),
-                  ],
+                ClipActionRow(
+                  item: item,
+                  entry: entry,
+                  isCurrent: isCurrent,
+                  onFullScreen: onFullScreen,
                 ),
                 ClipChapters(item: item, isCurrent: isCurrent),
               ],

@@ -236,10 +236,8 @@ class _Heading extends StatelessWidget {
           style: text.bodySmall?.copyWith(color: p.ink3),
         ),
         const SizedBox(height: MTSpace.lg),
-        Wrap(
-          spacing: MTSpace.md,
-          runSpacing: MTSpace.md,
-          children: [
+        StatsFigures(
+          figures: [
             StatsTile(value: '${stats.count}', label: l.desktopStatsClips),
             StatsTile(
               value: mtFormatSize(stats.bytes),

@@ -117,8 +117,8 @@ abstract final class MTType {
 /// The corner scale a theme is built with.
 ///
 /// The phones keep [MTRadius] exactly. The Windows app steps every corner
-/// down (sheet 20, card 12, field 10, chip 8): on a large screen at arm's
-/// length, Material's soft corners read as a phone app blown up.
+/// down: on a large screen at arm's length, Material's soft corners read
+/// as a phone app blown up.
 class MTCorners {
   const MTCorners({
     required this.sheet,
@@ -159,17 +159,21 @@ class MTCorners {
     box: 2,
   );
 
+  /// **Two corners, not nine**: 8 on everything that rests and 12 on what
+  /// floats over it (a dialog, a sheet), stepping down as they nest; the
+  /// filled actions are full pills. Nine near values between 6 and 20 read
+  /// as "everything medium", one of the marks of a generated screen.
   static const desktop = MTCorners(
-    sheet: 20,
-    card: 12,
-    dialog: 18,
-    field: 10,
-    thumb: 10,
-    fab: 15,
+    sheet: 12,
+    card: 8,
+    dialog: 12,
+    field: 8,
+    thumb: 8,
+    fab: MTRadius.pill,
     chip: 8,
-    iconButton: 11,
-    tooltip: 9,
-    box: 6,
+    iconButton: 8,
+    tooltip: 6,
+    box: 4,
   );
 }
 

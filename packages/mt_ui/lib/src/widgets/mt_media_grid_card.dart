@@ -6,6 +6,7 @@ import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import '../wahaj/mt_hover_lift.dart';
+import 'mt_desktop_app.dart';
 import 'mt_highlight_surface.dart';
 import 'mt_media_grid_cover.dart';
 import 'mt_location_badge.dart';
@@ -157,7 +158,11 @@ class MTMediaGridCard extends StatelessWidget {
                   ExcludeSemantics(
                     child: Row(
                       children: [
-                        if (platform != MTPlatformKind.other) ...[
+                        // On a computer the platform pills above the grid
+                        // say it already; a coloured mark under every
+                        // title only repeated them.
+                        if (platform != MTPlatformKind.other &&
+                            !MTDesktopApp.isDesktop(context)) ...[
                           MTPlatformChip(kind: platform),
                           const SizedBox(width: MTSpace.xxs),
                         ],

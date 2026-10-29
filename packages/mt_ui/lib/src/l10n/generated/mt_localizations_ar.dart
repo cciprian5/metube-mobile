@@ -599,9 +599,6 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopChannel => 'القناة';
 
   @override
-  String get desktopChannelActive => 'نشطة';
-
-  @override
   String get desktopChannelClips => 'في مكتبتك';
 
   @override
@@ -873,7 +870,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopHintShortcuts =>
-      'تلميح: اضغط ? لترى اختصارات لوحة المفاتيح. المسافة للتشغيل والإيقاف، والسهمان الأيمن والأيسر للتقديم والتأخير.';
+      'اضغط ? لترى اختصارات لوحة المفاتيح. المسافة للتشغيل والإيقاف، والسهمان الأيمن والأيسر للتقديم والتأخير.';
 
   @override
   String get desktopHintShortcutsAction => 'الاختصارات';
@@ -982,6 +979,12 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String get desktopLess => 'أقل';
+
+  @override
+  String get desktopLibraryLoading => 'تُحمَّل المكتبة…';
+
+  @override
   String get desktopLinkCopied => 'نُسخ الرابط';
 
   @override
@@ -1043,6 +1046,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopMiniWindow => 'نافذة صغيرة';
 
   @override
+  String get desktopMore => 'المزيد';
+
+  @override
   String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
 
   @override
@@ -1050,7 +1056,7 @@ class MTLocalizationsAr extends MTLocalizations {
       'لا يحفظ سيرفرك اسم القناة مع كل مقطع، فلا يُعرف هنا ما نزل منها. لتظهر مقاطعها، تابِعها بمجلد خاص بها: كل ما ينزل في مجلدها يظهر هنا.';
 
   @override
-  String get desktopNoFavoritesMessage => 'ضع ♥ على مقطع فيبقى لك هنا.';
+  String get desktopNoFavoritesMessage => 'ضع قلباً على مقطع فيبقى لك هنا.';
 
   @override
   String get desktopNoFavoritesTitle => 'لا مفضلة بعد';
@@ -1146,6 +1152,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopOpenInExplorer => 'فتح في مستكشف الملفات';
 
   @override
+  String get desktopPaletteClose => 'للإغلاق';
+
+  @override
   String get desktopPaletteCommands => 'الأوامر';
 
   @override
@@ -1153,12 +1162,15 @@ class MTLocalizationsAr extends MTLocalizations {
       'ابحث في العناوين وما قيل، أو اكتب > للأوامر';
 
   @override
-  String get desktopPaletteKeys => '↑↓ للتنقل · Enter للفتح · Esc للإغلاق';
-
-  @override
   String desktopPaletteList(String name) {
     return 'قائمة: $name';
   }
+
+  @override
+  String get desktopPaletteMove => 'للتنقل';
+
+  @override
+  String get desktopPaletteOpen => 'للفتح';
 
   @override
   String get desktopPaletteSaid => 'قيل داخل المقاطع';
@@ -1684,7 +1696,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get downloadNow => 'تحميل';
 
   @override
-  String get downloadStarted => 'بدأ التحميل...';
+  String get downloadStarted => 'بدأ التحميل…';
 
   @override
   String downloadStartedQuality(Object quality) {
@@ -1692,7 +1704,7 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
-  String get downloading => 'جارٍ التحميل...';
+  String get downloading => 'جارٍ التحميل…';
 
   @override
   String get downloadingTitle => 'جارٍ التنزيل';
@@ -1734,14 +1746,14 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get errPlatformBlocked =>
-      'المنصة تطلب تسجيل الدخول — على مدير السيرفر تحديث الكوكيز';
+      'المنصة تطلب تسجيل الدخول، وعلى مدير السيرفر تحديث الكوكيز';
 
   @override
   String get errPlatformBlockedCookies =>
-      'المنصة تطلب تسجيل الدخول — ارفع ملف كوكيز من الإعدادات ← الكوكيز';
+      'المنصة تطلب تسجيل الدخول. ارفع ملف كوكيز من الإعدادات ← الكوكيز';
 
   @override
-  String get errPollTimeout => 'تأخّر ردّ السيرفر — أعد المحاولة';
+  String get errPollTimeout => 'تأخّر ردّ السيرفر، فأعد المحاولة.';
 
   @override
   String errServer(Object message) {
@@ -2396,7 +2408,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get restoreData => 'استعادة';
 
   @override
-  String get restoreFailed => 'فشلت الاستعادة — ملف النسخة الاحتياطية غير صالح';
+  String get restoreFailed => 'فشلت الاستعادة: ملف النسخة الاحتياطية غير صالح';
 
   @override
   String get restoreSettings => 'استعادة جميع البيانات';
@@ -2881,7 +2893,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get titleFilterHelp =>
-      'لا ينزّل السيرفر مقطعاً جديداً من هذه القناة إلا إذا احتوى عنوانه على ما تكتبه هنا.\n\n• كلمة عادية تكفي: الحلقة\n• أيّ كلمة من عدة كلمات: الحلقة|الجزء — العلامة | تعني «أو»\n• في الإنجليزية يُفرَّق بين الأحرف الكبيرة والصغيرة: episode لا تطابق Episode. اكتب ‎[Ee]pisode‎ أو اكتب الصيغتين.\n\nوالمقطع الذي يتخطاه الفلتر يُعدّ مُشاهَداً إلى الأبد، فإن أزلت الفلتر لاحقاً نُزِّل ما يُنشر بعد ذلك فقط، لا ما تخطّاه.';
+      'لا ينزّل السيرفر مقطعاً جديداً من هذه القناة إلا إذا احتوى عنوانه على ما تكتبه هنا.\n\n• كلمة عادية تكفي: الحلقة\n• أيّ كلمة من عدة كلمات: الحلقة|الجزء (العلامة | تعني «أو»)\n• في الإنجليزية يُفرَّق بين الأحرف الكبيرة والصغيرة: episode لا تطابق Episode. اكتب ‎[Ee]pisode‎ أو اكتب الصيغتين.\n\nوالمقطع الذي يتخطاه الفلتر يُعدّ مُشاهَداً إلى الأبد، فإن أزلت الفلتر لاحقاً نُزِّل ما يُنشر بعد ذلك فقط، لا ما تخطّاه.';
 
   @override
   String get titleFilterHelper =>

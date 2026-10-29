@@ -11,6 +11,7 @@ import '../../shell/ember_mark.dart';
 import '../discover/discover_dialog.dart';
 import 'simple_panes.dart';
 import 'whats_new.dart';
+import '../../shell/folded_text.dart';
 
 /// About: the version, the developer, the code and its licence, what it is
 /// built on, and the disclaimer. GPL-3.0 expects the copyright notice and
@@ -115,7 +116,10 @@ class AboutPane extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: MTSpace.xs),
-        Text(l.disclaimerText, style: text.bodySmall?.copyWith(color: p.ink2)),
+        FoldedText(
+          l.disclaimerText,
+          style: text.bodySmall?.copyWith(color: p.ink2),
+        ),
       ],
     );
   }

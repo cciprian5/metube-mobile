@@ -14,6 +14,7 @@ import '../../shell/pill.dart';
 import '../setup/setup_dialog.dart';
 import 'appearance_pane.dart';
 import 'browser_button.dart';
+import '../../shell/folded_text.dart';
 
 /// One setting: its name, a line saying what it does, and its control at
 /// the line's far end, with a hairline under it, so a pane reads as a list
@@ -67,7 +68,7 @@ class SettingLine extends StatelessWidget {
                         style: text.bodySmall?.copyWith(color: p.ink2),
                       ),
                     if (hint case final hint?)
-                      Text(
+                      FoldedText(
                         hint,
                         style: text.labelSmall?.copyWith(color: p.ink3),
                       ),

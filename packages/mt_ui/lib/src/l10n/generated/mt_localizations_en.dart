@@ -56,7 +56,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get addToFavorites => 'Add to favorites';
 
   @override
-  String get addToPlaylist => 'Add to Playlist';
+  String get addToPlaylist => 'Add to playlist';
 
   @override
   String get addUrl => 'Add URL';
@@ -262,7 +262,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get clear => 'Clear';
 
   @override
-  String get clearLogs => 'Clear Logs';
+  String get clearLogs => 'Clear logs';
 
   @override
   String get clearLogsConfirm => 'Delete all diagnostic logs?';
@@ -299,7 +299,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get connectionFailed => 'Connection failed';
 
   @override
-  String get connectionSuccessful => 'Connected successfully — settings saved';
+  String get connectionSuccessful => 'Connected. Settings saved.';
 
   @override
   String get continueAsAudio => 'Continue as audio';
@@ -332,7 +332,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get cookiesHelp =>
-      'In your browser, use an extension that exports cookies in the Netscape format — one file per platform — and pick the files here. The server then uses them for every download, and yt-dlp decides when it needs them. Cookies expire, so a download that starts failing again usually means a fresh export is due.';
+      'In your browser, use an extension that exports cookies in the Netscape format (one file per platform) and pick the files here. The server then uses them for every download, and yt-dlp decides when it needs them. Cookies expire, so a download that starts failing again usually means a fresh export is due.';
 
   @override
   String get cookiesNotNetscape =>
@@ -404,7 +404,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get delete => 'Delete';
 
   @override
-  String get deleteFromServer => 'Delete From Server';
+  String get deleteFromServer => 'Delete from server';
 
   @override
   String get deleteFromServerConfirm => 'Remove this item from the server?';
@@ -577,9 +577,6 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopChannel => 'Channel';
-
-  @override
-  String get desktopChannelActive => 'Active';
 
   @override
   String get desktopChannelClips => 'In your library';
@@ -851,7 +848,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopHintShortcuts =>
-      'Tip: press ? for the keyboard shortcuts. Space plays and pauses, ← and → seek.';
+      'Press ? for the keyboard shortcuts. Space plays and pauses; the arrow keys seek.';
 
   @override
   String get desktopHintShortcutsAction => 'Shortcuts';
@@ -958,6 +955,12 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
+  String get desktopLess => 'Less';
+
+  @override
+  String get desktopLibraryLoading => 'Loading the library…';
+
+  @override
   String get desktopLinkCopied => 'Link copied';
 
   @override
@@ -1016,6 +1019,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopMiniWindow => 'Small window';
 
   @override
+  String get desktopMore => 'More';
+
+  @override
   String get desktopNarrowSidebar => 'Collapse sidebar';
 
   @override
@@ -1024,7 +1030,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get desktopNoFavoritesMessage =>
-      'Mark a clip with ♥ and it waits for you here.';
+      'Mark a clip as a favorite and it waits for you here.';
 
   @override
   String get desktopNoFavoritesTitle => 'No favorites yet';
@@ -1117,6 +1123,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopOpenInExplorer => 'Open in Explorer';
 
   @override
+  String get desktopPaletteClose => 'to close';
+
+  @override
   String get desktopPaletteCommands => 'Commands';
 
   @override
@@ -1124,12 +1133,15 @@ class MTLocalizationsEn extends MTLocalizations {
       'Search titles and what was said, or type > for commands';
 
   @override
-  String get desktopPaletteKeys => '↑↓ to move · Enter to open · Esc to close';
-
-  @override
   String desktopPaletteList(String name) {
     return 'List: $name';
   }
+
+  @override
+  String get desktopPaletteMove => 'to move';
+
+  @override
+  String get desktopPaletteOpen => 'to open';
 
   @override
   String get desktopPaletteSaid => 'Said inside clips';
@@ -1610,7 +1622,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get developerName => 'Yasir Sagheer';
 
   @override
-  String get diagnosticLogs => 'Diagnostic Logs';
+  String get diagnosticLogs => 'Diagnostic logs';
 
   @override
   String get diagnosticLogsSubtitle =>
@@ -1633,7 +1645,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get download => 'Download';
 
   @override
-  String get downloadComplete => 'Download Complete';
+  String get downloadComplete => 'Download complete';
 
   @override
   String get downloadCompleteTitle => 'Complete!';
@@ -1642,7 +1654,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get downloadDate => 'Download Date';
 
   @override
-  String get downloadFailed => 'Download Failed';
+  String get downloadFailed => 'Download failed';
 
   @override
   String get downloadFailedTitle => 'Download Failed';
@@ -1651,7 +1663,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get downloadNow => 'Download';
 
   @override
-  String get downloadStarted => 'Download started...';
+  String get downloadStarted => 'Download started…';
 
   @override
   String downloadStartedQuality(Object quality) {
@@ -1659,7 +1671,7 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
-  String get downloading => 'Downloading...';
+  String get downloading => 'Downloading…';
 
   @override
   String get downloadingTitle => 'Downloading';
@@ -1704,10 +1716,10 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get errPlatformBlockedCookies =>
-      'The platform requires login — send it a cookies file from Settings → Cookies';
+      'The platform requires login. Send it a cookies file from Settings → Cookies';
 
   @override
-  String get errPollTimeout => 'The server took too long — try again';
+  String get errPollTimeout => 'The server took too long. Try again.';
 
   @override
   String errServer(Object message) {
@@ -2050,7 +2062,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get notAffiliated =>
-      'Unofficial client — not affiliated with the MeTube project or yt-dlp, and not endorsed by them.';
+      'Unofficial client, not affiliated with the MeTube project or yt-dlp, and not endorsed by them.';
 
   @override
   String get nothingHereYet => 'Nothing here yet';
@@ -2096,7 +2108,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get openInExternalPlayer => 'Open in another player';
 
   @override
-  String get openOriginalLink => 'Open Original Link';
+  String get openOriginalLink => 'Open original link';
 
   @override
   String get ownFolder => 'Save in its own folder';
@@ -2171,7 +2183,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get playlistDeleted => 'Playlist deleted';
 
   @override
-  String get playlistDetails => 'Playlist Details';
+  String get playlistDetails => 'Playlist details';
 
   @override
   String get playlistName => 'Playlist name';
@@ -2676,7 +2688,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get subscriptionQualityHelp =>
-      'The server keeps the quality chosen when you follow, and does not let it be changed. To change it: Check now, then unfollow and follow again.\n\n\"Best\" can mean 4K in the AV1 format. Recent phones play it smoothly; if you see stuttering, your phone does not decode AV1 in hardware — choose 1080p, or turn on \"Best playback compatibility\" before following.';
+      'The server keeps the quality chosen when you follow, and does not let it be changed. To change it: Check now, then unfollow and follow again.\n\n\"Best\" can mean 4K in the AV1 format. Recent phones play it smoothly; if you see stuttering, your phone does not decode AV1 in hardware: choose 1080p, or turn on \"Best playback compatibility\" before following.';
 
   @override
   String get subscriptionQualityNote => 'Can\'t be changed after following.';
@@ -2818,7 +2830,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get titleFilterHelp =>
-      'The server downloads a new video from this channel only if its title contains what you write here.\n\n• A plain word is enough: Episode\n• Any of several words: Episode|Part — the | means \"or\"\n• English is case-sensitive: episode does not match Episode. Write [Ee]pisode, or both words.\n\nA video the filter skips counts as seen for good: removing the filter later downloads what comes after, not what was skipped.';
+      'The server downloads a new video from this channel only if its title contains what you write here.\n\n• A plain word is enough: Episode\n• Any of several words: Episode|Part (the | means \"or\")\n• English is case-sensitive: episode does not match Episode. Write [Ee]pisode, or both words.\n\nA video the filter skips counts as seen for good: removing the filter later downloads what comes after, not what was skipped.';
 
   @override
   String get titleFilterHelper =>

@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/downloads_data.dart';
 import '../../shell/shell_metrics.dart';
 import 'folder_widgets.dart';
+import '../../shell/ember_dialog.dart';
 
 /// The server folder line of a form: what is chosen, and a click to choose
 /// again. Shared by adding and following.
@@ -94,7 +95,7 @@ Future<FolderChoice?> showFolderPicker(
   required FolderChoice current,
   bool offerTop = true,
   bool offerChannelName = false,
-}) => showDialog<FolderChoice>(
+}) => showEmberDialog<FolderChoice>(
   context: context,
   builder: (_) => _FolderPicker(
     audio: audio,
@@ -169,7 +170,7 @@ class _FolderPicker extends ConsumerWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: text.bodySmall?.copyWith(
-                        color: selected ? p.accentInk : p.ink,
+                        color: p.ink,
                         fontWeight: selected ? FontWeight.w700 : null,
                       ),
                     ),
@@ -201,8 +202,8 @@ class _FolderPicker extends ConsumerWidget {
         children: [
           Expanded(child: Text(l.chooseFolder)),
           // What folders are and what the server needs, behind a button
-          // that pulses as the picker opens so it gets noticed.
-          PulsingHelp(
+          // that waits, grey, for whoever wants it.
+          FolderHelp(
             label: l.helpAboutField,
             onTap: () => unawaited(
               showFolderHelp(context, l.chooseFolder, l.foldersHelp),

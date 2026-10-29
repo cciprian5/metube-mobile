@@ -35,9 +35,15 @@ class MTBreathingGlow extends StatefulWidget {
     required this.playing,
     required this.size,
     required this.child,
+    this.clip,
   });
 
   final ValueListenable<bool> playing;
+
+  /// What is playing. When it changes while the sound plays, the glow takes
+  /// **one deeper breath** ([newClip]), so a new clip is felt before its
+  /// title is read. Null never breathes so.
+  final Object? clip;
 
   /// The cover's side; the embers are sized and moved from it.
   final double size;
@@ -48,6 +54,13 @@ class MTBreathingGlow extends StatefulWidget {
 
   /// Settling to rest after a pause, and waking after a play.
   static const settle = Duration(milliseconds: 900);
+
+  /// Waking after a play, on a computer: slower than settling, so the
+  /// light wakes rather than switches on. A pause still settles quickly.
+  static const wake = Duration(seconds: 2);
+
+  /// The deeper breath when the clip changes.
+  static const newClip = Duration(milliseconds: 1500);
 
   static const _largeTurn = 9.0;
   static const _smallTurn = 13.0;
@@ -61,11 +74,16 @@ class MTBreathingGlow extends StatefulWidget {
   /// rest, 1 fully awake). Pure, so the motion itself is tested and not
   /// only whether a ticker runs.
   @visibleForTesting
-  static (MTEmber, MTEmber) embersAt(double seconds, double amplitude) {
+  static (MTEmber, MTEmber) embersAt(
+    double seconds,
+    double amplitude, {
+    double deeper = 0,
+  }) {
     final swell =
         (1 - math.cos(2 * math.pi * seconds / breath.inSeconds)) /
-        2 *
-        amplitude;
+            2 *
+            amplitude +
+        deeper;
     final large = 2 * math.pi * seconds / _largeTurn;
     // The other way round, starting across from the first.
     final small = math.pi - 2 * math.pi * seconds / _smallTurn;
@@ -107,6 +125,11 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
           if (status == AnimationStatus.dismissed) _clock.stop();
         });
 
+  late final AnimationController _deeper = AnimationController(
+    vsync: this,
+    duration: MTBreathingGlow.newClip,
+  );
+
   bool _still = false;
 
   @override
@@ -119,6 +142,11 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _still = MediaQuery.disableAnimationsOf(context);
+    _amp
+      ..duration = MTDesktopApp.isDesktop(context)
+          ? MTBreathingGlow.wake
+          : MTBreathingGlow.settle
+      ..reverseDuration = MTBreathingGlow.settle;
     _sync();
   }
 
@@ -129,6 +157,12 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
       old.playing.removeListener(_sync);
       widget.playing.addListener(_sync);
       _sync();
+    }
+    if (widget.clip != null &&
+        old.clip != widget.clip &&
+        !_still &&
+        widget.playing.value) {
+      _deeper.forward(from: 0);
     }
   }
 
@@ -151,17 +185,25 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
     widget.playing.removeListener(_sync);
     _clock.dispose();
     _amp.dispose();
+    _deeper.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final accent = MTThemeX.of(context).palette.accent;
-    final light = MTDesktopApp.isDesktop(context) ? _emberLight() : null;
+    final p = MTThemeX.of(context).palette;
+    final desktop = MTDesktopApp.isDesktop(context);
+    final light = desktop ? _emberLight() : null;
+    // **On a computer, two shades of the ember**: the large slow one deep,
+    // the small quick one bright, so the eye tells them apart and where
+    // they cross reads warmer than either. Both from the palette, so the
+    // petrol app gets two petrols.
+    final colors = desktop ? [p.accentDeep, p.accent] : [p.accent, p.accent];
     // Night needs more of it to be seen on espresso than day needs on
-    // cream, where a moving light too strong reads as a travelling stain.
+    // cream, where a moving light too strong reads as a travelling stain;
+    // on a large screen by day, more so.
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final peak = dark ? 0.34 : 0.26;
+    final peak = dark ? 0.34 : (desktop ? 0.18 : 0.26);
     // Room for the farthest ember: its offset plus its radius, past the
     // cover's half.
     final reach = widget.size * 0.5;
@@ -178,18 +220,20 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
           child: IgnorePointer(
             child: RepaintBoundary(
               child: AnimatedBuilder(
-                animation: Listenable.merge([_clock, _amp]),
+                animation: Listenable.merge([_clock, _amp, _deeper]),
                 builder: (context, _) {
                   final (large, small) = MTBreathingGlow.embersAt(
                     _clock.value * MTBreathingGlow.cycleSeconds,
                     _amp.value,
+                    // Rises and falls once over the deeper breath.
+                    deeper: math.sin(math.pi * _deeper.value) * 0.6,
                   );
                   return CustomPaint(
                     painter: _EmberPainter(
                       embers: [large, small],
                       light: light,
                       side: widget.size,
-                      color: accent,
+                      colors: colors,
                       peak: peak,
                     ),
                   );
@@ -241,7 +285,7 @@ class _EmberPainter extends CustomPainter {
     required this.embers,
     required this.light,
     required this.side,
-    required this.color,
+    required this.colors,
     required this.peak,
   });
 
@@ -250,18 +294,20 @@ class _EmberPainter extends CustomPainter {
   /// The light drawn once, on a computer; null draws the gradient.
   final ui.Image? light;
   final double side;
-  final Color color;
+
+  /// One per ember, in the same order.
+  final List<Color> colors;
   final double peak;
 
   @override
   void paint(Canvas canvas, Size size) {
     final middle = size.center(Offset.zero);
-    for (final ember in embers) {
+    for (final (i, ember) in embers.indexed) {
       final centre = middle + ember.centre * side;
       final radius = ember.radius * side;
       final alpha = peak * ember.strength;
       final rect = Rect.fromCircle(center: centre, radius: radius);
-      final tint = color.withValues(alpha: alpha);
+      final tint = colors[i].withValues(alpha: alpha.clamp(0, 1));
       if (light case final image?) {
         canvas.drawImageRect(
           image,

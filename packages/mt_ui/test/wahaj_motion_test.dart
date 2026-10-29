@@ -216,6 +216,14 @@ void main() {
       ),
     );
     expect(find.byType(FilledButton), findsNothing);
+    // **The guard**: words and a link, no drawing above them.
+    expect(
+      find.descendant(
+        of: find.byType(MTEmptyFrame),
+        matching: find.byType(CustomPaint),
+      ),
+      findsOneWidget, // the link's own underline, and nothing else
+    );
     await tester.tap(find.text('Paste a link'));
     expect(pasted, isTrue);
   });

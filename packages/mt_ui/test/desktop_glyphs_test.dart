@@ -48,9 +48,18 @@ void main() {
       for (final i in tester.widgetList<MTIcon>(find.byType(MTIcon)))
         i.icon.name,
     ];
-    expect(
-      names,
-      containsAll(['favorite', 'favorite_on', 'headphones', 'library']),
-    );
+    expect(names, containsAll(['favorite_on', 'headphones', 'library']));
+    // **The guard**: on a grid cover at rest only a favourite shows its
+    // heart; the empty heart waits for the pointer.
+    final onCover = [
+      for (final i in tester.widgetList<MTIcon>(
+        find.descendant(
+          of: find.byType(MTMediaGridCard),
+          matching: find.byType(MTIcon),
+        ),
+      ))
+        i.icon.name,
+    ];
+    expect(onCover, isNot(contains('favorite')));
   });
 }

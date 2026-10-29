@@ -30,7 +30,8 @@ void main() {
     await tester.pumpWidget(ProviderScope(child: EmberApp(router: router)));
     for (final (path, place) in [
       ('/', 'library'),
-      (EmberRoutes.search, 'search'),
+      // **The guard**: no blank page for search; it is the palette.
+      (EmberRoutes.search, 'library'),
       (EmberRoutes.playlists, 'playlists'),
       (EmberRoutes.channels, 'channels'),
       (EmberRoutes.settings, 'settings'),
@@ -55,6 +56,19 @@ void main() {
     const url = 'https://www.youtube.com/watch?v=a1/b&t=30#x';
     final shown = await go(tester, EmberRoutes.item(url));
     expect((shown.place, shown.argument), ('item', url));
+  });
+
+  testWidgets('**the guard**: one clip to another is a change of page, '
+      'and moves', (tester) async {
+    await tester.pumpWidget(ProviderScope(child: EmberApp(router: router)));
+    await go(tester, EmberRoutes.item('https://x/a'));
+    router.go(EmberRoutes.item('https://x/b'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 60));
+    // Both pages are on screen while one gives way to the other.
+    expect(find.byType(PendingPlace), findsNWidgets(2));
+    await tester.pumpAndSettle();
+    expect(find.byType(PendingPlace), findsOneWidget);
   });
 
   testWidgets('an address that names no place lands on the library', (

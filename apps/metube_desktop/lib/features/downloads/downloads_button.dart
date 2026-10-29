@@ -72,11 +72,31 @@ class _Count extends StatelessWidget {
         borderRadius: BorderRadius.circular(MTSpace.lg),
         border: Border.all(color: p.bg, width: MTSpace.xxs / 2),
       ),
-      child: Text(
-        '$count',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.labelSmall?.tabular
-            .copyWith(color: p.onAccent, height: 1.3),
+      // A new number rises into place from below as the old one leaves, so
+      // the count is seen to change.
+      child: ClipRect(
+        child: AnimatedSwitcher(
+          duration: mtMotionDuration(context, MTMotion.page),
+          switchInCurve: MTMotion.entrance,
+          switchOutCurve: MTMotion.exit,
+          transitionBuilder: (child, motion) => FadeTransition(
+            opacity: motion,
+            child: SlideTransition(
+              position: Tween(
+                begin: const Offset(0, 0.6),
+                end: Offset.zero,
+              ).animate(motion),
+              child: child,
+            ),
+          ),
+          child: Text(
+            '$count',
+            key: ValueKey(count),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.labelSmall?.tabular
+                .copyWith(color: p.onAccent, height: 1.3),
+          ),
+        ),
       ),
     );
   }

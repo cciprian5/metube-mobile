@@ -20,11 +20,17 @@ class MTTiltedArtwork extends StatelessWidget {
     required this.item,
     this.artwork,
     this.size = 296,
+    this.shadow = true,
   });
 
   final PlaylistItem item;
   final MTArtworkBuilder? artwork;
   final double size;
+
+  /// The deep shadow under the plate. Off where a glow already moves behind
+  /// the cover (the computer's listening room): the two together read as
+  /// a light that glows and a plate that floats, where one is enough.
+  final bool shadow;
 
   static const double _tilt = -1.5 * math.pi / 180;
   static const double _frameTilt = 1 * math.pi / 180;
@@ -48,14 +54,16 @@ class MTTiltedArtwork extends StatelessWidget {
               decoration: BoxDecoration(
                 color: p.cardAlt,
                 borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: p.accentDeep.withValues(alpha: 0.4),
-                    blurRadius: 60,
-                    offset: const Offset(0, 30),
-                    spreadRadius: -18,
-                  ),
-                ],
+                boxShadow: shadow
+                    ? [
+                        BoxShadow(
+                          color: p.accentDeep.withValues(alpha: 0.4),
+                          blurRadius: 60,
+                          offset: const Offset(0, 30),
+                          spreadRadius: -18,
+                        ),
+                      ]
+                    : null,
               ),
               child:
                   artwork?.call(context, item) ??

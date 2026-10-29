@@ -9,20 +9,28 @@ import 'package:mt_ui/mt_ui.dart';
 /// but when it moves: only while playing, never for someone who turned
 /// animations off, and never asking for frames once it has settled.
 void main() {
-  Widget host(ValueNotifier<bool> playing, {bool reduceMotion = false}) =>
-      MaterialApp(
-        theme: mtTheme(MTVariant.superApp, Brightness.light),
-        home: MediaQuery(
-          data: MediaQueryData(disableAnimations: reduceMotion),
-          child: Center(
-            child: MTBreathingGlow(
-              playing: playing,
-              size: 200,
-              child: const SizedBox.square(dimension: 200),
-            ),
-          ),
+  // One theme for every pump: a new one each time would make the app's
+  // own theme animate between them, which is not the glow moving.
+  final theme = mtTheme(MTVariant.superApp, Brightness.light);
+
+  Widget host(
+    ValueNotifier<bool> playing, {
+    bool reduceMotion = false,
+    Object? clip,
+  }) => MaterialApp(
+    theme: theme,
+    home: MediaQuery(
+      data: MediaQueryData(disableAnimations: reduceMotion),
+      child: Center(
+        child: MTBreathingGlow(
+          playing: playing,
+          size: 200,
+          clip: clip,
+          child: const SizedBox.square(dimension: 200),
         ),
-      );
+      ),
+    ),
+  );
 
   group('the embers (the owner\'s pick, 2026-09-24)', () {
     test('at rest both sit at the centre: the still halo of before', () {
@@ -148,5 +156,78 @@ void main() {
         ..drawImageRect()
         ..drawImageRect(),
     );
+  });
+
+  group('the deeper breath (2026-10-29)', () {
+    test('a deeper breath widens and strengthens both embers', () {
+      final (large, small) = MTBreathingGlow.embersAt(0, 1);
+      final (deepLarge, deepSmall) = MTBreathingGlow.embersAt(
+        0,
+        1,
+        deeper: 0.6,
+      );
+      expect(deepLarge.radius, greaterThan(large.radius));
+      expect(deepSmall.strength, greaterThan(small.strength));
+    });
+
+    testWidgets('a new clip while playing breathes once, then settles', (
+      tester,
+    ) async {
+      final playing = ValueNotifier(true);
+      await tester.pumpWidget(host(playing, clip: 'a'));
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpWidget(host(playing, clip: 'b'));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.hasRunningAnimations, isTrue);
+      playing.value = false;
+      await tester.pumpAndSettle();
+      expect(tester.hasRunningAnimations, isFalse);
+    });
+
+    testWidgets('**the guard**: the phone glow, given no clip, stays as it '
+        'was (no deeper breath)', (tester) async {
+      final playing = ValueNotifier(true);
+      await tester.pumpWidget(host(playing));
+      await tester.pump(const Duration(seconds: 3));
+      playing.value = false;
+      await tester.pumpAndSettle();
+      // A rebuild with no clip, as the phones' player does on every frame
+      // of its own, starts nothing.
+      await tester.pumpWidget(host(playing));
+      await tester.pump();
+      expect(tester.hasRunningAnimations, isFalse);
+    });
+  });
+
+  testWidgets('**the guard**: the cover shadow can be turned off', (
+    tester,
+  ) async {
+    BoxShadow? shadowOf(bool on) {
+      final box = tester.widget<Container>(
+        find
+            .descendant(
+              of: find.byType(MTTiltedArtwork),
+              matching: find.byWidgetPredicate(
+                (w) => w is Container && w.decoration is BoxDecoration,
+              ),
+            )
+            .first,
+      );
+      final list = (box.decoration! as BoxDecoration).boxShadow;
+      return list == null || list.isEmpty ? null : list.first;
+    }
+
+    const item = PlaylistItem(canonicalUrl: 'u', title: 't');
+    for (final on in [true, false]) {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: mtTheme(MTVariant.superApp, Brightness.light),
+          home: Center(
+            child: MTTiltedArtwork(item: item, size: 100, shadow: on),
+          ),
+        ),
+      );
+      expect(shadowOf(on) != null, on);
+    }
   });
 }

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../theme/mt_desktop_theme.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import '../widgets/mt_desktop_app.dart';
 import '../widgets/mt_polish.dart';
 
-/// A card that rises under the mouse: a warm glow beneath it and a small
-/// lift, and [builder] learns it is hovered (to show a play mark, say).
+/// A card that answers the mouse: **a plate a shade darker than the page
+/// appears behind it**, reaching a little past its edges, and [builder]
+/// learns it is hovered (to show a play mark, say). It does not rise and
+/// does not glow: a lift with a warm shadow under every card is one of the
+/// marks of a generated screen, and the file explorer's plate says the
+/// same thing quietly.
 ///
 /// **Windows only.** Outside [MTDesktopApp] it builds the child as it was,
 /// never hovered, so a phone or a tablet with a mouse looks the same as
@@ -19,6 +24,9 @@ class MTHoverLift extends StatefulWidget {
   });
 
   final BorderRadius borderRadius;
+
+  /// How far the plate reaches past the card on every side.
+  static const double reach = MTSpace.xs;
   final Widget Function(BuildContext context, bool hovered) builder;
 
   @override
@@ -38,23 +46,31 @@ class _MTHoverLiftState extends State<MTHoverLift> {
       return widget.builder(context, false);
     }
     final p = MTThemeX.of(context).palette;
-    final duration = mtMotionDuration(context, MTMotion.fast);
     return MouseRegion(
       onEnter: (_) => _hover(true),
       onExit: (_) => _hover(false),
-      child: AnimatedContainer(
-        duration: duration,
-        curve: MTMotion.ease,
-        transform: Matrix4.translationValues(
-          0,
-          _hovered ? -MTSpace.xxs / 2 : 0,
-          0,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: widget.borderRadius,
-          boxShadow: _hovered ? MTShadow.hover(p) : const [],
-        ),
-        child: widget.builder(context, _hovered),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            left: -MTHoverLift.reach,
+            top: -MTHoverLift.reach,
+            right: -MTHoverLift.reach,
+            bottom: -MTHoverLift.reach,
+            child: AnimatedContainer(
+              key: const ValueKey('hover-plate'),
+              duration: mtMotionDuration(context, MTMotion.fast),
+              curve: MTMotion.ease,
+              decoration: BoxDecoration(
+                color: _hovered
+                    ? p.ink.withValues(alpha: mtHoverVeil)
+                    : p.ink.withValues(alpha: 0),
+                borderRadius: widget.borderRadius,
+              ),
+            ),
+          ),
+          widget.builder(context, _hovered),
+        ],
       ),
     );
   }

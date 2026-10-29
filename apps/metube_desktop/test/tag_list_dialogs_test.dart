@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metube_desktop/features/clip/clip_action_row.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -49,9 +50,14 @@ void main() {
     return h;
   }
 
+  /// A clip page action, a round button named by its tooltip.
   Future<void> openPill(WidgetTester tester, String label) async {
-    await tester.ensureVisible(find.text(label));
-    await tester.tap(find.text(label));
+    final button = find.descendant(
+      of: find.byType(ClipActionRow),
+      matching: find.bySemanticsLabel(label),
+    );
+    await tester.ensureVisible(button);
+    await tester.tap(button);
     await tester.pumpAndSettle();
   }
 
@@ -96,7 +102,7 @@ void main() {
   testWidgets('**the guard**: a list name typed and left in the field is '
       'made on Done, with the clip in it', (tester) async {
     final h = await openClip(tester);
-    await openPill(tester, 'Add to Playlist');
+    await openPill(tester, 'Add to playlist');
     await tester.enterText(find.byType(TextField).last, 'Weekend');
     await tester.tap(find.text('Done'));
     await tester.pumpAndSettle();
@@ -119,7 +125,7 @@ void main() {
         },
       ],
     );
-    await openPill(tester, 'Add to Playlist');
+    await openPill(tester, 'Add to playlist');
     await tester.tap(find.widgetWithText(CheckboxListTile, 'Music'));
     await tester.pumpAndSettle();
     expect(((await lists(h)).single['items'] as List).length, 1);

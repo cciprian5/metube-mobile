@@ -84,7 +84,7 @@ void main() {
     await tester.pumpWidget(menu());
     await tester.pumpAndSettle();
     expect(find.text('Transcript').hitTestable(), findsOneWidget);
-    expect(find.text('Delete From Server').hitTestable(), findsOneWidget);
+    expect(find.text('Delete from server').hitTestable(), findsOneWidget);
   });
 }
 

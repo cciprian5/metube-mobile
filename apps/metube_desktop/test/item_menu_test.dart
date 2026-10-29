@@ -144,7 +144,7 @@ void main() {
       final h = await open(tester);
       await rightClick(tester, find.text('Night Drive'));
       expect(find.text('Copy link'), findsOneWidget);
-      await tester.tap(find.text('Delete From Server'));
+      await tester.tap(find.text('Delete from server'));
       await tester.pumpAndSettle();
       // Cancelled: nothing goes.
       await tester.tap(find.text('Cancel'));
@@ -152,7 +152,7 @@ void main() {
       expect(h.api.deleted, isEmpty);
 
       await rightClick(tester, find.text('Night Drive'));
-      await tester.tap(find.text('Delete From Server'));
+      await tester.tap(find.text('Delete from server'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();

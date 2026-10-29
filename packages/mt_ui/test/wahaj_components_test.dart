@@ -19,13 +19,17 @@ void main() {
       expect(field.borderRadius.topLeft.x, 13);
     });
 
-    test('the Windows theme takes the smaller scale', () {
+    test('the Windows theme takes two corners: 8 resting, 12 floating', () {
       final t = mtDesktopTheme(MTVariant.superApp, Brightness.light);
-      expect(_radius(t.cardTheme.shape), 12);
+      expect(_radius(t.cardTheme.shape), 8);
       expect(_radius(t.chipTheme.shape), 8);
-      expect(_radius(t.bottomSheetTheme.shape), 20);
-      expect(_radius(t.dialogTheme.shape), 18);
+      expect(_radius(t.bottomSheetTheme.shape), 12);
+      expect(_radius(t.dialogTheme.shape), 12);
       expect(t.textTheme.bodyLarge!.fontSize, 14);
+      // **The guard**: a page title is the display face at its full
+      // weight, never Material's regular fallback.
+      expect(t.textTheme.headlineSmall!.fontWeight, FontWeight.w700);
+      expect(t.textTheme.headlineSmall!.fontSize, 24);
     });
   });
 
@@ -39,6 +43,27 @@ void main() {
       );
 
   group('MTSwitch', () {
+    testWidgets('**the guard**: on is the ink, with no glow and no accent', (
+      tester,
+    ) async {
+      await tester.pumpWidget(host(MTSwitch(value: true, onChanged: (_) {})));
+      final p = MTPalette.of(MTVariant.superApp, Brightness.light);
+      final boxes = tester
+          .widgetList<AnimatedContainer>(
+            find.descendant(
+              of: find.byType(MTSwitch),
+              matching: find.byType(AnimatedContainer),
+            ),
+          )
+          .map((c) => c.decoration! as BoxDecoration)
+          .toList();
+      expect(boxes.first.color, p.ink);
+      for (final b in boxes) {
+        expect(b.boxShadow, isNull);
+        expect(b.color, isNot(p.accent));
+      }
+    });
+
     testWidgets('a click and the keyboard both toggle it', (tester) async {
       final seen = <bool>[];
       await tester.pumpWidget(

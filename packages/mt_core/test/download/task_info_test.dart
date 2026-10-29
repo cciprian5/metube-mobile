@@ -59,6 +59,9 @@ void main() {
       contains(cover),
       reason: 'the cover is known while the clip is still coming',
     );
-    expect(whileRunning.map((t) => t.title), contains('Never Gonna Give You Up'));
+    expect(
+      whileRunning.map((t) => t.title),
+      contains('Never Gonna Give You Up'),
+    );
   });
 }

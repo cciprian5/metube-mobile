@@ -7,6 +7,7 @@ import 'package:flutter/material.dart'
     show
         Builder,
         FilledButton,
+        InkWell,
         Positioned,
         PopupMenuItem,
         Scrollable,
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart'
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/shell/panel/panel_tabs.dart';
 import 'package:metube_desktop/features/add/add_entry.dart';
 import 'package:metube_desktop/features/add/batch_dialog.dart';
 import 'package:metube_desktop/features/discover/discover_dialog.dart';
@@ -26,7 +28,6 @@ import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/drop_frame.dart';
 import 'package:metube_desktop/shell/ember_shell.dart';
 import 'package:metube_desktop/shell/key_cap.dart';
-import 'package:metube_desktop/shell/pill.dart';
 import 'package:metube_desktop/shell/right_panel.dart';
 import 'package:metube_desktop/shell/shell_layout.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
@@ -486,8 +487,8 @@ void main() {
           await tester.tap(
             find
                 .descendant(
-                  of: find.byType(EmberRightPanel),
-                  matching: find.byType(EmberPill),
+                  of: find.byType(PanelTabs<PanelTab>),
+                  matching: find.byType(InkWell),
                 )
                 .at(i),
           );
@@ -689,8 +690,8 @@ void main() {
             await tester.tap(
               find
                   .descendant(
-                    of: find.byType(EmberRightPanel),
-                    matching: find.byType(EmberPill),
+                    of: find.byType(PanelTabs<PanelTab>),
+                    matching: find.byType(InkWell),
                   )
                   .at(i),
             );

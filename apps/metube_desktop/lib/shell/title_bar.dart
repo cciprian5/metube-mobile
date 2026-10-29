@@ -59,7 +59,12 @@ class EmberTitleBar extends StatelessWidget {
             ),
             Row(
               children: [
-                SizedBox(
+                // Narrowed or widened with the sidebar below, at its pace:
+                // a column that snapped while the sidebar moved under it
+                // read as two things out of step.
+                AnimatedContainer(
+                  duration: mtMotionDuration(context, MTMotion.medium),
+                  curve: MTMotion.ease,
                   width: startWidth,
                   child: Row(
                     mainAxisSize: startWidth == null

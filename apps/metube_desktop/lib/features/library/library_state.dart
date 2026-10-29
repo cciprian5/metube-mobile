@@ -135,11 +135,19 @@ final visibleLibraryProvider =
       );
     });
 
-/// Platform counters over the whole library, not the filtered view, so a
-/// chip never shows zero for what the filter itself hid.
-final platformCountsProvider = Provider<List<MapEntry<MediaPlatform, int>>>(
-  (ref) => platformCounts(ref.watch(libraryItemsProvider).valueOrNull ?? []),
-);
+/// Platform counters **over the place being looked at** (everything,
+/// favourites, or what is kept offline), not over the other filters, so a
+/// chip never shows zero for what the filter itself hid, and never offers
+/// "Instagram 564" on an Offline page that holds nothing.
+final platformCountsProvider =
+    Provider.family<List<MapEntry<MediaPlatform, int>>, LibraryScope>(
+      (ref, scope) => platformCounts(
+        buildLibraryView(
+          ref.watch(libraryItemsProvider).valueOrNull ?? [],
+          scope: scope,
+        ),
+      ),
+    );
 
 /// The user's tags, most used first.
 final libraryTagsProvider = Provider<List<String>>((ref) {

@@ -150,6 +150,21 @@ void main() {
       ]) {
         expect(find.text(figure), findsWidgets, reason: figure);
       }
+      // **The guard**: the figures share one frame; no figure has a box of
+      // its own.
+      expect(find.byType(StatsFigures), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(StatsTile),
+          matching: find.byWidgetPredicate(
+            (w) =>
+                w is Container &&
+                w.decoration is BoxDecoration &&
+                (w.decoration! as BoxDecoration).border != null,
+          ),
+        ),
+        findsNothing,
+      );
       // The never played: b alone, a was played.
       final never = find.ancestor(
         of: find.text('Never played here'),

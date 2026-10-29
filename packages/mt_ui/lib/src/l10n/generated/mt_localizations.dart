@@ -173,7 +173,7 @@ abstract class MTLocalizations {
   /// No description provided for @addToPlaylist.
   ///
   /// In en, this message translates to:
-  /// **'Add to Playlist'**
+  /// **'Add to playlist'**
   String get addToPlaylist;
 
   /// No description provided for @addUrl.
@@ -539,7 +539,7 @@ abstract class MTLocalizations {
   /// No description provided for @clearLogs.
   ///
   /// In en, this message translates to:
-  /// **'Clear Logs'**
+  /// **'Clear logs'**
   String get clearLogs;
 
   /// No description provided for @clearLogsConfirm.
@@ -611,7 +611,7 @@ abstract class MTLocalizations {
   /// No description provided for @connectionSuccessful.
   ///
   /// In en, this message translates to:
-  /// **'Connected successfully — settings saved'**
+  /// **'Connected. Settings saved.'**
   String get connectionSuccessful;
 
   /// No description provided for @continueAsAudio.
@@ -671,7 +671,7 @@ abstract class MTLocalizations {
   /// No description provided for @cookiesHelp.
   ///
   /// In en, this message translates to:
-  /// **'In your browser, use an extension that exports cookies in the Netscape format — one file per platform — and pick the files here. The server then uses them for every download, and yt-dlp decides when it needs them. Cookies expire, so a download that starts failing again usually means a fresh export is due.'**
+  /// **'In your browser, use an extension that exports cookies in the Netscape format (one file per platform) and pick the files here. The server then uses them for every download, and yt-dlp decides when it needs them. Cookies expire, so a download that starts failing again usually means a fresh export is due.'**
   String get cookiesHelp;
 
   /// No description provided for @cookiesNotNetscape.
@@ -797,7 +797,7 @@ abstract class MTLocalizations {
   /// No description provided for @deleteFromServer.
   ///
   /// In en, this message translates to:
-  /// **'Delete From Server'**
+  /// **'Delete from server'**
   String get deleteFromServer;
 
   /// No description provided for @deleteFromServerConfirm.
@@ -1075,12 +1075,6 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Channel'**
   String get desktopChannel;
-
-  /// No description provided for @desktopChannelActive.
-  ///
-  /// In en, this message translates to:
-  /// **'Active'**
-  String get desktopChannelActive;
 
   /// No description provided for @desktopChannelClips.
   ///
@@ -1541,7 +1535,7 @@ abstract class MTLocalizations {
   /// No description provided for @desktopHintShortcuts.
   ///
   /// In en, this message translates to:
-  /// **'Tip: press ? for the keyboard shortcuts. Space plays and pauses, ← and → seek.'**
+  /// **'Press ? for the keyboard shortcuts. Space plays and pauses; the arrow keys seek.'**
   String get desktopHintShortcuts;
 
   /// No description provided for @desktopHintShortcutsAction.
@@ -1712,6 +1706,18 @@ abstract class MTLocalizations {
   /// **'Last arrival {when}'**
   String desktopLastArrival(String when);
 
+  /// No description provided for @desktopLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get desktopLess;
+
+  /// No description provided for @desktopLibraryLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the library…'**
+  String get desktopLibraryLoading;
+
   /// No description provided for @desktopLinkCopied.
   ///
   /// In en, this message translates to:
@@ -1808,6 +1814,12 @@ abstract class MTLocalizations {
   /// **'Small window'**
   String get desktopMiniWindow;
 
+  /// No description provided for @desktopMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get desktopMore;
+
   /// No description provided for @desktopNarrowSidebar.
   ///
   /// In en, this message translates to:
@@ -1823,7 +1835,7 @@ abstract class MTLocalizations {
   /// No description provided for @desktopNoFavoritesMessage.
   ///
   /// In en, this message translates to:
-  /// **'Mark a clip with ♥ and it waits for you here.'**
+  /// **'Mark a clip as a favorite and it waits for you here.'**
   String get desktopNoFavoritesMessage;
 
   /// No description provided for @desktopNoFavoritesTitle.
@@ -1964,6 +1976,12 @@ abstract class MTLocalizations {
   /// **'Open in Explorer'**
   String get desktopOpenInExplorer;
 
+  /// No description provided for @desktopPaletteClose.
+  ///
+  /// In en, this message translates to:
+  /// **'to close'**
+  String get desktopPaletteClose;
+
   /// No description provided for @desktopPaletteCommands.
   ///
   /// In en, this message translates to:
@@ -1976,17 +1994,23 @@ abstract class MTLocalizations {
   /// **'Search titles and what was said, or type > for commands'**
   String get desktopPaletteHint;
 
-  /// No description provided for @desktopPaletteKeys.
-  ///
-  /// In en, this message translates to:
-  /// **'↑↓ to move · Enter to open · Esc to close'**
-  String get desktopPaletteKeys;
-
   /// No description provided for @desktopPaletteList.
   ///
   /// In en, this message translates to:
   /// **'List: {name}'**
   String desktopPaletteList(String name);
+
+  /// No description provided for @desktopPaletteMove.
+  ///
+  /// In en, this message translates to:
+  /// **'to move'**
+  String get desktopPaletteMove;
+
+  /// No description provided for @desktopPaletteOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'to open'**
+  String get desktopPaletteOpen;
 
   /// No description provided for @desktopPaletteSaid.
   ///
@@ -2795,7 +2819,7 @@ abstract class MTLocalizations {
   /// No description provided for @diagnosticLogs.
   ///
   /// In en, this message translates to:
-  /// **'Diagnostic Logs'**
+  /// **'Diagnostic logs'**
   String get diagnosticLogs;
 
   /// No description provided for @diagnosticLogsSubtitle.
@@ -2837,7 +2861,7 @@ abstract class MTLocalizations {
   /// No description provided for @downloadComplete.
   ///
   /// In en, this message translates to:
-  /// **'Download Complete'**
+  /// **'Download complete'**
   String get downloadComplete;
 
   /// No description provided for @downloadCompleteTitle.
@@ -2855,7 +2879,7 @@ abstract class MTLocalizations {
   /// No description provided for @downloadFailed.
   ///
   /// In en, this message translates to:
-  /// **'Download Failed'**
+  /// **'Download failed'**
   String get downloadFailed;
 
   /// No description provided for @downloadFailedTitle.
@@ -2873,7 +2897,7 @@ abstract class MTLocalizations {
   /// No description provided for @downloadStarted.
   ///
   /// In en, this message translates to:
-  /// **'Download started...'**
+  /// **'Download started…'**
   String get downloadStarted;
 
   /// No description provided for @downloadStartedQuality.
@@ -2885,7 +2909,7 @@ abstract class MTLocalizations {
   /// No description provided for @downloading.
   ///
   /// In en, this message translates to:
-  /// **'Downloading...'**
+  /// **'Downloading…'**
   String get downloading;
 
   /// No description provided for @downloadingTitle.
@@ -2969,13 +2993,13 @@ abstract class MTLocalizations {
   /// No description provided for @errPlatformBlockedCookies.
   ///
   /// In en, this message translates to:
-  /// **'The platform requires login — send it a cookies file from Settings → Cookies'**
+  /// **'The platform requires login. Send it a cookies file from Settings → Cookies'**
   String get errPlatformBlockedCookies;
 
   /// No description provided for @errPollTimeout.
   ///
   /// In en, this message translates to:
-  /// **'The server took too long — try again'**
+  /// **'The server took too long. Try again.'**
   String get errPollTimeout;
 
   /// No description provided for @errServer.
@@ -3563,7 +3587,7 @@ abstract class MTLocalizations {
   /// No description provided for @notAffiliated.
   ///
   /// In en, this message translates to:
-  /// **'Unofficial client — not affiliated with the MeTube project or yt-dlp, and not endorsed by them.'**
+  /// **'Unofficial client, not affiliated with the MeTube project or yt-dlp, and not endorsed by them.'**
   String get notAffiliated;
 
   /// No description provided for @nothingHereYet.
@@ -3647,7 +3671,7 @@ abstract class MTLocalizations {
   /// No description provided for @openOriginalLink.
   ///
   /// In en, this message translates to:
-  /// **'Open Original Link'**
+  /// **'Open original link'**
   String get openOriginalLink;
 
   /// No description provided for @ownFolder.
@@ -3785,7 +3809,7 @@ abstract class MTLocalizations {
   /// No description provided for @playlistDetails.
   ///
   /// In en, this message translates to:
-  /// **'Playlist Details'**
+  /// **'Playlist details'**
   String get playlistDetails;
 
   /// No description provided for @playlistName.
@@ -4601,7 +4625,7 @@ abstract class MTLocalizations {
   /// No description provided for @subscriptionQualityHelp.
   ///
   /// In en, this message translates to:
-  /// **'The server keeps the quality chosen when you follow, and does not let it be changed. To change it: Check now, then unfollow and follow again.\n\n\"Best\" can mean 4K in the AV1 format. Recent phones play it smoothly; if you see stuttering, your phone does not decode AV1 in hardware — choose 1080p, or turn on \"Best playback compatibility\" before following.'**
+  /// **'The server keeps the quality chosen when you follow, and does not let it be changed. To change it: Check now, then unfollow and follow again.\n\n\"Best\" can mean 4K in the AV1 format. Recent phones play it smoothly; if you see stuttering, your phone does not decode AV1 in hardware: choose 1080p, or turn on \"Best playback compatibility\" before following.'**
   String get subscriptionQualityHelp;
 
   /// No description provided for @subscriptionQualityNote.
@@ -4853,7 +4877,7 @@ abstract class MTLocalizations {
   /// No description provided for @titleFilterHelp.
   ///
   /// In en, this message translates to:
-  /// **'The server downloads a new video from this channel only if its title contains what you write here.\n\n• A plain word is enough: Episode\n• Any of several words: Episode|Part — the | means \"or\"\n• English is case-sensitive: episode does not match Episode. Write [Ee]pisode, or both words.\n\nA video the filter skips counts as seen for good: removing the filter later downloads what comes after, not what was skipped.'**
+  /// **'The server downloads a new video from this channel only if its title contains what you write here.\n\n• A plain word is enough: Episode\n• Any of several words: Episode|Part (the | means \"or\")\n• English is case-sensitive: episode does not match Episode. Write [Ee]pisode, or both words.\n\nA video the filter skips counts as seen for good: removing the filter later downloads what comes after, not what was skipped.'**
   String get titleFilterHelp;
 
   /// No description provided for @titleFilterHelper.

@@ -3,11 +3,12 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../shell/shell_metrics.dart';
+import '../../shell/ember_dialog.dart';
 
 /// The name of a new folder, nested when typed with a slash. It is made on
 /// the server by the first download saved into it.
 Future<String?> askNewFolder(BuildContext context, String parent) async {
-  final typed = await showDialog<String>(
+  final typed = await showEmberDialog<String>(
     context: context,
     builder: (_) => _NewFolderDialog(parent: parent),
   );
@@ -67,7 +68,7 @@ class _NewFolderDialogState extends State<_NewFolderDialog> {
 
 /// A help text in its own dialog.
 Future<void> showFolderHelp(BuildContext context, String title, String body) =>
-    showDialog<void>(
+    showEmberDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(title),
@@ -108,55 +109,14 @@ class FolderNotice extends StatelessWidget {
   }
 }
 
-/// The (?) that opens a help text. **Three pulses as it appears, then
-/// still**: enough to draw the eye, not a light that keeps blinking at
-/// someone who has read it. Nothing moves when the system asks for less
-/// motion.
-class PulsingHelp extends StatefulWidget {
-  const PulsingHelp({super.key, required this.label, required this.onTap});
-
-  static const pulses = 3;
+/// The (?) that opens a help text: **still and grey**, found by whoever
+/// wants it. It used to pulse three times in a circle of the accent as the
+/// picker opened, a light that asked for attention nobody had asked for.
+class FolderHelp extends StatelessWidget {
+  const FolderHelp({super.key, required this.label, required this.onTap});
 
   final String label;
   final VoidCallback onTap;
-
-  @override
-  State<PulsingHelp> createState() => _PulsingHelpState();
-}
-
-class _PulsingHelpState extends State<PulsingHelp>
-    with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(
-    vsync: this,
-    duration: MTMotion.slow,
-  );
-  var _left = PulsingHelp.pulses;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addStatusListener((status) {
-      if (status != AnimationStatus.completed || !mounted) return;
-      _left--;
-      if (_left > 0) _controller.forward(from: 0);
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_left == PulsingHelp.pulses &&
-        !_controller.isAnimating &&
-        !MediaQuery.disableAnimationsOf(context)) {
-      _controller.forward(from: 0);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,38 +124,29 @@ class _PulsingHelpState extends State<PulsingHelp>
     final text = Theme.of(context).textTheme;
     final mark = Directionality.of(context) == TextDirection.rtl ? '؟' : '?';
     return MTShortcutTooltip(
-      message: widget.label,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          // Up and back within each pulse.
-          final t = _controller.value;
-          final swell = t < 0.5 ? t * 2 : (1 - t) * 2;
-          return Transform.scale(scale: 1 + 0.25 * swell, child: child);
-        },
-        child: Material(
-          shape: CircleBorder(
-            side: BorderSide(
-              color: p.accent,
-              width: MTThemeX.of(context).hairline,
-            ),
+      message: label,
+      child: Material(
+        shape: CircleBorder(
+          side: BorderSide(
+            color: p.line2,
+            width: MTThemeX.of(context).hairline,
           ),
-          color: p.accentSoft,
-          // A button by its name, not by the question mark it shows: the
-          // tooltip says nothing to a screen reader.
-          child: Semantics(
-            button: true,
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: widget.onTap,
-              child: SizedBox.square(
-                dimension: MTSpace.xl,
-                child: Center(
-                  child: Text(
-                    mark,
-                    semanticsLabel: widget.label,
-                    style: text.labelMedium?.copyWith(color: p.accentInk),
-                  ),
+        ),
+        color: Colors.transparent,
+        // A button by its name, not by the question mark it shows: the
+        // tooltip says nothing to a screen reader.
+        child: Semantics(
+          button: true,
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: onTap,
+            child: SizedBox.square(
+              dimension: MTSpace.xl,
+              child: Center(
+                child: Text(
+                  mark,
+                  semanticsLabel: label,
+                  style: text.labelMedium?.copyWith(color: p.ink2),
                 ),
               ),
             ),

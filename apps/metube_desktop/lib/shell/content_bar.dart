@@ -130,7 +130,7 @@ class _BarButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
-    final ink = onTap == null ? p.ink3 : (selected ? p.accentInk : p.ink2);
+    final ink = onTap == null ? p.ink3 : (selected ? p.ink : p.ink2);
     return MTShortcutTooltip(
       message: label,
       shortcut: shortcut,

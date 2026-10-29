@@ -12,20 +12,24 @@ import '../../router.dart';
 import '../../shell/context_menu.dart';
 import '../../shell/error_text.dart';
 import '../lists/list_dialogs.dart';
+import '../../data/local_copies.dart';
 import 'clip_actions.dart';
+import 'copy_pills.dart';
 
-enum _ClipChoice { addToList, copyLink, openOriginal, delete }
+enum _ClipChoice { download, addToList, copyLink, openOriginal, delete }
 
-/// The right-click menu of a clip's page: the actions that do not earn a
-/// button, in the phone's order, **deleting from the server last** and only
-/// here, behind a confirmation. A clip only on this computer is not
-/// offered it, as in the library's menu: there is nothing there to delete.
+/// The right-click menu of a clip's page, and its "More" button: the
+/// actions that do not earn a button, in the phone's order, **deleting from
+/// the server last** and only here, behind a confirmation. A clip only on
+/// this computer is not offered it, as in the library's menu: there is
+/// nothing there to delete. Given a [download] source, "Download…" leads.
 Future<void> showClipMenu(
   BuildContext context,
   WidgetRef ref,
   Offset globalPosition,
-  PlaylistItem item,
-) async {
+  PlaylistItem item, {
+  CopySource? download,
+}) async {
   final l = context.mtl;
   final listed = (ref.read(libraryItemsProvider).valueOrNull ?? const [])
       .where((i) => i.canonicalUrl == item.canonicalUrl)
@@ -33,6 +37,8 @@ Future<void> showClipMenu(
   // Unknown to the library (a session from before) keeps the old offer.
   final onServer = listed?.onServer ?? true;
   final choice = await showEmberMenu(context, globalPosition, [
+    if (download != null)
+      EmberMenuEntry(_ClipChoice.download, MTIcons.saveTo, l.desktopDownloadTo),
     EmberMenuEntry(_ClipChoice.addToList, MTIcons.queue, l.addToPlaylist),
     EmberMenuEntry(_ClipChoice.copyLink, MTIcons.link, l.desktopCopyLink),
     EmberMenuEntry(
@@ -53,6 +59,8 @@ Future<void> showClipMenu(
   if (choice == null || !context.mounted) return;
   final actions = ref.read(clipActionsProvider);
   switch (choice) {
+    case _ClipChoice.download:
+      await downloadCopy(context, ref, download!);
     case _ClipChoice.addToList:
       await showAddToPlaylistDialog(context, item);
     case _ClipChoice.copyLink:

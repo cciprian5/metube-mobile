@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/features/library/library_state.dart';
@@ -107,38 +108,53 @@ void main() {
     expect(find.byType(MTMediaGridCard), findsNWidgets(4));
   });
 
-  testWidgets('platform chips carry live counts, most first', (tester) async {
+  testWidgets('the platforms are one pill whose menu carries live counts, '
+      'most first', (tester) async {
     await open(tester, library: _library, server: server);
-    final youtube = find.text('YouTube · 3');
-    final tiktok = find.text('TikTok · 1');
-    expect(youtube, findsOneWidget);
-    expect(tiktok, findsOneWidget);
-    // In reading order, whichever row each chip wraps to.
-    final order = [
-      for (final pill in tester.widgetList<EmberPill>(find.byType(EmberPill)))
-        pill.label,
-    ];
-    expect(order.indexOf('YouTube · 3'), lessThan(order.indexOf('TikTok · 1')));
-    await tester.tap(tiktok);
+    // **The guard**: no row of platform pills, no dot before a count.
+    expect(find.text('YouTube · 3'), findsNothing);
+    await tester.tap(find.text('Platform'));
+    await tester.pumpAndSettle();
+    final youtube = tester.getTopLeft(find.text('YouTube').last);
+    final tiktok = tester.getTopLeft(find.text('TikTok').last);
+    expect(youtube.dy, lessThan(tiktok.dy));
+    expect(find.text(mtLtrRun('3')), findsOneWidget);
+    await tester.tap(find.text('TikTok').last);
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaGridCard), findsOneWidget);
-    // The counts are over the whole library, not what the filter hides.
-    expect(youtube, findsOneWidget);
+    // The pill now names the platform chosen.
+    expect(find.widgetWithText(EmberPill, 'TikTok'), findsOneWidget);
   });
 
-  testWidgets('a tag chip includes, then excludes, then lets go', (
-    tester,
-  ) async {
+  testWidgets('a tag picked in the menu includes, then excludes, then lets '
+      'go', (tester) async {
     await open(tester, library: _library, server: server);
-    await tester.tap(find.text(mtName('#homelab')));
-    await tester.pumpAndSettle();
+    Future<void> pick() async {
+      await tester.tap(find.widgetWithText(EmberPill, 'Tags'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(mtName('#homelab')).last);
+      await tester.pumpAndSettle();
+      // The menu reopens for another pick; Escape closes it.
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pumpAndSettle();
+    }
+
+    await pick();
     expect(find.byType(MTMediaGridCard), findsOneWidget);
-    await tester.tap(find.text(mtName('#homelab')));
-    await tester.pumpAndSettle();
+    await pick();
     expect(find.byType(MTMediaGridCard), findsNWidgets(3));
-    await tester.tap(find.text(mtName('#homelab')));
-    await tester.pumpAndSettle();
+    await pick();
     expect(find.byType(MTMediaGridCard), findsNWidgets(4));
+  });
+
+  testWidgets('**the guard**: the counts follow the place; an empty Offline '
+      'page offers no platform at all', (tester) async {
+    await open(tester, library: _library, server: server);
+    expect(find.text('Platform'), findsOneWidget);
+    GoRouter.of(tester.element(find.byType(EmberSidebar)))
+        .go(EmberRoutes.offline);
+    await tester.pumpAndSettle();
+    expect(find.text('Platform'), findsNothing);
   });
 
   testWidgets('favourites is one state for its chip and its sidebar entry', (
@@ -214,7 +230,10 @@ void main() {
   ) async {
     await open(tester, library: _library, server: server);
     await tester.tap(find.text('Audio'));
-    await tester.tap(find.text('TikTok · 1'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Platform'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('TikTok').last);
     await tester.pumpAndSettle();
     expect(find.text('Nothing matches these filters'), findsOneWidget);
     await tester.tap(find.text('Clear filters'));

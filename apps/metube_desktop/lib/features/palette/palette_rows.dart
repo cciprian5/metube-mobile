@@ -99,7 +99,7 @@ class _Row extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     return Container(
-      color: selected ? p.accentSoft : null,
+      color: selected ? mtSelectedFill(p) : null,
       padding: const EdgeInsets.symmetric(
         horizontal: MTSpace.md,
         vertical: MTSpace.xs,
@@ -110,7 +110,7 @@ class _Row extends StatelessWidget {
               MTIcon(
                 icon,
                 size: MTDensity.desktop.icon,
-                color: selected ? p.accentInk : p.ink2,
+                color: selected ? p.ink : p.ink2,
               ),
           const SizedBox(width: MTSpace.sm),
           Expanded(child: child),
@@ -144,9 +144,7 @@ class TitleRow extends StatelessWidget {
             item.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: text.bodyMedium?.copyWith(
-              color: selected ? p.accentInk : p.ink,
-            ),
+            style: text.bodyMedium?.copyWith(color: p.ink),
           ),
           if (item.uploader case final uploader? when uploader.isNotEmpty)
             Text(
@@ -255,8 +253,7 @@ class CommandRow extends StatelessWidget {
         label,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.bodyMedium
-            ?.copyWith(color: selected ? p.accentInk : p.ink),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: p.ink),
       ),
     );
   }

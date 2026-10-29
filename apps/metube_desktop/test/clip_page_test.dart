@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metube_desktop/features/clip/clip_action_row.dart';
 import 'package:metube_desktop/features/clip/clip_page.dart';
 import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/player_bar.dart';
@@ -158,7 +159,13 @@ void main() {
 
   testWidgets('the favourite button marks the clip', (tester) async {
     final h = await onVideo(tester);
-    await tester.tap(find.text('Add to favorites'));
+    // A round button named in its tooltip and to a screen reader.
+    await tester.tap(
+      find.descendant(
+        of: find.byType(ClipActionRow),
+        matching: find.bySemanticsLabel('Add to favorites'),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(
       await TagsIndex(store: h.store, mutex: PrefsMutex()).tagsOf(_video),
@@ -171,7 +178,7 @@ void main() {
     await onVideo(tester, zoom: const UiZoom(1.25));
     final at = tester.getCenter(find.byKey(InertVideoSurface.pictureKey));
     await rightClick(tester, at);
-    final menu = tester.getRect(find.text('Add to Playlist').last);
+    final menu = tester.getRect(find.text('Add to playlist').last);
     // The first row starts just below and beside the pointer, not a
     // quarter of the window away.
     expect((menu.left - at.dx).abs(), lessThan(80));
@@ -190,7 +197,7 @@ void main() {
       tester,
       tester.getCenter(find.byKey(InertVideoSurface.pictureKey)),
     );
-    await tester.tap(find.text('Delete From Server'));
+    await tester.tap(find.text('Delete from server'));
     await tester.pumpAndSettle();
 
     // Asked; cancelling deletes nothing.
@@ -202,7 +209,7 @@ void main() {
       tester,
       tester.getCenter(find.byKey(InertVideoSurface.pictureKey)),
     );
-    await tester.tap(find.text('Delete From Server'));
+    await tester.tap(find.text('Delete from server'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
@@ -225,7 +232,7 @@ void main() {
       tester,
       tester.getCenter(find.byKey(InertVideoSurface.pictureKey)),
     );
-    await tester.tap(find.text('Delete From Server'));
+    await tester.tap(find.text('Delete from server'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
@@ -259,7 +266,7 @@ void main() {
       tester.getCenter(find.byKey(InertVideoSurface.pictureKey)),
     );
     expect(find.text('Copy link'), findsOneWidget);
-    expect(find.text('Delete From Server'), findsNothing);
+    expect(find.text('Delete from server'), findsNothing);
   });
 
   testWidgets('**the guard**: a clip with a copy here keeps its tags', (
@@ -283,7 +290,7 @@ void main() {
       tester,
       tester.getCenter(find.byKey(InertVideoSurface.pictureKey)),
     );
-    await tester.tap(find.text('Delete From Server'));
+    await tester.tap(find.text('Delete from server'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();

@@ -133,7 +133,12 @@ class MTMediaGridCover extends StatelessWidget {
               end: 0,
               child: Row(
                 children: [
-                  if (onFavoriteToggle != null)
+                  // **On a computer the heart waits for the pointer** unless
+                  // the clip is a favourite: a heart on every cover at rest
+                  // was one of the marks of a generated grid. It stays one
+                  // key (F) and one menu row away for the others.
+                  if (onFavoriteToggle != null &&
+                      (favorite || hovered || !MTDesktopApp.isDesktop(context)))
                     _CoverButton(
                       icon: favorite
                           ? Icons.favorite_rounded

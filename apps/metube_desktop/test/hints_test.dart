@@ -30,7 +30,7 @@ final _clip = LibraryItem(
   timestamp: DateTime(2026, 10, 20),
 );
 
-const _tip = 'Tip: press ? for the keyboard shortcuts.';
+const _tip = 'Press ? for the keyboard shortcuts.';
 
 void main() {
   Future<(ShellHarness, ProviderContainer, _Notices)> open(

@@ -81,7 +81,7 @@ class _QueueLine extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final l = context.mtl;
     return Material(
-      color: current ? p.accentSoft : p.bg,
+      color: current ? mtSelectedFill(p) : p.bg,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
       ),
@@ -124,7 +124,7 @@ class _QueueLine extends StatelessWidget {
                         Directionality.of(context),
                       ),
                       style: text.bodySmall?.copyWith(
-                        color: current ? p.accentInk : p.ink,
+                        color: p.ink,
                         fontWeight: current ? FontWeight.w700 : null,
                       ),
                     ),

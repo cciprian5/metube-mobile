@@ -142,9 +142,18 @@ GoRouter buildEmberRouter({
       routes: [
         GoRoute(
           path: EmberRoutes.library,
-          builder: (_, state) => library(state.uri.queryParameters['only']),
+          pageBuilder: (_, state) => _ownPage(
+            state.uri.queryParameters['only'] ?? '',
+            library(state.uri.queryParameters['only']),
+          ),
         ),
-        _place(EmberRoutes.search, 'search'),
+        // Search lives in the command palette, which the sidebar opens; an
+        // address for it (a link from outside) lands on the library rather
+        // than on a blank page.
+        GoRoute(
+          path: EmberRoutes.search,
+          redirect: (_, _) => EmberRoutes.library,
+        ),
         // A null argument is the place itself; an id is one list or one
         // channel in it.
         for (final (path, build) in [
@@ -163,11 +172,17 @@ GoRouter buildEmberRouter({
           ),
         GoRoute(
           path: '/item/:id',
-          builder: (_, state) => item(state.pathParameters['id']),
+          pageBuilder: (_, state) => _ownPage(
+            'item ${state.pathParameters['id']}',
+            item(state.pathParameters['id']),
+          ),
         ),
         GoRoute(
           path: '/read/:id',
-          builder: (_, state) => reading(state.pathParameters['id']),
+          pageBuilder: (_, state) => _ownPage(
+            'read ${state.pathParameters['id']}',
+            reading(state.pathParameters['id']),
+          ),
         ),
         GoRoute(path: EmberRoutes.stats, builder: (_, _) => stats(null)),
         // **One page for every section**, under one key: moving between
@@ -196,11 +211,15 @@ GoRouter buildEmberRouter({
   ],
 );
 
+/// A page keyed by what it shows, not by the route's pattern: **one clip to
+/// another, or the library to its favourites, is a change of page** and
+/// moves as the rest do. Keyed by the pattern, only the content was swapped,
+/// in one frame.
+Page<void> _ownPage(String key, Widget child) =>
+    MaterialPage(key: ValueKey(key), child: child);
+
 Page<void> _settingsPage(Widget child) =>
     MaterialPage(key: const ValueKey('settings'), child: child);
-
-GoRoute _place(String path, String name) =>
-    GoRoute(path: path, builder: (_, _) => PendingPlace(name));
 
 /// Stands in for a place whose screen comes in a later step; it draws
 /// nothing, and tests find it by [place] and [argument].

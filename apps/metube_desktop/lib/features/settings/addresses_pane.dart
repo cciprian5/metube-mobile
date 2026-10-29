@@ -148,7 +148,7 @@ class _AddressLine extends StatelessWidget {
             )
           else ...[
             MTLinkButton(label: l.desktopAddressUse, onPressed: onUse),
-            MTLinkButton(label: l.remove, onPressed: onRemove),
+            MTLinkButton(label: l.remove, danger: true, onPressed: onRemove),
           ],
         ],
       ),

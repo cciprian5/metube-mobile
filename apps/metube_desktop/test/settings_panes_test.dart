@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/features/settings/appearance_preview.dart';
 import 'package:metube_desktop/data/channels_data.dart';
 import 'package:metube_desktop/data/choices_data.dart';
 import 'package:metube_desktop/data/transcripts_data.dart';
@@ -73,6 +74,8 @@ void main() {
       await tester.pumpAndSettle();
       final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
       expect(app.themeMode, ThemeMode.dark);
+      // **The guard**: the setting shows what it makes, beside it.
+      expect(find.byType(AppearancePreview), findsOneWidget);
       expect(await h.store.getString('ember_theme'), 'dark');
     });
 

@@ -69,18 +69,19 @@ class _MTPressableState extends State<MTPressable> {
 /// between play and pause, or between an empty and a filled heart.
 ///
 /// The icon itself is the key, so nothing animates unless it changes.
+/// The Windows app, which draws no Material icon, may give [wahaj] alone.
 class MTIconSwap extends StatelessWidget {
   const MTIconSwap({
     super.key,
-    required this.icon,
+    this.icon,
     this.size,
     this.color,
     this.semanticLabel,
     this.shadows,
     this.wahaj,
-  });
+  }) : assert(icon != null || wahaj != null);
 
-  final IconData icon;
+  final IconData? icon;
 
   /// The same icon from the Wahaj set, drawn instead in the Windows app,
   /// which uses no Material icons. The phones keep [icon].
@@ -106,16 +107,17 @@ class MTIconSwap extends StatelessWidget {
       ),
     ),
     child: switch (wahaj) {
-      final glyph? when MTDesktopApp.isDesktop(context) => MTIcon(
-        glyph,
-        key: ValueKey(glyph.name),
-        size: size,
-        color: color,
-        semanticLabel: semanticLabel,
-      ),
+      final glyph? when MTDesktopApp.isDesktop(context) || icon == null =>
+        MTIcon(
+          glyph,
+          key: ValueKey(glyph.name),
+          size: size,
+          color: color,
+          semanticLabel: semanticLabel,
+        ),
       _ => Icon(
         icon,
-        key: ValueKey(icon.codePoint),
+        key: ValueKey(icon!.codePoint),
         size: size,
         color: color,
         semanticLabel: semanticLabel,

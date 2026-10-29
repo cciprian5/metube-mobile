@@ -11,6 +11,7 @@ import '../../shell/choice_menu.dart';
 import '../../shell/shell_metrics.dart';
 import '../folders/folder_widgets.dart';
 import '../folders/own_folder_field.dart';
+import '../../shell/ember_dialog.dart';
 
 /// Following a channel, or editing one already followed: one dialog,
 /// since the fields are the same. The link cannot change on an edit (it
@@ -24,7 +25,7 @@ Future<void> showFollowDialog(
   BuildContext context, {
   ChannelSubscription? editing,
   String? name,
-}) => showDialog<void>(
+}) => showEmberDialog<void>(
   context: context,
   builder: (_) => _FollowDialog(editing: editing, name: name),
 );

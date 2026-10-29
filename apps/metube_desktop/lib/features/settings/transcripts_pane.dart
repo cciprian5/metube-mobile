@@ -11,6 +11,7 @@ import '../../data/transcripts_data.dart';
 import '../clip/caption_controls.dart';
 import 'backup_actions.dart';
 import 'simple_panes.dart';
+import '../../shell/folded_text.dart';
 
 /// How many clips have their words here, and the room they take; counted
 /// again each time settings open, as transcripts arrive in the meantime.
@@ -38,7 +39,7 @@ class TranscriptsPane extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
+        FoldedText(
           l.desktopTranscriptsHelp,
           style: text.bodyMedium?.copyWith(color: p.ink2),
         ),
@@ -73,6 +74,7 @@ class TranscriptsPane extends ConsumerWidget {
             ),
             MTLinkButton(
               label: l.transcriptsDeleteAll,
+              danger: true,
               icon: MTIcons.trash,
               onPressed: none
                   ? null

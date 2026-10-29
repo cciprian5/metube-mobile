@@ -55,7 +55,7 @@ class ListCard extends ConsumerWidget {
             shape: RoundedRectangleBorder(
               borderRadius: radius,
               side: BorderSide(
-                color: pinned ? p.accent : p.line,
+                color: pinned ? p.ink3 : p.line,
                 width: MTThemeX.of(context).hairline,
               ),
             ),
@@ -119,9 +119,7 @@ class ListCard extends ConsumerWidget {
                           mtMetaLine([subtitle, if (pinned) l.desktopPinned]),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: text.labelSmall?.copyWith(
-                            color: pinned ? p.accentInk : p.ink3,
-                          ),
+                          style: text.labelSmall?.copyWith(color: p.ink3),
                         ),
                       ],
                     ),

@@ -7,20 +7,28 @@ import '../tokens/tokens.dart';
 import '../widgets/mt_polish.dart';
 
 /// An action written as a link rather than a filled button: bold text in
-/// the accent, and **a line drawn beneath it while pressed or hovered**,
+/// the ink, and **a line drawn beneath it while pressed or hovered**,
 /// growing from the start of the reading direction. Used where a filled
 /// button would shout, such as the one way out of an empty screen.
+///
+/// **The ink, not the accent**: a settings page holds a dozen of these,
+/// and the accent on each of them took it from the one action that needs
+/// it. One that deletes says so in the error colour ([danger]).
 class MTLinkButton extends StatefulWidget {
   const MTLinkButton({
     super.key,
     required this.label,
     required this.onPressed,
     this.icon,
+    this.danger = false,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final MTIconData? icon;
+
+  /// Deletes or clears something: drawn in the error colour.
+  final bool danger;
 
   @override
   State<MTLinkButton> createState() => _MTLinkButtonState();
@@ -37,8 +45,8 @@ class _MTLinkButtonState extends State<MTLinkButton> {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final enabled = widget.onPressed != null;
-    final style = Theme.of(context).textTheme.labelLarge!
-        .copyWith(color: p.accentInk);
+    final ink = widget.danger ? p.err : p.ink;
+    final style = Theme.of(context).textTheme.labelLarge!.copyWith(color: ink);
     return Semantics(
       button: true,
       enabled: enabled,
@@ -67,7 +75,7 @@ class _MTLinkButtonState extends State<MTLinkButton> {
                 key: const ValueKey('underline'),
                 foregroundPainter: _UnderlinePainter(
                   drawn: drawn,
-                  color: p.accent,
+                  color: ink,
                   rtl: Directionality.of(context) == TextDirection.rtl,
                 ),
                 child: child,
@@ -78,7 +86,7 @@ class _MTLinkButtonState extends State<MTLinkButton> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (widget.icon != null) ...[
-                      MTIcon(widget.icon!, size: 16, color: p.accentInk),
+                      MTIcon(widget.icon!, size: 16, color: ink),
                       const SizedBox(width: MTSpace.xxs),
                     ],
                     // Ellipsized when the space is narrower than the label

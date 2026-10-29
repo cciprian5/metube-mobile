@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart' show ImageHeaders;
+import 'package:mt_ui/mt_ui.dart' show MTMotion, mtMotionDuration;
 
 import '../../data/library_data.dart';
 
@@ -101,6 +102,10 @@ Widget? artworkFor(
       cacheManager: ref.read(artworkCacheProvider),
       fit: BoxFit.cover,
       memCacheWidth: decode,
+      // At the app's own pace, not the package's half-second in and full
+      // second out.
+      fadeInDuration: mtMotionDuration(context, MTMotion.reveal),
+      fadeOutDuration: mtMotionDuration(context, MTMotion.fast),
       errorWidget: (_, _, _) => const SizedBox.shrink(),
     );
   }
@@ -108,6 +113,16 @@ Widget? artworkFor(
     io.File(value),
     fit: BoxFit.cover,
     cacheWidth: decode,
+    // A cover kept on disk fades in as one from the network does, rather
+    // than appearing in a frame; one already decoded shows at once.
+    frameBuilder: (context, child, frame, sync) => sync
+        ? child
+        : AnimatedOpacity(
+            opacity: frame == null ? 0 : 1,
+            duration: mtMotionDuration(context, MTMotion.reveal),
+            curve: MTMotion.entrance,
+            child: child,
+          ),
     errorBuilder: (_, _, _) => const SizedBox.shrink(),
   );
 }

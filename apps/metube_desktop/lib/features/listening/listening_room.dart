@@ -229,12 +229,14 @@ class _CoverColumn extends ConsumerWidget {
                 child: MTBreathingGlow(
                   playing: playing,
                   size: size * glowScale,
-                  // Its own layer: the blurred shadow is drawn once, not on
-                  // every frame the embers behind it move.
+                  clip: item.canonicalUrl,
+                  // Its own layer: the cover is drawn once, not on every
+                  // frame the embers behind it move.
                   child: RepaintBoundary(
                     child: MTTiltedArtwork(
                       item: item,
                       size: size,
+                      shadow: false,
                       artwork: (context, _) => artworkFor(
                         ref,
                         context,

@@ -47,17 +47,21 @@ class ChannelRow extends ConsumerWidget {
     };
     return MenuKey(
       onMenu: (at) => unawaited(showChannelMenu(context, ref, sub, at)),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: MTSpace.sm),
-        child: Material(
-          color: p.card,
-          shape: RoundedRectangleBorder(
-            borderRadius: radius,
-            side: BorderSide(
-              color: sub.hasError ? p.err : p.line,
+      // **A line under each channel, not a card around it**: seven boxed
+      // cards, each with its own border and corners, made a template of a
+      // list that only needs to be read down.
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: p.line,
               width: MTThemeX.of(context).hairline,
             ),
           ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: radius,
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: onOpen,
@@ -148,7 +152,10 @@ String channelServerLine(BuildContext context, ChannelSubscription sub) {
   ]);
 }
 
-/// "Active" or "Paused", as a small outlined mark.
+/// "Paused", in grey words, beside a paused channel's switch; nothing
+/// beside an active one. **The usual state is not announced**: an outlined
+/// "Active" in the accent on every row said what the switch beside it
+/// already said, and coloured the rows that needed no attention.
 class ChannelState extends StatelessWidget {
   const ChannelState({super.key, required this.enabled});
 
@@ -156,28 +163,11 @@ class ChannelState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l = context.mtl;
-    final p = MTThemeX.of(context).palette;
-    final ink = enabled ? p.accentInk : p.ink3;
-    return DecoratedBox(
-      decoration: ShapeDecoration(
-        shape: StadiumBorder(
-          side: BorderSide(
-            color: enabled ? p.accent : p.line2,
-            width: MTThemeX.of(context).hairline,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: MTSpace.sm,
-          vertical: MTSpace.xxs,
-        ),
-        child: Text(
-          enabled ? l.desktopChannelActive : l.subscriptionPaused,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: ink),
-        ),
-      ),
+    if (enabled) return const SizedBox.shrink();
+    return Text(
+      context.mtl.subscriptionPaused,
+      style: Theme.of(context).textTheme.labelSmall
+          ?.copyWith(color: MTThemeX.of(context).palette.ink3),
     );
   }
 }
@@ -206,11 +196,16 @@ class _Covers extends ConsumerWidget {
         width: _width,
         height: _width,
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: p.accentSoft, shape: BoxShape.circle),
+        // A plain tile, not a letter in a circle of the accent: that
+        // circle on every row is one of the marks of a generated list.
+        decoration: BoxDecoration(
+          color: p.cardAlt,
+          borderRadius: BorderRadius.circular(MTCorners.desktop.thumb),
+        ),
         child: Text(
           initial.toUpperCase(),
           style: Theme.of(context).textTheme.titleMedium
-              ?.copyWith(color: p.accentInk),
+              ?.copyWith(color: p.ink2),
         ),
       );
     }

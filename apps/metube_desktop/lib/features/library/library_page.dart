@@ -9,10 +9,13 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/library_data.dart';
 import '../../di.dart';
+import '../../router.dart';
+import '../add/add_dialog.dart';
 import '../clip/clip_state.dart';
 import '../setup/setup_dialog.dart';
 import 'library_chips.dart';
 import 'library_heading.dart';
+import 'library_skeleton.dart';
 import 'library_item_view.dart';
 import 'library_state.dart';
 import 'selection.dart';
@@ -149,7 +152,7 @@ class LibraryPage extends ConsumerWidget {
           ),
         ];
       }
-      return [fill(const MTSpinner())];
+      return [fill(const LibrarySkeleton())];
     }
     if (items.isEmpty) {
       return [
@@ -158,17 +161,24 @@ class LibraryPage extends ConsumerWidget {
               ? MTEmptyFrame(
                   title: l.noVideosFound,
                   message: l.desktopEmptyLibraryMessage,
+                  actionLabel: l.addLinkFab,
+                  actionIcon: MTIcons.addlink,
+                  onAction: () => unawaited(openAddDialog(context)),
                 )
               // Nothing here yet is not a filter that hides too much.
               : held == 0 && scope == LibraryScope.favorites
               ? MTEmptyFrame(
                   title: l.desktopNoFavoritesTitle,
                   message: l.desktopNoFavoritesMessage,
+                  actionLabel: l.navLibrary,
+                  onAction: () => GoRouter.of(context).go(EmberRoutes.library),
                 )
               : held == 0 && scope == LibraryScope.offline
               ? MTEmptyFrame(
                   title: l.desktopNoOfflineTitle,
                   message: l.desktopNoOfflineMessage,
+                  actionLabel: l.navLibrary,
+                  onAction: () => GoRouter.of(context).go(EmberRoutes.library),
                 )
               : MTEmptyFrame(
                   title: l.desktopNoMatchTitle,

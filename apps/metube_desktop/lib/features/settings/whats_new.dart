@@ -11,6 +11,7 @@ import '../../data/update_data.dart';
 import '../../di.dart';
 import '../../shell/shell_metrics.dart';
 import '../discover/discover_dialog.dart';
+import '../../shell/ember_dialog.dart';
 
 final whatsNewServiceProvider = Provider(
   (ref) => WhatsNewService(
@@ -68,7 +69,7 @@ Future<void> showWhatsNewDialog(BuildContext context, WhatsNew notes) {
     arabic: arabic,
     app: 'ember',
   ).trim();
-  return showDialog<void>(
+  return showEmberDialog<void>(
     context: context,
     builder: (dialog) => AlertDialog(
       title: Row(

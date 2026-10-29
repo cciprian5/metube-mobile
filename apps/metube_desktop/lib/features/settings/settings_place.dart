@@ -141,8 +141,12 @@ class SettingsPlace extends StatelessWidget {
                 Align(
                   alignment: AlignmentDirectional.topStart,
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: MTBreakpoint.readable,
+                    // The appearance pane holds a preview beside its
+                    // choices, so it is given the room for both.
+                    constraints: BoxConstraints(
+                      maxWidth: pane == EmberSettingsPane.appearance
+                          ? AppearancePane.maxWidth
+                          : MTBreakpoint.readable,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -203,7 +207,7 @@ String paneTitle(MTLocalizations l, EmberSettingsPane pane) => switch (pane) {
 
 MTIconData _paneIcon(EmberSettingsPane pane) => switch (pane) {
   EmberSettingsPane.server => MTIcons.server,
-  EmberSettingsPane.network => MTIcons.swap,
+  EmberSettingsPane.network => MTIcons.globe,
   EmberSettingsPane.subscriptions => MTIcons.subscriptions,
   EmberSettingsPane.cookies => MTIcons.cookie,
   EmberSettingsPane.downloads => MTIcons.download,
@@ -234,56 +238,66 @@ class _PaneEntry extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
-    final ink = selected ? p.accentInk : p.ink2;
+    final ink = selected ? p.ink : p.ink2;
     final label = paneTitle(context.mtl, pane);
     final value = paneValue(context, ref, pane);
     return Padding(
       padding: const EdgeInsets.only(bottom: MTSpace.xxs),
-      child: Material(
-        color: selected ? p.accentSoft : Colors.transparent,
-        borderRadius: BorderRadius.circular(MTCorners.desktop.field),
-        child: InkWell(
-          onTap: onTap,
+      child: AnimatedContainer(
+        // The fill eases from one choice to the next, as the border does.
+        duration: mtMotionDuration(context, MTMotion.fast),
+        decoration: ShapeDecoration(
+          color: selected ? mtSelectedFill(p) : p.ink.withValues(alpha: 0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(MTCorners.desktop.field),
+          ),
+        ),
+        child: Material(
+          type: MaterialType.transparency,
           borderRadius: BorderRadius.circular(MTCorners.desktop.field),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: MTSpace.sm,
-              vertical: MTSpace.xs,
-            ),
-            child: Row(
-              children: [
-                MTIcon(
-                  _paneIcon(pane),
-                  size: MTDensity.desktop.icon,
-                  color: ink,
-                ),
-                const SizedBox(width: MTSpace.sm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: text.bodyMedium?.copyWith(
-                          color: selected ? p.accentInk : p.ink,
-                          fontWeight: selected ? FontWeight.w700 : null,
-                        ),
-                      ),
-                      // The setting as it stands, so a look down the list
-                      // answers most questions without opening anything.
-                      if (value != null)
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(MTCorners.desktop.field),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: MTSpace.sm,
+                vertical: MTSpace.xs,
+              ),
+              child: Row(
+                children: [
+                  MTIcon(
+                    _paneIcon(pane),
+                    size: MTDensity.desktop.icon,
+                    color: ink,
+                  ),
+                  const SizedBox(width: MTSpace.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          value,
+                          label,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: text.labelSmall?.copyWith(color: p.ink3),
+                          style: text.bodyMedium?.copyWith(
+                            color: p.ink,
+                            fontWeight: selected ? FontWeight.w700 : null,
+                          ),
                         ),
-                    ],
+                        // The setting as it stands, so a look down the list
+                        // answers most questions without opening anything.
+                        if (value != null)
+                          Text(
+                            value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: text.labelSmall?.copyWith(color: p.ink3),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

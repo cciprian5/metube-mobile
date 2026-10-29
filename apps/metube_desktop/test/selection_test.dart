@@ -141,7 +141,7 @@ void main() {
     await click(tester, 'Amber Skies');
     await click(tester, 'Blue Hour');
     await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
-    await tester.tap(byLabel('Delete From Server'));
+    await tester.tap(byLabel('Delete from server'));
     await tester.pumpAndSettle();
     expect(find.textContaining('Delete 2 clips'), findsOneWidget);
     await tester.tap(find.text('Delete').last);

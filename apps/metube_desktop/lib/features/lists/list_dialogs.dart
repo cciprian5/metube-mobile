@@ -9,6 +9,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/lists_data.dart';
 import '../../shell/shell_metrics.dart';
 import 'list_actions.dart';
+import '../../shell/ember_dialog.dart';
 
 /// Asks for a list's name: a new one, or [initial] to rename.
 Future<String?> promptPlaylistName(
@@ -53,7 +54,7 @@ Future<void> showAddToPlaylistDialog(BuildContext context, PlaylistItem item) =>
 Future<void> showAddAllToPlaylistDialog(
   BuildContext context,
   List<PlaylistItem> items,
-) => showDialog<void>(context: context, builder: (_) => _AddDialog(items));
+) => showEmberDialog<void>(context: context, builder: (_) => _AddDialog(items));
 
 class _AddDialog extends ConsumerStatefulWidget {
   const _AddDialog(this.items);

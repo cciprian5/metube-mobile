@@ -31,7 +31,7 @@ class EmberPlayerControl extends StatelessWidget {
     final p = MTThemeX.of(context).palette;
     final ink = onTap == null
         ? p.ink3
-        : (selected ? color ?? p.accentInk : this.ink ?? p.ink2);
+        : (selected ? color ?? p.ink : this.ink ?? p.ink2);
     // The veil under the mouse is of the glyph's own colour: white over a
     // picture, the ink elsewhere.
     final veil = switch (this.ink) {
@@ -58,11 +58,13 @@ class EmberPlayerControl extends StatelessWidget {
     // shuffle) showed only as a change of the glyph's colour, which
     // could not be told apart at a glance.
     style: IconButton.styleFrom(
-      backgroundColor: selected && this.ink == null ? p.accentSoft : null,
+      backgroundColor: selected && this.ink == null ? mtSelectedFill(p) : null,
       hoverColor: veil,
     ),
-    icon: MTIcon(
-      icon,
+    // A mode turned on or off, or the heart filled, swaps its glyph in
+    // place rather than jumping.
+    icon: MTIconSwap(
+      wahaj: icon,
       size: MTDensity.desktop.icon,
       color: ink,
       semanticLabel: label,
@@ -113,8 +115,8 @@ class EmberPlayButton extends StatelessWidget {
         child: SizedBox.square(
           dimension: MTDensity.desktop.row,
           child: Center(
-            child: MTIcon(
-              playing ? MTIcons.pause : MTIcons.playFill,
+            child: MTIconSwap(
+              wahaj: playing ? MTIcons.pause : MTIcons.playFill,
               size: MTDensity.desktop.icon,
               color: onTap == null ? p.ink3 : ink,
               semanticLabel: label,

@@ -30,6 +30,12 @@ ThemeData mtDesktopTheme(
   final hairline = BorderSide(color: p.line2, width: 1.6 * line);
 
   return base.copyWith(
+    // A page's title (Library, Channels, Settings) is the headline of the
+    // display face at its full weight. Left undefined, it fell back to
+    // Material's 24 at the regular weight, and every title read thin.
+    textTheme: base.textTheme.copyWith(
+      headlineSmall: base.textTheme.headlineLarge,
+    ),
     // "Warmth" instead of Material's sparkle: a press fills with the soft
     // accent and fades, with no ripple travelling across the control.
     splashFactory: NoSplash.splashFactory,
@@ -76,6 +82,12 @@ ThemeData mtDesktopTheme(
         foregroundColor: WidgetStateProperty.resolveWith(
           (states) =>
               states.contains(WidgetState.pressed) ? p.accentInk : p.ink2,
+        ),
+        // A button that is on (a panel shown, a mode chosen) is filled
+        // with the ink, as a chosen sidebar row is.
+        backgroundColor: WidgetStateProperty.resolveWith(
+          (states) =>
+              states.contains(WidgetState.selected) ? mtSelectedFill(p) : null,
         ),
         overlayColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.pressed)
@@ -131,6 +143,32 @@ ThemeData mtDesktopTheme(
       ),
       waitDuration: const Duration(milliseconds: 600),
     ),
+    // **One coloured action per dialog**: the filled one. A text button
+    // beside it (Cancel, Done) is in the ink; in the accent it took the
+    // colour while the filled button waited greyed out for a link.
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: p.ink,
+        textStyle: base.textTheme.labelLarge,
+      ),
+    ),
+    // Not yet possible, the filled button stays the ember, pale, so it
+    // still reads as the one action of the dialog.
+    filledButtonTheme: FilledButtonThemeData(
+      style: base.filledButtonTheme.style?.copyWith(
+        backgroundColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.disabled)
+              ? p.accent.withValues(alpha: mtDisabledAccent)
+              : p.accent,
+        ),
+        // The accent's own dark ink on its pale tint: legible by day and
+        // by night, as a disabled control must stay.
+        foregroundColor: WidgetStateProperty.resolveWith(
+          (states) =>
+              states.contains(WidgetState.disabled) ? p.accentInk : p.onAccent,
+        ),
+      ),
+    ),
     dialogTheme: DialogThemeData(
       backgroundColor: p.card,
       surfaceTintColor: Colors.transparent,
@@ -148,3 +186,17 @@ const double mtHoverVeil = 0.07;
 
 /// How much of the ember a pressed control is veiled with.
 const double mtPressVeil = 0.16;
+
+/// How much of the ember a filled button keeps while it cannot be pressed.
+const double mtDisabledAccent = 0.25;
+
+/// How much of the ink fills whatever is chosen in the chrome: a sidebar
+/// row, a settings section, a mode that is on. A step over the hover veil,
+/// so a hovered row never reads as the chosen one.
+const double mtSelectedVeil = 0.10;
+
+/// **The chosen row is filled with the ink, not the accent.** With the
+/// accent on every chosen row, on the add button and on the play button at
+/// once, it marked nothing; it is kept for the one action and for the data
+/// that follows playback.
+Color mtSelectedFill(MTPalette p) => p.ink.withValues(alpha: mtSelectedVeil);

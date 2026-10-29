@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/features/clip/clip_action_row.dart';
 import 'package:metube_desktop/features/clip/clip_page.dart';
 import 'package:metube_desktop/features/clip/clip_stage.dart';
 import 'package:metube_desktop/features/library/library_state.dart';
@@ -339,7 +340,12 @@ void main() {
       at: EmberRoutes.item(_a),
     );
     expect(find.byType(ClipPage), findsOneWidget);
-    await tester.tap(find.text('Add to Playlist'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(ClipActionRow),
+        matching: find.bySemanticsLabel('Add to playlist'),
+      ),
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Evening'));
     await tester.pumpAndSettle();
@@ -371,7 +377,7 @@ void main() {
       kind: PointerDeviceKind.mouse,
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Delete From Server'));
+    await tester.tap(find.text('Delete from server'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();

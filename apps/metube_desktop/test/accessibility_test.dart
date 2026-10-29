@@ -308,7 +308,7 @@ void main() {
         supportedLocales: MTLocalizations.supportedLocales,
         theme: mtTheme(MTVariant.superApp, Brightness.light),
         home: Center(
-          child: PulsingHelp(label: 'How folders work', onTap: () {}),
+          child: FolderHelp(label: 'How folders work', onTap: () {}),
         ),
       ),
     );

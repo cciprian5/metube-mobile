@@ -11,6 +11,7 @@ import '../../data/downloads_data.dart';
 import '../../shell/shell_metrics.dart';
 import '../library/artwork.dart';
 import 'add_options.dart';
+import '../../shell/ember_dialog.dart';
 
 /// How a playlist's clips are read; a test puts its own in.
 final playlistReaderProvider =
@@ -34,7 +35,7 @@ final playlistPreviewProvider = FutureProvider.autoDispose
 /// length, all ticked, to untick what is not wanted; one choice for all;
 /// sent one by one, and gathered into a saved list of the same name.
 Future<void> showBatchDialog(BuildContext context, String url) =>
-    showDialog<void>(context: context, builder: (_) => _BatchDialog(url));
+    showEmberDialog<void>(context: context, builder: (_) => _BatchDialog(url));
 
 class _BatchDialog extends ConsumerStatefulWidget {
   const _BatchDialog(this.url);

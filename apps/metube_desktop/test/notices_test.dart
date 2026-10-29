@@ -116,9 +116,9 @@ void main() {
       );
       await tester.pumpAndSettle();
       final [ok, failed] = notices.shown;
-      expect((ok.title, ok.body), ('Download Complete', 'Night Drive'));
+      expect((ok.title, ok.body), ('Download complete', 'Night Drive'));
       expect([for (final a in ok.actions) a.label], ['Play']);
-      expect(failed.title, 'Download Failed');
+      expect(failed.title, 'Download failed');
       expect(failed.body, startsWith('Blue Hour · '));
       expect(failed.body, isNot(endsWith('Failed')));
     });

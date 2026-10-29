@@ -4,6 +4,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../shell/key_cap.dart';
 import '../../shell/shell_metrics.dart';
 import '../library/clip_keys.dart';
+import '../../shell/ember_dialog.dart';
 
 /// One line of the sheet: the keys as printed on the keyboard, and what
 /// they do.
@@ -55,7 +56,7 @@ List<(String, List<ShortcutLine>)> shortcutGroups(MTLocalizations l) => [
 ];
 
 /// **The shortcuts sheet**, opened with "?".
-Future<void> showShortcutsSheet(BuildContext context) => showDialog<void>(
+Future<void> showShortcutsSheet(BuildContext context) => showEmberDialog<void>(
   context: context,
   builder: (dialog) {
     final l = dialog.mtl;

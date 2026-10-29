@@ -5,8 +5,8 @@ import 'package:mt_ui/mt_ui.dart';
 import 'panel/details_view.dart';
 import 'panel/queue_view.dart';
 import 'panel/transcript_view.dart';
-import 'pill.dart';
 import 'shell_metrics.dart';
+import 'panel/panel_tabs.dart';
 
 /// The panel's three faces.
 enum PanelTab { transcript, upNext, details }
@@ -47,21 +47,14 @@ class EmberRightPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Wrap(
-            spacing: MTSpace.xs,
-            runSpacing: MTSpace.xs,
-            children: [
-              for (final (face, label) in [
-                (PanelTab.transcript, l.transcript),
-                (PanelTab.upNext, l.upNext),
-                (PanelTab.details, l.details),
-              ])
-                EmberPill(
-                  label: label,
-                  selected: tab == face,
-                  onTap: () => onTab(face),
-                ),
+          PanelTabs<PanelTab>(
+            faces: [
+              (PanelTab.transcript, l.transcript),
+              (PanelTab.upNext, l.upNext),
+              (PanelTab.details, l.details),
             ],
+            chosen: tab,
+            onChoose: onTab,
           ),
           const SizedBox(height: MTSpace.lg),
           if (current == null)
@@ -96,14 +89,34 @@ class EmberRightPanel extends StatelessWidget {
             ),
             const SizedBox(height: MTSpace.md),
             Expanded(
-              child: switch (tab) {
-                PanelTab.transcript => TranscriptView(
-                  item: current,
-                  player: player,
+              // One face gives way to the next with a short cross-fade and a
+              // rise of a few points, not a cut.
+              child: AnimatedSwitcher(
+                duration: mtMotionDuration(context, MTMotion.fast),
+                switchInCurve: MTMotion.entrance,
+                switchOutCurve: MTMotion.exit,
+                transitionBuilder: (child, motion) => FadeTransition(
+                  opacity: motion,
+                  child: SlideTransition(
+                    position: Tween(
+                      begin: const Offset(0, 0.01),
+                      end: Offset.zero,
+                    ).animate(motion),
+                    child: child,
+                  ),
                 ),
-                PanelTab.upNext => QueueView(state: state, player: player),
-                PanelTab.details => DetailsView(item: current),
-              },
+                child: KeyedSubtree(
+                  key: ValueKey(tab),
+                  child: switch (tab) {
+                    PanelTab.transcript => TranscriptView(
+                      item: current,
+                      player: player,
+                    ),
+                    PanelTab.upNext => QueueView(state: state, player: player),
+                    PanelTab.details => DetailsView(item: current),
+                  },
+                ),
+              ),
             ),
           ],
         ],

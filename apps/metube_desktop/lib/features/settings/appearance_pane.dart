@@ -3,13 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/appearance_data.dart';
-import '../../shell/pill.dart';
 import '../../shell/ui_zoom.dart';
+import 'appearance_preview.dart';
 
 /// Day or night, the language, and the interface size. Each follows
 /// Windows (or 100%) until chosen, and each is this computer's alone.
+///
+/// The choices are joined buttons, and **beside them a small window shows
+/// the theme and the size being chosen**; under them where the pane is too
+/// narrow for both.
 class AppearancePane extends ConsumerWidget {
   const AppearancePane({super.key});
+
+  /// The pane's widest: the choices at a readable width, then the preview.
+  static const double maxWidth =
+      MTBreakpoint.readable + MTSpace.xxl + AppearancePreview.width;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,60 +26,186 @@ class AppearancePane extends ConsumerWidget {
     final appearance = ref.read(appearanceProvider.notifier);
     final zoom = ref.watch(uiZoomProvider);
     final zooms = ref.read(uiZoomProvider.notifier);
-    return Column(
+    final tooLarge = uiZoomSteps.any((s) => !zooms.fits(s));
+    final faded = uiZoomSteps
+        .where((s) => !zooms.fits(s))
+        .map((s) => mtLtrRun(UiZoom(s).percent))
+        .join(' ');
+    final choices = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ChoiceGroup(
           title: l.theme,
           children: [
-            for (final (mode, label) in [
-              (ThemeMode.system, l.themeSystem),
-              (ThemeMode.light, l.themeLight),
-              (ThemeMode.dark, l.themeDark),
-            ])
-              EmberPill(
-                label: label,
-                selected: look.theme == mode,
-                onTap: () => appearance.setTheme(mode),
-              ),
+            EmberSegments(
+              items: [
+                for (final (mode, label) in [
+                  (ThemeMode.system, l.themeSystem),
+                  (ThemeMode.light, l.themeLight),
+                  (ThemeMode.dark, l.themeDark),
+                ])
+                  EmberSegment(
+                    label: label,
+                    selected: look.theme == mode,
+                    onTap: () => appearance.setTheme(mode),
+                  ),
+              ],
+            ),
           ],
         ),
         ChoiceGroup(
           title: l.language,
           hint: look.locale == null ? l.desktopLanguageSystemHint : null,
           children: [
-            EmberPill(
-              label: l.languageSystem,
-              selected: look.locale == null,
-              onTap: () => appearance.setLocale(null),
+            EmberSegments(
+              items: [
+                EmberSegment(
+                  label: l.languageSystem,
+                  selected: look.locale == null,
+                  onTap: () => appearance.setLocale(null),
+                ),
+                for (final code in appearanceLocales)
+                  EmberSegment(
+                    label: mtLanguageName(code),
+                    selected: look.locale == code,
+                    onTap: () => appearance.setLocale(code),
+                  ),
+              ],
             ),
-            for (final code in appearanceLocales)
-              EmberPill(
-                label: mtLanguageName(code),
-                selected: look.locale == code,
-                onTap: () => appearance.setLocale(code),
-              ),
           ],
         ),
         ChoiceGroup(
           title: l.desktopUiSize,
-          // Each key name read left to right inside an Arabic sentence.
-          hint: l.desktopUiSizeHint(
-            mtLtrRun('Ctrl+='),
-            mtLtrRun('Ctrl+−'),
-            mtLtrRun('Ctrl+0'),
-          ),
+          // Why a size is faded, said in the line itself and not only in a
+          // tooltip; then the keys, each read left to right in Arabic too.
+          hint: [
+            if (tooLarge) '$faded: ${l.desktopUiSizeTooLarge}',
+            l.desktopUiSizeHint(
+              mtLtrRun('Ctrl+='),
+              mtLtrRun('Ctrl+−'),
+              mtLtrRun('Ctrl+0'),
+            ),
+          ].join('\n'),
           children: [
-            for (final step in uiZoomSteps)
-              _Step(
-                label: UiZoom(step).percent,
-                selected: zoom.value == step,
-                fits: zooms.fits(step),
-                onTap: () => zooms.set(step),
-              ),
+            EmberSegments(
+              items: [
+                for (final step in uiZoomSteps)
+                  EmberSegment(
+                    label: UiZoom(step).percent,
+                    selected: zoom.value == step,
+                    enabled: zooms.fits(step) || zoom.value == step,
+                    onTap: () => zooms.set(step),
+                  ),
+              ],
+            ),
           ],
         ),
       ],
+    );
+    return LayoutBuilder(
+      builder: (context, box) {
+        final preview = AppearancePreview(theme: look.theme, zoom: zoom.value);
+        // Beside the choices once they keep a readable width of their own;
+        // under them where they would not.
+        if (box.maxWidth < MTBreakpoint.readable) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              choices,
+              const SizedBox(height: MTSpace.md),
+              preview,
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: choices),
+            const SizedBox(width: MTSpace.xxl),
+            Padding(
+              padding: const EdgeInsets.only(top: MTSpace.lg),
+              child: preview,
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Choices joined on one ground, the chosen one lifted onto the card.
+class EmberSegments extends StatelessWidget {
+  const EmberSegments({super.key, required this.items});
+
+  final List<EmberSegment> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: p.cardAlt,
+        borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(MTSpace.xxs / 2),
+        child: Wrap(children: items),
+      ),
+    );
+  }
+}
+
+/// One of [EmberSegments]. A choice this screen cannot hold is faded, not
+/// missing, and takes no click.
+class EmberSegment extends StatelessWidget {
+  const EmberSegment({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.enabled = true,
+  });
+
+  final String label;
+  final bool selected;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    final text = Theme.of(context).textTheme;
+    final radius = BorderRadius.circular(
+      MTCorners.desktop.chip - MTSpace.xxs / 2,
+    );
+    return Semantics(
+      button: true,
+      selected: selected,
+      enabled: enabled,
+      child: Opacity(
+        opacity: enabled ? 1 : 0.4,
+        child: Material(
+          color: selected ? p.card : Colors.transparent,
+          borderRadius: radius,
+          child: InkWell(
+            borderRadius: radius,
+            onTap: enabled ? onTap : null,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: MTSpace.md,
+                vertical: MTSpace.xs,
+              ),
+              child: Text(
+                label,
+                style: text.labelMedium?.copyWith(
+                  color: selected ? p.ink : p.ink2,
+                  fontWeight: selected ? FontWeight.w700 : null,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -107,38 +241,6 @@ class ChoiceGroup extends StatelessWidget {
             Text(hint, style: text.labelSmall?.copyWith(color: p.ink3)),
           ],
         ],
-      ),
-    );
-  }
-}
-
-/// One interface size; a size this screen cannot hold is shown faded and
-/// says why, rather than missing.
-class _Step extends StatelessWidget {
-  const _Step({
-    required this.label,
-    required this.selected,
-    required this.fits,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final bool fits;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final pill = EmberPill(label: label, selected: selected, onTap: onTap);
-    if (fits || selected) return pill;
-    final why = context.mtl.desktopUiSizeTooLarge;
-    return MTShortcutTooltip(
-      message: why,
-      // The card is silent to a screen reader; the reason is said here.
-      child: Semantics(
-        enabled: false,
-        hint: why,
-        child: IgnorePointer(child: Opacity(opacity: 0.4, child: pill)),
       ),
     );
   }

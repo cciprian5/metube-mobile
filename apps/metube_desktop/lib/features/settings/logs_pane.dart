@@ -119,6 +119,7 @@ class _LogsPaneState extends ConsumerState<LogsPane> {
             ),
             MTLinkButton(
               label: l.clearLogs,
+              danger: true,
               icon: MTIcons.trash,
               onPressed: some ? () => unawaited(_clear()) : null,
             ),

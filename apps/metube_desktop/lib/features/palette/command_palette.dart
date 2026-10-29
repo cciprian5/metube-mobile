@@ -16,6 +16,7 @@ import '../../shell/focus_regions.dart';
 import 'palette_model.dart';
 import 'palette_rows.dart';
 import '../../shell/search_lens.dart';
+import '../../shell/key_cap.dart';
 
 /// **The command palette** (Ctrl+K): it drops from the top of the window
 /// and searches titles and what was said inside clips together, and runs
@@ -33,7 +34,7 @@ Future<void> showCommandPalette(
   barrierDismissible: true,
   barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
   barrierColor: MTThemeX.of(context).palette.ink.withValues(alpha: 0.18),
-  transitionDuration: MTMotion.fast,
+  transitionDuration: mtMotionDuration(context, MTMotion.fast),
   pageBuilder: (_, _, _) => _Palette(commands: commands, initial: initial),
   transitionBuilder: (_, animation, _, child) =>
       FadeTransition(opacity: animation, child: child),
@@ -284,9 +285,30 @@ class _PaletteState extends ConsumerState<_Palette> {
                     horizontal: MTSpace.md,
                     vertical: MTSpace.xs,
                   ),
-                  child: Text(
-                    l.desktopPaletteKeys,
-                    style: text.labelSmall?.copyWith(color: p.ink3),
+                  // Drawn keys and plain words, not a line of arrows and
+                  // dots.
+                  child: Wrap(
+                    spacing: MTSpace.xs,
+                    runSpacing: MTSpace.xxs,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      for (final (key, what) in [
+                        ('↑ ↓', l.desktopPaletteMove),
+                        ('Enter', l.desktopPaletteOpen),
+                        ('Esc', l.desktopPaletteClose),
+                      ]) ...[
+                        KeyCap(label: key),
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            end: MTSpace.sm,
+                          ),
+                          child: Text(
+                            what,
+                            style: text.labelSmall?.copyWith(color: p.ink3),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ],

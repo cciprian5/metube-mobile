@@ -4,9 +4,10 @@ import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import '../widgets/mt_polish.dart';
 
-/// The Wahaj switch: a hairline track whose knob is an empty ring when off
-/// and **the ember itself** when on, glowing in the accent. The only
-/// coloured thing on a settings page is the setting that is on.
+/// The Wahaj switch: a hairline track whose knob is an empty ring when off;
+/// on, **the track fills with the ink** and the knob turns the page's own
+/// colour. No glow and no accent: a page of settings has many switches on,
+/// and the accent on each of them marked nothing.
 ///
 /// Space or Enter toggles it from the keyboard, and the focus ring shows
 /// only when the keyboard put the focus there.
@@ -66,9 +67,9 @@ class _MTSwitchState extends State<MTSwitch> {
               height: _height,
               padding: const EdgeInsets.all(_inset),
               decoration: BoxDecoration(
-                color: on ? p.accentSoft : Colors.transparent,
+                color: on ? p.ink : Colors.transparent,
                 borderRadius: BorderRadius.circular(_height / 2),
-                border: Border.all(color: on ? p.accent : p.line2, width: 1.5),
+                border: Border.all(color: on ? p.ink : p.line2, width: 1.5),
                 boxShadow: _focusRing
                     ? [BoxShadow(color: p.accent, spreadRadius: 2)]
                     : null,
@@ -85,19 +86,8 @@ class _MTSwitchState extends State<MTSwitch> {
                   height: _knob,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: on ? p.accent : Colors.transparent,
-                    border: Border.all(
-                      color: on ? p.accent : p.ink3,
-                      width: 1.6,
-                    ),
-                    boxShadow: on
-                        ? [
-                            BoxShadow(
-                              color: p.accent.withValues(alpha: 0.22),
-                              spreadRadius: 3,
-                            ),
-                          ]
-                        : null,
+                    color: on ? p.bg : Colors.transparent,
+                    border: Border.all(color: on ? p.bg : p.ink3, width: 1.6),
                   ),
                 ),
               ),

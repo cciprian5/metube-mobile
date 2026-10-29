@@ -114,65 +114,85 @@ class SidebarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
-    final ink = selected ? p.accentInk : p.ink2;
+    final ink = selected ? p.ink : p.ink2;
     final glyph = MTIcon(icon, size: MTDensity.desktop.icon, color: ink);
-    final row = Material(
-      color: selected ? p.accentSoft : Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+    final row = AnimatedContainer(
+      // The fill eases from one choice to the next, as the border does.
+      duration: mtMotionDuration(context, MTMotion.fast),
+      decoration: ShapeDecoration(
+        color: selected ? mtSelectedFill(p) : p.ink.withValues(alpha: 0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+        ),
       ),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        onSecondaryTapUp: onMenu == null
-            ? null
-            : (d) => onMenu!(d.globalPosition),
-        child: SizedBox(
-          height: MTDensity.desktop.row,
-          // The icon alone too while the sidebar widens or narrows: its
-          // width passes through sizes the full line does not fit in,
-          // which overflowed for a few frames each time (logged).
-          child: LayoutBuilder(
-            builder: (context, box) => narrow || box.maxWidth < _fullLine
-                ? Center(child: glyph)
-                : Row(
-                    children: [
-                      SizedBox(
-                        width: indent
-                            ? MTSpace.xl
-                            : MTSpace.sm + MTSpace.md * depth,
-                      ),
-                      glyph,
-                      const SizedBox(width: MTSpace.sm),
-                      Expanded(
-                        child: Text(
-                          label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: selected ? p.accentInk : p.ink,
-                                fontWeight: selected ? FontWeight.w700 : null,
-                              ),
+      child: Material(
+        type: MaterialType.transparency,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          onSecondaryTapUp: onMenu == null
+              ? null
+              : (d) => onMenu!(d.globalPosition),
+          child: SizedBox(
+            height: MTDensity.desktop.row,
+            // The icon alone too while the sidebar widens or narrows: its
+            // width passes through sizes the full line does not fit in,
+            // which overflowed for a few frames each time (logged).
+            child: LayoutBuilder(
+              builder: (context, box) => narrow || box.maxWidth < _fullLine
+                  ? Center(child: glyph)
+                  : Row(
+                      children: [
+                        SizedBox(
+                          width: indent
+                              ? MTSpace.xl
+                              : MTSpace.sm + MTSpace.md * depth,
                         ),
-                      ),
-                      if (trailing case final count?)
-                        Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                            start: MTSpace.xs,
-                            end: MTSpace.sm,
-                          ),
-                          child: Text(
-                            count,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall
-                                ?.tabular
-                                .copyWith(color: p.ink3),
+                        glyph,
+                        const SizedBox(width: MTSpace.sm),
+                        Expanded(
+                          // The label fades in as the sidebar widens past it,
+                          // rather than popping in at the width it first fits.
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: 1),
+                            duration: mtMotionDuration(context, MTMotion.fast),
+                            builder: (context, shown, child) =>
+                                Opacity(opacity: shown, child: child),
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: p.ink,
+                                    fontWeight: selected
+                                        ? FontWeight.w700
+                                        : null,
+                                  ),
+                            ),
                           ),
                         ),
-                    ],
-                  ),
+                        if (trailing case final count?)
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                              start: MTSpace.xs,
+                              end: MTSpace.sm,
+                            ),
+                            child: Text(
+                              count,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.tabular
+                                  .copyWith(color: p.ink3),
+                            ),
+                          ),
+                      ],
+                    ),
+            ),
           ),
         ),
       ),

@@ -201,6 +201,19 @@ abstract final class MTIcons {
     'swap',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5v-13"/><path d="M4.2 8.2L7 5.4l2.8 2.8"/><path d="M17 5.5v13"/><path d="M14.2 15.8l2.8 2.8 2.8-2.8"/></svg>''',
   );
+
+  /// The server's addresses (at home and away): the network the server is
+  /// reached across. Its own glyph, apart from [swap], which is the sync.
+  static const globe = MTIconData(
+    'globe',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><path d="M3.9 12h16.2"/><path d="M12 3.8c2.2 2.3 3.3 5 3.3 8.2s-1.1 5.9-3.3 8.2c-2.2-2.3-3.3-5-3.3-8.2s1.1-5.9 3.3-8.2z"/></svg>''',
+  );
+
+  /// More actions behind a menu: three dots across.
+  static const more = MTIconData(
+    'more',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle fill="{ink}" stroke="none" cx="6" cy="12" r="1.5"/><circle fill="{ink}" stroke="none" cx="12" cy="12" r="1.5"/><circle fill="{ink}" stroke="none" cx="18" cy="12" r="1.5"/></svg>''',
+  );
   static const cookie = MTIconData(
     'cookie',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19.8 12.6a7.9 7.9 0 1 1-8.4-8.4 2.7 2.7 0 0 0 3.2 3.2 2.7 2.7 0 0 0 3 3 2.6 2.6 0 0 0 2.2 2.2z"/><circle fill="{ink}" stroke="none" cx="9" cy="10" r="1"/><circle fill="{ember}" stroke="none" cx="14.6" cy="14.6" r="1.1"/><circle fill="{ink}" stroke="none" cx="9.4" cy="15.4" r="1"/></svg>''',
@@ -292,6 +305,8 @@ abstract final class MTIcons {
     trash,
     folder,
     swap,
+    globe,
+    more,
     cookie,
     subscriptions,
     playback,

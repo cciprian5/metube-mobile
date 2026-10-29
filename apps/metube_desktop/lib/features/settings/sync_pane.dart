@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/folders_data.dart';
 import '../../data/sync_data.dart';
 import 'simple_panes.dart';
+import '../../shell/folded_text.dart';
 
 /// A device as the user knows it: the kind, and the short part of its name
 /// that tells two phones apart.
@@ -64,7 +65,7 @@ class SyncPane extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
+        FoldedText(
           l.desktopSyncHint,
           style: text.bodyMedium?.copyWith(color: p.ink2),
         ),

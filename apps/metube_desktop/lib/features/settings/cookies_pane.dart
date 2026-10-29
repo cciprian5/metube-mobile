@@ -9,6 +9,7 @@ import '../../data/folders_data.dart';
 import '../../data/library_data.dart';
 import '../../shell/error_text.dart';
 import 'simple_panes.dart';
+import '../../shell/folded_text.dart';
 
 /// Whether the server holds cookies; null while unknown, and for a MeTube
 /// too old to say.
@@ -108,7 +109,10 @@ class _CookiesPaneState extends ConsumerState<CookiesPane> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(l.cookiesWhat, style: text.bodyMedium?.copyWith(color: p.ink2)),
+        FoldedText(
+          l.cookiesWhat,
+          style: text.bodyMedium?.copyWith(color: p.ink2),
+        ),
         const SizedBox(height: MTSpace.sm),
         SettingLine(
           title: api == null
@@ -133,16 +137,17 @@ class _CookiesPaneState extends ConsumerState<CookiesPane> {
             hint: l.cookiesDeleteBody,
             trailing: MTLinkButton(
               label: l.delete,
+              danger: true,
               icon: MTIcons.trash,
               onPressed: _busy ? null : () => unawaited(_delete()),
             ),
           ),
         const SizedBox(height: MTSpace.sm),
-        Text(l.desktopCookiesReplaceNote, style: note),
+        FoldedText(l.desktopCookiesReplaceNote, style: note),
         const SizedBox(height: MTSpace.sm),
-        Text(l.cookiesHelp, style: note),
+        FoldedText(l.cookiesHelp, style: note),
         const SizedBox(height: MTSpace.sm),
-        Text(l.desktopCookiesPrivacy, style: note),
+        FoldedText(l.desktopCookiesPrivacy, style: note),
       ],
     );
   }

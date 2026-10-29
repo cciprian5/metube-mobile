@@ -7,6 +7,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/library_data.dart';
 import '../../shell/shell_metrics.dart';
+import '../../shell/ember_dialog.dart';
 
 /// One clip's tags: every tag in the library to tick or untick, and a
 /// field for a new one. Each change is written at once, as on the phone,
@@ -20,7 +21,7 @@ Future<void> showTagsDialog(BuildContext context, String canonicalUrl) =>
 /// The same for several clips at once: a tag some of them carry shows a
 /// dash, and ticking it gives it to them all.
 Future<void> showTagsDialogFor(BuildContext context, List<String> urls) =>
-    showDialog<void>(context: context, builder: (_) => _TagsDialog(urls));
+    showEmberDialog<void>(context: context, builder: (_) => _TagsDialog(urls));
 
 class _TagsDialog extends ConsumerStatefulWidget {
   const _TagsDialog(this.urls);

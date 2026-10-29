@@ -86,6 +86,9 @@ class ReadingParagraphView extends StatelessWidget {
       spans.add(TextSpan(text: rest, style: style));
     }
     final start = segments[paragraph.first].start;
+    final line = now;
+    final heard =
+        line != null && line >= paragraph.first && line <= paragraph.last;
     return Padding(
       padding: const EdgeInsets.only(bottom: MTSpace.lg),
       child: Row(
@@ -102,9 +105,12 @@ class ReadingParagraphView extends StatelessWidget {
                   onPressed: () => onJump(paragraph.first),
                   child: Text(
                     mtLtrRun(mtFormatDuration(start)),
+                    // Grey down the column, and the accent only beside the
+                    // paragraph being heard: the time in the accent at the
+                    // head of every paragraph dotted the page with it.
                     style: text.labelSmall?.tabular.copyWith(
-                      color: p.accent,
-                      fontWeight: FontWeight.w700,
+                      color: heard ? p.accentInk : p.ink3,
+                      fontWeight: heard ? FontWeight.w700 : null,
                     ),
                   ),
                 ),

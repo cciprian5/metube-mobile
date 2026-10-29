@@ -58,30 +58,36 @@ class TranscriptLine extends StatelessWidget {
                 width: MTSpace.xxl * 2,
                 child: Text(
                   mtFormatDuration(line.start),
+                  // Grey down the list, the accent only beside the line
+                  // being heard, as in the reading room.
                   style: text.labelSmall?.tabular.copyWith(
-                    color: current ? p.accentInk : p.accent,
-                    fontWeight: FontWeight.w700,
+                    color: current ? p.accentInk : p.ink3,
+                    fontWeight: current ? FontWeight.w700 : null,
                   ),
                 ),
               ),
               Expanded(
-                child: marks.isEmpty
-                    ? Text(
-                        words,
-                        textDirection: mtTextDirectionOf(
+                // The words take their new colour and weight at the pace
+                // the background does, so the line does not blink.
+                child: AnimatedDefaultTextStyle(
+                  duration: mtMotionDuration(context, MTMotion.fast),
+                  style: style ?? const TextStyle(),
+                  child: marks.isEmpty
+                      ? Text(
                           words,
-                          Directionality.of(context),
+                          textDirection: mtTextDirectionOf(
+                            words,
+                            Directionality.of(context),
+                          ),
+                        )
+                      : Text.rich(
+                          TextSpan(children: _spans(words, p)),
+                          textDirection: mtTextDirectionOf(
+                            words,
+                            Directionality.of(context),
+                          ),
                         ),
-                        style: style,
-                      )
-                    : Text.rich(
-                        TextSpan(children: _spans(words, p)),
-                        textDirection: mtTextDirectionOf(
-                          words,
-                          Directionality.of(context),
-                        ),
-                        style: style,
-                      ),
+                ),
               ),
             ],
           ),

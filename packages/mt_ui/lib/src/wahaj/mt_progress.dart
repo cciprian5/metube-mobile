@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import '../widgets/mt_polish.dart';
 
 /// Waiting without a known end: a hairline ring with a gap, turning, the
 /// ember riding the head of the arc. Stands still when the system asks for
@@ -124,13 +125,13 @@ class MTProgressBar extends StatelessWidget {
               children: [
                 Container(height: _line, color: p.line2),
                 AnimatedContainer(
-                  duration: MTMotion.fast,
+                  duration: mtMotionDuration(context, MTMotion.fast),
                   width: filled,
                   height: _line,
                   color: p.accent,
                 ),
                 AnimatedPositionedDirectional(
-                  duration: MTMotion.fast,
+                  duration: mtMotionDuration(context, MTMotion.fast),
                   start: filled - _ember / 2,
                   child: Container(
                     key: const ValueKey('ember'),

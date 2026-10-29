@@ -69,6 +69,9 @@ class _SelectionFrameState extends ConsumerState<SelectionFrame> {
     return false;
   }
 
+  /// The choice the bar shows, kept while it leaves.
+  List<LibraryItem> _shown = const [];
+
   @override
   Widget build(BuildContext context) {
     final chosen = ref.watch(librarySelectionProvider).urls;
@@ -76,15 +79,41 @@ class _SelectionFrameState extends ConsumerState<SelectionFrame> {
       for (final i in widget.items)
         if (chosen.contains(i.canonicalUrl)) i,
     ];
+    // The bar rises a few points as it fades in and drops back quicker as
+    // it leaves, holding the last choice while it goes.
+    if (items.isNotEmpty) _shown = items;
+    final shown = items.isNotEmpty;
     return Stack(
       children: [
         widget.child,
-        if (items.isNotEmpty)
+        if (_shown.isNotEmpty)
           PositionedDirectional(
             start: MTSpace.xl,
             end: MTSpace.xl,
             bottom: MTSpace.lg,
-            child: Center(child: _Bar(items: items)),
+            child: IgnorePointer(
+              ignoring: !shown,
+              child: AnimatedSlide(
+                offset: shown ? Offset.zero : const Offset(0, 0.25),
+                duration: mtMotionDuration(
+                  context,
+                  shown ? MTMotion.page : MTMotion.fast,
+                ),
+                curve: shown ? MTMotion.entrance : MTMotion.exit,
+                child: AnimatedOpacity(
+                  opacity: shown ? 1 : 0,
+                  duration: mtMotionDuration(
+                    context,
+                    shown ? MTMotion.page : MTMotion.fast,
+                  ),
+                  curve: shown ? MTMotion.entrance : MTMotion.exit,
+                  onEnd: () {
+                    if (!shown && mounted) setState(() => _shown = const []);
+                  },
+                  child: Center(child: _Bar(items: _shown)),
+                ),
+              ),
+            ),
           ),
       ],
     );

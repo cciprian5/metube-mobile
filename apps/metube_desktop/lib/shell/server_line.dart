@@ -13,6 +13,10 @@ import 'context_menu.dart';
 /// The foot of the sidebar: which server address is in use and whether it
 /// answers, and the switch to another saved one in a click. Switching is
 /// by hand only, as in Addresses: nothing changes by itself.
+///
+/// **A server that answers is not announced**: the address beside a quiet
+/// server mark. Only a server that is still being reached, or does not
+/// answer, gets its coloured dot; a green dot always on was decoration.
 class SidebarServerLine extends ConsumerWidget {
   const SidebarServerLine({super.key, required this.narrow});
 
@@ -28,16 +32,25 @@ class SidebarServerLine extends ConsumerWidget {
     final addresses = ref.watch(addressesProvider);
     final active = addresses.active ?? config.baseUrl;
     final host = Uri.tryParse(active)?.authority ?? active;
-    final (status, color) = switch (ref.watch(historyProvider)) {
+    final history = ref.watch(historyProvider);
+    final (status, color) = switch (history) {
       AsyncData() => (l.serverStatusConnected, p.ok),
       AsyncError() => (l.serverStatusOffline, p.err),
       _ => (l.serverStatusChecking, p.ink3),
     };
-    final dot = Container(
-      width: MTSpace.xs,
-      height: MTSpace.xs,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-    );
+    final dot = history is AsyncData
+        ? MTIcon(
+            MTIcons.server,
+            key: const ValueKey('server-quiet'),
+            size: MTSpace.md,
+            color: p.ink3,
+          )
+        : Container(
+            key: const ValueKey('server-dot'),
+            width: MTSpace.xs,
+            height: MTSpace.xs,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          );
     return MTShortcutTooltip(
       message: '$status · $host',
       child: Semantics(

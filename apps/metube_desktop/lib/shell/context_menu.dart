@@ -51,6 +51,14 @@ Future<T?> showEmberMenu<T>(
   final iconRoom = entries.any((e) => e.icon != null);
   return showMenu<T>(
     context: context,
+    // At the app's pace: in as a page comes, out as quickly as a hover;
+    // Flutter's own took 300 ms each way.
+    popUpAnimationStyle: AnimationStyle(
+      duration: mtMotionDuration(context, MTMotion.page),
+      reverseDuration: mtMotionDuration(context, MTMotion.fast),
+      curve: MTMotion.entrance,
+      reverseCurve: MTMotion.exit,
+    ),
     // The menu opens on the reading side of the pointer, as Windows' own
     // do: rightwards in English, leftwards in Arabic, and only turns back
     // at the window's edge. Given a point, Flutter opens it towards the

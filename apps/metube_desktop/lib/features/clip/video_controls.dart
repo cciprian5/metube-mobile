@@ -99,7 +99,7 @@ class _ClipVideoControlsState extends ConsumerState<ClipVideoControls> {
                   ignoring: !shown,
                   child: AnimatedOpacity(
                     opacity: shown ? 1 : 0,
-                    duration: MTMotion.fast,
+                    duration: mtMotionDuration(context, MTMotion.fast),
                     child: _Bar(
                       player: _player,
                       state: state,

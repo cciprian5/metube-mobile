@@ -20,9 +20,25 @@ Future<void> showDownloadsPanel(BuildContext context) => showGeneralDialog(
   barrierDismissible: true,
   barrierLabel: context.mtl.desktopDownloads,
   barrierColor: Colors.transparent,
-  transitionDuration: MTMotion.tap,
-  transitionBuilder: (_, animation, _, child) =>
-      FadeTransition(opacity: animation, child: child),
+  transitionDuration: mtMotionDuration(context, MTMotion.page),
+  // It grows from the button's corner as it fades in, as a menu does.
+  transitionBuilder: (context, animation, _, child) {
+    final eased = CurvedAnimation(
+      parent: animation,
+      curve: MTMotion.entrance,
+      reverseCurve: MTMotion.exit,
+    );
+    return FadeTransition(
+      opacity: eased,
+      child: ScaleTransition(
+        alignment: AlignmentDirectional.topEnd.resolve(
+          Directionality.of(context),
+        ),
+        scale: Tween<double>(begin: 0.97, end: 1).animate(eased),
+        child: child,
+      ),
+    );
+  },
   pageBuilder: (context, _, _) => const DownloadsPanel(),
 );
 
@@ -214,6 +230,7 @@ class _CopyLine extends ConsumerWidget {
       thumbnail: copy.thumbnail,
       status: status,
       error: copy.phase == CopyPhase.failed,
+      done: copy.phase == CopyPhase.done,
       progress: switch (copy.phase) {
         CopyPhase.pulling => copy.progress,
         _ => null,

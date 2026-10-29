@@ -51,32 +51,42 @@ void main() {
       )
       .opacity;
 
-  bool lifted(WidgetTester tester) {
-    final box = tester.widget<AnimatedContainer>(
-      find.descendant(
-        of: find.byType(MTHoverLift),
-        matching: find.byType(AnimatedContainer),
-      ),
-    );
-    final shadow = (box.decoration as BoxDecoration?)?.boxShadow;
-    return shadow != null && shadow.isNotEmpty;
-  }
+  BoxDecoration plate(WidgetTester tester) =>
+      tester
+              .widget<AnimatedContainer>(
+                find.byKey(const ValueKey('hover-plate')),
+              )
+              .decoration!
+          as BoxDecoration;
 
-  testWidgets('on Windows a card rises under the mouse and offers play', (
+  bool shown(WidgetTester tester) => plate(tester).color!.a > 0;
+
+  testWidgets('on Windows a plate appears behind a card and offers play', (
     tester,
   ) async {
     await pump(tester, card(), desktop: true);
     expect(playMark(tester), 0);
-    expect(lifted(tester), isFalse);
+    expect(shown(tester), isFalse);
 
     final mouse = await hover(tester, find.byType(MTMediaGridCard));
     expect(playMark(tester), 1);
-    expect(lifted(tester), isTrue);
+    expect(shown(tester), isTrue);
+    // **The guard**: no glow and no lift, only the plate.
+    expect(plate(tester).boxShadow, isNull);
+    expect(
+      find.descendant(
+        of: find.byType(MTHoverLift),
+        matching: find.byWidgetPredicate(
+          (w) => w is AnimatedContainer && w.transform != null,
+        ),
+      ),
+      findsNothing,
+    );
 
     await mouse.moveTo(const Offset(700, 500));
     await tester.pumpAndSettle();
     expect(playMark(tester), 0);
-    expect(lifted(tester), isFalse);
+    expect(shown(tester), isFalse);
   });
 
   testWidgets('**the guard**: on a phone, even with a mouse, nothing moves', (

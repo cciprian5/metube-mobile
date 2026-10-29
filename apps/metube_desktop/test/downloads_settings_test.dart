@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metube_desktop/features/clip/clip_action_row.dart';
 import 'package:metube_desktop/data/addresses_data.dart';
 import 'package:metube_desktop/data/setup_data.dart';
 import 'package:metube_desktop/data/downloads_data.dart';
@@ -136,7 +137,20 @@ void main() {
         ),
       ],
     );
-    expect(find.text('Make available offline'), findsOneWidget);
+    // **The guard**: the offline copy leads the page as its one filled
+    // button, and "Download…" waits under More.
+    expect(
+      find.widgetWithText(FilledButton, 'Make available offline'),
+      findsOneWidget,
+    );
+    expect(find.text('Download…'), findsNothing);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(ClipActionRow),
+        matching: find.bySemanticsLabel('More'),
+      ),
+    );
+    await tester.pumpAndSettle();
     expect(find.text('Download…'), findsOneWidget);
   });
 

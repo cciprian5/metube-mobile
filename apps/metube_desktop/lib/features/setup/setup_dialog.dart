@@ -11,6 +11,7 @@ import '../../data/setup_data.dart';
 import '../../shell/error_text.dart';
 import '../../shell/shell_metrics.dart';
 import 'setup_sections.dart';
+import '../../shell/ember_dialog.dart';
 
 /// Whether [config] reaches a MeTube server that lets it in; throws the
 /// client's own reason when not. A test puts its own in.
@@ -40,7 +41,7 @@ const _serverGuide =
 Future<void> showSetupDialog(BuildContext context) {
   // The session's one interruption: no tip after it.
   ProviderScope.containerOf(context).read(hintsProvider.notifier).interrupted();
-  return showDialog<void>(
+  return showEmberDialog<void>(
     context: context,
     builder: (_) => const _SetupDialog(),
   );

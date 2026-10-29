@@ -95,6 +95,76 @@ class _Bar extends StatelessWidget {
   }
 }
 
+/// The library's figures in **one frame split by hairlines**, as many to a
+/// row as fit. Four or five boxes of their own, each with its border and
+/// corners, were one of the marks of a generated dashboard.
+class StatsFigures extends StatelessWidget {
+  const StatsFigures({super.key, required this.figures});
+
+  final List<StatsTile> figures;
+
+  /// Wide enough that five figures line up in two rows at most.
+  static const double _minWidth = 160;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    final rule = BorderSide(
+      color: p.line,
+      width: MTThemeX.of(context).hairline,
+    );
+    return LayoutBuilder(
+      builder: (context, box) {
+        final across = (box.maxWidth / _minWidth).floor().clamp(
+          1,
+          figures.length,
+        );
+        final rows = [
+          for (var i = 0; i < figures.length; i += across)
+            figures.sublist(i, (i + across).clamp(0, figures.length)),
+        ];
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: p.card,
+            borderRadius: BorderRadius.circular(MTCorners.desktop.card),
+            border: Border.fromBorderSide(rule),
+          ),
+          child: Column(
+            children: [
+              for (final (r, row) in rows.indexed)
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border(top: r == 0 ? BorderSide.none : rule),
+                  ),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (var c = 0; c < across; c++)
+                          Expanded(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                border: BorderDirectional(
+                                  start: c == 0 ? BorderSide.none : rule,
+                                ),
+                              ),
+                              child: c < row.length
+                                  ? row[c]
+                                  : const SizedBox.shrink(),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 /// One of the library's figures: the number large, what it counts beneath.
 class StatsTile extends StatelessWidget {
   const StatsTile({super.key, required this.value, required this.label});
@@ -106,14 +176,8 @@ class StatsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
-    return Container(
-      constraints: const BoxConstraints(minWidth: _width),
+    return Padding(
       padding: const EdgeInsets.all(MTSpace.lg),
-      decoration: BoxDecoration(
-        color: p.card,
-        borderRadius: BorderRadius.circular(MTCorners.desktop.card),
-        border: Border.all(color: p.line, width: MTThemeX.of(context).hairline),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,9 +189,6 @@ class StatsTile extends StatelessWidget {
       ),
     );
   }
-
-  /// Wide enough that five tiles line up in two rows at most.
-  static const double _width = 160;
 }
 
 /// What may deserve a look, with the first few clips it means; a click

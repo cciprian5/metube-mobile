@@ -43,7 +43,7 @@ class PlaylistLine extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: MTSpace.xxs),
       child: Material(
-        color: current ? p.accentSoft : p.bg,
+        color: current ? mtSelectedFill(p) : p.bg,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
         ),
@@ -100,9 +100,7 @@ class PlaylistLine extends ConsumerWidget {
                           Directionality.of(context),
                         ),
                         style: text.bodySmall?.copyWith(
-                          color: missing
-                              ? p.ink3
-                              : (current ? p.accentInk : p.ink),
+                          color: missing ? p.ink3 : p.ink,
                           fontWeight: current ? FontWeight.w700 : null,
                         ),
                       ),

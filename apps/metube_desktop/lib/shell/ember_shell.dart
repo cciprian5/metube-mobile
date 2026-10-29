@@ -34,6 +34,7 @@ import 'focus_regions.dart';
 import 'keyboard.dart';
 import 'mini_window.dart';
 import 'nav_history.dart';
+import 'panel_reveal.dart';
 import 'panel/transcript_view.dart';
 import 'player_bar.dart';
 import 'right_panel.dart';
@@ -348,32 +349,18 @@ class _EmberShellState extends ConsumerState<EmberShell> {
                                 focus: ref.watch(contentFocusProvider),
                               ),
                             ),
-                            if (!arranged.panelBeside &&
-                                _overlayOpen &&
-                                !theater) ...[
-                              Positioned.fill(
-                                child: GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () =>
-                                      setState(() => _overlayOpen = false),
-                                ),
+                            if (!arranged.panelBeside && !theater)
+                              ...overlayPanel(
+                                open: _overlayOpen,
+                                onClose: () =>
+                                    setState(() => _overlayOpen = false),
+                                panel: panel,
                               ),
-                              PositionedDirectional(
-                                top: 0,
-                                bottom: 0,
-                                end: 0,
-                                child: DecoratedBox(
-                                  decoration: const BoxDecoration(
-                                    boxShadow: MTShadow.card,
-                                  ),
-                                  child: panel,
-                                ),
-                              ),
-                            ],
                           ],
                         ),
                       ),
-                      if (arranged.panelBeside && panelShown) panel,
+                      if (arranged.panelBeside)
+                        PanelReveal(shown: panelShown, child: panel),
                     ],
                   ),
                 ),

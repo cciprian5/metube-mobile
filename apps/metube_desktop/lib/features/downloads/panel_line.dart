@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../library/artwork.dart';
+import 'done_check.dart';
 
 /// One line of the panel: the title, what is happening to it, a thin bar
 /// while it moves, and its actions.
@@ -13,6 +14,7 @@ class PanelLine extends ConsumerWidget {
     required this.status,
     this.thumbnail,
     this.error = false,
+    this.done = false,
     this.progress,
     this.actions = const [],
     this.onClose,
@@ -27,6 +29,9 @@ class PanelLine extends ConsumerWidget {
   final String? thumbnail;
   final String status;
   final bool error;
+
+  /// Arrived: a check is drawn before the status.
+  final bool done;
 
   /// 0 to 1; a negative value moves without a known end; null shows none.
   final double? progress;
@@ -74,13 +79,24 @@ class PanelLine extends ConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                   style: text.bodyMedium,
                 ),
-                Text(
-                  status,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: text.labelSmall?.copyWith(
-                    color: error ? p.err : p.ink3,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (done) ...[
+                      const DoneCheck(),
+                      const SizedBox(width: MTSpace.xxs),
+                    ],
+                    Flexible(
+                      child: Text(
+                        status,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.labelSmall?.copyWith(
+                          color: error ? p.err : p.ink3,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 if (progress case final value?)
                   Padding(

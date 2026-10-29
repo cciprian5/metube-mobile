@@ -7,12 +7,16 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/lists_data.dart';
 import '../../shell/shell_metrics.dart';
 import 'list_actions.dart';
+import '../../shell/ember_dialog.dart';
 
 /// Every tag with its count, to rename or delete. Renaming onto a tag that
 /// already exists merges the two; deleting takes the tag off the clips and
 /// leaves the clips.
 Future<void> showManageTagsDialog(BuildContext context) =>
-    showDialog<void>(context: context, builder: (_) => const _ManageTags());
+    showEmberDialog<void>(
+      context: context,
+      builder: (_) => const _ManageTags(),
+    );
 
 class _ManageTags extends ConsumerWidget {
   const _ManageTags();
@@ -93,6 +97,7 @@ class _ManageTags extends ConsumerWidget {
                             const SizedBox(width: MTSpace.sm),
                             MTLinkButton(
                               label: l.delete,
+                              danger: true,
                               onPressed: () =>
                                   unawaited(_delete(context, ref, tag)),
                             ),

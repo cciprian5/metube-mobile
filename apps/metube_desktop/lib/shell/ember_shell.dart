@@ -9,6 +9,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../data/backup_data.dart';
 import '../data/covers/covers_data.dart';
 import '../data/library_data.dart';
+import '../data/library_watch.dart';
 import '../data/sync_runner.dart';
 import '../data/taskbar_data.dart';
 import '../data/lists_data.dart';
@@ -125,6 +126,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     ref.watch(coverEnrichmentProvider);
     ref.watch(startupBackupProvider);
     ref.watch(syncRunnerProvider);
+    ref.watch(libraryWatchProvider);
     ref.watch(taskbarDownloadsWiringProvider);
 
     // Theater widens a clip's picture over the side panel's column too.

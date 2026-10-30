@@ -5,6 +5,7 @@ import 'package:mt_media/mt_media.dart';
 
 import '../di.dart';
 import 'addresses_data.dart';
+import 'library_watch.dart';
 import 'setup_data.dart';
 
 /// The server to talk to: the set-up account at the address chosen in
@@ -34,6 +35,8 @@ final apiClientProvider = Provider<MeTubeApiClient?>((ref) {
 final historyProvider = FutureProvider<HistoryResponse?>((ref) async {
   final api = ref.watch(apiClientProvider);
   if (api == null) return null;
+  // The watcher's fresh list, when it is what brought this here.
+  if (ref.read(historyHandoffProvider).take() case final fresh?) return fresh;
   return (await api.fetchHistory()).withoutCaptions();
 });
 

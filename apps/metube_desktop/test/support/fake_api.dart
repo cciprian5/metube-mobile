@@ -9,6 +9,19 @@ class FakeApi extends MeTubeApiClient {
 
   final List<List<String>> deleted = [];
 
+  /// The server's list, when a test sets it; null asks the real client,
+  /// which reaches nothing.
+  HistoryResponse? history;
+
+  /// How many times the list was asked for.
+  var historyAsked = 0;
+
+  @override
+  Future<HistoryResponse> fetchHistory() async {
+    historyAsked++;
+    return history ?? super.fetchHistory();
+  }
+
   /// What the server answers a delete with instead; null deletes.
   Object? deleteError;
 

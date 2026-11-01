@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import '../widgets/mt_desktop_app.dart';
+
+/// Each platform's own scale: the phones share this dialog with the
+/// computer since the mobile plan of 2026-11-01.
+MTCorners _cornersOf(BuildContext context) =>
+    MTDesktopApp.isDesktop(context) ? MTCorners.desktop : MTCorners.mobile;
 
 /// The Wahaj confirmation: a light card with the heading in Kufi, and
 /// **the clip itself shown before anything is deleted**, so nobody removes
@@ -57,7 +63,7 @@ class MTConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
-    final corners = MTCorners.desktop;
+    final corners = _cornersOf(context);
     final buttonShape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(corners.field),
     );
@@ -153,7 +159,7 @@ class MTDialogClip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
-    final corners = MTCorners.desktop;
+    final corners = _cornersOf(context);
     return Container(
       padding: const EdgeInsets.all(MTSpace.xs),
       decoration: BoxDecoration(

@@ -33,6 +33,7 @@ class MTAudioScreen extends StatelessWidget {
     this.companion,
     this.isFavorite,
     this.onFavorite,
+    this.peek,
   });
 
   final MTAudioHandler handler;
@@ -69,6 +70,16 @@ class MTAudioScreen extends StatelessWidget {
   /// toggle. Both or neither.
   final bool Function(PlaylistItem item)? isFavorite;
   final void Function(PlaylistItem item)? onFavorite;
+
+  /// **A glimpse under the controls on a tall phone** (mobile plan
+  /// 2026-11-01): the transcript's current lines, in place of [extra]'s
+  /// button. Null for a clip with nothing to show, and left out on a short
+  /// screen or at a large text size, where the button comes back.
+  final Widget? Function(PlaylistItem item)? peek;
+
+  /// The height a phone needs before [peek] shows, in logical points: the
+  /// Galaxy S22 (823) and taller.
+  static const peekMinHeight = 780.0;
 
   @override
   Widget build(BuildContext context) => StreamBuilder<MediaItem?>(
@@ -139,70 +150,84 @@ class MTAudioScreen extends StatelessWidget {
     PlaylistItem item,
     MediaItem media, {
     Widget? below,
-  }) => MTReadableWidth(
-    maxWidth: below == null ? MTBreakpoint.player : MTBreakpoint.readable,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: MTSpace.xl),
-      child: Column(
-        children: [
-          _Header(handler: handler, onDetails: onDetails),
-          // The cover takes what the rest leaves, up to its usual size: at
-          // Android's largest text on a small phone the fixed-size cover
-          // pushed the controls past the bottom. The spare room stays two
-          // parts above to one below.
-          Expanded(
-            flex: 5,
-            child: LayoutBuilder(
-              builder: (context, box) {
-                final size = math.min(
-                  _artSize(context),
-                  box.maxHeight - MTSpace.lg * 2,
-                );
-                if (size < _smallestArt) return const SizedBox();
-                return Align(
-                  alignment: const Alignment(0, 1 / 3),
-                  child: MTBreathingGlow(
-                    playing: handler.playingNotifier,
-                    size: size,
-                    child: MTTiltedArtwork(
-                      item: item,
-                      artwork: cover ?? artwork,
+  }) {
+    final size = MediaQuery.sizeOf(context);
+    final roomy =
+        below == null &&
+        size.height >= peekMinHeight &&
+        MediaQuery.textScalerOf(context).scale(1) <= 1.3;
+    final shownPeek = roomy ? peek?.call(item) : null;
+    return MTReadableWidth(
+      maxWidth: below == null ? MTBreakpoint.player : MTBreakpoint.readable,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: MTSpace.xl),
+        child: Column(
+          children: [
+            _Header(handler: handler, onDetails: onDetails),
+            // The cover takes what the rest leaves, up to its usual size: at
+            // Android's largest text on a small phone the fixed-size cover
+            // pushed the controls past the bottom. The spare room stays two
+            // parts above to one below.
+            Expanded(
+              flex: 5,
+              child: LayoutBuilder(
+                builder: (context, box) {
+                  final size = math.min(
+                    _artSize(context),
+                    box.maxHeight - MTSpace.lg * 2,
+                  );
+                  if (size < _smallestArt) return const SizedBox();
+                  return Align(
+                    alignment: const Alignment(0, 1 / 3),
+                    child: MTBreathingGlow(
+                      playing: handler.playingNotifier,
                       size: size,
-                      // The glow behind is the light; a deep shadow under
-                      // the plate as well read as two.
-                      shadow: false,
+                      child: MTTiltedArtwork(
+                        item: item,
+                        artwork: cover ?? artwork,
+                        size: size,
+                        // The glow behind is the light; a deep shadow under
+                        // the plate as well read as two.
+                        shadow: false,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-          MTAudioTitles(
-            item: item,
-            media: media,
-            playlistName: playlistName,
-            index: handler.currentIndex,
-            total: handler.items.length,
-            showSourceChip: showSourceChip,
-            favorite: isFavorite?.call(item) ?? false,
-            onFavorite: onFavorite == null ? null : () => onFavorite!(item),
-          ),
-          const SizedBox(height: MTSpace.xl),
-          MTAudioSlider(handler: handler, media: media),
-          const SizedBox(height: MTSpace.md),
-          MTPlayerControlsRow(handler: handler),
-          const SizedBox(height: MTSpace.lg),
-          MTAudioSubControls(
-            handler: handler,
-            onQueue: _onTablet(context) ? null : () => _openQueue(context),
-            extra: _onTablet(context) ? null : extra?.call(item),
-          ),
-          const SizedBox(height: MTSpace.lg),
-          if (below != null) Expanded(flex: 4, child: below),
-        ],
+            MTAudioTitles(
+              item: item,
+              media: media,
+              playlistName: playlistName,
+              index: handler.currentIndex,
+              total: handler.items.length,
+              showSourceChip: showSourceChip,
+              favorite: isFavorite?.call(item) ?? false,
+              onFavorite: onFavorite == null ? null : () => onFavorite!(item),
+            ),
+            const SizedBox(height: MTSpace.xl),
+            MTAudioSlider(handler: handler, media: media),
+            const SizedBox(height: MTSpace.md),
+            MTPlayerControlsRow(handler: handler),
+            const SizedBox(height: MTSpace.lg),
+            MTAudioSubControls(
+              handler: handler,
+              onQueue: _onTablet(context) ? null : () => _openQueue(context),
+              extra: _onTablet(context) || shownPeek != null
+                  ? null
+                  : extra?.call(item),
+            ),
+            const SizedBox(height: MTSpace.lg),
+            if (below != null) Expanded(flex: 4, child: below),
+            if (shownPeek != null) ...[
+              shownPeek,
+              const SizedBox(height: MTSpace.lg),
+            ],
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   /// **A phone held sideways** (field report 2026-10-10: no cover at all).
   /// Stacked in a column, the controls left the cover less height than its

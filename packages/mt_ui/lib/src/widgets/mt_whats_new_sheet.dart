@@ -68,7 +68,7 @@ class MTWhatsNewSheet extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.auto_awesome_rounded, color: p.accent),
+                        Icon(Icons.auto_awesome_rounded, color: p.ink2),
                         const SizedBox(width: MTSpace.sm),
                         Expanded(
                           child: Text(

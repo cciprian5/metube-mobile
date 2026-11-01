@@ -149,15 +149,23 @@ void main() {
       }
     });
 
-    testWidgets('an action does not make the notice taller', (tester) async {
+    testWidgets('on the computer, an action does not make the notice '
+        'taller', (tester) async {
+      // A pointer's size there; a phone keeps a finger's (snackbar_test).
       await tester.pumpWidget(
         host(
-          const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              MTNotice(message: 'm', key: ValueKey('plain')),
-              MTNotice(message: 'm', actionLabel: 'Undo', key: ValueKey('act')),
-            ],
+          const MTDesktopApp(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MTNotice(message: 'm', key: ValueKey('plain')),
+                MTNotice(
+                  message: 'm',
+                  actionLabel: 'Undo',
+                  key: ValueKey('act'),
+                ),
+              ],
+            ),
           ),
         ),
       );

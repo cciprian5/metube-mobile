@@ -225,7 +225,7 @@ void main() {
     // The engine is asked once the clip has had a moment to open.
     await tester.pump(const Duration(seconds: 2));
     await tester.pumpAndSettle();
-    expect(inPanel(find.text('File Size')), findsOneWidget);
+    expect(inPanel(find.text('File size')), findsOneWidget);
     expect(inPanel(find.textContaining('412')), findsOneWidget);
     expect(inPanel(find.text('MKV')), findsOneWidget);
     expect(inPanel(find.textContaining('1080p')), findsOneWidget);

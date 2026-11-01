@@ -11,18 +11,16 @@ import '../../di.dart';
 import '../home/add_flow.dart';
 import '../shared/error_text.dart';
 import '../player/playback_providers.dart';
-import '../playlists/add_to_playlist_sheet.dart';
 import '../settings/settings_sections.dart';
-import '../tags/item_tags_sheet.dart';
 import '../transcripts/transcript_results.dart';
 import 'library_providers.dart';
 import 'widgets/downloads_sheet.dart';
-import 'widgets/confirm_bulk_delete.dart';
+import 'widgets/task_card_parts.dart';
 import 'widgets/library_cards.dart';
+import 'widgets/library_app_bars.dart';
 import 'widgets/library_chips.dart';
 import 'widgets/server_banner.dart';
 import 'widgets/server_failures_section.dart';
-import 'widgets/sort_sheet.dart';
 
 /// The unified library: live cards only while something is active, plus a
 /// counter badge in the header that opens the management sheet. Search is
@@ -42,6 +40,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   /// scrolls past.
   static const _highlightLinger = Duration(seconds: 8);
   Timer? _highlightTimer;
+
+  /// The search field is open in the bar's place.
+  bool _searchOpen = false;
 
   @override
   void dispose() {
@@ -82,114 +83,63 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
       (_) => _syncLivePolling(active),
     );
 
-    return Scaffold(
-      appBar: options.selecting
-          ? _selectionAppBar(l10n, options)
-          : _mainAppBar(l10n, active.length),
-      body: !settings.isConfigured
-          ? MTEmptyState(
-              title: l10n.noServerTitle,
-              message: l10n.noServerMessage,
-              actionLabel: l10n.setupServer,
-              onAction: () => context.go(SettingsPane.server.route),
-            )
-          : RefreshIndicator(
-              onRefresh: () async {
-                // A failed refresh is shown by the library itself, and
-                // rethrowing here escapes the `RefreshIndicator` with nobody
-                // to catch it.
-                ref.invalidate(historyProvider);
-                try {
-                  await ref.read(libraryItemsProvider.future);
-                } on MTApiException {
-                  // Shown in the empty state.
-                }
-              },
-              // One calm appearance of the content on the first build,
-              // rather than motion per card, which made the list bounce
-              // throughout the scroll.
-              // A wide grid gains columns, and a tablet spreads every mode
-              // across its width; a phone's rows and cards keep theirs.
-              child: MTRevealOnce(
-                child:
-                    options.mode == LibraryViewMode.grid ||
-                        MTAdaptiveScaffold.hasRail(context)
-                    ? _body(l10n, options, active)
-                    : MTReadableWidth(child: _body(l10n, options, active)),
+    final searching = _searchOpen || options.query.isNotEmpty;
+    void closeSearch() {
+      setState(() => _searchOpen = false);
+      ref.read(libraryViewProvider.notifier).setQuery('');
+    }
+
+    // Back closes the search first, rather than leaving the app.
+    return PopScope(
+      canPop: !searching,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) closeSearch();
+      },
+      child: Scaffold(
+        appBar: options.selecting
+            ? librarySelectionBar(context, ref, options)
+            : libraryMainBar(
+                context,
+                ref,
+                activeCount: active.length,
+                searching: searching,
+                onSearch: () => setState(() => _searchOpen = true),
+                onCloseSearch: closeSearch,
               ),
-            ),
-    );
-  }
-
-  AppBar _mainAppBar(MTLocalizations l10n, int activeCount) {
-    return AppBar(
-      title: Text(l10n.navLibrary),
-      actions: [
-        // The active downloads badge, which opens the management sheet.
-        IconButton(
-          tooltip: l10n.activeDownloadsSheet,
-          onPressed: () => showDownloadsSheet(context),
-          icon: MTDownloadsIcon(active: activeCount),
-        ),
-        // One button for sorting, the view mode and the filters that have
-        // no row of their own; a dot while one of those is on.
-        MTFilterButton(
-          tooltip: l10n.sortAndFilter,
-          active: ref.watch(sheetFiltersOnProvider),
-          onPressed: () => showSortSheet(context, ref),
-        ),
-      ],
-    );
-  }
-
-  AppBar _selectionAppBar(MTLocalizations l10n, LibraryViewOptions options) {
-    final controller = ref.read(libraryViewProvider.notifier);
-    final selection = options.selection;
-    return AppBar(
-      leading: IconButton(
-        onPressed: controller.clearSelection,
-        icon: const Icon(Icons.close_rounded),
+        body: !settings.isConfigured
+            ? MTEmptyState(
+                title: l10n.noServerTitle,
+                message: l10n.noServerMessage,
+                actionLabel: l10n.setupServer,
+                onAction: () => context.go(SettingsPane.server.route),
+              )
+            : RefreshIndicator(
+                onRefresh: () async {
+                  // A failed refresh is shown by the library itself, and
+                  // rethrowing here escapes the `RefreshIndicator` with nobody
+                  // to catch it.
+                  ref.invalidate(historyProvider);
+                  try {
+                    await ref.read(libraryItemsProvider.future);
+                  } on MTApiException {
+                    // Shown in the empty state.
+                  }
+                },
+                // One calm appearance of the content on the first build,
+                // rather than motion per card, which made the list bounce
+                // throughout the scroll.
+                // A wide grid gains columns, and a tablet spreads every mode
+                // across its width; a phone's rows and cards keep theirs.
+                child: MTRevealOnce(
+                  child:
+                      options.mode == LibraryViewMode.grid ||
+                          MTAdaptiveScaffold.hasRail(context)
+                      ? _body(l10n, options, active)
+                      : MTReadableWidth(child: _body(l10n, options, active)),
+                ),
+              ),
       ),
-      title: Text(l10n.selectedCount(selection.length)),
-      actions: [
-        IconButton(
-          tooltip: l10n.selectAll,
-          onPressed: () {
-            final items = ref.read(visibleLibraryProvider).valueOrNull ?? [];
-            controller.selectAll(items.map((i) => i.canonicalUrl));
-          },
-          icon: const Icon(Icons.select_all_rounded),
-        ),
-        IconButton(
-          tooltip: l10n.addToPlaylist,
-          onPressed: () =>
-              showAddToPlaylistSheet(context, ref, _selectedItems(selection)),
-          icon: const Icon(Icons.playlist_add_rounded),
-        ),
-        IconButton(
-          tooltip: l10n.tags,
-          onPressed: () => showItemTagsSheet(context, ref, selection.toList()),
-          icon: const Icon(Icons.sell_outlined),
-        ),
-        IconButton(
-          tooltip: l10n.deleteSelected,
-          onPressed: () => confirmBulkDelete(context, ref, selection),
-          icon: Icon(
-            Icons.delete_outline_rounded,
-            color: MTThemeX.of(context).palette.err,
-          ),
-        ),
-      ],
     );
-  }
-
-  /// The library items matching the current selection.
-  List<LibraryItem> _selectedItems(Set<String> selection) {
-    final visible = ref.read(visibleLibraryProvider).valueOrNull ?? const [];
-    return [
-      for (final item in visible)
-        if (selection.contains(item.canonicalUrl)) item,
-    ];
   }
 
   /// **Lazy building is mandatory:** a real library holds 251 items, and
@@ -209,12 +159,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           padding: const EdgeInsets.symmetric(horizontal: MTSpace.pagePad),
           sliver: SliverList.list(
             children: [
-              MTQuerySearchField(
-                hint: l10n.searchVideos,
-                query: options.query,
-                onChanged: ref.read(libraryViewProvider.notifier).setQuery,
-              ),
-              const SizedBox(height: MTSpace.sm),
+              const SizedBox(height: MTSpace.xs),
               const LibraryFilterChips(),
               // "Is a filter on?" is a question every compound filter
               // raises, and one line answers it without the user opening
@@ -355,6 +300,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     return MTDownloadProgressCard(
       key: ValueKey('${task.id}-${task.phase.name}'),
       title: task.title ?? task.effectiveUrl,
+      thumbnail: taskThumbnail(ref, task),
+      detail: taskSpeed(task),
+      waiting: task.phase == TaskPhase.queued,
       statusText: statusText,
       progress: task.hasKnownProgress ? task.progress : null,
       isError: task.phase == TaskPhase.failed,

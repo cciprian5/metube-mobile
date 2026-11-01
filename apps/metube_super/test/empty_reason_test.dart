@@ -81,4 +81,22 @@ void main() {
     await pump(tester, items: 0);
     expect(find.text('Your library is empty'), findsOneWidget);
   });
+
+  testWidgets('**the guard**: search sits behind the bar button, opens in '
+      'place of the title, and back clears it', (tester) async {
+    await pump(tester, items: 3);
+    expect(find.byType(MTQuerySearchField), findsNothing);
+
+    await tester.tap(find.byIcon(Icons.search_rounded));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTQuerySearchField), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'Clip 1');
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Clip 2'), findsNothing);
+
+    await tester.tap(find.byType(BackButtonIcon));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTQuerySearchField), findsNothing);
+    expect(find.text('Clip 2'), findsOneWidget);
+  });
 }

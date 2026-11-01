@@ -1,0 +1,125 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
+
+import '../../playlists/add_to_playlist_sheet.dart';
+import '../../tags/item_tags_sheet.dart';
+import '../library_providers.dart';
+import 'confirm_bulk_delete.dart';
+import 'downloads_sheet.dart';
+import 'sort_sheet.dart';
+
+/// The library's bar: its name and three buttons, or **the search field in
+/// the name's place** once the search button is pressed (mobile plan
+/// 2026-11-01), which leaves the list a row higher on every visit. The
+/// field stays while a query is written, so a narrowed list never looks
+/// unexplained; the back arrow clears it.
+AppBar libraryMainBar(
+  BuildContext context,
+  WidgetRef ref, {
+  required int activeCount,
+  required bool searching,
+  required VoidCallback onSearch,
+  required VoidCallback onCloseSearch,
+}) {
+  final l10n = context.mtl;
+  if (searching) {
+    return AppBar(
+      leading: IconButton(
+        tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+        onPressed: onCloseSearch,
+        icon: const BackButtonIcon(),
+      ),
+      titleSpacing: 0,
+      title: Padding(
+        padding: const EdgeInsetsDirectional.only(end: MTSpace.pagePad),
+        child: MTQuerySearchField(
+          hint: l10n.searchVideos,
+          query: ref.watch(libraryViewProvider.select((o) => o.query)),
+          onChanged: ref.read(libraryViewProvider.notifier).setQuery,
+          autofocus: true,
+        ),
+      ),
+    );
+  }
+  return AppBar(
+    title: Text(l10n.navLibrary),
+    actions: [
+      IconButton(
+        tooltip: MaterialLocalizations.of(context).searchFieldLabel,
+        onPressed: onSearch,
+        icon: const Icon(Icons.search_rounded),
+      ),
+      // The active downloads badge, which opens the management sheet.
+      IconButton(
+        tooltip: l10n.activeDownloadsSheet,
+        onPressed: () => showDownloadsSheet(context),
+        icon: MTDownloadsIcon(active: activeCount),
+      ),
+      // One button for sorting, the view mode and the filters that have
+      // no row of their own; a dot while one of those is on.
+      MTFilterButton(
+        tooltip: l10n.sortAndFilter,
+        active: ref.watch(sheetFiltersOnProvider),
+        onPressed: () => showSortSheet(context, ref),
+      ),
+    ],
+  );
+}
+
+/// The bar while clips are selected: how many, and what to do with them.
+AppBar librarySelectionBar(
+  BuildContext context,
+  WidgetRef ref,
+  LibraryViewOptions options,
+) {
+  final l10n = context.mtl;
+
+  /// The library items matching the current selection.
+  List<LibraryItem> selected() {
+    final visible = ref.read(visibleLibraryProvider).valueOrNull ?? const [];
+    return [
+      for (final item in visible)
+        if (options.selection.contains(item.canonicalUrl)) item,
+    ];
+  }
+
+  final controller = ref.read(libraryViewProvider.notifier);
+  final selection = options.selection;
+  return AppBar(
+    leading: IconButton(
+      onPressed: controller.clearSelection,
+      icon: const Icon(Icons.close_rounded),
+    ),
+    title: Text(l10n.selectedCount(selection.length)),
+    actions: [
+      IconButton(
+        tooltip: l10n.selectAll,
+        onPressed: () {
+          final items = ref.read(visibleLibraryProvider).valueOrNull ?? [];
+          controller.selectAll(items.map((i) => i.canonicalUrl));
+        },
+        icon: const Icon(Icons.select_all_rounded),
+      ),
+      IconButton(
+        tooltip: l10n.addToPlaylist,
+        onPressed: () => showAddToPlaylistSheet(context, ref, selected()),
+        icon: const Icon(Icons.playlist_add_rounded),
+      ),
+      IconButton(
+        tooltip: l10n.tags,
+        onPressed: () => showItemTagsSheet(context, ref, selection.toList()),
+        icon: const Icon(Icons.sell_outlined),
+      ),
+      IconButton(
+        tooltip: l10n.deleteSelected,
+        onPressed: () => confirmBulkDelete(context, ref, selection),
+        icon: Icon(
+          Icons.delete_outline_rounded,
+          color: MTThemeX.of(context).palette.err,
+        ),
+      ),
+    ],
+  );
+}

@@ -9,6 +9,7 @@ import '../library/library_providers.dart';
 import '../library/widgets/item_details_sheet.dart';
 import '../player/playback_providers.dart';
 import '../transcripts/transcript_openers.dart';
+import '../transcripts/transcript_peek.dart';
 import '../transcripts/transcripts_state.dart';
 
 /// The full audio screen in Super (`/audio`): the content comes from
@@ -41,6 +42,19 @@ class AudioScreen extends ConsumerWidget {
             )
           : null,
       companion: audioTranscriptPanels(context, handler),
+      // The line being said, under the controls on a tall phone; the
+      // transcript button above stands in for it everywhere else.
+      peek: (item) {
+        final shown = (transcripts?.transcriptsFor(item.canonicalUrl) ?? [])
+            .where((t) => !t.isEmpty)
+            .firstOrNull;
+        if (shown == null) return null;
+        return TranscriptPeek(
+          segments: shown.segments,
+          position: handler.positionStream,
+          onOpen: () => showPlayingTranscript(context, handler, item),
+        );
+      },
       // The one-tap heart lives here and in the video player; the library
       // cards show it on favourites alone.
       isFavorite: (item) => library.any(

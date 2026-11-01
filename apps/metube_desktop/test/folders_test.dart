@@ -155,7 +155,7 @@ void main() {
     final h = await open(tester, subs: [sub], at: EmberRoutes.channel('s1'));
     await tester.tap(find.text('Edit'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Save Settings'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Save settings'));
     await tester.pumpAndSettle();
     expect(h.api.channelCalls.last, endsWith('folder=-'));
     // Off: new clips go back to the top.
@@ -163,7 +163,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byType(MTSwitch).last);
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Save Settings'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Save settings'));
     await tester.pumpAndSettle();
     expect(h.api.channelCalls.last, endsWith('folder='));
   });

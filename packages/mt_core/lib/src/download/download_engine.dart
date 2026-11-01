@@ -387,16 +387,24 @@ class DownloadEngine {
         live: api.liveUpdates(),
       );
 
-  /// The task shows the title and the picture the server has for it as
-  /// soon as the server has them, not only once it is done: until then
-  /// the list showed a bare link and a blank where the cover goes.
+  /// The task shows the title, the picture and the speed the server has
+  /// for it as soon as the server has them, not only once it is done:
+  /// until then the list showed a bare link and a blank where the cover
+  /// goes.
   void _noteSeen(String taskId, HistoryItem item) {
     final task = _tasks[taskId];
     if (task == null) return;
     final title = (item.title ?? '').isEmpty ? task.title : item.title;
     final thumbnail = item.thumbnail ?? task.thumbnail;
-    if (title == task.title && thumbnail == task.thumbnail) return;
-    _emit(task.copyWith(title: title, thumbnail: thumbnail));
+    final speed = item.rawStatus == 'downloading' ? item.speed : null;
+    if (title == task.title &&
+        thumbnail == task.thumbnail &&
+        speed == task.speed) {
+      return;
+    }
+    _emit(
+      task.copyWith(title: title, thumbnail: thumbnail, speed: () => speed),
+    );
   }
 
   /// The task learns the URL the server filed it under, and so does its

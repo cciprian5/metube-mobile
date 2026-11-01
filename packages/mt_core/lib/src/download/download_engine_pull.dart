@@ -16,7 +16,13 @@ extension DownloadEnginePull on DownloadEngine {
     // against the last percentage, so keeping the polling percentage
     // swallowed the first pull broadcast whenever the two numbers matched.
     _lastPercent.remove(taskId);
-    _emit(_tasks[taskId]!.copyWith(phase: TaskPhase.pulling, progress: 0));
+    _emit(
+      _tasks[taskId]!.copyWith(
+        phase: TaskPhase.pulling,
+        progress: 0,
+        speed: () => null,
+      ),
+    );
     final savePath = savePathBuilder(_tasks[taskId]!, done.filename!);
     final token = CancelToken();
     _cancelTokens[taskId] = token;

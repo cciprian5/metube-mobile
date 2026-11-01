@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/mt_theme.dart';
+import '../wahaj/mt_notice.dart';
 
 enum MTSnackType { info, success, error }
 
@@ -8,8 +8,9 @@ enum MTSnackType { info, success, error }
 /// without an action.
 const mtSnackDuration = Duration(seconds: 4);
 
-/// One SnackBar style, an inverted slab with a meaningful icon and an
-/// optional undo.
+/// One SnackBar style, the Wahaj notice the computer uses ([MTNotice]): a
+/// bar on the edge for its state, and a line along the bottom running out
+/// with the time it stays, and an optional undo.
 void showMTSnack(
   BuildContext context,
   String message, {
@@ -53,11 +54,10 @@ void showMTSnackOn(
   bool logged = false,
 }) {
   if (type == MTSnackType.error && !logged) mtErrorSnackLog?.call(message);
-  final x = MTThemeX.of(themeContext ?? messenger.context);
-  final (icon, tint) = switch (type) {
-    MTSnackType.success => (Icons.check_circle_rounded, x.palette.ok),
-    MTSnackType.error => (Icons.error_rounded, x.palette.err),
-    MTSnackType.info => (Icons.info_rounded, x.palette.miniInk),
+  final kind = switch (type) {
+    MTSnackType.success => MTNoticeKind.done,
+    MTSnackType.error => MTNoticeKind.failed,
+    MTSnackType.info => MTNoticeKind.info,
   };
   messenger
     ..hideCurrentSnackBar()
@@ -72,20 +72,16 @@ void showMTSnackOn(
         // four seconds. The decision: one duration for all.
         persist: false,
         duration: duration,
-        content: Row(
-          children: [
-            Icon(icon, size: 18, color: tint),
-            const SizedBox(width: 10),
-            Expanded(child: Text(message)),
-          ],
+        padding: EdgeInsets.zero,
+        // The notice draws its own action, so the time line runs under it
+        // as well.
+        content: MTNotice(
+          message: message,
+          kind: kind,
+          actionLabel: actionLabel,
+          onAction: onAction,
+          duration: duration,
         ),
-        action: actionLabel == null
-            ? null
-            : SnackBarAction(
-                label: actionLabel,
-                textColor: x.palette.accentInk,
-                onPressed: onAction ?? () {},
-              ),
       ),
     );
 }

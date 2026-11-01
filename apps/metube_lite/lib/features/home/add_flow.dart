@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../di.dart';
 import '../shared/error_text.dart';
+import 'link_preview_view.dart';
 
 /// Converts the core's platform into its presentation type, since mt_ui
 /// does not know mt_core.
@@ -122,6 +123,7 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
       urlHint: l10n.pasteUrlHint,
       controller: _controller,
       onUrlChanged: (value) => setState(() => _url = value),
+      preview: linkPreviewFor(ref, _url),
       platform: platformKindOf(platform),
       platformLabel: platform == MediaPlatform.other ? null : platform.label,
       qualities: qualities,

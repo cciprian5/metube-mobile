@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_core/mt_core.dart' show ImageHeaders;
 import 'package:mt_ui/mt_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mt_media/library.dart';
@@ -10,8 +11,11 @@ import '../../shared/external_player.dart';
 import '../../tags/item_tags_sheet.dart';
 import '../../transcripts/transcript_openers.dart';
 import '../../transcripts/transcripts_state.dart';
+import '../../../di.dart';
+import '../artwork_view.dart';
 import '../library_actions.dart';
 import '../library_providers.dart';
+import 'confirm_bulk_delete.dart';
 import 'item_details_sheet.dart';
 
 /// The item actions sheet, by state (rule 5). Delete comes last, isolated
@@ -52,6 +56,17 @@ class _ItemActionsSheet extends ConsumerWidget {
     final l10n = context.mtl;
     final p = MTThemeX.of(context).palette;
     final actions = ref.read(libraryActionsProvider);
+    final clip = MTDialogClip(
+      title: mtName(item.title),
+      thumbnail: artworkFor(
+        item.thumbnail,
+        headers: switch (item.thumbnail) {
+          final url? => ref.read(apiClientProvider)?.imageHeadersFor(url),
+          null => null,
+        },
+        decodeWidth: 120,
+      ),
+    );
 
     Future<void> run(
       Future<void> Function() action, {
@@ -225,21 +240,27 @@ class _ItemActionsSheet extends ConsumerWidget {
               tile(
                 Icons.delete_outline_rounded,
                 l10n.deleteFromServer,
-                () => _confirm(context, l10n.deleteFromServerConfirm, () {
-                  run(
+                () => confirmItemDelete(
+                  context,
+                  l10n.deleteFromServer,
+                  l10n.deleteFromServerConfirm,
+                  clip,
+                  () => run(
                     () => actions.deleteFromServer([item.canonicalUrl]),
                     successText: l10n.deletedFromServer,
-                  );
-                }),
+                  ),
+                ),
                 color: p.err,
               ),
             if (!item.onServer && item.isOffline)
               tile(
                 Icons.delete_outline_rounded,
                 l10n.deleteVideo,
-                () => _confirm(
+                () => confirmItemDelete(
                   context,
+                  l10n.deleteVideo,
                   l10n.deleteVideoConfirm(mtName(item.title)),
+                  clip,
                   () {
                     run(
                       () => actions.deleteLocalOnly(item),
@@ -252,29 +273,6 @@ class _ItemActionsSheet extends ConsumerWidget {
             const SizedBox(height: MTSpace.md),
           ],
         ),
-      ),
-    );
-  }
-
-  void _confirm(BuildContext context, String message, VoidCallback onYes) {
-    final l10n = context.mtl;
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              onYes();
-            },
-            child: Text(l10n.delete),
-          ),
-        ],
       ),
     );
   }

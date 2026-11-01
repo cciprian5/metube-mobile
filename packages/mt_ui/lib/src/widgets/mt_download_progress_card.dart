@@ -16,6 +16,8 @@ class MTDownloadProgressCard extends StatelessWidget {
     this.isError = false,
     this.onCancel,
     this.thumbnail,
+    this.detail,
+    this.waiting = false,
   });
 
   final String title;
@@ -26,6 +28,13 @@ class MTDownloadProgressCard extends StatelessWidget {
   final bool isError;
   final VoidCallback? onCancel;
   final Widget? thumbnail;
+
+  /// A figure beside the percentage, such as the download speed.
+  final String? detail;
+
+  /// Waiting its turn: a still, dashed line rather than a moving bar, which
+  /// would claim work is being done.
+  final bool waiting;
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +121,13 @@ class MTDownloadProgressCard extends StatelessWidget {
                       // independent element now, so it appears during both
                       // the pull and the poll without a separate string per
                       // phase.
+                      if (!isError && detail != null) ...[
+                        const SizedBox(width: MTSpace.sm),
+                        Text(
+                          detail!,
+                          style: text.bodySmall!.copyWith(color: p.ink3),
+                        ),
+                      ],
                       if (!isError && progress != null) ...[
                         const SizedBox(width: MTSpace.sm),
                         Text(
@@ -124,7 +140,10 @@ class MTDownloadProgressCard extends StatelessWidget {
                       ],
                     ],
                   ),
-                  if (!isError) ...[
+                  if (!isError && waiting) ...[
+                    const SizedBox(height: MTSpace.xs + 1),
+                    _DashedLine(color: p.line2),
+                  ] else if (!isError) ...[
                     const SizedBox(height: MTSpace.xs + 1),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(3),
@@ -160,4 +179,46 @@ class MTDownloadProgressCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The still line of a task waiting its turn.
+class _DashedLine extends StatelessWidget {
+  const _DashedLine({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    height: 5,
+    width: double.infinity,
+    child: CustomPaint(painter: _Dashes(color)),
+  );
+}
+
+class _Dashes extends CustomPainter {
+  const _Dashes(this.color);
+
+  final Color color;
+
+  static const double _dash = 6;
+  static const double _gap = 4;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+    final y = size.height / 2;
+    for (var x = 1.0; x < size.width; x += _dash + _gap) {
+      canvas.drawLine(
+        Offset(x, y),
+        Offset((x + _dash).clamp(0, size.width - 1), y),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_Dashes old) => old.color != color;
 }

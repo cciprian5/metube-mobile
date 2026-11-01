@@ -5,6 +5,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../../di.dart';
 import '../../home/add_flow.dart';
+import 'task_card_parts.dart';
 
 /// The "manage downloads" sheet: in progress, waiting, needs your
 /// attention, with cancel and retry.
@@ -62,16 +63,21 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
         children: [
           MTSectionHeader(title: title, trailing: '${sectionTasks.length}'),
           const SizedBox(height: MTSpace.sm),
-          for (final task in sectionTasks) ...[
+          for (final (index, task) in sectionTasks.indexed) ...[
             MTDownloadProgressCard(
               // A new task or a new phase starts its own count: the pull
               // begins at 0 and must not run down from the server's 100%.
               key: ValueKey('${task.id}-${task.phase.name}'),
-              title: task.effectiveUrl,
+              // The server's title once it has one, not the bare link.
+              title: task.title ?? task.effectiveUrl,
+              thumbnail: taskThumbnail(task),
+              detail: taskSpeed(task),
+              waiting: task.phase == TaskPhase.queued,
               statusText: error
                   ? taskErrorText(l10n, task)
                   : switch (task.phase) {
-                      TaskPhase.queued => l10n.queuedSection,
+                      // Its place in the line, counted in this section.
+                      TaskPhase.queued => l10n.queuePosition(index + 1),
                       // The wait is the user's own decision, not a slow
                       // network.
                       TaskPhase.waitingForNetwork => l10n.waitingForWifi,

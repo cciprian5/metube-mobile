@@ -10,6 +10,7 @@ import 'package:mt_media/library.dart';
 import '../../di.dart';
 import '../folders/folder_picker.dart';
 import '../shared/error_text.dart';
+import 'link_preview_view.dart';
 
 /// The add dialog plus automatic routing: a playlist goes to `/batch`, a
 /// single link goes straight to the engine (rule 2).
@@ -112,6 +113,7 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
       urlHint: l10n.pasteUrlHint,
       controller: _controller,
       onUrlChanged: (value) => setState(() => _url = value),
+      preview: linkPreviewFor(ref, _url),
       platform: platformKindOf(platform),
       platformLabel: platform == MediaPlatform.other ? null : platform.label,
       qualities: qualities,

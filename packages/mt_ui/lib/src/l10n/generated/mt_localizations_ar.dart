@@ -80,7 +80,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get addingToServer => 'جارٍ الإرسال إلى السيرفر…';
 
   @override
-  String get allDownloadsFinished => 'اكتملت جميع التحميلات!';
+  String get allDownloadsFinished => 'اكتملت جميع التحميلات';
 
   @override
   String get allFolders => 'كل المجلدات';
@@ -141,7 +141,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get autoRestoreSuccess =>
-      'استُعيدت البيانات من النسخة الاحتياطية بنجاح!';
+      'استُعيدت البيانات من النسخة الاحتياطية بنجاح';
 
   @override
   String get autoRetry => 'إعادة المحاولة عند عودة الشبكة';
@@ -1681,7 +1681,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get downloadComplete => 'اكتمل التحميل';
 
   @override
-  String get downloadCompleteTitle => 'اكتمل!';
+  String get downloadCompleteTitle => 'اكتمل';
 
   @override
   String get downloadDate => 'تاريخ التحميل';
@@ -2245,6 +2245,10 @@ class MTLocalizationsAr extends MTLocalizations {
   String get playlistDetails => 'تفاصيل القائمة';
 
   @override
+  String get playlistEditHint =>
+      'اضغط مطوّلاً لتغيير الترتيب، واسحب الصف جانباً لإزالته.';
+
+  @override
   String get playlistName => 'اسم القائمة';
 
   @override
@@ -2319,6 +2323,11 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get queueLabel => 'قائمة الانتظار';
+
+  @override
+  String queuePosition(int position) {
+    return 'رقم $position في الطابور';
+  }
 
   @override
   String get queued => 'في الانتظار';
@@ -2962,6 +2971,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get transcriptNextMatch => 'الموضع التالي';
+
+  @override
+  String get transcriptPeekHint => 'اضغط للنص كاملاً';
 
   @override
   String get transcriptPreviousMatch => 'الموضع السابق';

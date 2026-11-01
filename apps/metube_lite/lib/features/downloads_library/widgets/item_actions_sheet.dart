@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../playlists/add_to_playlist_sheet.dart';
 import '../../shared/error_report.dart';
 import '../../shared/external_player.dart';
+import '../artwork_view.dart';
 import '../library_actions.dart';
 import '../library_providers.dart';
 import '../local_item.dart';
@@ -163,7 +164,12 @@ class _ItemActionsSheet extends ConsumerWidget {
               l10n.deleteVideo,
               () => _confirm(
                 context,
+                l10n.deleteVideo,
                 l10n.deleteVideoConfirm(mtName(item.title)),
+                MTDialogClip(
+                  title: mtName(item.title),
+                  thumbnail: artworkFor(item.thumbnail, decodeWidth: 120),
+                ),
                 () {
                   run(
                     () => actions.deleteFiles([item]),
@@ -180,27 +186,27 @@ class _ItemActionsSheet extends ConsumerWidget {
     );
   }
 
-  void _confirm(BuildContext context, String message, VoidCallback onYes) {
+  /// **The clip itself is shown before anything is deleted** (the Wahaj
+  /// confirmation, as on the computer), so nobody removes the wrong one of
+  /// two look-alike titles.
+  Future<void> _confirm(
+    BuildContext context,
+    String title,
+    String message,
+    Widget clip,
+    VoidCallback onYes,
+  ) async {
     final l10n = context.mtl;
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              onYes();
-            },
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+    final sure = await showMTConfirm(
+      context,
+      title: title,
+      message: message,
+      confirmLabel: l10n.delete,
+      cancelLabel: l10n.cancel,
+      destructive: true,
+      preview: clip,
     );
+    if (sure) onYes();
   }
 }
 

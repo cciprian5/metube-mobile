@@ -49,3 +49,26 @@ void confirmBulkDelete(
     ),
   );
 }
+
+/// **The clip itself is shown before anything is deleted** (the Wahaj
+/// confirmation, as on the computer), so nobody removes the wrong one of
+/// two look-alike titles.
+Future<void> confirmItemDelete(
+  BuildContext context,
+  String title,
+  String message,
+  Widget clip,
+  VoidCallback onYes,
+) async {
+  final l10n = context.mtl;
+  final sure = await showMTConfirm(
+    context,
+    title: title,
+    message: message,
+    confirmLabel: l10n.delete,
+    cancelLabel: l10n.cancel,
+    destructive: true,
+    preview: clip,
+  );
+  if (sure) onYes();
+}

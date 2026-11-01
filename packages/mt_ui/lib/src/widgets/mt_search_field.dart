@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 
-/// The always-visible search field: search is on screen, not behind an
-/// icon.
+/// The search field: in a page where search is the task (logs, a
+/// transcript), or in the library's bar once its search button is pressed.
 class MTSearchField extends StatelessWidget {
   const MTSearchField({
     super.key,
@@ -50,11 +50,15 @@ class MTQuerySearchField extends StatefulWidget {
     required this.hint,
     required this.query,
     required this.onChanged,
+    this.autofocus = false,
   });
 
   final String hint;
   final String query;
   final ValueChanged<String> onChanged;
+
+  /// Opened on purpose (a search button), so typing can start at once.
+  final bool autofocus;
 
   @override
   State<MTQuerySearchField> createState() => _MTQuerySearchFieldState();
@@ -87,5 +91,6 @@ class _MTQuerySearchFieldState extends State<MTQuerySearchField> {
     hint: widget.hint,
     controller: _controller,
     onChanged: widget.onChanged,
+    autofocus: widget.autofocus,
   );
 }

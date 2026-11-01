@@ -98,4 +98,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaRow), findsWidgets);
   });
+
+  testWidgets('**the guard**: search sits behind the bar button and back '
+      'clears it', (tester) async {
+    final host = await hostFor(LibraryViewMode.list, const Locale('en'));
+    await tester.pumpWidget(host());
+    await tester.pumpAndSettle();
+    expect(find.byType(MTQuerySearchField), findsNothing);
+    await tester.tap(find.byIcon(Icons.search_rounded));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTQuerySearchField), findsOneWidget);
+    await tester.tap(find.byType(BackButtonIcon));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTQuerySearchField), findsNothing);
+  });
 }

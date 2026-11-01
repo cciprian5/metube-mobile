@@ -13,18 +13,18 @@ class MTLocalizationsEn extends MTLocalizations {
   String get about => 'About';
 
   @override
-  String get aboutApp => 'About App';
+  String get aboutApp => 'About the app';
 
   @override
   String get aboutDescriptionLite =>
-      'A light, fast app that downloads videos from many platforms through your MeTube server, pulls them to your device and cleans the server afterwards — with a built-in player and playlists.';
+      'A light, fast app that downloads videos from many platforms through your MeTube server, pulls them to your device and cleans the server afterwards. It has its own player and playlists.';
 
   @override
   String get aboutDescriptionSuper =>
       'The server owner\'s edition: one library across server and device, streaming, tags, offline availability, batch downloads and server address switching.';
 
   @override
-  String get activeDownloads => 'Active Downloads';
+  String get activeDownloads => 'Active downloads';
 
   @override
   String activeDownloadsCount(int count) {
@@ -78,7 +78,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get addingToServer => 'Sending to the server…';
 
   @override
-  String get allDownloadsFinished => 'All downloads finished!';
+  String get allDownloadsFinished => 'All downloads finished.';
 
   @override
   String get allFolders => 'All folders';
@@ -107,7 +107,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get audioMono => 'Mono';
 
   @override
-  String get audioOnly => 'Audio Only';
+  String get audioOnly => 'Audio only';
 
   @override
   String get audioStereo => 'Stereo';
@@ -116,7 +116,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get authHelper => 'Leave empty for open servers (no password)';
 
   @override
-  String get authentication => 'Authentication (Optional)';
+  String get authentication => 'Authentication (optional)';
 
   @override
   String get autoBuilt => 'Automatic';
@@ -129,18 +129,18 @@ class MTLocalizationsEn extends MTLocalizations {
       'Looks for a new version in the background about twice a day.';
 
   @override
-  String get autoRestoreSuccess => 'Data restored from backup successfully!';
+  String get autoRestoreSuccess => 'Data restored from the backup.';
 
   @override
   String get autoRetry => 'Retry when the network returns';
 
   @override
   String get autoRetryHelp =>
-      'Anything that failed because the network dropped is retried on its own when it returns. Server refusals are not retried — repeating them unchanged just fails again.';
+      'Anything that failed because the network dropped is retried on its own when it returns. Server refusals are not retried: repeating them unchanged just fails again.';
 
   @override
   String get autoSwitchDisabledHint =>
-      'Auto-switching is off — the app uses the single Server URL from Settings.';
+      'Auto-switching is off, so the app uses the single Server URL from Settings.';
 
   @override
   String get autoUrlSwitching => 'Automatic URL switching';
@@ -169,11 +169,11 @@ class MTLocalizationsEn extends MTLocalizations {
       'Includes playlists, tags, the offline index, artwork links and settings. Passwords and usernames are never backed up, and media files are not included.';
 
   @override
-  String get backupSettings => 'Backup All Data';
+  String get backupSettings => 'Back up all data';
 
   @override
   String get backupSettingsSubtitle =>
-      'Seven dated copies that refresh themselves — restore any of them, or export one to share';
+      'Seven dated copies that refresh themselves. Restore any of them, or export one to share';
 
   @override
   String backupSuccess(Object path) {
@@ -350,7 +350,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get cookiesReplaceNote =>
-      'Each upload replaces the server\'s whole cookies file. To keep several platforms, pick all their files together every time — the ones you sent before too. To pick more than one, long-press the first file.';
+      'Each upload replaces the server\'s whole cookies file. To keep several platforms, pick all their files together every time, the ones you sent before too. To pick more than one, long-press the first file.';
 
   @override
   String cookiesSentFor(String sites) {
@@ -392,13 +392,13 @@ class MTLocalizationsEn extends MTLocalizations {
   String get create => 'Create';
 
   @override
-  String get createPlaylist => 'Create Playlist';
+  String get createPlaylist => 'Create playlist';
 
   @override
   String get creator => 'Creator';
 
   @override
-  String get defaultQuality => 'Default Video Quality';
+  String get defaultQuality => 'Default video quality';
 
   @override
   String get delete => 'Delete';
@@ -420,7 +420,7 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
-  String get deleteSelected => 'Delete Selected';
+  String get deleteSelected => 'Delete selected';
 
   @override
   String get deleteTag => 'Delete tag';
@@ -431,7 +431,7 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
-  String get deleteVideo => 'Delete Video';
+  String get deleteVideo => 'Delete video';
 
   @override
   String deleteVideoConfirm(Object title) {
@@ -452,7 +452,7 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
-  String get deselectAll => 'Deselect All';
+  String get deselectAll => 'Deselect all';
 
   @override
   String desktopAddLinks(int count) {
@@ -1117,7 +1117,7 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
-  String get desktopOpenChannels => 'Open Channels';
+  String get desktopOpenChannels => 'Open channels';
 
   @override
   String get desktopOpenInExplorer => 'Open in Explorer';
@@ -1648,16 +1648,16 @@ class MTLocalizationsEn extends MTLocalizations {
   String get downloadComplete => 'Download complete';
 
   @override
-  String get downloadCompleteTitle => 'Complete!';
+  String get downloadCompleteTitle => 'Complete';
 
   @override
-  String get downloadDate => 'Download Date';
+  String get downloadDate => 'Download date';
 
   @override
   String get downloadFailed => 'Download failed';
 
   @override
-  String get downloadFailedTitle => 'Download Failed';
+  String get downloadFailedTitle => 'Download failed';
 
   @override
   String get downloadNow => 'Download';
@@ -1726,7 +1726,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get errPlatformBlocked =>
-      'The platform requires login — the server admin should refresh the cookies';
+      'The platform requires login. The server admin should refresh the cookies';
 
   @override
   String get errPlatformBlockedCookies =>
@@ -1791,10 +1791,10 @@ class MTLocalizationsEn extends MTLocalizations {
   String get file => 'File';
 
   @override
-  String get fileName => 'File Name';
+  String get fileName => 'File name';
 
   @override
-  String get fileSize => 'File Size';
+  String get fileSize => 'File size';
 
   @override
   String get filterAll => 'All';
@@ -2031,7 +2031,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get noBackupsYet => 'No backups yet';
 
   @override
-  String get noDownloads => 'No Downloads';
+  String get noDownloads => 'No downloads';
 
   @override
   String get noDownloadsMessage =>
@@ -2089,7 +2089,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get notifyArrivalsDesc =>
-      'One notice when a followed channel\'s new videos land on the server. It appears when you open the app, return to it, or refresh the library — not while the app is in the background.';
+      'One notice when a followed channel\'s new videos land on the server. It appears when you open the app, return to it, or refresh the library, not while the app is in the background.';
 
   @override
   String get nowPlaying => 'Now playing';
@@ -2203,10 +2203,14 @@ class MTLocalizationsEn extends MTLocalizations {
   String get playlistDetails => 'Playlist details';
 
   @override
+  String get playlistEditHint =>
+      'Long-press a clip to move it. Swipe it aside to remove it.';
+
+  @override
   String get playlistName => 'Playlist name';
 
   @override
-  String get playlistNameHint => 'My Playlist';
+  String get playlistNameHint => 'My playlist';
 
   @override
   String playlistOf(int current, int total) {
@@ -2250,7 +2254,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get qualityHelper =>
-      'Used by quick download, by whole-playlist downloads, and by \"Download now\" in the clipboard bar — and it is the preselected option in the add-link sheet. So it matters whether or not quick download is on.';
+      'Used by quick download, by whole-playlist downloads, and by \"Download now\" in the clipboard bar, and it is the preselected option in the add-link sheet. So it matters whether or not quick download is on.';
 
   @override
   String get qualityReading => 'Reading the file…';
@@ -2277,6 +2281,11 @@ class MTLocalizationsEn extends MTLocalizations {
   String get queueLabel => 'Queue';
 
   @override
+  String queuePosition(int position) {
+    return 'Number $position in line';
+  }
+
+  @override
   String get queued => 'Queued';
 
   @override
@@ -2287,7 +2296,7 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get quickDownloadHelp =>
-      'A shared or pasted link starts downloading immediately at the default quality, with no sheet. Numeric qualities are YouTube-only — anything else downloads at best quality, and an \"audio only\" default applies everywhere.';
+      'A shared or pasted link starts downloading immediately at the default quality, with no sheet. Numeric qualities are YouTube-only: anything else downloads at best quality, and an \"audio only\" default applies everywhere.';
 
   @override
   String get reelsEndBack => 'Back to library';
@@ -2364,7 +2373,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get renameTag => 'Rename tag';
 
   @override
-  String get reportBug => 'Report a Bug';
+  String get reportBug => 'Report a bug';
 
   @override
   String get restoreConfirm =>
@@ -2374,10 +2383,10 @@ class MTLocalizationsEn extends MTLocalizations {
   String get restoreData => 'Restore';
 
   @override
-  String get restoreFailed => 'Restore failed — invalid backup file';
+  String get restoreFailed => 'Restore failed: the backup file is not valid';
 
   @override
-  String get restoreSettings => 'Restore All Data';
+  String get restoreSettings => 'Restore all data';
 
   @override
   String get restoreSuccess => 'Data restored successfully';
@@ -2403,7 +2412,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get retryAll => 'Retry all';
 
   @override
-  String get saveSettings => 'Save Settings';
+  String get saveSettings => 'Save settings';
 
   @override
   String get saveToDevice => 'Save to device';
@@ -2424,7 +2433,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get seekForward10 => 'Forward 10 seconds';
 
   @override
-  String get selectAll => 'Select All';
+  String get selectAll => 'Select all';
 
   @override
   String selected(int count) {
@@ -2437,7 +2446,7 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
-  String get serverConfiguration => 'Server Configuration';
+  String get serverConfiguration => 'Server configuration';
 
   @override
   String serverFailuresLine(int count) {
@@ -2512,7 +2521,7 @@ class MTLocalizationsEn extends MTLocalizations {
       'The address of your MeTube server, e.g. http://192.168.1.10:8081. Use the LAN IP for plain HTTP at home, or an HTTPS address (e.g. a Cloudflare Tunnel) for access from outside.';
 
   @override
-  String get serverUrlHelpTitle => 'About the Server URL';
+  String get serverUrlHelpTitle => 'About the server URL';
 
   @override
   String get serverUrlHint => 'http://192.168.1.5:8086 or https://domain.com';
@@ -2621,10 +2630,10 @@ class MTLocalizationsEn extends MTLocalizations {
   String get share => 'Share';
 
   @override
-  String get shareLogs => 'Share Logs';
+  String get shareLogs => 'Share logs';
 
   @override
-  String get shareSelected => 'Share Selected';
+  String get shareSelected => 'Share selected';
 
   @override
   String get shortsFilter => 'Shorts';
@@ -2899,6 +2908,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get transcriptNextMatch => 'Next match';
 
   @override
+  String get transcriptPeekHint => 'Tap for the whole text';
+
+  @override
   String get transcriptPreviousMatch => 'Previous match';
 
   @override
@@ -3104,7 +3116,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get videoAdded => 'Added to playlist';
 
   @override
-  String get videoPlayer => 'Video Player';
+  String get videoPlayer => 'Video player';
 
   @override
   String get viewAll => 'View all';

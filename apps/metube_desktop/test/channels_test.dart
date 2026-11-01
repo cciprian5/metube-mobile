@@ -304,7 +304,7 @@ void main() {
     await tester.tap(find.text('Edit'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Alpha');
-    await tester.tap(find.widgetWithText(FilledButton, 'Save Settings'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Save settings'));
     await tester.pumpAndSettle();
     // The folder is left as it is; only what changed is sent.
     expect(

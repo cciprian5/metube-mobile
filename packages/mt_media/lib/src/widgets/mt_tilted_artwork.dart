@@ -101,8 +101,9 @@ class MTTiltedArtwork extends StatelessWidget {
   }
 }
 
-/// The source chip: "streaming from the server" or "playing from your
-/// device", the golden rule made visible.
+/// Where the sound comes from, "streaming from the server" or "playing
+/// from your device": the golden rule made visible, as a quiet grey line
+/// rather than a tinted pill over the title (mobile plan 2026-11-01).
 class MTSourceChip extends StatelessWidget {
   const MTSourceChip({super.key, required this.local});
 
@@ -112,40 +113,27 @@ class MTSourceChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final l10n = context.mtl;
-    final (bg, fg) = local
-        ? (p.offlineSoft, p.offlineInk)
-        : (p.onServerSoft, p.onServerInk);
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: MTSpace.md,
-        vertical: MTSpace.xxs + 2,
-      ),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(MTRadius.pill),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            local ? Icons.download_done_rounded : Icons.rss_feed_rounded,
-            size: 13,
-            color: fg,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          local ? Icons.download_done_rounded : Icons.rss_feed_rounded,
+          size: 13,
+          color: p.ink3,
+        ),
+        const SizedBox(width: MTSpace.xxs + 2),
+        // Cut short rather than run past the screen, on a narrow phone
+        // with large text.
+        Flexible(
+          child: Text(
+            local ? l10n.playingFromDevice : l10n.streamingFromServer,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelSmall!
+                .copyWith(color: p.ink3),
           ),
-          const SizedBox(width: MTSpace.xxs + 2),
-          // Cut short rather than run past the screen, on a narrow phone
-          // with large text.
-          Flexible(
-            child: Text(
-              local ? l10n.playingFromDevice : l10n.streamingFromServer,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelSmall!
-                  .copyWith(color: fg, fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -115,7 +115,7 @@ void main() {
     tester,
   ) async {
     final h = await onVideo(tester);
-    await tester.tap(find.text('Audio Only'));
+    await tester.tap(find.text('Audio only'));
     await tester.pumpAndSettle();
     expect(h.video.calls, ['audioOnly true']);
     expect(find.byKey(InertVideoSurface.pictureKey), findsNothing);

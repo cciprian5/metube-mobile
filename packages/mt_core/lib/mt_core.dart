@@ -39,6 +39,7 @@ export 'src/models/quality.dart';
 export 'src/models/saved_playlist.dart';
 export 'src/resolvers/http_fetch.dart';
 export 'src/resolvers/innertube_parser.dart';
+export 'src/resolvers/clip_preview_resolver.dart';
 export 'src/resolvers/soundcloud_resolver.dart';
 export 'src/resolvers/youtube_playlist_resolver.dart';
 export 'src/storage/artwork_index.dart';

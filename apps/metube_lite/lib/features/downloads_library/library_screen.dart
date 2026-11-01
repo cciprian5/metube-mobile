@@ -10,18 +10,16 @@ import '../../di.dart';
 import '../home/add_flow.dart';
 import '../shared/error_text.dart';
 import '../player/playback_providers.dart';
-import '../playlists/add_to_playlist_sheet.dart';
 import '../settings/settings_sections.dart';
-import 'library_actions.dart';
 import 'library_providers.dart';
 import 'local_item.dart';
 import 'media_access.dart';
 import 'widgets/media_access_view.dart';
 import 'widgets/downloads_sheet.dart';
-import 'widgets/item_actions_sheet.dart';
+import 'widgets/task_card_parts.dart';
 import 'widgets/library_cards.dart';
+import 'widgets/library_app_bars.dart';
 import 'widgets/library_chips.dart';
-import 'widgets/sort_sheet.dart';
 
 /// "My downloads", the local library: live cards only while something is
 /// active, plus a counter badge in the header that opens the management
@@ -39,6 +37,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   /// forever (field report 2026-09-02).
   static const highlightDuration = Duration(seconds: 6);
   Timer? _highlightTimer;
+
+  /// The search field is open in the bar's place.
+  bool _searchOpen = false;
 
   void _clearHighlight() {
     _highlightTimer?.cancel();
@@ -83,123 +84,65 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     final items = ref.watch(localMediaProvider).valueOrNull ?? const [];
     final needsSetup = !settings.isConfigured && items.isEmpty;
 
-    return Scaffold(
-      appBar: options.selecting
-          ? _selectionAppBar(l10n, options)
-          : _mainAppBar(l10n, active.length),
-      body: needsSetup
-          ? MTEmptyState(
-              title: l10n.noServerTitle,
-              message: l10n.noServerMessage,
-              actionLabel: l10n.setupServer,
-              onAction: () => context.go(SettingsPane.server.route),
-            )
-          : RefreshIndicator(
-              onRefresh: () async {
-                // A failed refresh is shown by the library itself in its
-                // empty state, and
-                // rethrowing here escapes the `RefreshIndicator` with
-                // nobody to catch
-                // it.
-                ref.invalidate(localMediaProvider);
-                try {
-                  await ref.read(localMediaProvider.future);
-                } on MTApiException {
-                  // Shown in the empty state.
-                }
-              },
-              // One calm appearance of the content on the first build,
-              // rather than motion per card, which made the list bounce
-              // throughout the scroll.
-              // A wide grid gains columns, and a tablet spreads every mode
-              // across its width; a phone's rows and cards keep theirs.
-              child: MTRevealOnce(
-                child:
-                    options.mode == LibraryViewMode.grid ||
-                        MTAdaptiveScaffold.hasRail(context)
-                    ? _body(l10n, options, active)
-                    : MTReadableWidth(child: _body(l10n, options, active)),
+    final searching = _searchOpen || options.query.isNotEmpty;
+    void closeSearch() {
+      setState(() => _searchOpen = false);
+      ref.read(libraryViewProvider.notifier).setQuery('');
+    }
+
+    // Back closes the search first, rather than leaving the app.
+    return PopScope(
+      canPop: !searching,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) closeSearch();
+      },
+      child: Scaffold(
+        appBar: options.selecting
+            ? librarySelectionBar(context, ref, options)
+            : libraryMainBar(
+                context,
+                ref,
+                activeCount: active.length,
+                searching: searching,
+                onSearch: () => setState(() => _searchOpen = true),
+                onCloseSearch: closeSearch,
               ),
-            ),
-    );
-  }
-
-  AppBar _mainAppBar(MTLocalizations l10n, int activeCount) {
-    return AppBar(
-      title: Text(l10n.navMyDownloads),
-      actions: [
-        // The active downloads badge, which opens the management sheet.
-        IconButton(
-          tooltip: l10n.activeDownloadsSheet,
-          onPressed: () => showDownloadsSheet(context),
-          icon: MTDownloadsIcon(active: activeCount),
-        ),
-        // A dot while a platform chosen inside the sheet is on.
-        MTFilterButton(
-          tooltip: l10n.sortAndPlatform,
-          active: ref.watch(
-            libraryViewProvider.select((o) => o.platform != null),
-          ),
-          onPressed: () => showSortSheet(context, ref),
-        ),
-      ],
-    );
-  }
-
-  AppBar _selectionAppBar(MTLocalizations l10n, LibraryViewOptions options) {
-    final controller = ref.read(libraryViewProvider.notifier);
-    final selection = options.selection;
-    return AppBar(
-      leading: IconButton(
-        onPressed: controller.clearSelection,
-        icon: const Icon(Icons.close_rounded),
+        body: needsSetup
+            ? MTEmptyState(
+                title: l10n.noServerTitle,
+                message: l10n.noServerMessage,
+                actionLabel: l10n.setupServer,
+                onAction: () => context.go(SettingsPane.server.route),
+              )
+            : RefreshIndicator(
+                onRefresh: () async {
+                  // A failed refresh is shown by the library itself in its
+                  // empty state, and
+                  // rethrowing here escapes the `RefreshIndicator` with
+                  // nobody to catch
+                  // it.
+                  ref.invalidate(localMediaProvider);
+                  try {
+                    await ref.read(localMediaProvider.future);
+                  } on MTApiException {
+                    // Shown in the empty state.
+                  }
+                },
+                // One calm appearance of the content on the first build,
+                // rather than motion per card, which made the list bounce
+                // throughout the scroll.
+                // A wide grid gains columns, and a tablet spreads every mode
+                // across its width; a phone's rows and cards keep theirs.
+                child: MTRevealOnce(
+                  child:
+                      options.mode == LibraryViewMode.grid ||
+                          MTAdaptiveScaffold.hasRail(context)
+                      ? _body(l10n, options, active)
+                      : MTReadableWidth(child: _body(l10n, options, active)),
+                ),
+              ),
       ),
-      title: Text(l10n.selectedCount(selection.length)),
-      actions: [
-        IconButton(
-          tooltip: l10n.selectAll,
-          onPressed: () {
-            final items = ref.read(visibleLibraryProvider).valueOrNull ?? [];
-            controller.selectAll(items.map((i) => i.key));
-          },
-          icon: const Icon(Icons.select_all_rounded),
-        ),
-        IconButton(
-          tooltip: l10n.addToPlaylist,
-          onPressed: () =>
-              showAddToPlaylistSheet(context, ref, _selectedItems(selection)),
-          icon: const Icon(Icons.playlist_add_rounded),
-        ),
-        IconButton(
-          tooltip: l10n.shareSelected,
-          onPressed: () =>
-              ref.read(libraryActionsProvider).share(_selectedItems(selection)),
-          icon: const Icon(Icons.share_rounded),
-        ),
-        IconButton(
-          tooltip: l10n.deleteSelected,
-          onPressed: () => confirmBulkDelete(context, ref, selection),
-          icon: Icon(
-            Icons.delete_outline_rounded,
-            color: MTThemeX.of(context).palette.err,
-          ),
-        ),
-      ],
     );
-  }
-
-  /// **Lazy building is mandatory:** a real library holds 251 items, and
-  /// building them all at once inside a `Column` froze the app to the point
-  /// of an ANR. The header and the live cards are slivers, and the items
-  /// are
-  /// a `SliverList.builder` that builds only what is visible, so a large
-  /// list stays smooth.
-  List<LocalItem> _selectedItems(Set<String> selection) {
-    final visible = ref.read(visibleLibraryProvider).valueOrNull ?? const [];
-    return [
-      for (final item in visible)
-        if (selection.contains(item.key)) item,
-    ];
   }
 
   /// **Lazy building is mandatory** (a performance lesson from phase 6):
@@ -217,12 +160,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           padding: const EdgeInsets.symmetric(horizontal: MTSpace.pagePad),
           sliver: SliverList.list(
             children: [
-              MTQuerySearchField(
-                hint: l10n.searchVideos,
-                query: options.query,
-                onChanged: ref.read(libraryViewProvider.notifier).setQuery,
-              ),
-              const SizedBox(height: MTSpace.sm),
+              const SizedBox(height: MTSpace.xs),
               const LibraryFilterChips(),
               const SizedBox(height: MTSpace.md),
               ..._activeStrip(l10n, active),
@@ -347,6 +285,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     return MTDownloadProgressCard(
       key: ValueKey('${task.id}-${task.phase.name}'),
       title: task.title ?? task.effectiveUrl,
+      thumbnail: taskThumbnail(task),
+      detail: taskSpeed(task),
+      waiting: task.phase == TaskPhase.queued,
       statusText: statusText,
       progress: task.hasKnownProgress ? task.progress : null,
       isError: task.phase == TaskPhase.failed,

@@ -107,13 +107,13 @@ abstract class MTLocalizations {
   /// No description provided for @aboutApp.
   ///
   /// In en, this message translates to:
-  /// **'About App'**
+  /// **'About the app'**
   String get aboutApp;
 
   /// No description provided for @aboutDescriptionLite.
   ///
   /// In en, this message translates to:
-  /// **'A light, fast app that downloads videos from many platforms through your MeTube server, pulls them to your device and cleans the server afterwards — with a built-in player and playlists.'**
+  /// **'A light, fast app that downloads videos from many platforms through your MeTube server, pulls them to your device and cleans the server afterwards. It has its own player and playlists.'**
   String get aboutDescriptionLite;
 
   /// No description provided for @aboutDescriptionSuper.
@@ -125,7 +125,7 @@ abstract class MTLocalizations {
   /// No description provided for @activeDownloads.
   ///
   /// In en, this message translates to:
-  /// **'Active Downloads'**
+  /// **'Active downloads'**
   String get activeDownloads;
 
   /// No description provided for @activeDownloadsCount.
@@ -209,7 +209,7 @@ abstract class MTLocalizations {
   /// No description provided for @allDownloadsFinished.
   ///
   /// In en, this message translates to:
-  /// **'All downloads finished!'**
+  /// **'All downloads finished.'**
   String get allDownloadsFinished;
 
   /// No description provided for @allFolders.
@@ -263,7 +263,7 @@ abstract class MTLocalizations {
   /// No description provided for @audioOnly.
   ///
   /// In en, this message translates to:
-  /// **'Audio Only'**
+  /// **'Audio only'**
   String get audioOnly;
 
   /// No description provided for @audioStereo.
@@ -281,7 +281,7 @@ abstract class MTLocalizations {
   /// No description provided for @authentication.
   ///
   /// In en, this message translates to:
-  /// **'Authentication (Optional)'**
+  /// **'Authentication (optional)'**
   String get authentication;
 
   /// No description provided for @autoBuilt.
@@ -305,7 +305,7 @@ abstract class MTLocalizations {
   /// No description provided for @autoRestoreSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Data restored from backup successfully!'**
+  /// **'Data restored from the backup.'**
   String get autoRestoreSuccess;
 
   /// No description provided for @autoRetry.
@@ -317,13 +317,13 @@ abstract class MTLocalizations {
   /// No description provided for @autoRetryHelp.
   ///
   /// In en, this message translates to:
-  /// **'Anything that failed because the network dropped is retried on its own when it returns. Server refusals are not retried — repeating them unchanged just fails again.'**
+  /// **'Anything that failed because the network dropped is retried on its own when it returns. Server refusals are not retried: repeating them unchanged just fails again.'**
   String get autoRetryHelp;
 
   /// No description provided for @autoSwitchDisabledHint.
   ///
   /// In en, this message translates to:
-  /// **'Auto-switching is off — the app uses the single Server URL from Settings.'**
+  /// **'Auto-switching is off, so the app uses the single Server URL from Settings.'**
   String get autoSwitchDisabledHint;
 
   /// No description provided for @autoUrlSwitching.
@@ -377,13 +377,13 @@ abstract class MTLocalizations {
   /// No description provided for @backupSettings.
   ///
   /// In en, this message translates to:
-  /// **'Backup All Data'**
+  /// **'Back up all data'**
   String get backupSettings;
 
   /// No description provided for @backupSettingsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Seven dated copies that refresh themselves — restore any of them, or export one to share'**
+  /// **'Seven dated copies that refresh themselves. Restore any of them, or export one to share'**
   String get backupSettingsSubtitle;
 
   /// No description provided for @backupSuccess.
@@ -701,7 +701,7 @@ abstract class MTLocalizations {
   /// No description provided for @cookiesReplaceNote.
   ///
   /// In en, this message translates to:
-  /// **'Each upload replaces the server\'s whole cookies file. To keep several platforms, pick all their files together every time — the ones you sent before too. To pick more than one, long-press the first file.'**
+  /// **'Each upload replaces the server\'s whole cookies file. To keep several platforms, pick all their files together every time, the ones you sent before too. To pick more than one, long-press the first file.'**
   String get cookiesReplaceNote;
 
   /// No description provided for @cookiesSentFor.
@@ -773,7 +773,7 @@ abstract class MTLocalizations {
   /// No description provided for @createPlaylist.
   ///
   /// In en, this message translates to:
-  /// **'Create Playlist'**
+  /// **'Create playlist'**
   String get createPlaylist;
 
   /// No description provided for @creator.
@@ -785,7 +785,7 @@ abstract class MTLocalizations {
   /// No description provided for @defaultQuality.
   ///
   /// In en, this message translates to:
-  /// **'Default Video Quality'**
+  /// **'Default video quality'**
   String get defaultQuality;
 
   /// No description provided for @delete.
@@ -821,7 +821,7 @@ abstract class MTLocalizations {
   /// No description provided for @deleteSelected.
   ///
   /// In en, this message translates to:
-  /// **'Delete Selected'**
+  /// **'Delete selected'**
   String get deleteSelected;
 
   /// No description provided for @deleteTag.
@@ -839,7 +839,7 @@ abstract class MTLocalizations {
   /// No description provided for @deleteVideo.
   ///
   /// In en, this message translates to:
-  /// **'Delete Video'**
+  /// **'Delete video'**
   String get deleteVideo;
 
   /// No description provided for @deleteVideoConfirm.
@@ -869,7 +869,7 @@ abstract class MTLocalizations {
   /// No description provided for @deselectAll.
   ///
   /// In en, this message translates to:
-  /// **'Deselect All'**
+  /// **'Deselect all'**
   String get deselectAll;
 
   /// No description provided for @desktopAddLinks.
@@ -1967,7 +1967,7 @@ abstract class MTLocalizations {
   /// No description provided for @desktopOpenChannels.
   ///
   /// In en, this message translates to:
-  /// **'Open Channels'**
+  /// **'Open channels'**
   String get desktopOpenChannels;
 
   /// No description provided for @desktopOpenInExplorer.
@@ -2867,13 +2867,13 @@ abstract class MTLocalizations {
   /// No description provided for @downloadCompleteTitle.
   ///
   /// In en, this message translates to:
-  /// **'Complete!'**
+  /// **'Complete'**
   String get downloadCompleteTitle;
 
   /// No description provided for @downloadDate.
   ///
   /// In en, this message translates to:
-  /// **'Download Date'**
+  /// **'Download date'**
   String get downloadDate;
 
   /// No description provided for @downloadFailed.
@@ -2885,7 +2885,7 @@ abstract class MTLocalizations {
   /// No description provided for @downloadFailedTitle.
   ///
   /// In en, this message translates to:
-  /// **'Download Failed'**
+  /// **'Download failed'**
   String get downloadFailedTitle;
 
   /// No description provided for @downloadNow.
@@ -3011,7 +3011,7 @@ abstract class MTLocalizations {
   /// No description provided for @errPlatformBlocked.
   ///
   /// In en, this message translates to:
-  /// **'The platform requires login — the server admin should refresh the cookies'**
+  /// **'The platform requires login. The server admin should refresh the cookies'**
   String get errPlatformBlocked;
 
   /// No description provided for @errPlatformBlockedCookies.
@@ -3113,13 +3113,13 @@ abstract class MTLocalizations {
   /// No description provided for @fileName.
   ///
   /// In en, this message translates to:
-  /// **'File Name'**
+  /// **'File name'**
   String get fileName;
 
   /// No description provided for @fileSize.
   ///
   /// In en, this message translates to:
-  /// **'File Size'**
+  /// **'File size'**
   String get fileSize;
 
   /// No description provided for @filterAll.
@@ -3527,7 +3527,7 @@ abstract class MTLocalizations {
   /// No description provided for @noDownloads.
   ///
   /// In en, this message translates to:
-  /// **'No Downloads'**
+  /// **'No downloads'**
   String get noDownloads;
 
   /// No description provided for @noDownloadsMessage.
@@ -3635,7 +3635,7 @@ abstract class MTLocalizations {
   /// No description provided for @notifyArrivalsDesc.
   ///
   /// In en, this message translates to:
-  /// **'One notice when a followed channel\'s new videos land on the server. It appears when you open the app, return to it, or refresh the library — not while the app is in the background.'**
+  /// **'One notice when a followed channel\'s new videos land on the server. It appears when you open the app, return to it, or refresh the library, not while the app is in the background.'**
   String get notifyArrivalsDesc;
 
   /// No description provided for @nowPlaying.
@@ -3842,6 +3842,12 @@ abstract class MTLocalizations {
   /// **'Playlist details'**
   String get playlistDetails;
 
+  /// No description provided for @playlistEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press a clip to move it. Swipe it aside to remove it.'**
+  String get playlistEditHint;
+
   /// No description provided for @playlistName.
   ///
   /// In en, this message translates to:
@@ -3851,7 +3857,7 @@ abstract class MTLocalizations {
   /// No description provided for @playlistNameHint.
   ///
   /// In en, this message translates to:
-  /// **'My Playlist'**
+  /// **'My playlist'**
   String get playlistNameHint;
 
   /// No description provided for @playlistOf.
@@ -3929,7 +3935,7 @@ abstract class MTLocalizations {
   /// No description provided for @qualityHelper.
   ///
   /// In en, this message translates to:
-  /// **'Used by quick download, by whole-playlist downloads, and by \"Download now\" in the clipboard bar — and it is the preselected option in the add-link sheet. So it matters whether or not quick download is on.'**
+  /// **'Used by quick download, by whole-playlist downloads, and by \"Download now\" in the clipboard bar, and it is the preselected option in the add-link sheet. So it matters whether or not quick download is on.'**
   String get qualityHelper;
 
   /// No description provided for @qualityReading.
@@ -3962,6 +3968,12 @@ abstract class MTLocalizations {
   /// **'Queue'**
   String get queueLabel;
 
+  /// No description provided for @queuePosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Number {position} in line'**
+  String queuePosition(int position);
+
   /// No description provided for @queued.
   ///
   /// In en, this message translates to:
@@ -3983,7 +3995,7 @@ abstract class MTLocalizations {
   /// No description provided for @quickDownloadHelp.
   ///
   /// In en, this message translates to:
-  /// **'A shared or pasted link starts downloading immediately at the default quality, with no sheet. Numeric qualities are YouTube-only — anything else downloads at best quality, and an \"audio only\" default applies everywhere.'**
+  /// **'A shared or pasted link starts downloading immediately at the default quality, with no sheet. Numeric qualities are YouTube-only: anything else downloads at best quality, and an \"audio only\" default applies everywhere.'**
   String get quickDownloadHelp;
 
   /// No description provided for @reelsEndBack.
@@ -4097,7 +4109,7 @@ abstract class MTLocalizations {
   /// No description provided for @reportBug.
   ///
   /// In en, this message translates to:
-  /// **'Report a Bug'**
+  /// **'Report a bug'**
   String get reportBug;
 
   /// No description provided for @restoreConfirm.
@@ -4115,13 +4127,13 @@ abstract class MTLocalizations {
   /// No description provided for @restoreFailed.
   ///
   /// In en, this message translates to:
-  /// **'Restore failed — invalid backup file'**
+  /// **'Restore failed: the backup file is not valid'**
   String get restoreFailed;
 
   /// No description provided for @restoreSettings.
   ///
   /// In en, this message translates to:
-  /// **'Restore All Data'**
+  /// **'Restore all data'**
   String get restoreSettings;
 
   /// No description provided for @restoreSuccess.
@@ -4157,7 +4169,7 @@ abstract class MTLocalizations {
   /// No description provided for @saveSettings.
   ///
   /// In en, this message translates to:
-  /// **'Save Settings'**
+  /// **'Save settings'**
   String get saveSettings;
 
   /// No description provided for @saveToDevice.
@@ -4199,7 +4211,7 @@ abstract class MTLocalizations {
   /// No description provided for @selectAll.
   ///
   /// In en, this message translates to:
-  /// **'Select All'**
+  /// **'Select all'**
   String get selectAll;
 
   /// No description provided for @selected.
@@ -4217,7 +4229,7 @@ abstract class MTLocalizations {
   /// No description provided for @serverConfiguration.
   ///
   /// In en, this message translates to:
-  /// **'Server Configuration'**
+  /// **'Server configuration'**
   String get serverConfiguration;
 
   /// No description provided for @serverFailuresLine.
@@ -4307,7 +4319,7 @@ abstract class MTLocalizations {
   /// No description provided for @serverUrlHelpTitle.
   ///
   /// In en, this message translates to:
-  /// **'About the Server URL'**
+  /// **'About the server URL'**
   String get serverUrlHelpTitle;
 
   /// No description provided for @serverUrlHint.
@@ -4499,13 +4511,13 @@ abstract class MTLocalizations {
   /// No description provided for @shareLogs.
   ///
   /// In en, this message translates to:
-  /// **'Share Logs'**
+  /// **'Share logs'**
   String get shareLogs;
 
   /// No description provided for @shareSelected.
   ///
   /// In en, this message translates to:
-  /// **'Share Selected'**
+  /// **'Share selected'**
   String get shareSelected;
 
   /// No description provided for @shortsFilter.
@@ -4982,6 +4994,12 @@ abstract class MTLocalizations {
   /// **'Next match'**
   String get transcriptNextMatch;
 
+  /// No description provided for @transcriptPeekHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap for the whole text'**
+  String get transcriptPeekHint;
+
   /// No description provided for @transcriptPreviousMatch.
   ///
   /// In en, this message translates to:
@@ -5309,7 +5327,7 @@ abstract class MTLocalizations {
   /// No description provided for @videoPlayer.
   ///
   /// In en, this message translates to:
-  /// **'Video Player'**
+  /// **'Video player'**
   String get videoPlayer;
 
   /// No description provided for @viewAll.

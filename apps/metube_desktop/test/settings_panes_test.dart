@@ -165,7 +165,7 @@ void main() {
     await tester.tap(find.byType(MTSwitch));
     await tester.pumpAndSettle();
     expect(await h.store.getBool(NotifyArrivalsNotifier.key), isFalse);
-    await tester.tap(find.text('Open Channels'));
+    await tester.tap(find.text('Open channels'));
     await tester.pumpAndSettle();
     final router = GoRouter.of(tester.element(find.byType(EmberSidebar)));
     expect(router.state.uri.path, '/channels');

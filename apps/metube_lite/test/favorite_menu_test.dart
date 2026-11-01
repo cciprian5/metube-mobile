@@ -57,4 +57,26 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(MTFavoriteTile), findsOneWidget);
   });
+
+  testWidgets('**the guard**: the delete confirmation shows the clip itself', (
+    tester,
+  ) async {
+    await pump(tester, clip());
+    await tester.tap(find.byIcon(Icons.more_vert_rounded));
+    await tester.pumpAndSettle();
+    final delete = find.text('حذف الفيديو');
+    await tester.ensureVisible(delete);
+    await tester.tap(delete);
+    await tester.pumpAndSettle();
+    expect(find.byType(MTConfirmDialog), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(MTDialogClip),
+        matching: find.textContaining('Clip'),
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('إلغاء'));
+    await tester.pumpAndSettle();
+  });
 }

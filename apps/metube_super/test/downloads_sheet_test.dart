@@ -65,14 +65,14 @@ void main() {
 
     tasks.add([running.copyWith(phase: TaskPhase.completed)]);
     await tester.pumpAndSettle();
-    expect(find.text('No Downloads'), findsOneWidget);
+    expect(find.text('No downloads'), findsOneWidget);
     expect(height(tester), before);
   });
 
   testWidgets('opened with nothing running, the sheet is only as tall as '
       'its message', (tester) async {
     await open(tester, const []);
-    expect(find.text('No Downloads'), findsOneWidget);
+    expect(find.text('No downloads'), findsOneWidget);
     expect(height(tester), lessThan(823 / 2));
   });
 
@@ -89,7 +89,7 @@ void main() {
 
     tasks.add([running.copyWith(phase: TaskPhase.completed)]);
     await tester.pumpAndSettle();
-    expect(find.text('No Downloads'), findsOneWidget);
+    expect(find.text('No downloads'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -102,5 +102,23 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('0%'), findsOneWidget);
+  });
+
+  testWidgets('**the guard**: a running task shows its title and the server '
+      'speed, and a waiting one its place in line', (tester) async {
+    final titled = running.copyWith(
+      title: 'Never Gonna Give You Up',
+      speed: () => 3.1 * 1024 * 1024,
+    );
+    final waiting = [
+      for (final id in ['q1', 'q2'])
+        DownloadTask(inputUrl: 'https://youtu.be/$id', quality: Quality.best),
+    ];
+    await open(tester, [titled, ...waiting]);
+    expect(find.text('Never Gonna Give You Up'), findsOneWidget);
+    expect(find.text('https://youtu.be/abc'), findsNothing);
+    expect(find.textContaining('3.1 MB/s'), findsOneWidget);
+    expect(find.text('Number 1 in line'), findsOneWidget);
+    expect(find.text('Number 2 in line'), findsOneWidget);
   });
 }

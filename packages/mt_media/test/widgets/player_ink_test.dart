@@ -137,4 +137,55 @@ void main() {
     await tester.tap(find.byType(MTFavoriteButton));
     expect(taps, 1);
   });
+
+  group('the transcript glimpse under the controls', () {
+    Future<void> screen(WidgetTester tester, Size size) async {
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.runAsync(
+        () => handler.playItems([
+          const PlaylistItem(
+            canonicalUrl: 'https://x/a',
+            title: 'a',
+            serverFilename: 'a.mp3',
+            isAudio: true,
+          ),
+        ]),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: mtTheme(MTVariant.superApp, Brightness.light),
+          localizationsDelegates: MTLocalizations.localizationsDelegates,
+          supportedLocales: MTLocalizations.supportedLocales,
+          home: MTAudioScreen(
+            handler: handler,
+            extra: (_) => MTExtraAction(
+              icon: Icons.subject_rounded,
+              label: 'Transcript',
+              onTap: () {},
+            ),
+            peek: (_) => const Text('PEEK'),
+          ),
+        ),
+      );
+      await tester.pump();
+    }
+
+    testWidgets('**the guard**: a tall phone shows it where the button was', (
+      tester,
+    ) async {
+      await screen(tester, const Size(411, 914));
+      expect(find.text('PEEK'), findsOneWidget);
+      expect(find.byType(MTExtraButton), findsNothing);
+    });
+
+    testWidgets('**the guard**: a short phone keeps the button', (
+      tester,
+    ) async {
+      await screen(tester, const Size(360, 700));
+      expect(find.text('PEEK'), findsNothing);
+      expect(find.byType(MTExtraButton), findsOneWidget);
+    });
+  });
 }

@@ -121,8 +121,10 @@ class MTNotice extends StatelessWidget {
           MTNoticeKind.info => null,
         };
     final text = Theme.of(context).textTheme;
+    final desktop = MTDesktopApp.isDesktop(context);
+    final corners = desktop ? MTCorners.desktop : MTCorners.mobile;
     return ClipRRect(
-      borderRadius: BorderRadius.circular(MTCorners.desktop.card),
+      borderRadius: BorderRadius.circular(corners.card),
       child: Stack(
         children: [
           Padding(
@@ -153,14 +155,16 @@ class MTNotice extends StatelessWidget {
                       ScaffoldMessenger.maybeOf(context)?.hideCurrentSnackBar();
                       onAction?.call();
                     },
-                    // Sized for a pointer: Material's 48-point touch target
-                    // would make a notice with an action taller than one
-                    // without.
+                    // Sized for a pointer on the computer: Material's
+                    // 48-point touch target would make a notice with an
+                    // action taller than one without. A finger keeps it.
                     style: TextButton.styleFrom(
                       foregroundColor: p.night ? p.accentInk : p.accent,
                       textStyle: text.labelLarge,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      minimumSize: Size.zero,
+                      tapTargetSize: desktop
+                          ? MaterialTapTargetSize.shrinkWrap
+                          : MaterialTapTargetSize.padded,
+                      minimumSize: desktop ? Size.zero : null,
                       padding: const EdgeInsets.symmetric(
                         horizontal: MTSpace.sm,
                       ),
@@ -181,7 +185,7 @@ class MTNotice extends StatelessWidget {
               decoration: BoxDecoration(
                 color: state,
                 borderRadius: BorderRadiusDirectional.horizontal(
-                  end: Radius.circular(MTCorners.desktop.box / 2),
+                  end: Radius.circular(corners.box / 2),
                 ),
               ),
             ),

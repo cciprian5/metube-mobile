@@ -70,4 +70,33 @@ void main() {
       reason: 'persist: false — وإلا بقي الشريط فوق زر إضافة رابط للأبد',
     );
   });
+
+  testWidgets('**the guard**: a phone notice wears the state bar and the '
+      'running-out line, as on the computer', (tester) async {
+    await show(tester);
+    expect(find.byType(MTNotice), findsOneWidget);
+    expect(find.byKey(const ValueKey('state-bar')), findsOneWidget);
+    expect(find.byKey(const ValueKey('time-left')), findsOneWidget);
+  });
+
+  testWidgets('**the guard**: its action keeps a finger-sized target and '
+      'still runs', (tester) async {
+    var ran = 0;
+    await tester.pumpWidget(
+      host(
+        (context) => showMTSnack(
+          context,
+          'رسالة',
+          actionLabel: 'تراجع',
+          onAction: () => ran++,
+        ),
+      ),
+    );
+    await tester.tap(find.text('اعرض'));
+    await tester.pumpAndSettle();
+    final button = find.widgetWithText(TextButton, 'تراجع');
+    expect(tester.getSize(button).height, greaterThanOrEqualTo(48));
+    await tester.tap(button);
+    expect(ran, 1);
+  });
 }

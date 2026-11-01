@@ -7,6 +7,7 @@ import '../l10n/bidi.dart';
 import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import 'mt_desktop_app.dart';
 import 'mt_favorite.dart';
 import 'mt_highlight_surface.dart';
 import 'mt_location_badge.dart';
@@ -166,7 +167,12 @@ class MTMediaRow extends StatelessWidget {
                             // here (phones); see [MTFavoriteMark].
                             if (favorite && onFavoriteToggle == null)
                               const MTFavoriteMark(),
-                            if (platform != MTPlatformKind.other) ...[
+                            // The platform letters stay on the computer's
+                            // table; a phone row carries one mark at most
+                            // (log §4, 2026-11-01), and the platform is in
+                            // the details and the filter sheet.
+                            if (platform != MTPlatformKind.other &&
+                                MTDesktopApp.isDesktop(context)) ...[
                               MTPlatformChip(kind: platform),
                               const SizedBox(width: MTSpace.xxs),
                             ],

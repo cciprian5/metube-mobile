@@ -487,7 +487,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Save in its own folder'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Save Settings'));
+      await tester.tap(find.text('Save settings'));
       await tester.pumpAndSettle();
       expect(sent('/subscriptions/update')!['folder'], '');
     });
@@ -505,7 +505,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Edit'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Save Settings'));
+      await tester.tap(find.text('Save settings'));
       await tester.pumpAndSettle();
       expect(sent('/subscriptions/update'), isNot(contains('folder')));
     });

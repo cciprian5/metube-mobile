@@ -44,6 +44,7 @@ class DownloadTask {
     this.localPath,
     this.phase = TaskPhase.queued,
     this.progress = 0,
+    this.speed,
     this.error,
     this.isBatchMember = false,
     this.serverCleanupFailed = false,
@@ -77,6 +78,11 @@ class DownloadTask {
   /// 0 to 1: the server's progress while polling, then the pull's progress
   /// while pulling.
   final double progress;
+
+  /// The server's download speed in bytes per second while it fetches the
+  /// clip, or null when it is not downloading (waiting, between streams,
+  /// pulling to the device).
+  final double? speed;
 
   /// The classified error on failure. The app turns its type into
   /// translated text (TRD §3.3).
@@ -119,6 +125,7 @@ class DownloadTask {
     String? localPath,
     TaskPhase? phase,
     double? progress,
+    double? Function()? speed,
     MTApiException? error,
     bool? serverCleanupFailed,
   }) => DownloadTask(
@@ -133,6 +140,7 @@ class DownloadTask {
     localPath: localPath ?? this.localPath,
     phase: phase ?? this.phase,
     progress: progress ?? this.progress,
+    speed: speed == null ? this.speed : speed(),
     error: error ?? this.error,
     isBatchMember: isBatchMember,
     serverCleanupFailed: serverCleanupFailed ?? this.serverCleanupFailed,

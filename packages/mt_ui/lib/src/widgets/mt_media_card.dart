@@ -6,6 +6,7 @@ import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
 import '../icons/mt_icons.dart';
 import '../tokens/tokens.dart';
+import 'mt_desktop_app.dart';
 import 'mt_equalizer.dart';
 import 'mt_favorite.dart';
 import 'mt_highlight_surface.dart';
@@ -104,6 +105,10 @@ class MTMediaCard extends StatelessWidget {
     final l10n = context.mtl;
     final text = Theme.of(context).textTheme;
     final (titleDirection, titleAlign) = mtForeignLine(context, title);
+    // The platform letters stay on the computer; a phone card carries one
+    // mark at most (log §4, 2026-11-01).
+    final shownPlatform =
+        platform != MTPlatformKind.other && MTDesktopApp.isDesktop(context);
     final thumbW = compact ? 64.0 : 98.0;
     final thumbH = compact ? 40.0 : 62.0;
 
@@ -178,17 +183,14 @@ class MTMediaCard extends StatelessWidget {
                             // An unknown platform deserves neither an icon
                             // nor a separator: a bullet followed by "3
                             // minutes ago" is visual noise (audit 8.1).
-                            if (platform != MTPlatformKind.other)
-                              MTPlatformChip(kind: platform),
+                            if (shownPlatform) MTPlatformChip(kind: platform),
                             // The separator travels with the text it
                             // introduces, so on a narrow card or a large font
                             // it gives way with it instead of overflowing.
                             if (subtitle != null)
                               Flexible(
                                 child: Text(
-                                  platform == MTPlatformKind.other
-                                      ? subtitle!
-                                      : ' · $subtitle',
+                                  !shownPlatform ? subtitle! : ' · $subtitle',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: text.bodySmall!.copyWith(

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:metube_super/di.dart';
 import 'package:metube_super/features/folders/folders_providers.dart';
 import 'package:metube_super/features/home/add_flow.dart';
+import 'package:metube_super/features/home/link_preview_view.dart';
 import 'package:metube_super/features/settings/widgets/help_button.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:mt_core/mt_core.dart';
@@ -18,6 +19,11 @@ import 'device_matrix.dart';
 /// with the link, and absent for a playlist, which the batch screen saves
 /// at the top.
 void main() {
+  /// The add sheet's preview, answered here rather than from YouTube.
+  final preview = ClipPreviewResolver(
+    httpGet: (_) async => '{"title":"Me at the zoo","author_name":"jawed"}',
+  );
+
   late _Engine engine;
 
   Widget host(String url, {Locale locale = const Locale('en')}) {
@@ -48,6 +54,7 @@ void main() {
           MTLogger(filePath: '${Directory.systemTemp.path}/mtf_test.log'),
         ),
         downloadEngineProvider.overrideWithValue(engine),
+        linkPreviewResolverProvider.overrideWithValue(preview),
         serverFoldersProvider.overrideWith(
           (ref) async =>
               const ServerFolders(video: ['Ai', 'Ai/Lessons', 'Quran']),
@@ -128,6 +135,15 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  /// **The guard**: the sheet says what the link is before anything is
+  /// downloaded, from the platform's public oEmbed.
+  testWidgets('the sheet previews the clip under the link', (tester) async {
+    await open(tester, 'https://www.youtube.com/watch?v=jNQXAC9IVRw');
+    expect(find.byType(MTLinkPreview), findsOneWidget);
+    expect(find.text('Me at the zoo'), findsOneWidget);
+    expect(find.textContaining('jawed'), findsOneWidget);
+  });
+
   testWidgets('the sheet with its folder row holds on every device', (
     tester,
   ) async {
@@ -150,6 +166,9 @@ class _Opened extends StatelessWidget {
         MTLogger(filePath: '${Directory.systemTemp.path}/mtf_test.log'),
       ),
       downloadEngineProvider.overrideWithValue(null),
+      linkPreviewResolverProvider.overrideWithValue(
+        ClipPreviewResolver(httpGet: (_) async => '{}'),
+      ),
     ],
     child: MaterialApp.router(
       theme: mtTheme(MTVariant.superApp, Brightness.light),

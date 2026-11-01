@@ -64,4 +64,44 @@ void main() {
       contains('Never Gonna Give You Up'),
     );
   });
+
+  test('**the guard**: a downloading task carries the server speed, and '
+      'loses it once the server stops downloading', () async {
+    Map<String, dynamic> withSpeed(String status, double? speed) => {
+      ...item(status),
+      'speed': speed,
+    };
+    final api = FakeApi(
+      historyScript: [
+        historyWith(),
+        historyWith(queue: [withSpeed('downloading', 1258291.2)]),
+        historyWith(queue: [withSpeed('preparing', null)]),
+        historyWith(done: [item('finished', file: 'clip.mp4')]),
+      ],
+    );
+    final e = engine(api);
+    addTearDown(e.dispose);
+    final speeds = <double?>[];
+    e.updates.listen((t) {
+      if (t.phase == TaskPhase.polling) speeds.add(t.speed);
+    });
+    final task = e.submit(inputUrl, Quality.best);
+    await e.updates
+        .firstWhere((t) => t.id == task.id && t.isFinished)
+        .timeout(const Duration(seconds: 3));
+    expect(speeds, contains(1258291.2));
+    expect(speeds.last, isNull, reason: 'no stale speed once it stops');
+  });
+
+  test('the speed is read from the history JSON, and a zero or a missing '
+      'value is none', () {
+    double? speedOf(Object? raw) => HistoryItem.fromJson({
+      'url': canonical,
+      'status': 'downloading',
+      'speed': raw,
+    }).speed;
+    expect(speedOf(1258291.2), 1258291.2);
+    expect(speedOf(null), isNull);
+    expect(speedOf(0), isNull);
+  });
 }

@@ -113,4 +113,69 @@ void main() {
       scrolled,
     );
   });
+
+  testWidgets('**the guard**: the playlist page as the plan draws it: its '
+      'length under the name, a gone clip faded, and the editing hint', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(411, 914);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    final store = PlaylistsStore(store: kv, mutex: mutex);
+    final kept = LibraryItem(
+      canonicalUrl: 'https://v/kept',
+      title: 'Kept',
+      onServer: true,
+    );
+    final gone = LibraryItem(
+      canonicalUrl: 'https://v/gone',
+      title: 'Gone',
+      onServer: true,
+    );
+    final playlist = await store.create(
+      'Drive',
+      items: [toPlaylistEntry(kept), toPlaylistEntry(gone)],
+    );
+    final container = ProviderContainer(
+      overrides: [
+        audioHandlerProvider.overrideWithValue(handler),
+        keyValueStoreProvider.overrideWithValue(kv),
+        secretStoreProvider.overrideWithValue(MemorySecretStore()),
+        prefsMutexProvider.overrideWithValue(mutex),
+        initialSettingsProvider.overrideWithValue(const SuperSettings()),
+        playlistsStoreProvider.overrideWithValue(store),
+        libraryItemsProvider.overrideWith((ref) async => [kept]),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          theme: mtTheme(MTVariant.superApp, Brightness.light),
+          localizationsDelegates: MTLocalizations.localizationsDelegates,
+          supportedLocales: MTLocalizations.supportedLocales,
+          home: PlaylistDetailsScreen(playlistId: playlist.id),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('2'), findsWidgets);
+    expect(
+      find.text('Long-press a clip to move it. Swipe it aside to remove it.'),
+      findsOneWidget,
+    );
+    final fade = tester.widget<Opacity>(
+      find
+          .ancestor(of: find.text('Gone'), matching: find.byType(Opacity))
+          .first,
+    );
+    expect(fade.opacity, 0.5);
+    final headphones = tester.widget<Icon>(
+      find.byIcon(Icons.headphones_rounded),
+    );
+    expect(headphones.color, isNot(MTPalette.superDay.accent));
+  });
 }

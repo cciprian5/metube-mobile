@@ -6,7 +6,6 @@ import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import '../wahaj/mt_hover_lift.dart';
-import 'mt_desktop_app.dart';
 import 'mt_favorite.dart';
 import 'mt_highlight_surface.dart';
 import 'mt_media_grid_cover.dart';
@@ -161,14 +160,9 @@ class MTMediaGridCard extends StatelessWidget {
                       children: [
                         if (favorite && onFavoriteToggle == null)
                           const MTFavoriteMark(),
-                        // On a computer the platform pills above the grid
-                        // say it already; a coloured mark under every
-                        // title only repeated them.
-                        if (platform != MTPlatformKind.other &&
-                            !MTDesktopApp.isDesktop(context)) ...[
-                          MTPlatformChip(kind: platform),
-                          const SizedBox(width: MTSpace.xxs),
-                        ],
+                        // No platform letters under the title: on a computer
+                        // the pills above the grid say it, and a phone card
+                        // carries one mark at most (log §4, 2026-11-01).
                         if (subtitle != null)
                           Flexible(
                             child: Text(

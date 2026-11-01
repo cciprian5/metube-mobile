@@ -68,4 +68,26 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('**the guard**: the delete confirmation shows the clip itself', (
+    tester,
+  ) async {
+    await pump(tester, clip());
+    await tester.tap(find.byTooltip('Item options'));
+    await tester.pumpAndSettle();
+    final delete = find.text('Delete from server');
+    await tester.ensureVisible(delete);
+    await tester.tap(delete);
+    await tester.pumpAndSettle();
+    expect(find.byType(MTConfirmDialog), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(MTDialogClip),
+        matching: find.textContaining('Clip'),
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+  });
 }

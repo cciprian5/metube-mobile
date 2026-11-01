@@ -47,6 +47,7 @@ class MTVideoScreen extends StatelessWidget {
     this.shouldOfferContinueAsAudio,
     this.playlistName,
     this.membershipLine,
+    this.byline,
     this.fullscreenPanel,
     this.captions,
   });
@@ -93,6 +94,9 @@ class MTVideoScreen extends StatelessWidget {
   /// the title; portrait shows it through [subtitleBuilder] in the info
   /// sheet.
   final String? membershipLine;
+
+  /// See [MTVideoInfoSheet.byline].
+  final Widget Function(BuildContext context, PlaylistItem item)? byline;
 
   bool get _offersAudio =>
       onContinueAsAudio != null && (shouldOfferContinueAsAudio?.call() ?? true);
@@ -145,6 +149,7 @@ class MTVideoScreen extends StatelessWidget {
               subtitleBuilder: subtitleBuilder,
               playlistName: playlistName,
               onShowPlaylist: onShowPlaylist,
+              byline: byline,
             ),
           ),
         ),
@@ -212,6 +217,7 @@ class MTVideoScreen extends StatelessWidget {
                       subtitleBuilder: subtitleBuilder,
                       playlistName: playlistName,
                       onShowPlaylist: onShowPlaylist,
+                      byline: byline,
                     ),
                   ),
                 ],

@@ -3194,6 +3194,12 @@ abstract class MTLocalizations {
   /// **'Follow a channel'**
   String get followChannel;
 
+  /// No description provided for @followingChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get followingChannel;
+
   /// No description provided for @format.
   ///
   /// In en, this message translates to:
@@ -5423,7 +5429,7 @@ abstract class MTLocalizations {
   /// No description provided for @yourChannelsHint.
   ///
   /// In en, this message translates to:
-  /// **'Followed in Settings'**
+  /// **'Followed in Settings or the player'**
   String get yourChannelsHint;
 
   /// No description provided for @yourPlaylists.

@@ -666,6 +666,7 @@
   "foldersIgnored": "هذا السيرفر يحفظ كل ملف أعلى التنزيلات أياً كان المجلد المختار، لأن في YTDL_OPTIONS عنده outtmpl. دليل الإعداد يشرح نقله إلى OUTPUT_TEMPLATE.",
   "follow": "متابعة",
   "followChannel": "تابِع قناة",
+  "followingChannel": "تتابعها",
   "format": "الصيغة",
   "framesPerSecond": "{count} إطار/ث",
   "helpAboutField": "عن هذا الحقل",
@@ -1037,7 +1038,7 @@
   "wifiOnly": "التحميل عبر Wi‑Fi فقط",
   "wifiOnlyHelp": "لا تُسحب الملفات إلى جهازك عبر بيانات الجوّال، بل تنتظر المهام وتُستأنف تلقائياً عند الاتصال بشبكة Wi‑Fi.",
   "yourChannels": "قنواتك",
-  "yourChannelsHint": "تتابعها من الإعدادات",
+  "yourChannelsHint": "تابعتها من الإعدادات أو من المشغّل",
   "yourPlaylists": "قوائمك",
   "yourTags": "وسومك",
   "ytdlpCredit": "أداة التنزيل التي يعتمد عليها MeTube"

@@ -28,6 +28,25 @@ void main() {
     );
   });
 
+  test("**the guard**: YouTube names the channel's address, which "
+      'following it needs', () async {
+    final resolver = ClipPreviewResolver(
+      httpGet: (_) async =>
+          '{"title":"Never Gonna Give You Up","author_name":"Rick Astley",'
+          '"author_url":"https://www.youtube.com/@RickAstleyYT"}',
+    );
+    final preview = await resolver.resolve(youtube);
+    expect(preview!.authorUrl, 'https://www.youtube.com/@RickAstleyYT');
+  });
+
+  test('an address that is not https is not kept', () async {
+    final resolver = ClipPreviewResolver(
+      httpGet: (_) async =>
+          '{"title":"Clip","author_url":"javascript:alert(1)"}',
+    );
+    expect((await resolver.resolve(youtube))!.authorUrl, isNull);
+  });
+
   test('Vimeo brings its own picture and the length', () async {
     final resolver = ClipPreviewResolver(
       httpGet: (_) async =>

@@ -8,10 +8,20 @@ import 'soundcloud_resolver.dart';
 
 /// What a link is, shown in the add sheet before anything is downloaded.
 class ClipPreview {
-  const ClipPreview({this.title, this.author, this.thumbnail, this.duration});
+  const ClipPreview({
+    this.title,
+    this.author,
+    this.authorUrl,
+    this.thumbnail,
+    this.duration,
+  });
 
   final String? title;
   final String? author;
+
+  /// The channel's own address, such as `https://www.youtube.com/@name`:
+  /// what following it needs. Only an https address is kept.
+  final String? authorUrl;
   final String? thumbnail;
   final Duration? duration;
 }
@@ -62,6 +72,10 @@ class ClipPreviewResolver {
     return ClipPreview(
       title: _text(data?['title']),
       author: _text(data?['author_name']),
+      authorUrl: switch (_text(data?['author_url'])) {
+        final url? when url.startsWith('https://') => url,
+        _ => null,
+      },
       thumbnail: thumbnail,
       duration: seconds is num && seconds > 0
           ? Duration(seconds: seconds.round())

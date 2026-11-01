@@ -76,9 +76,30 @@ void main() {
   }
 
   testWidgets('without an extra, speed and queue alone', (tester) async {
+    final semantics = tester.ensureSemantics();
     await show(tester, null);
-    expect(find.text('Queue'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp('^Queue')), findsOneWidget);
+    semantics.dispose();
     expect(find.byIcon(Icons.subject_rounded), findsNothing);
+  });
+
+  // Mobile plan, page 02: two light marks at the ends of the line, not
+  // framed pills with their names written out. The names stay for a
+  // screen reader.
+  testWidgets('**the guard**: speed and queue are marks, their names read '
+      'rather than written', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await show(tester, null);
+    expect(find.text('Queue'), findsNothing);
+    expect(find.text('Speed'), findsNothing);
+    expect(find.bySemanticsLabel(RegExp('^Playback speed')), findsOneWidget);
+    expect(find.textContaining('×'), findsOneWidget);
+    expect(find.byIcon(Icons.queue_music_rounded), findsOneWidget);
+    final speed = tester.getCenter(find.textContaining('×'));
+    final queue = tester.getCenter(find.byIcon(Icons.queue_music_rounded));
+    // At the two ends of the line, not side by side in the middle.
+    expect((queue.dx - speed.dx).abs(), greaterThan(200));
+    semantics.dispose();
   });
 
   testWidgets('an extra for the item playing shows, and answers a tap', (

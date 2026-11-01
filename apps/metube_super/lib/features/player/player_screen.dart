@@ -18,6 +18,7 @@ import '../transcripts/transcript_openers.dart';
 import '../transcripts/transcripts_state.dart';
 import 'playback_providers.dart';
 import '../transcripts/subtitles.dart';
+import '../subscriptions/widgets/follow_line.dart';
 
 /// Super's video player (rule 4): it feeds `MTVideoScreen` with the app's
 /// actions, available offline, continue as audio, share, and open the
@@ -84,6 +85,8 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
         context.mtl,
       ),
       subtitleBuilder: (context, item) => _subtitle(context, item, membership),
+      // Who made it, with the way to follow them (YouTube only).
+      byline: (context, item) => FollowLine(item: item),
       actions: _actions(session),
       onContinueAsAudio: _continueAsAudio,
       // **Never asked twice** (field report 2026-09-02): someone who had

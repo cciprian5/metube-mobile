@@ -20,17 +20,24 @@ Future<void> showSubscriptionSheet(
   BuildContext context,
   WidgetRef ref, {
   ChannelSubscription? editing,
+  String? url,
+  String? name,
 }) => showMTSheet<void>(
   context: context,
   isScrollControlled: true,
   useSafeArea: true,
-  builder: (_) => _SubscriptionSheet(editing: editing),
+  builder: (_) => _SubscriptionSheet(editing: editing, url: url, name: name),
 );
 
 class _SubscriptionSheet extends ConsumerStatefulWidget {
-  const _SubscriptionSheet({this.editing});
+  const _SubscriptionSheet({this.editing, this.url, this.name});
 
   final ChannelSubscription? editing;
+
+  /// A channel to follow, already known (from the video player): the link
+  /// is filled in and the user only chooses how to follow it.
+  final String? url;
+  final String? name;
 
   @override
   ConsumerState<_SubscriptionSheet> createState() => _SubscriptionSheetState();
@@ -38,10 +45,10 @@ class _SubscriptionSheet extends ConsumerStatefulWidget {
 
 class _SubscriptionSheetState extends ConsumerState<_SubscriptionSheet> {
   late final _urlController = TextEditingController(
-    text: widget.editing?.url ?? '',
+    text: widget.editing?.url ?? widget.url ?? '',
   );
   late final _nameController = TextEditingController(
-    text: widget.editing?.name ?? '',
+    text: widget.editing?.name ?? widget.name ?? '',
   );
   late final _filterController = TextEditingController(
     text: widget.editing?.titleRegex ?? '',

@@ -1872,6 +1872,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get followChannel => 'تابِع قناة';
 
   @override
+  String get followingChannel => 'تتابعها';
+
+  @override
   String get format => 'الصيغة';
 
   @override
@@ -3242,7 +3245,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get yourChannels => 'قنواتك';
 
   @override
-  String get yourChannelsHint => 'تتابعها من الإعدادات';
+  String get yourChannelsHint => 'تابعتها من الإعدادات أو من المشغّل';
 
   @override
   String get yourPlaylists => 'قوائمك';

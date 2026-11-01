@@ -958,6 +958,7 @@
   "foldersIgnored": "This server saves every file at the top of the downloads, whatever folder is chosen: its YTDL_OPTIONS has an outtmpl. The setup guide says how to move it to OUTPUT_TEMPLATE.",
   "follow": "Follow",
   "followChannel": "Follow a channel",
+  "followingChannel": "Following",
   "format": "Format",
   "framesPerSecond": "{count} fps",
   "helpAboutField": "About this field",
@@ -1346,7 +1347,7 @@
   "wifiOnly": "Download over Wi-Fi only",
   "wifiOnlyHelp": "Stops pulling files to your device over mobile data. Tasks wait and resume automatically on Wi-Fi.",
   "yourChannels": "Your channels",
-  "yourChannelsHint": "Followed in Settings",
+  "yourChannelsHint": "Followed in Settings or the player",
   "yourPlaylists": "Your playlists",
   "yourTags": "Your tags",
   "ytdlpCredit": "The downloader MeTube runs"

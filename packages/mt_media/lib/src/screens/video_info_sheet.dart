@@ -19,6 +19,7 @@ class MTVideoInfoSheet extends StatelessWidget {
     this.actions = const [],
     this.artwork,
     this.subtitleBuilder,
+    this.byline,
     this.onShowPlaylist,
     this.playlistName,
   });
@@ -29,6 +30,9 @@ class MTVideoInfoSheet extends StatelessWidget {
   final String Function(BuildContext context, PlaylistItem item)?
   subtitleBuilder;
   final VoidCallback? onShowPlaylist;
+
+  /// A line under the title an app adds, such as the clip's channel.
+  final Widget Function(BuildContext context, PlaylistItem item)? byline;
   final String? playlistName;
 
   @override
@@ -103,6 +107,7 @@ class MTVideoInfoSheet extends StatelessWidget {
           style: text.bodySmall!.copyWith(color: p.ink3),
         ),
       ],
+      ?byline?.call(context, item),
       if (actions.isNotEmpty) ...[
         const SizedBox(height: MTSpace.md),
         // One height for every tile: a label on two lines ("open

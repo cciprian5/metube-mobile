@@ -1836,6 +1836,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get followChannel => 'Follow a channel';
 
   @override
+  String get followingChannel => 'Following';
+
+  @override
   String get format => 'Format';
 
   @override
@@ -3168,7 +3171,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get yourChannels => 'Your channels';
 
   @override
-  String get yourChannelsHint => 'Followed in Settings';
+  String get yourChannelsHint => 'Followed in Settings or the player';
 
   @override
   String get yourPlaylists => 'Your playlists';

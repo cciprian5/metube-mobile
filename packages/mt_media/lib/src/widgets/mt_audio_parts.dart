@@ -100,7 +100,11 @@ class MTAudioSlider extends StatelessWidget {
   );
 }
 
-/// The pills under the controls: speed, the queue, and an app's extra.
+/// The line under the controls: **speed at one end and the queue at the
+/// other, as light marks** (mobile plan, page 02), and an app's extra
+/// between them. Two framed pills with their names written out ("Speed
+/// 1.0×", "Queue 12") were heavier than the transport above them; the
+/// names stay for screen readers.
 class MTAudioSubControls extends StatelessWidget {
   const MTAudioSubControls({
     super.key,
@@ -118,103 +122,76 @@ class MTAudioSubControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.mtl;
+    final p = MTThemeX.of(context).palette;
+    final text = Theme.of(context).textTheme;
     return StreamBuilder<PlaybackState>(
       stream: handler.playbackState,
       builder: (context, snapshot) {
         final speed = snapshot.data?.speed ?? 1.0;
-        // One line that shrinks when it must, never two: a second line of
-        // pills pushed the whole screen past the bottom of a 360-point
-        // phone at a larger text size. Where the pills fit, nothing
-        // changes.
-        return FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _Pill(
-                onTap: () => handler.setSpeed(mtNextSpeed(speed)),
-                leading: '${mtFormatSpeed(speed)}×',
-                label: l10n.playbackSpeed,
+        return Row(
+          children: [
+            _Mark(
+              onTap: () => handler.setSpeed(mtNextSpeed(speed)),
+              label: l10n.playbackSpeed,
+              child: Text(
+                '${mtFormatSpeed(speed)}×',
+                style: text.labelLarge!.copyWith(color: p.ink2).tabular,
               ),
-              if (onQueue case final open?) ...[
-                const SizedBox(width: MTSpace.md),
-                _Pill(
-                  onTap: open,
-                  icon: Icons.queue_music_rounded,
-                  label: l10n.queueLabel,
-                  trailing: '${handler.items.length}',
+            ),
+            const Spacer(),
+            if (extra case final extra?) MTExtraButton(extra: extra),
+            const Spacer(),
+            if (onQueue case final open?)
+              _Mark(
+                onTap: open,
+                label: l10n.queueLabel,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.queue_music_rounded, size: 20, color: p.ink2),
+                    const SizedBox(width: MTSpace.xxs),
+                    Text(
+                      '${handler.items.length}',
+                      style: text.labelSmall!.copyWith(color: p.ink2),
+                    ),
+                  ],
                 ),
-              ],
-              if (extra case final extra?) ...[
-                const SizedBox(width: MTSpace.md),
-                MTExtraButton(extra: extra),
-              ],
-            ],
-          ),
+              )
+            else
+              // Keeps the extra in the middle when the queue is elsewhere.
+              const SizedBox(width: _Mark.size),
+          ],
         );
       },
     );
   }
 }
 
-class _Pill extends StatelessWidget {
-  const _Pill({
-    required this.onTap,
-    required this.label,
-    this.leading,
-    this.trailing,
-    this.icon,
-  });
+/// A light tappable mark: no frame, a finger-sized target, its name read
+/// out rather than written.
+class _Mark extends StatelessWidget {
+  const _Mark({required this.onTap, required this.label, required this.child});
 
   final VoidCallback onTap;
   final String label;
-  final String? leading;
-  final String? trailing;
-  final IconData? icon;
+  final Widget child;
+
+  static const double size = 48;
 
   @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final text = Theme.of(context).textTheme;
-    final strong = text.labelSmall!.copyWith(
-      color: p.ink,
-      fontWeight: FontWeight.w700,
-    );
-    return Material(
-      color: p.card,
-      borderRadius: BorderRadius.circular(MTRadius.field - 1),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(MTRadius.field - 1),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: MTSpace.lg,
-            vertical: MTSpace.xs + 2,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(MTRadius.field - 1),
-            border: Border.all(color: p.line2),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (icon != null) ...[
-                Icon(icon, size: 13, color: p.ink2),
-                const SizedBox(width: MTSpace.xs),
-              ],
-              if (leading != null) ...[
-                Text(leading!, style: strong),
-                const SizedBox(width: MTSpace.xs),
-              ],
-              Text(label, style: text.labelSmall!.copyWith(color: p.ink2)),
-              if (trailing != null) ...[
-                const SizedBox(width: MTSpace.xs),
-                Text(trailing!, style: strong),
-              ],
-            ],
-          ),
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: label,
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(MTRadius.chip),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: size, minHeight: size),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: MTSpace.sm),
+          child: Center(widthFactor: 1, child: child),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

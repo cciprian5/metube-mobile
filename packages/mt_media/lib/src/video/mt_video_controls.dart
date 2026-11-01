@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../widgets/mt_extra_button.dart';
+import '../widgets/mt_chapters.dart';
 import 'mt_captions.dart';
 import 'mt_video_session.dart';
 import 'video_buttons.dart';
@@ -24,6 +25,7 @@ class MTVideoControls extends StatefulWidget {
     this.membershipLine,
     this.extra,
     this.captions,
+    this.chapters = const [],
   });
 
   final MTVideoSession session;
@@ -40,6 +42,9 @@ class MTVideoControls extends StatefulWidget {
   final MTCaptions? captions;
   final String? playlistName;
   final String? membershipLine;
+
+  /// The clip's chapters, on the progress bar and beside the time.
+  final List<MTChapter> chapters;
 
   @override
   State<MTVideoControls> createState() => _MTVideoControlsState();
@@ -174,6 +179,14 @@ class _MTVideoControlsState extends State<MTVideoControls> {
           session: widget.session,
           onQueue: widget.onQueue,
           extra: widget.extra,
+          chapters: widget.chapters,
+          onChapters: () => showMTChapterSheet(
+            context,
+            chapters: widget.chapters,
+            ticks: widget.session,
+            position: () => widget.session.position,
+            onSeek: widget.session.seek,
+          ),
         ),
       ),
     ],

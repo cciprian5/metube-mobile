@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import 'media_time.dart';
+import 'mt_chapter_track.dart';
 
 /// The progress bar with a handle, from the Wahaj reference: a 5px track,
 /// an accent-coloured fill and a 15px ink handle. Used in the audio
@@ -15,6 +16,7 @@ class MTProgressSlider extends StatefulWidget {
     this.buffered,
     this.dark = false,
     this.showRemaining = true,
+    this.marks = const [],
   });
 
   final Duration position;
@@ -28,6 +30,9 @@ class MTProgressSlider extends StatefulWidget {
   /// The audio screen shows the remaining time as a negative; video shows
   /// the full duration.
   final bool showRemaining;
+
+  /// Where chapters begin: the track is cut there.
+  final List<Duration> marks;
 
   @override
   State<MTProgressSlider> createState() => _MTProgressSliderState();
@@ -76,7 +81,12 @@ class _MTProgressSliderState extends State<MTProgressSlider> {
                 enabledThumbRadius: onDark ? 5.5 : 7.5,
               ),
               overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
-              trackShape: const RoundedRectSliderTrackShape(),
+              trackShape: MTChapterTrackShape([
+                if (maxMs >= 1)
+                  for (final mark in widget.marks)
+                    if (mark.inMilliseconds > 0 && mark.inMilliseconds < maxMs)
+                      mark.inMilliseconds / maxMs,
+              ]),
             ),
             child: Slider(
               value: maxMs < 1 ? 0 : value.clamp(0, maxMs),

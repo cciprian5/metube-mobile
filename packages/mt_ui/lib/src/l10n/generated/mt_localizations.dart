@@ -488,6 +488,24 @@ abstract class MTLocalizations {
   /// **'https://www.youtube.com/@name'**
   String get channelUrlHint;
 
+  /// No description provided for @chapterNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter {number}'**
+  String chapterNumber(int number);
+
+  /// No description provided for @chaptersFromTranscript.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 chapter from the transcript} other{{count} chapters from the transcript}}'**
+  String chaptersFromTranscript(int count);
+
+  /// No description provided for @chaptersShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all chapters'**
+  String get chaptersShowAll;
+
   /// No description provided for @checkEvery.
   ///
   /// In en, this message translates to:

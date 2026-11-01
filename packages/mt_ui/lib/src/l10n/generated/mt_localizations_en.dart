@@ -237,6 +237,25 @@ class MTLocalizationsEn extends MTLocalizations {
   String get channelUrlHint => 'https://www.youtube.com/@name';
 
   @override
+  String chapterNumber(int number) {
+    return 'Chapter $number';
+  }
+
+  @override
+  String chaptersFromTranscript(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count chapters from the transcript',
+      one: '1 chapter from the transcript',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chaptersShowAll => 'View all chapters';
+
+  @override
   String get checkEvery => 'How often to look';
 
   @override

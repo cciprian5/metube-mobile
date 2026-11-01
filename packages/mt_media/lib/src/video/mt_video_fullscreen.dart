@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../models/playlist_item.dart';
+import '../widgets/mt_chapters.dart';
 import '../widgets/mt_extra_button.dart';
 import '../widgets/mt_queue_panel.dart';
 import '../widgets/mt_up_next_list.dart';
@@ -29,6 +30,7 @@ class MTVideoFullscreenPage extends StatefulWidget {
     this.byRotation = false,
     this.panel,
     this.captions,
+    this.chapters,
   });
 
   final MTVideoSession session;
@@ -40,6 +42,9 @@ class MTVideoFullscreenPage extends StatefulWidget {
   /// The subtitles of the item playing; see [MTVideoScreen.captions].
   final MTCaptions? Function(PlaylistItem item)? captions;
   final MTArtworkBuilder? artwork;
+
+  /// The chapters of the item playing; see [MTVideoScreen.chapters].
+  final List<MTChapter> Function(PlaylistItem item)? chapters;
   final VoidCallback? onShowPlaylist;
   final String? playlistName;
 
@@ -188,6 +193,10 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
                 captions: switch (session.current) {
                   final item? => widget.captions?.call(item),
                   null => null,
+                },
+                chapters: switch (session.current) {
+                  final item? => widget.chapters?.call(item) ?? const [],
+                  null => const [],
                 },
                 playlistName: widget.playlistName,
                 membershipLine: widget.membershipLine,

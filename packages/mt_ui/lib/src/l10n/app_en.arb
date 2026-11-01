@@ -459,6 +459,23 @@
   "channelNameFolder": "Named after the channel",
   "channelUrl": "Channel or playlist link",
   "channelUrlHint": "https://www.youtube.com/@name",
+  "chapterNumber": "Chapter {number}",
+  "@chapterNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "chaptersFromTranscript": "{count, plural, =1{1 chapter from the transcript} other{{count} chapters from the transcript}}",
+  "@chaptersFromTranscript": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chaptersShowAll": "View all chapters",
   "checkEvery": "How often to look",
   "checkForUpdates": "Check for updates",
   "checkNow": "Check now",

@@ -38,6 +38,13 @@
       }
     }
   },
+  "@chaptersFromTranscript": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@desktopAddLinks": {
     "placeholders": {
       "count": {
@@ -201,6 +208,9 @@
   "channelNameFolder": "باسم القناة",
   "channelUrl": "رابط قناة أو قائمة",
   "channelUrlHint": "https://www.youtube.com/@name",
+  "chapterNumber": "الفصل {number}",
+  "chaptersFromTranscript": "{count, plural, =1{فصل واحد من نص المقطع} =2{فصلان من نص المقطع} few{{count} فصول من نص المقطع} many{{count} فصلاً من نص المقطع} other{{count} فصل من نص المقطع}}",
+  "chaptersShowAll": "عرض كل الفصول",
   "checkEvery": "معدّل الفحص",
   "checkForUpdates": "التحقق من التحديثات",
   "checkNow": "افحص الآن",

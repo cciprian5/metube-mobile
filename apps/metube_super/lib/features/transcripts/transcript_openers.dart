@@ -5,8 +5,10 @@ import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_media/library.dart';
 
+import 'clip_chapters.dart';
 import 'subtitles.dart';
 import 'transcript_moment.dart';
+import 'transcript_panel_tabs.dart';
 import 'transcript_sheet.dart';
 import 'transcripts_state.dart';
 
@@ -91,19 +93,33 @@ MTVideoPanel? Function(PlaylistItem item) transcriptPanels(
   return (item) {
     final transcripts = _transcriptsOf(container, item.canonicalUrl);
     if (transcripts.isEmpty) return null;
+    final language = container.read(subtitlePrefsProvider).language;
+    final chapters = container.read(
+      clipChaptersProvider((url: item.canonicalUrl, language: language.value)),
+    );
     return MTVideoPanel(
       icon: Icons.subject_rounded,
       label: label,
-      builder: (context, close) => TranscriptSheet(
-        title: item.title,
-        query: '',
-        transcripts: transcripts,
-        language: container.read(subtitlePrefsProvider).language,
-        position: videoPositions(session),
-        stillPlaying: () => session.current?.canonicalUrl == item.canonicalUrl,
-        onMoment: session.seek,
-        onClose: close,
-      ),
+      builder: (context, close) {
+        final transcript = TranscriptSheet(
+          title: item.title,
+          query: '',
+          transcripts: transcripts,
+          language: language,
+          position: videoPositions(session),
+          stillPlaying: () =>
+              session.current?.canonicalUrl == item.canonicalUrl,
+          onMoment: session.seek,
+          onClose: close,
+        );
+        if (chapters.isEmpty) return transcript;
+        return TranscriptPanelTabs(
+          transcript: transcript,
+          chapters: chapters,
+          session: session,
+          onClose: close,
+        );
+      },
     );
   };
 }

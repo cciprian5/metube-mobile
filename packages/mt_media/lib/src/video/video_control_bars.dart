@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../widgets/media_time.dart';
+import '../widgets/mt_chapters.dart';
 import '../widgets/mt_extra_button.dart';
 import '../widgets/mt_player_controls_row.dart';
 import '../widgets/mt_progress_slider.dart';
@@ -196,6 +197,8 @@ class MTVideoBottomBar extends StatelessWidget {
     required this.onQueue,
     this.compactModes = false,
     this.extra,
+    this.chapters = const [],
+    this.onChapters,
   });
 
   final MTVideoSession session;
@@ -204,6 +207,11 @@ class MTVideoBottomBar extends StatelessWidget {
 
   /// A button the app adds before the queue button.
   final MTExtraAction? extra;
+
+  /// The clip's chapters: cuts in the track, and the one playing beside
+  /// the time, which opens the list through [onChapters].
+  final List<MTChapter> chapters;
+  final VoidCallback? onChapters;
 
   @override
   Widget build(BuildContext context) {
@@ -223,6 +231,7 @@ class MTVideoBottomBar extends StatelessWidget {
               : value.buffered.last.end,
           dark: true,
           showRemaining: false,
+          marks: [for (final chapter in chapters) chapter.start],
           onSeek: session.seek,
         ),
         Padding(
@@ -242,7 +251,18 @@ class MTVideoBottomBar extends StatelessWidget {
                 // (review 2026-09-02).
                 style: text.labelSmall!.copyWith(color: inkMuted).tabular,
               ),
-              const Spacer(),
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: chapters.isEmpty || onChapters == null
+                      ? null
+                      : MTChapterLabel(
+                          chapters: chapters,
+                          position: session.position,
+                          onTap: onChapters!,
+                        ),
+                ),
+              ),
               MTVideoIconButton(
                 icon: mtPlayModeIcon(session.playMode),
                 onTap: () => session.setPlayMode(session.playMode.next),

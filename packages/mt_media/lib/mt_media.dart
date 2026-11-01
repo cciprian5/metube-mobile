@@ -38,6 +38,8 @@ export 'src/video/shorts_lane.dart';
 export 'src/widgets/media_time.dart';
 export 'src/widgets/mt_audio_parts.dart';
 export 'src/widgets/mt_breathing_glow.dart';
+export 'src/widgets/mt_chapter_track.dart';
+export 'src/widgets/mt_chapters.dart';
 export 'src/widgets/mt_drag_to_dismiss.dart';
 export 'src/widgets/mt_extra_button.dart';
 export 'src/widgets/mt_mini_player.dart';

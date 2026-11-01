@@ -14,6 +14,7 @@ import '../library/library_actions.dart';
 import '../library/library_providers.dart';
 import '../shared/membership.dart';
 import '../shared/platform_label.dart';
+import '../transcripts/clip_chapters.dart';
 import '../transcripts/transcript_openers.dart';
 import '../transcripts/transcripts_state.dart';
 import 'playback_providers.dart';
@@ -99,6 +100,8 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
           : () => context.push('/playlists/${request.playlistId}'),
       fullscreenPanel: transcriptPanels(context, session),
       captions: (item) => subtitlesFor(ref, item),
+      // From the transcript: none without one, nor under four minutes.
+      chapters: (item) => chaptersFor(ref, item),
     );
   }
 

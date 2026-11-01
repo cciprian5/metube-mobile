@@ -4,6 +4,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../models/playlist_item.dart';
 import '../video/mt_video_session.dart';
 import '../widgets/media_time.dart';
+import '../widgets/mt_chapters.dart';
 import '../widgets/mt_player_controls_row.dart';
 import '../widgets/mt_queue_panel.dart';
 import '../widgets/mt_up_next_list.dart';
@@ -22,6 +23,7 @@ class MTVideoInfoSheet extends StatelessWidget {
     this.byline,
     this.onShowPlaylist,
     this.playlistName,
+    this.chapters,
   });
 
   final MTVideoSession session;
@@ -34,6 +36,9 @@ class MTVideoInfoSheet extends StatelessWidget {
   /// A line under the title an app adds, such as the clip's channel.
   final Widget Function(BuildContext context, PlaylistItem item)? byline;
   final String? playlistName;
+
+  /// See [MTVideoScreen.chapters].
+  final List<MTChapter> Function(PlaylistItem item)? chapters;
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +133,22 @@ class MTVideoInfoSheet extends StatelessWidget {
       _ModeRow(session: session),
       const SizedBox(height: MTSpace.md),
       Divider(color: p.line, height: 1),
+      if (chapters?.call(item) ?? const <MTChapter>[] case final chapters
+          when chapters.isNotEmpty) ...[
+        const SizedBox(height: MTSpace.lg),
+        MTChapterSection(
+          chapters: chapters,
+          current: mtChapterAt(chapters, session.position),
+          onSeek: session.seek,
+          onShowAll: () => showMTChapterSheet(
+            context,
+            chapters: chapters,
+            ticks: session,
+            position: () => session.position,
+            onSeek: session.seek,
+          ),
+        ),
+      ],
     ];
   }
 }

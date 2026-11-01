@@ -1,0 +1,39 @@
+{
+  "queue": [
+    {
+      "id": "dQw4w9WgXcQ",
+      "title": "Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "quality": "best",
+      "download_type": "video",
+      "codec": "auto",
+      "format": "any",
+      "folder": null,
+      "custom_name_prefix": "",
+      "msg": null,
+      "percent": 0.8721705592813767,
+      "speed": 7040540.941631518,
+      "eta": 33,
+      "status": "downloading",
+      "size": 10360,
+      "timestamp": 1793523776088482740,
+      "error": null,
+      "playlist_item_limit": 0,
+      "split_by_chapters": false,
+      "sponsorblock": false,
+      "audio_tags": "with_cover",
+      "chapter_template": "%(title)s - %(section_number)02d - %(section_title)s.%(ext)s",
+      "subtitle_language": "en",
+      "subtitle_mode": "prefer_manual",
+      "ytdl_options_presets": [],
+      "ytdl_options_overrides": {},
+      "clip_start": null,
+      "clip_end": null,
+      "live_status": "not_live",
+      "live_release_timestamp": null,
+      "filename": "Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster) [dQw4w9WgXcQ].f401.mp4"
+    }
+  ],
+  "done": [],
+  "pending": []
+}

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:mt_core/mt_core.dart';
 import 'package:test/test.dart';
 
@@ -103,5 +106,16 @@ void main() {
     expect(speedOf(1258291.2), 1258291.2);
     expect(speedOf(null), isNull);
     expect(speedOf(0), isNull);
+  });
+
+  test('the speed of a real server reading (measured 2026-11-01): bytes a '
+      'second while yt-dlp downloads', () {
+    final raw = jsonDecode(
+      File('test/fixtures/real/history_real_downloading.json')
+          .readAsStringSync(),
+    ) as Map<String, dynamic>;
+    final item = HistoryResponse.fromJson(raw).queue.single;
+    expect(item.rawStatus, 'downloading');
+    expect(item.speed, greaterThan(1000000));
   });
 }

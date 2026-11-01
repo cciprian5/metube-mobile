@@ -47,6 +47,45 @@ void main() {
     expect(taps, 1);
   });
 
+  // Owner's choice, 2026-11-01: each group a card as in the mock-ups, not
+  // rows laid straight on the page.
+  testWidgets('**the guard**: a group is a card with its heading inside', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        MTSettingsGroup(
+          title: 'App',
+          rows: [
+            MTSettingsRow(
+              icon: Icons.download_rounded,
+              title: 'Downloads',
+              value: 'Best',
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+    );
+    final card = MTPalette.of(MTVariant.lite, Brightness.light).card;
+    final box = find.descendant(
+      of: find.byType(MTSettingsGroup),
+      matching: find.byWidgetPredicate(
+        (w) =>
+            w is DecoratedBox &&
+            w.decoration is BoxDecoration &&
+            (w.decoration as BoxDecoration).color == card,
+      ),
+    );
+    expect(box, findsOneWidget);
+    for (final inside in ['App', 'Downloads']) {
+      expect(
+        find.descendant(of: box, matching: find.text(inside)),
+        findsOneWidget,
+      );
+    }
+  });
+
   testWidgets('on the tablet list: lit when open, no chevron, no lines', (
     tester,
   ) async {

@@ -5,9 +5,10 @@ import '../theme/mt_theme_controls.dart';
 import '../tokens/tokens.dart';
 import 'mt_adaptive.dart';
 
-/// One group of the settings home: a small heading over its rows. The phone
-/// draws a hairline between rows; the tablet's narrow list leaves them out,
-/// since the lit row already marks its place.
+/// One group of the settings home: **a card**, its small heading inside
+/// on top, then its rows (owner's choice, 2026-11-01, as drawn in the
+/// mobile mock-ups). The phone draws a hairline between rows; the tablet's
+/// narrow list leaves them out, since the lit row already marks its place.
 class MTSettingsGroup extends StatelessWidget {
   const MTSettingsGroup({
     super.key,
@@ -22,28 +23,45 @@ class MTSettingsGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            MTSpace.md,
-            MTSpace.lg,
-            MTSpace.md,
-            MTSpace.xs,
-          ),
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.labelSmall!
-                .copyWith(color: p.ink3),
+    final x = MTThemeX.of(context);
+    final p = x.palette;
+    final radius = BorderRadius.circular(MTRadius.card);
+    return Padding(
+      padding: const EdgeInsets.only(top: MTSpace.md),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: p.card,
+          borderRadius: radius,
+          border: Border.all(color: p.line, width: x.hairline),
+        ),
+        // The lit row fills the card's width, so its corners are the card's.
+        child: ClipRRect(
+          borderRadius: radius,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  MTSpace.md,
+                  MTSpace.md,
+                  MTSpace.md,
+                  MTSpace.xxs,
+                ),
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.labelSmall!
+                      .copyWith(color: p.ink3),
+                ),
+              ),
+              for (var i = 0; i < rows.length; i++) ...[
+                if (divided && i > 0)
+                  Divider(height: 1, indent: MTSpace.md, color: p.line),
+                rows[i],
+              ],
+            ],
           ),
         ),
-        for (var i = 0; i < rows.length; i++) ...[
-          if (divided && i > 0) Divider(height: 1, color: p.line),
-          rows[i],
-        ],
-      ],
+      ),
     );
   }
 }
@@ -86,11 +104,8 @@ class MTSettingsRow extends StatelessWidget {
       selected: selected,
       selectedTileColor: mtSelectedFill(p),
       selectedColor: p.ink,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTRadius.card),
-      ),
       contentPadding: const EdgeInsetsDirectional.symmetric(
-        horizontal: MTSpace.sm,
+        horizontal: MTSpace.md,
       ),
       leading: Icon(icon, size: 20, color: selected ? p.ink : p.ink2),
       title: Text(

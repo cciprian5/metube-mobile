@@ -5,6 +5,7 @@ import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_media/library.dart';
 
+import 'subtitles.dart';
 import 'transcript_moment.dart';
 import 'transcript_sheet.dart';
 import 'transcripts_state.dart';
@@ -24,6 +25,7 @@ void showTranscriptSheet(BuildContext context, LibraryItem item, String query) {
       title: item.title,
       query: query,
       transcripts: transcripts,
+      language: container.read(subtitlePrefsProvider).language,
       onMoment: (start) {
         Navigator.pop(sheetContext);
         playFromMoment(context, container.read, item, start);
@@ -96,6 +98,7 @@ MTVideoPanel? Function(PlaylistItem item) transcriptPanels(
         title: item.title,
         query: '',
         transcripts: transcripts,
+        language: container.read(subtitlePrefsProvider).language,
         position: videoPositions(session),
         stillPlaying: () => session.current?.canonicalUrl == item.canonicalUrl,
         onMoment: session.seek,
@@ -124,6 +127,7 @@ MTVideoPanel? Function(PlaylistItem item) audioTranscriptPanels(
         title: item.title,
         query: '',
         transcripts: transcripts,
+        language: container.read(subtitlePrefsProvider).language,
         position: handler.positionStream,
         onMoment: handler.seek,
         onClose: close,
@@ -153,6 +157,7 @@ void _openFollowing(
       title: playing.title,
       query: '',
       transcripts: transcripts,
+      language: container.read(subtitlePrefsProvider).language,
       position: position,
       stillPlaying: stillPlaying,
       onMoment: seek,

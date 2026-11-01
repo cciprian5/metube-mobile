@@ -235,4 +235,19 @@ void main() {
       });
     }
   });
+
+  // Field report 2026-11-01: an empty strip past the last card, kept for a
+  // mini player and an add button that never show on this tab.
+  testWidgets('**the guard**: the home ends just past its last card', (
+    tester,
+  ) async {
+    await at(tester, const Size(411, 600));
+    final list = find.byType(ListView).first;
+    await tester.drag(list, const Offset(0, -4000));
+    await tester.pumpAndSettle();
+    final gap =
+        tester.getRect(list).bottom -
+        tester.getRect(find.byType(MTSettingsGroup).last).bottom;
+    expect(gap, lessThanOrEqualTo(MTSpace.xl + 1));
+  });
 }

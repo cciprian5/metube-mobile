@@ -2928,6 +2928,9 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
+  String get transcriptSwitchLanguage => 'Switch the transcript language';
+
+  @override
   String transcriptsClips(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -5018,6 +5018,12 @@ abstract class MTLocalizations {
   /// **'{count, plural, =1{Said once more} other{Said {count} more times}}'**
   String transcriptSaidMore(int count);
 
+  /// No description provided for @transcriptSwitchLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch the transcript language'**
+  String get transcriptSwitchLanguage;
+
   /// No description provided for @transcriptsClips.
   ///
   /// In en, this message translates to:

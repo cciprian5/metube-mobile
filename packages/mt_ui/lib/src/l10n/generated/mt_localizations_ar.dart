@@ -2996,6 +2996,9 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String get transcriptSwitchLanguage => 'بدّل لغة النص';
+
+  @override
   String transcriptsClips(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

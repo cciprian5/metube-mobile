@@ -1272,6 +1272,7 @@
   "transcriptPeekHint": "Tap for the whole text",
   "transcriptPreviousMatch": "Previous match",
   "transcriptSaidMore": "{count, plural, =1{Said once more} other{Said {count} more times}}",
+  "transcriptSwitchLanguage": "Switch the transcript language",
   "transcriptsClips": "{count, plural, =0{No clips yet} =1{1 clip} other{{count} clips}}",
   "transcriptsDeleteAll": "Delete all",
   "transcriptsDeleteBody": "They are removed from this phone. Only a file you exported can bring them back.",

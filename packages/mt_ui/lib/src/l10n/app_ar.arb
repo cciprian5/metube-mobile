@@ -970,6 +970,7 @@
   "transcriptPeekHint": "اضغط للنص كاملاً",
   "transcriptPreviousMatch": "الموضع السابق",
   "transcriptSaidMore": "{count, plural, =1{قيلت مرة أخرى} =2{قيلت مرتين أخريين} few{قيلت {count} مرات أخرى} many{قيلت {count} مرة أخرى} other{قيلت {count} مرة أخرى}}",
+  "transcriptSwitchLanguage": "بدّل لغة النص",
   "transcriptsClips": "{count, plural, =0{لا مقاطع بعد} =1{مقطع واحد} =2{مقطعان} few{{count} مقاطع} many{{count} مقطعاً} other{{count} مقطع}}",
   "transcriptsDeleteAll": "حذف الكل",
   "transcriptsDeleteBody": "تُحذف من هذا الجوال، ولا يعيدها إلا ملف صدّرته.",

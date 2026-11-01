@@ -5,6 +5,7 @@ import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import 'transcript_heading.dart';
+import 'transcript_language.dart';
 import 'transcript_lines.dart';
 
 /// A clip's whole transcript: in a bottom sheet, or in a panel beside a
@@ -19,6 +20,7 @@ class TranscriptSheet extends StatefulWidget {
     this.position,
     this.stillPlaying,
     this.onClose,
+    this.language,
   });
 
   final String title;
@@ -34,6 +36,10 @@ class TranscriptSheet extends StatefulWidget {
 
   /// Closes the panel this transcript sits in; null in a sheet.
   final VoidCallback? onClose;
+
+  /// The language picked last, shared with the players: it opens the text
+  /// and follows a pick made here.
+  final ValueNotifier<String?>? language;
 
   @override
   State<TranscriptSheet> createState() => _TranscriptSheetState();
@@ -75,9 +81,11 @@ class _TranscriptSheetState extends State<TranscriptSheet> {
   /// the interface's own.
   Transcript _opening(String interface) {
     if (_query.trim().isEmpty) {
-      return widget.transcripts
-              .where((t) => t.language == interface)
-              .firstOrNull ??
+      return preferredTranscript(
+            widget.transcripts,
+            chosen: widget.language?.value,
+            interface: interface,
+          ) ??
           widget.transcripts.first;
     }
     var best = widget.transcripts.first;
@@ -120,6 +128,7 @@ class _TranscriptSheetState extends State<TranscriptSheet> {
   }
 
   void _show(Transcript transcript) {
+    widget.language?.value = transcript.language;
     setState(() => _shown = transcript);
     _restartMatches();
   }

@@ -7,6 +7,7 @@ import '../theme/mt_theme.dart';
 import '../icons/mt_icons.dart';
 import '../tokens/tokens.dart';
 import 'mt_equalizer.dart';
+import 'mt_favorite.dart';
 import 'mt_highlight_surface.dart';
 import 'mt_platform_chip.dart';
 import 'mt_location_badge.dart';
@@ -172,6 +173,8 @@ class MTMediaCard extends StatelessWidget {
                         SizedBox(height: compact ? 3 : 6),
                         Row(
                           children: [
+                            if (favorite && onFavoriteToggle == null)
+                              const MTFavoriteMark(),
                             // An unknown platform deserves neither an icon
                             // nor a separator: a bullet followed by "3
                             // minutes ago" is visual noise (audit 8.1).

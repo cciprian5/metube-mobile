@@ -7,6 +7,7 @@ import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import '../wahaj/mt_hover_lift.dart';
 import 'mt_desktop_app.dart';
+import 'mt_favorite.dart';
 import 'mt_highlight_surface.dart';
 import 'mt_media_grid_cover.dart';
 import 'mt_location_badge.dart';
@@ -158,6 +159,8 @@ class MTMediaGridCard extends StatelessWidget {
                   ExcludeSemantics(
                     child: Row(
                       children: [
+                        if (favorite && onFavoriteToggle == null)
+                          const MTFavoriteMark(),
                         // On a computer the platform pills above the grid
                         // say it already; a coloured mark under every
                         // title only repeated them.

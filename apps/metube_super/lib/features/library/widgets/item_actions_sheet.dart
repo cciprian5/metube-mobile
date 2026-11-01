@@ -113,6 +113,22 @@ class _ItemActionsSheet extends ConsumerWidget {
               ),
             ),
             const Divider(),
+            // **Favourites from the menu, not an empty heart on every card**
+            // (owner's decision 2026-11-01): the card shows a small heart on
+            // favourites alone, and the players keep the one-tap heart.
+            MTFavoriteTile(
+              favorite: item.favorite,
+              onTap: () async {
+                Navigator.pop(context);
+                final added = await actions.toggleFavorite(item.canonicalUrl);
+                if (host.mounted) {
+                  showMTSnack(
+                    host,
+                    added ? l10n.addedToFavorites : l10n.removedFromFavorites,
+                  );
+                }
+              },
+            ),
             if (item.onServer && !item.isOffline)
               tile(
                 Icons.download_for_offline_outlined,

@@ -7,6 +7,7 @@ import '../l10n/bidi.dart';
 import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import 'mt_favorite.dart';
 import 'mt_highlight_surface.dart';
 import 'mt_location_badge.dart';
 import 'mt_media_card.dart' show MTMediaLocation;
@@ -161,6 +162,10 @@ class MTMediaRow extends StatelessWidget {
                         const SizedBox(height: MTSpace.xxs),
                         Row(
                           children: [
+                            // A favourite's mark where nothing toggles it
+                            // here (phones); see [MTFavoriteMark].
+                            if (favorite && onFavoriteToggle == null)
+                              const MTFavoriteMark(),
                             if (platform != MTPlatformKind.other) ...[
                               MTPlatformChip(kind: platform),
                               const SizedBox(width: MTSpace.xxs),

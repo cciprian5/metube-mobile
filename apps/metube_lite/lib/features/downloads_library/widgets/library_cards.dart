@@ -64,15 +64,6 @@ class LibraryItemCard extends ConsumerWidget {
       mtFormatSize(item.sizeBytes),
     ].join(' · ');
 
-    Future<void> toggleFavorite() async {
-      final added = await actions.toggleFavorite(item.key);
-      if (!context.mounted) return;
-      showMTSnack(
-        context,
-        added ? l10n.addedToFavorites : l10n.removedFromFavorites,
-      );
-    }
-
     void onTap() {
       if (options.selecting) {
         controller.toggleSelected(item.key);
@@ -108,7 +99,6 @@ class LibraryItemCard extends ConsumerWidget {
         audio: item.isAudio,
         selected: options.selection.contains(item.key),
         highlighted: highlighted,
-        onFavoriteToggle: toggleFavorite,
         onTap: onTap,
         onLongPress: onLongPress,
         onMore: onMore,
@@ -126,7 +116,6 @@ class LibraryItemCard extends ConsumerWidget {
         audio: item.isAudio,
         selected: options.selection.contains(item.key),
         highlighted: highlighted,
-        onFavoriteToggle: toggleFavorite,
         onTap: onTap,
         onLongPress: onLongPress,
         onMore: onMore,
@@ -148,7 +137,6 @@ class LibraryItemCard extends ConsumerWidget {
       audio: item.isAudio,
       selected: options.selection.contains(item.key),
       highlighted: highlighted,
-      onFavoriteToggle: toggleFavorite,
       onTap: onTap,
       onLongPress: onLongPress,
       onMore: onMore,

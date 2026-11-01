@@ -86,15 +86,6 @@ class LibraryItemCard extends ConsumerWidget {
     );
     final platform = platformKindOf(MediaPlatform.detect(item.canonicalUrl));
 
-    Future<void> toggleFavorite() async {
-      final added = await actions.toggleFavorite(item.canonicalUrl);
-      if (!context.mounted) return;
-      showMTSnack(
-        context,
-        added ? l10n.addedToFavorites : l10n.removedFromFavorites,
-      );
-    }
-
     void onTap() => options.selecting
         ? controller.toggleSelected(item.canonicalUrl)
         : onPlay();
@@ -123,7 +114,6 @@ class LibraryItemCard extends ConsumerWidget {
         audio: item.isAudio,
         selected: options.selection.contains(item.canonicalUrl),
         highlighted: highlighted,
-        onFavoriteToggle: toggleFavorite,
         onTap: onTap,
         onLongPress: onLongPress,
         onMore: onMore,
@@ -143,7 +133,6 @@ class LibraryItemCard extends ConsumerWidget {
         audio: item.isAudio,
         selected: options.selection.contains(item.canonicalUrl),
         highlighted: highlighted,
-        onFavoriteToggle: toggleFavorite,
         onTap: onTap,
         onLongPress: onLongPress,
         onMore: onMore,
@@ -161,7 +150,6 @@ class LibraryItemCard extends ConsumerWidget {
       audio: item.isAudio,
       selected: options.selection.contains(item.canonicalUrl),
       highlighted: highlighted,
-      onFavoriteToggle: toggleFavorite,
       onTap: onTap,
       onLongPress: onLongPress,
       onMore: onMore,

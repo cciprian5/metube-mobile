@@ -3239,6 +3239,12 @@ class MTLocalizationsAr extends MTLocalizations {
       'لا تُسحب الملفات إلى جهازك عبر بيانات الجوّال، بل تنتظر المهام وتُستأنف تلقائياً عند الاتصال بشبكة Wi‑Fi.';
 
   @override
+  String get yourChannels => 'قنواتك';
+
+  @override
+  String get yourChannelsHint => 'تتابعها من الإعدادات';
+
+  @override
   String get yourPlaylists => 'قوائمك';
 
   @override

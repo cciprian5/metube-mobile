@@ -47,10 +47,16 @@ class MTSectionHeader extends StatelessWidget {
         textBaseline: TextBaseline.alphabetic,
         children: [
           Expanded(child: Text(title, style: text.titleMedium)),
+          // A long note gives way to the title on a narrow phone rather
+          // than pushing the row past the screen's edge.
           if (trailing != null)
-            Text(
-              trailing!,
-              style: text.bodySmall!.copyWith(color: x.palette.ink3),
+            Flexible(
+              child: Text(
+                trailing!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: text.bodySmall!.copyWith(color: x.palette.ink3),
+              ),
             ),
           ?action,
         ],

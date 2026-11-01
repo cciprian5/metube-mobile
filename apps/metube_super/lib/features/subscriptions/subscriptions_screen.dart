@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
 
+import '../settings/settings_sections.dart';
 import '../settings/widgets/settings_fields.dart';
 import '../shared/error_text.dart';
+import 'channel_actions.dart';
 import 'subscription_sheet.dart';
 import 'subscriptions_providers.dart';
-import 'widgets/subscription_card.dart';
+import 'channel_match.dart';
+import 'widgets/channel_row.dart';
 
 /// **Channels the server follows** (Super only).
 ///
@@ -31,7 +34,7 @@ class SubscriptionsScreen extends ConsumerWidget {
           if (state.valueOrNull?.supported ?? false) ...[
             IconButton(
               tooltip: l10n.checkNow,
-              onPressed: () => _checkAll(context, ref),
+              onPressed: () => checkSubscriptions(context, ref),
               icon: const Icon(Icons.refresh_rounded),
             ),
           ],
@@ -87,6 +90,7 @@ class SubscriptionsScreen extends ConsumerWidget {
     List<ChannelSubscription> subs,
   ) {
     final l10n = context.mtl;
+    final match = ref.watch(channelMatchProvider).valueOrNull;
     if (subs.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(MTSpace.pagePad),
@@ -114,86 +118,23 @@ class SubscriptionsScreen extends ConsumerWidget {
           // channels and nothing else.
           const ArrivalsSwitch(),
           const SizedBox(height: MTSpace.sm),
-          // Pausing sends a card to the end of the list: it travels there
+          // Pausing sends a row to the end of the list: it travels there
           // rather than vanishing from under the finger.
           MTReorderMotion(
             children: [
               for (final sub in subs)
-                SubscriptionCard(
+                ChannelRow(
                   key: ValueKey(sub.id),
-                  subscription: sub,
-                  onToggle: (enabled) =>
-                      _run(context, ref, (c) => c.setEnabled(sub, enabled)),
-                  onOpen: () => launchUrl(
-                    Uri.parse(sub.url),
-                    mode: LaunchMode.externalApplication,
+                  sub: sub,
+                  stats: match?.stats[sub.id],
+                  onOpen: () => context.push(
+                    '${SettingsPane.subscriptions.route}/channel/${sub.id}',
                   ),
-                  onEdit: () =>
-                      showSubscriptionSheet(context, ref, editing: sub),
-                  onCheckNow: () => _checkAll(context, ref, only: sub),
-                  onUnfollow: () => _confirmUnfollow(context, ref, sub),
                 ),
             ],
           ),
         ],
       ),
     );
-  }
-
-  /// A check walks the channel with yt-dlp, which is slow enough that the
-  /// user is told it started rather than left watching a spinner.
-  void _checkAll(
-    BuildContext context,
-    WidgetRef ref, {
-    ChannelSubscription? only,
-  }) {
-    showMTSnack(context, context.mtl.checkQueued, type: MTSnackType.info);
-    _run(context, ref, (c) => c.checkNow(only: only));
-  }
-
-  /// **Unfollowing is confirmed and pausing is not**, because only one of
-  /// them destroys something: the server's memory of what it has already
-  /// seen, which cannot be rebuilt.
-  Future<void> _confirmUnfollow(
-    BuildContext context,
-    WidgetRef ref,
-    ChannelSubscription sub,
-  ) async {
-    final l10n = context.mtl;
-    final confirmed = await showMTDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.unfollowConfirm(mtName(sub.name))),
-        content: Text(l10n.unfollowConfirmBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.unfollow),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || !context.mounted) return;
-    _run(context, ref, (c) => c.unfollow(sub));
-  }
-
-  /// Every action goes through here so a server that refuses says why,
-  /// instead of leaving a switch that flicks back with no explanation.
-  void _run(
-    BuildContext context,
-    WidgetRef ref,
-    Future<void> Function(SubscriptionsController) action,
-  ) {
-    final l10n = context.mtl;
-    // Captured now: the action outlives the frame, and reading the
-    // messenger from a dead context afterwards throws.
-    final messenger = ScaffoldMessenger.of(context);
-    action(ref.read(subscriptionsControllerProvider)).catchError((Object e) {
-      messenger.showSnackBar(SnackBar(content: Text(errorText(l10n, e))));
-    });
   }
 }

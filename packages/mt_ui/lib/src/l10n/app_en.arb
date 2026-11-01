@@ -1345,6 +1345,8 @@
   "whatsNewUnavailable": "What changed in this version is on the release page.",
   "wifiOnly": "Download over Wi-Fi only",
   "wifiOnlyHelp": "Stops pulling files to your device over mobile data. Tasks wait and resume automatically on Wi-Fi.",
+  "yourChannels": "Your channels",
+  "yourChannelsHint": "Followed in Settings",
   "yourPlaylists": "Your playlists",
   "yourTags": "Your tags",
   "ytdlpCredit": "The downloader MeTube runs"

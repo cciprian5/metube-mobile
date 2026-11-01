@@ -13,6 +13,7 @@ import 'features/settings/settings_page.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/settings/settings_sections.dart';
 import 'features/shell/shell_screen.dart';
+import 'features/subscriptions/channel_page.dart';
 
 /// The single route table. No direct Navigator.push.
 final router = GoRouter(
@@ -39,6 +40,12 @@ final router = GoRouter(
               path: '/playlists',
               builder: (_, _) => const PlaylistsScreen(),
               routes: [
+                // Before ":id", which would take "channel" for a playlist.
+                GoRoute(
+                  path: 'channel/:id',
+                  builder: (_, state) =>
+                      ChannelPage(id: state.pathParameters['id']!),
+                ),
                 GoRoute(
                   path: ':id',
                   builder: (_, state) => PlaylistDetailsScreen(
@@ -63,6 +70,14 @@ final router = GoRouter(
                   GoRoute(
                     path: pane.name,
                     builder: (_, _) => SettingsPage(pane),
+                    routes: [
+                      if (pane == SettingsPane.subscriptions)
+                        GoRoute(
+                          path: 'channel/:id',
+                          builder: (_, state) =>
+                              ChannelPage(id: state.pathParameters['id']!),
+                        ),
+                    ],
                   ),
                 GoRoute(
                   path: 'language',

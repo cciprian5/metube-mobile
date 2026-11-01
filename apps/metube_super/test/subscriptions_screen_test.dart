@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:metube_super/di.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:metube_super/features/settings/widgets/settings_fields.dart';
 import 'package:metube_super/features/subscriptions/subscription_sheet.dart';
 import 'package:metube_super/features/subscriptions/subscriptions_screen.dart';
-import 'package:metube_super/features/subscriptions/widgets/subscription_card.dart';
+import 'package:metube_super/features/subscriptions/channel_page.dart';
+import 'package:metube_super/features/subscriptions/widgets/channel_row.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
@@ -88,14 +90,42 @@ void main() {
     Locale locale = const Locale('en'),
   }) => UncontrolledProviderScope(
     container: container,
-    child: MaterialApp(
+    // A channel's row opens its page, so the screen sits in a router.
+    child: MaterialApp.router(
       theme: mtTheme(MTVariant.superApp, Brightness.light),
       locale: locale,
       localizationsDelegates: MTLocalizations.localizationsDelegates,
       supportedLocales: MTLocalizations.supportedLocales,
-      home: const SubscriptionsScreen(),
+      routerConfig: GoRouter(
+        initialLocation: '/settings/subscriptions',
+        routes: [
+          GoRoute(
+            path: '/settings/subscriptions',
+            builder: (_, _) => const SubscriptionsScreen(),
+            routes: [
+              GoRoute(
+                path: 'channel/:id',
+                builder: (_, state) =>
+                    ChannelPage(id: state.pathParameters['id']!),
+              ),
+            ],
+          ),
+        ],
+      ),
     ),
   );
+
+  /// Opens a channel's page from its row (stage 16/D: its actions and its
+  /// setup live there now, not in a menu on a card).
+  Future<void> openChannel(WidgetTester tester, String name) async {
+    await tester.tap(find.text(name).first);
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> back(WidgetTester tester) async {
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+  }
 
   Future<ProviderContainer> open(
     WidgetTester tester,
@@ -119,12 +149,15 @@ void main() {
 
     expect(find.text('Homelab Hour'), findsOneWidget);
     expect(find.text('Slow Coffee'), findsOneWidget);
-    // The interval as words, not as a number of minutes.
-    expect(find.text('Every 2 hours'), findsOneWidget);
-    expect(find.text('Every 24 hours'), findsOneWidget);
     // **The server's own error text, verbatim**: it is the only clue about
     // a channel that went private.
     expect(find.text('channel is private'), findsOneWidget);
+    // The interval as words, not as a number of minutes, on its page.
+    await openChannel(tester, 'Homelab Hour');
+    expect(find.text('Every 2 hours'), findsOneWidget);
+    await back(tester);
+    await openChannel(tester, 'Slow Coffee');
+    expect(find.text('Every 24 hours'), findsOneWidget);
   });
 
   // Owner's decision 2026-10-14: the switch moved here from the settings'
@@ -152,7 +185,7 @@ void main() {
       final switches = tester
           .widgetList<Switch>(
             find.descendant(
-              of: find.byType(SubscriptionCard),
+              of: find.byType(ChannelRow),
               matching: find.byType(Switch),
             ),
           )
@@ -228,7 +261,8 @@ void main() {
     (tester) async {
       await open(tester, (_) => _json(_twoRows));
 
-      await tester.tap(find.byIcon(Icons.more_vert_rounded).first);
+      await openChannel(tester, 'Slow Coffee');
+      await tester.tap(find.byIcon(Icons.more_vert_rounded));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Unfollow').last);
       await tester.pumpAndSettle();
@@ -248,7 +282,8 @@ void main() {
   testWidgets('cancelling the confirmation deletes nothing', (tester) async {
     await open(tester, (_) => _json(_twoRows));
 
-    await tester.tap(find.byIcon(Icons.more_vert_rounded).first);
+    await openChannel(tester, 'Slow Coffee');
+    await tester.tap(find.byIcon(Icons.more_vert_rounded));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Unfollow').last);
     await tester.pumpAndSettle();
@@ -258,8 +293,8 @@ void main() {
     expect(adapter.requests.any((r) => r.path.contains('delete')), isFalse);
   });
 
-  testWidgets('tapping a channel name opens the channel itself, and the '
-      'menu offers the same as its first line (asked 2026-09-24)', (
+  testWidgets('a channel opens its page, and its menu opens the channel '
+      'itself (asked 2026-09-24; moved to the page in stage 16/D)', (
     tester,
   ) async {
     // No plugin is registered under test, so url_launcher falls back to
@@ -283,24 +318,18 @@ void main() {
     );
     await open(tester, (_) => _json(_twoRows));
 
-    await tester.tap(find.text('Homelab Hour'));
-    await tester.pumpAndSettle();
-    expect(opened, ['https://yt.example/@homelab']);
-
-    await tester.tap(find.byIcon(Icons.more_vert_rounded).last);
-    await tester.pumpAndSettle();
+    await openChannel(tester, 'Homelab Hour');
+    expect(find.byType(ChannelPage), findsOneWidget);
     // "Edit", not "Rename": the sheet it opens edits name, interval and
     // filter together (2026-09-25).
     expect(find.text('Edit'), findsOneWidget);
     expect(find.text('Rename'), findsNothing);
+    await tester.tap(find.byIcon(Icons.more_vert_rounded));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Open channel'));
     await tester.pumpAndSettle();
-    // The channel with an error sorts first, so the last menu is Homelab's.
-    expect(opened, [
-      'https://yt.example/@homelab',
-      'https://yt.example/@homelab',
-    ]);
-    // Opening is not a server action: nothing was sent besides the list.
+    expect(opened, ['https://yt.example/@homelab']);
+    // Opening is not a server action: nothing was sent besides reading.
     expect(adapter.requests.map((r) => r.method).toSet(), {'GET'});
   });
 
@@ -471,26 +500,29 @@ void main() {
       },
     );
 
-    testWidgets('the card says where its clips go, and switching it off sends '
-        'them back to the top', (tester) async {
-      await open(tester, (o) {
-        if (o.path.endsWith('/subscriptions/update')) {
-          return _json('{"status":"ok"}');
-        }
-        return _json(withFolder);
-      });
-      expect(find.text(mtName('Homelab')), findsOneWidget);
+    testWidgets(
+      'the channel says where its clips go, and switching it off sends '
+      'them back to the top',
+      (tester) async {
+        await open(tester, (o) {
+          if (o.path.endsWith('/subscriptions/update')) {
+            return _json('{"status":"ok"}');
+          }
+          return _json(withFolder);
+        });
+        await tester.tap(find.byType(ChannelRow));
+        await tester.pumpAndSettle();
+        expect(find.text(mtName('Homelab')), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.more_vert_rounded));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Edit'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Save in its own folder'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Save settings'));
-      await tester.pumpAndSettle();
-      expect(sent('/subscriptions/update')!['folder'], '');
-    });
+        await tester.tap(find.text('Edit'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Save in its own folder'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Save settings'));
+        await tester.pumpAndSettle();
+        expect(sent('/subscriptions/update')!['folder'], '');
+      },
+    );
 
     testWidgets('editing without touching the folder leaves it alone', (
       tester,
@@ -501,7 +533,7 @@ void main() {
         }
         return _json(withFolder);
       });
-      await tester.tap(find.byIcon(Icons.more_vert_rounded));
+      await tester.tap(find.byType(ChannelRow));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Edit'));
       await tester.pumpAndSettle();

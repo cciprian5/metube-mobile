@@ -3165,6 +3165,12 @@ class MTLocalizationsEn extends MTLocalizations {
       'Stops pulling files to your device over mobile data. Tasks wait and resume automatically on Wi-Fi.';
 
   @override
+  String get yourChannels => 'Your channels';
+
+  @override
+  String get yourChannelsHint => 'Followed in Settings';
+
+  @override
   String get yourPlaylists => 'Your playlists';
 
   @override

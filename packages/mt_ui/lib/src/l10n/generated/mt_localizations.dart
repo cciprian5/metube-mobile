@@ -5414,6 +5414,18 @@ abstract class MTLocalizations {
   /// **'Stops pulling files to your device over mobile data. Tasks wait and resume automatically on Wi-Fi.'**
   String get wifiOnlyHelp;
 
+  /// No description provided for @yourChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Your channels'**
+  String get yourChannels;
+
+  /// No description provided for @yourChannelsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed in Settings'**
+  String get yourChannelsHint;
+
   /// No description provided for @yourPlaylists.
   ///
   /// In en, this message translates to:

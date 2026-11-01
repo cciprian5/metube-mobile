@@ -12,10 +12,12 @@ import '../shared/error_report.dart';
 import '../tags/manage_tags_sheet.dart';
 import 'playlist_dialogs.dart';
 import 'playlists_providers.dart';
+import '../subscriptions/widgets/your_channels.dart';
 import 'widgets/playlist_cards.dart';
+import 'widgets/smart_list_rows.dart';
 
-/// The playlists tab: pinned smart playlists, then your playlists, then
-/// your tags.
+/// The playlists tab: the smart playlists, your playlists, your tags,
+/// then the channels you follow.
 class PlaylistsScreen extends ConsumerWidget {
   const PlaylistsScreen({super.key});
 
@@ -48,20 +50,9 @@ class PlaylistsScreen extends ConsumerWidget {
           children: [
             MTSectionHeader(title: l10n.smartPlaylists),
             const SizedBox(height: MTSpace.sm),
-            Row(
-              children: [
-                for (final list in smart) ...[
-                  if (list != smart.first)
-                    const SizedBox(width: MTSpace.xs + 2),
-                  Expanded(
-                    child: SmartPlaylistCard(
-                      kind: list.kind,
-                      count: list.count,
-                      onTap: () => _playSmart(context, ref, list),
-                    ),
-                  ),
-                ],
-              ],
+            SmartListRows(
+              lists: smart,
+              onPlay: (list) => _playSmart(context, ref, list),
             ),
             const SizedBox(height: MTSpace.xl),
             MTSectionHeader(
@@ -88,6 +79,7 @@ class PlaylistsScreen extends ConsumerWidget {
               error: (_, _) => const SizedBox.shrink(),
               data: (counts) => _TagChips(counts: counts),
             ),
+            const YourChannelsSection(),
           ],
         ),
       ),

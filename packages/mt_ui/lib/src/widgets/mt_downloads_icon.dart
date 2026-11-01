@@ -13,10 +13,9 @@ import 'mt_desktop_app.dart';
 /// means "a download is running now". At zero it stands still, so the
 /// motion itself is the news.
 ///
-/// **On a phone it drops a few times and rests**, when a download starts
-/// and again when another joins: an arrow that never stops on the one
-/// screen people stay on longest turns from news into noise. The computer
-/// keeps the calm loop, its icon a small part of a wide window.
+/// **It loops for as long as anything downloads, on every app** (the
+/// owner's decision, 2026-11-01): an arrow that dropped three times and
+/// then rested read as a download that had stopped.
 ///
 /// The count changes with a short fade instead of a jump. Within the
 /// identity's rules: no bounce, durations and curves from [MTMotion], and
@@ -33,9 +32,6 @@ class MTDownloadsIcon extends StatefulWidget {
   /// How far the arrow drops, in points. Glimpsed, not watched.
   static const double drop = 3;
 
-  /// How many times it drops on a phone before it rests.
-  static const int phoneDrops = 3;
-
   @override
   State<MTDownloadsIcon> createState() => _MTDownloadsIconState();
 }
@@ -49,9 +45,6 @@ class _MTDownloadsIconState extends State<MTDownloadsIcon>
   bool _still = false;
   bool _desktop = false;
 
-  /// On a phone, whether this run of downloads has had its drops.
-  bool _dropped = false;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -63,24 +56,14 @@ class _MTDownloadsIconState extends State<MTDownloadsIcon>
   @override
   void didUpdateWidget(MTDownloadsIcon old) {
     super.didUpdateWidget(old);
-    // Another download joined: the phone says so once more.
-    if (widget.active > old.active) _dropped = false;
     _sync();
   }
 
   void _sync() {
     final moving = widget.active > 0 && !_still;
-    if (moving && !_desktop) {
-      if (!_dropped) {
-        _dropped = true;
-        _loop.repeat(count: MTDownloadsIcon.phoneDrops);
-      }
-    } else if (moving && !_loop.isAnimating) {
+    if (moving && !_loop.isAnimating) {
       _loop.repeat();
-    } else if (!moving) {
-      _dropped = false;
-    }
-    if (!moving && _loop.isAnimating) {
+    } else if (!moving && _loop.isAnimating) {
       // Stops where it stands upright, not half faded.
       _loop
         ..stop()

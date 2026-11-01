@@ -49,21 +49,18 @@ void main() {
   group('the downloads icon', () {
     bool moving(WidgetTester tester) => tester.hasRunningAnimations;
 
-    testWidgets('on a phone it drops a few times, then rests', (tester) async {
+    // The owner's decision (2026-11-01): a phone arrow that rested after
+    // three drops read as a stopped download, so it loops as before.
+    testWidgets('on a phone it keeps dropping while anything downloads', (
+      tester,
+    ) async {
       await tester.pumpWidget(host(const MTDownloadsIcon(active: 1)));
-      await tester.pump(MTDownloadsIcon.period * 0.5);
+      await tester.pump(MTDownloadsIcon.period * 5);
       expect(moving(tester), isTrue);
-      await tester.pump(MTDownloadsIcon.period * MTDownloadsIcon.phoneDrops);
-      await tester.pump();
+      await tester.pumpWidget(host(const MTDownloadsIcon(active: 0)));
+      // The count's own swap finishes; the arrow stops at once.
+      await tester.pump(MTMotion.page + const Duration(milliseconds: 20));
       expect(moving(tester), isFalse);
-    });
-
-    testWidgets('another download joining drops it again', (tester) async {
-      await tester.pumpWidget(host(const MTDownloadsIcon(active: 1)));
-      await tester.pumpAndSettle();
-      await tester.pumpWidget(host(const MTDownloadsIcon(active: 2)));
-      await tester.pump(MTDownloadsIcon.period * 0.5);
-      expect(moving(tester), isTrue);
     });
 
     testWidgets('the computer keeps its calm loop', (tester) async {

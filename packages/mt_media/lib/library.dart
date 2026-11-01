@@ -7,6 +7,7 @@
 /// main entry would make every one of them ambiguous there.
 library;
 
+export 'src/library/channel_match.dart';
 export 'src/library/library_merge.dart';
 export 'src/library/library_models.dart';
 export 'src/library/library_view_options.dart';

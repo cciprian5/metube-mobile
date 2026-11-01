@@ -47,7 +47,10 @@ void main() {
     timestamp: DateTime(2026, 10, 31),
   );
 
-  Widget host({required List<ChannelSubscription> following}) {
+  Widget host({
+    required List<ChannelSubscription> following,
+    List<LibraryItem>? library,
+  }) {
     final container = ProviderContainer(
       overrides: [
         keyValueStoreProvider.overrideWithValue(MemoryKeyValueStore()),
@@ -56,7 +59,7 @@ void main() {
         initialSettingsProvider.overrideWithValue(
           const SuperSettings(activeUrl: 'http://nas.local:8081'),
         ),
-        libraryItemsProvider.overrideWith((ref) async => [clip]),
+        libraryItemsProvider.overrideWith((ref) async => library ?? [clip]),
         subscriptionsProvider.overrideWith(
           (ref) async => SubscriptionsState(subscriptions: following),
         ),
@@ -179,6 +182,34 @@ void main() {
     // Side by side, not one under the other.
     expect(clip.top, lessThan(setup.bottom + 200));
     expect((clip.center.dx - setup.center.dx).abs(), greaterThan(300));
+  });
+
+  testWidgets('**the guard**: on an upright tablet the clips sit side by '
+      'side, not one stretched phone card', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(800, 1280);
+    addTearDown(tester.view.reset);
+    final second = LibraryItem(
+      canonicalUrl: 'https://www.youtube.com/watch?v=lens2',
+      title: 'Night walk in the old souq',
+      serverFilename: 'Amber Lens/souq.mp4',
+      onServer: true,
+      timestamp: DateTime(2026, 10, 30),
+    );
+    await tester.pumpWidget(host(following: subs, library: [clip, second]));
+    await settle(tester);
+    // Large cards: the layout that a phone draws one to a line.
+    await ProviderScope.containerOf(
+      tester.element(find.byType(PlaylistsScreen)),
+    ).read(libraryViewProvider.notifier).setMode(LibraryViewMode.cards);
+    GoRouter.of(tester.element(find.byType(PlaylistsScreen)))
+        .push('/playlists/channel/a');
+    await settle(tester);
+    expect(find.byType(VerticalDivider), findsNothing);
+    final one = tester.getRect(find.text('Trip to the Sarawat mountains'));
+    final two = tester.getRect(find.text('Night walk in the old souq'));
+    expect(one.top, two.top);
+    expect(one.width, lessThan(400));
   });
 
   testWidgets('a server that follows nothing adds nothing to the tab', (

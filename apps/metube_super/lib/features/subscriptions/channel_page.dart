@@ -102,18 +102,35 @@ class ChannelPage extends ConsumerWidget {
                       MTSpace.pagePad,
                       140,
                     ),
-                    sliver: MTLibrarySliver(
-                      layout: ref.watch(libraryViewProvider).mode.layout,
-                      itemCount: items.length,
-                      itemBuilder: (context, index, columns) => LibraryItemCard(
-                        item: items[index],
-                        columns: columns,
-                        onPlay: () => _play(context, ref, items, items[index]),
-                      ),
-                    ),
+                    sliver: _clips(ref, items),
                   ),
                 ],
               ),
+            ),
+          ],
+        ),
+        // An upright tablet: one column, but the clips spread across it as
+        // the library's do, not a phone's card stretched to the full width.
+        final sub when MTAdaptiveScaffold.hasRail(context) => CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: MTSpace.pagePad),
+              sliver: SliverList.list(
+                children: [
+                  _Head(sub: sub),
+                  const SizedBox(height: MTSpace.xl),
+                  ..._clipsHeader(context, sub, stats, match),
+                ],
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                MTSpace.pagePad,
+                MTSpace.sm,
+                MTSpace.pagePad,
+                140,
+              ),
+              sliver: _clips(ref, items),
             ),
           ],
         ),
@@ -140,6 +157,18 @@ class ChannelPage extends ConsumerWidget {
       },
     );
   }
+
+  /// The channel's clips in the user's library layout, in columns on a
+  /// tablet.
+  Widget _clips(WidgetRef ref, List<LibraryItem> items) => MTLibrarySliver(
+    layout: ref.watch(libraryViewProvider).mode.layout,
+    itemCount: items.length,
+    itemBuilder: (context, index, columns) => LibraryItemCard(
+      item: items[index],
+      columns: columns,
+      onPlay: () => _play(context, ref, items, items[index]),
+    ),
+  );
 
   /// A tablet held sideways: the setup beside the clips.
   static bool _twoPanes(BuildContext context) =>

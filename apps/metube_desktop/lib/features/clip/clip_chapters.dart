@@ -9,7 +9,6 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/transcripts_data.dart';
 import '../../di.dart';
 import '../../shell/section_header.dart';
-import 'chapters.dart';
 import 'clip_state.dart';
 
 /// The clip's chapters under its title, from its transcript: each one's

@@ -4,8 +4,6 @@ import 'package:mt_media/mt_media.dart' show mtFormatDuration;
 import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
 
-import 'reading_text.dart';
-
 /// One paragraph: its time in the margin, then its prose.
 class ReadingParagraphView extends StatelessWidget {
   const ReadingParagraphView({

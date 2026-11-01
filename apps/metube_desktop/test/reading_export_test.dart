@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:metube_desktop/data/folders_data.dart';
 import 'package:metube_desktop/features/reading/reading_export.dart';
 import 'package:metube_desktop/features/reading/reading_pdf.dart';
-import 'package:metube_desktop/features/reading/reading_text.dart';
 import 'package:metube_desktop/router.dart';
 import 'package:metube_desktop/shell/sidebar.dart';
 import 'package:mt_core/mt_core.dart';

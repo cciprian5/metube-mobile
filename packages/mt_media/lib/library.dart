@@ -10,5 +10,6 @@ library;
 export 'src/library/channel_match.dart';
 export 'src/library/library_merge.dart';
 export 'src/library/library_models.dart';
+export 'src/library/library_stats.dart';
 export 'src/library/library_view_options.dart';
 export 'src/library/platform_kind.dart';

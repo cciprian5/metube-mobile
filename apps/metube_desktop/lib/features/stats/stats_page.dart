@@ -11,7 +11,6 @@ import '../../di.dart';
 import '../../router.dart';
 import '../../shell/section_header.dart';
 import '../library/platform_label.dart';
-import 'library_stats.dart';
 import 'stats_bars.dart';
 
 /// The library counted: from its items, the transcripts on this computer

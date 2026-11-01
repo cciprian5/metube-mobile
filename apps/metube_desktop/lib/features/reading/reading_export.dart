@@ -1,8 +1,6 @@
 import 'package:mt_media/mt_media.dart' show mtFormatDuration;
 import 'package:mt_transcripts/mt_transcripts.dart';
 
-import 'reading_text.dart';
-
 /// The forms a clip's transcript is saved in, from the reading room.
 enum ReadingExport {
   /// Super's import file, the one the backfill tool writes: the phone

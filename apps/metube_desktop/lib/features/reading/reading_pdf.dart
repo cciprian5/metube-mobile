@@ -10,7 +10,6 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import 'reading_export.dart';
-import 'reading_text.dart';
 
 /// The Wahaj fonts a document is set in: Tajawal for Latin text, Noto Kufi
 /// Arabic for Arabic text and for the title.

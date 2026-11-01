@@ -6,6 +6,8 @@
 library;
 
 export 'src/captions_fetcher.dart';
+export 'src/chapters.dart';
+export 'src/reading.dart';
 export 'src/search_text.dart';
 export 'src/sidecar_listing.dart';
 export 'src/sidecar_miss_index.dart';

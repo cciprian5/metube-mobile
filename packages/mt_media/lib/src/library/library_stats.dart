@@ -1,5 +1,6 @@
 import 'package:mt_core/mt_core.dart';
-import 'package:mt_media/library.dart';
+
+import 'library_models.dart';
 
 /// One bar of a breakdown: how many clips, and how much room they take.
 typedef StatRow<K> = ({K key, int count, int bytes});

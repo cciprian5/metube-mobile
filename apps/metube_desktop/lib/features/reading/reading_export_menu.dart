@@ -11,7 +11,6 @@ import '../../shell/context_menu.dart';
 import '../../shell/pill.dart';
 import 'reading_export.dart';
 import 'reading_pdf.dart';
-import 'reading_text.dart';
 
 /// The reading room's "Export": the transcript saved for the phone, as
 /// subtitles, as Markdown or as a PDF, through Windows' save dialog; a

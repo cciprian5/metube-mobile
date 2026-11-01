@@ -10,7 +10,6 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/transcripts_data.dart';
 import '../../features/reading/reading_find.dart';
 import '../../features/reading/reading_room.dart';
-import '../../features/reading/reading_text.dart';
 import 'transcript_line.dart';
 
 /// Where Ctrl+F goes while the side panel shows a transcript: its find

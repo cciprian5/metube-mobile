@@ -8,7 +8,6 @@ import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import 'reading_paragraph.dart';
-import 'reading_text.dart';
 
 /// **The transcript as an article**: paragraphs at a readable width, the
 /// line being said lit and kept in view while this clip plays, a click on

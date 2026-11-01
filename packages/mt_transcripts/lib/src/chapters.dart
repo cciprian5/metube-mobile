@@ -1,6 +1,5 @@
-import 'package:mt_transcripts/mt_transcripts.dart';
-
-import '../reading/reading_text.dart';
+import 'reading.dart';
+import 'transcript.dart';
 
 /// One chapter of a clip: where it begins, and its opening words.
 typedef Chapter = ({Duration start, String opening});

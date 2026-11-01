@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import 'mt_desktop_app.dart';
+import 'mt_bottom_bar.dart';
 
 /// Window size classes, after Material 3's own breakpoints.
 ///
@@ -236,17 +237,10 @@ class MTAdaptiveScaffold extends StatelessWidget {
     );
   }
 
-  NavigationBar _bar() => NavigationBar(
+  Widget _bar() => MTBottomBar(
+    items: items,
     selectedIndex: selectedIndex,
-    onDestinationSelected: onSelected,
-    destinations: [
-      for (final item in items)
-        NavigationDestination(
-          icon: Icon(item.icon),
-          selectedIcon: Icon(item.selectedIcon),
-          label: item.label,
-        ),
-    ],
+    onSelected: onSelected,
   );
 
   NavigationRail _rail() => NavigationRail(

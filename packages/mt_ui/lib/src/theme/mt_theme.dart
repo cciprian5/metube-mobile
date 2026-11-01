@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/tokens.dart';
-import '../widgets/mt_motion.dart';
+import '../widgets/mt_page_motion.dart';
 import 'mt_theme_controls.dart';
 import 'mt_theme_x.dart';
 
@@ -100,7 +100,10 @@ ThemeData mtTheme(
     colorScheme: scheme,
     scaffoldBackgroundColor: p.bg,
     fontFamily: 'packages/${MTType.package}/${MTType.body}',
-    splashFactory: InkSparkle.splashFactory,
+    // "Warmth" instead of the sparkle: a press fills with the soft accent
+    // and fades, with no ripple of particles across the control.
+    splashFactory: NoSplash.splashFactory,
+    highlightColor: p.accentSoft,
     // Screen transitions slide horizontally and respect the text direction,
     // instead of the default vertical rise that says nothing about how the
     // two screens relate.

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import 'mt_done_motion.dart';
 import 'mt_polish.dart';
 
 /// A live Wahaj download card: a soft accent ground, a progress bar and a
@@ -18,6 +19,7 @@ class MTDownloadProgressCard extends StatelessWidget {
     this.thumbnail,
     this.detail,
     this.waiting = false,
+    this.done = false,
   });
 
   final String title;
@@ -35,6 +37,9 @@ class MTDownloadProgressCard extends StatelessWidget {
   /// Waiting its turn: a still, dashed line rather than a moving bar, which
   /// would claim work is being done.
   final bool waiting;
+
+  /// Just finished: the bar full and a check drawn where the cancel was.
+  final bool done;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +89,9 @@ class MTDownloadProgressCard extends StatelessWidget {
             // report 2026-10-15) instead of jumping to it, so a figure
             // that arrives in steps still reads as a count.
             child: TweenAnimationBuilder<double>(
-              tween: Tween(end: progress?.clamp(0, 1).toDouble() ?? 0),
+              tween: Tween(
+                end: done ? 1 : progress?.clamp(0, 1).toDouble() ?? 0,
+              ),
               duration: mtMotionDuration(
                 context,
                 const Duration(milliseconds: 450),
@@ -159,7 +166,13 @@ class MTDownloadProgressCard extends StatelessWidget {
               ),
             ),
           ),
-          if (onCancel != null) ...[
+          if (done) ...[
+            const SizedBox(width: MTSpace.sm),
+            SizedBox.square(
+              dimension: 32,
+              child: Center(child: MTDrawnCheck(color: p.ok)),
+            ),
+          ] else if (onCancel != null) ...[
             const SizedBox(width: MTSpace.sm),
             InkWell(
               onTap: onCancel,

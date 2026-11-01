@@ -151,8 +151,8 @@ class MTVideoCenterControls extends StatelessWidget {
               child: SizedBox(
                 width: 58,
                 height: 58,
-                child: Icon(
-                  session.isPlaying
+                child: MTIconSwap(
+                  icon: session.isPlaying
                       ? Icons.pause_rounded
                       : Icons.play_arrow_rounded,
                   size: 26,

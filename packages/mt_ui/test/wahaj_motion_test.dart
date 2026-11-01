@@ -19,11 +19,14 @@ void main() {
     ),
   );
 
-  test('**the guard**: the phones keep their touch effect', () {
-    // Warmth replaces the sparkle in the Windows app only.
+  test('**the guard**: warmth, not the sparkle, on every app', () {
+    // The phones took the Windows app's touch in the mobile plan of
+    // 2026-11-01: a press warms the control and fades, with no particles.
+    final phone = mtTheme(MTVariant.superApp, Brightness.light);
+    expect(phone.splashFactory, NoSplash.splashFactory);
     expect(
-      mtTheme(MTVariant.superApp, Brightness.light).splashFactory,
-      InkSparkle.splashFactory,
+      phone.highlightColor,
+      MTPalette.of(MTVariant.superApp, Brightness.light).accentSoft,
     );
     expect(
       mtDesktopTheme(MTVariant.superApp, Brightness.light).splashFactory,

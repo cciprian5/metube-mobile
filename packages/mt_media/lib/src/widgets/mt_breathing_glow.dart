@@ -59,6 +59,10 @@ class MTBreathingGlow extends StatefulWidget {
   /// light wakes rather than switches on. A pause still settles quickly.
   static const wake = Duration(seconds: 2);
 
+  /// Waking on a phone: slow enough to be seen waking once the screen has
+  /// risen, quicker than the computer's on a screen opened in passing.
+  static const phoneWake = Duration(milliseconds: 1200);
+
   /// The deeper breath when the clip changes.
   static const newClip = Duration(milliseconds: 1500);
 
@@ -145,7 +149,7 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
     _amp
       ..duration = MTDesktopApp.isDesktop(context)
           ? MTBreathingGlow.wake
-          : MTBreathingGlow.settle
+          : MTBreathingGlow.phoneWake
       ..reverseDuration = MTBreathingGlow.settle;
     _sync();
   }

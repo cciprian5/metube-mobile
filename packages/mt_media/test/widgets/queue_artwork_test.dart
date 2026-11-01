@@ -83,7 +83,10 @@ void main() {
     final stack = tester.widget<Stack>(
       find
           .ancestor(
-            of: find.byType(ColoredBox).first,
+            // The cover itself: pages draw their own ground as well.
+            of: find.byWidgetPredicate(
+              (w) => w is ColoredBox && w.color == const Color(0xFF00FF00),
+            ),
             matching: find.byType(Stack),
           )
           .first,

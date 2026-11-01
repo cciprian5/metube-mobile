@@ -43,8 +43,10 @@ class MTVideoIconButton extends StatelessWidget {
           child: SizedBox(
             width: size,
             height: size,
-            child: Icon(
-              icon,
+            // Subtitles on and off, the play mode, full screen: the
+            // glyph swaps rather than jumps.
+            child: MTIconSwap(
+              icon: icon,
               size: size * 0.42,
               color: MTPalette.serverCardInk,
             ),

@@ -20,6 +20,7 @@ class MTMiniPlayer extends StatelessWidget {
     required this.onOpen,
     this.artwork,
     this.onExpand,
+    this.hidden = false,
     this.margin = const EdgeInsets.fromLTRB(
       MTSpace.md,
       0,
@@ -34,17 +35,23 @@ class MTMiniPlayer extends StatelessWidget {
 
   /// Brings back the tablet's player panel; null, as on a phone, hides it.
   final VoidCallback? onExpand;
+
+  /// Out of the way on a screen that has no room for it (settings, or
+  /// beside the tablet's player panel): it leaves with motion, as it does
+  /// when playback stops, rather than vanishing.
+  final bool hidden;
   final EdgeInsetsGeometry margin;
 
   @override
   Widget build(BuildContext context) => StreamBuilder<MediaItem?>(
     stream: handler.mediaItem,
     builder: (context, snapshot) {
-      final item = snapshot.data;
+      final item = hidden ? null : snapshot.data;
       // **It appears and disappears with motion rather than a jump**
       // (polish 2026-09-04): it used to pop into place in one step.
       return AnimatedSwitcher(
-        duration: mtMotionDuration(context, MTMotion.reveal),
+        duration: mtMotionDuration(context, MTMotion.page),
+        reverseDuration: mtMotionDuration(context, MTMotion.fast),
         switchInCurve: MTMotion.entrance,
         switchOutCurve: MTMotion.exit,
         transitionBuilder: (child, animation) => FadeTransition(
@@ -133,38 +140,52 @@ class _Bar extends StatelessWidget {
                           color: p.miniInk.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(MTRadius.thumb),
                         ),
-                        child: current != null && artwork != null
-                            ? artwork!(context, current!)
-                            : Icon(
-                                Icons.music_note_rounded,
-                                size: 18,
-                                color: p.miniInkMuted,
-                              ),
+                        // The next clip's cover melts into this one's.
+                        child: MTAnimatedSwap(
+                          duration: MTMotion.page,
+                          child: SizedBox.expand(
+                            key: ValueKey(current?.canonicalUrl ?? title),
+                            child: current != null && artwork != null
+                                ? artwork!(context, current!)
+                                : Icon(
+                                    Icons.music_note_rounded,
+                                    size: 18,
+                                    color: p.miniInkMuted,
+                                  ),
+                          ),
+                        ),
                       ),
                       const SizedBox(width: MTSpace.sm),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            MTForeignText(
-                              title,
-                              maxLines: 1,
-                              style: text.bodyMedium!.copyWith(
-                                color: p.miniInk,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            if (subtitle != null && subtitle!.isNotEmpty)
-                              Text(
-                                subtitle!,
+                        // With the next clip, the title fades across
+                        // rather than jumping.
+                        child: MTAnimatedSwap(
+                          alignment: AlignmentDirectional.centerStart,
+                          blur: true,
+                          child: Column(
+                            key: ValueKey(title),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              MTForeignText(
+                                title,
                                 maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: text.labelSmall!.copyWith(
-                                  color: p.miniInkMuted,
+                                style: text.bodyMedium!.copyWith(
+                                  color: p.miniInk,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                          ],
+                              if (subtitle != null && subtitle!.isNotEmpty)
+                                Text(
+                                  subtitle!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: text.labelSmall!.copyWith(
+                                    color: p.miniInkMuted,
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                       // **Play, then next, left to right in every

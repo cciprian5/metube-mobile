@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 
 import '../tokens/tokens.dart';
@@ -20,8 +22,8 @@ import 'mt_polish.dart';
 ///
 /// The three remaining animations:
 /// 1. [MTRevealOnce] for screen content entering once.
-/// 2. [MTSlidePageTransition] for screen changes, following text
-/// direction.
+/// 2. [MTSlidePageTransition] (in `mt_page_motion.dart`) for screen
+/// changes, following text direction.
 /// 3. [MTAnimatedSwap] for content changing in place.
 
 /// A **once-only** appearance for a block of content: a fade and a very
@@ -109,56 +111,53 @@ class _MTRevealOnceState extends State<MTRevealOnce>
 
 /// Content changing in place with a cross-fade, never a slide: the element
 /// did not move, it changed.
+///
+/// The child needs a key that changes with its content.
 class MTAnimatedSwap extends StatelessWidget {
-  const MTAnimatedSwap({super.key, required this.child});
+  const MTAnimatedSwap({
+    super.key,
+    required this.child,
+    this.duration = MTMotion.tap,
+    this.alignment = Alignment.center,
+    this.blur = false,
+  });
 
   final Widget child;
+  final Duration duration;
+
+  /// Where the two overlap while they cross, such as the start of a line
+  /// of text.
+  final AlignmentGeometry alignment;
+
+  /// A light blur on whichever is fading, for text: two titles crossing
+  /// sharp read as one garbled line.
+  final bool blur;
 
   @override
   Widget build(BuildContext context) => AnimatedSwitcher(
-    duration: mtMotionDuration(context, MTMotion.tap),
+    duration: mtMotionDuration(context, duration),
     switchInCurve: MTMotion.entrance,
     switchOutCurve: MTMotion.exit,
+    layoutBuilder: (current, previous) =>
+        Stack(alignment: alignment, children: [...previous, ?current]),
+    transitionBuilder: (child, animation) => FadeTransition(
+      opacity: animation,
+      child: blur
+          ? AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) => ImageFiltered(
+                imageFilter: ImageFilter.blur(
+                  sigmaX: 2 * (1 - animation.value),
+                  sigmaY: 2 * (1 - animation.value),
+                ),
+                child: child,
+              ),
+              child: child,
+            )
+          : child,
+    ),
     child: child,
   );
-}
-
-/// Screen transitions: a fade plus a **short** offset following the text
-/// direction.
-///
-/// The Android default is a vertical rise that says nothing about how the
-/// two screens relate; a horizontal offset says "I went deeper" and "I came
-/// back". The distance is deliberately small (`pageSlide`), because a long
-/// slide is what reads as a jump.
-class MTSlidePageTransition extends PageTransitionsBuilder {
-  const MTSlidePageTransition();
-
-  @override
-  Widget buildTransitions<T>(
-    PageRoute<T> route,
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    if (MediaQuery.disableAnimationsOf(context)) return child;
-    final rtl = Directionality.of(context) == TextDirection.rtl;
-    final sign = rtl ? -1.0 : 1.0;
-    final enter = Tween<Offset>(
-      begin: Offset(MTMotion.pageSlide * sign, 0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: animation, curve: MTMotion.entrance));
-
-    return SlideTransition(
-      position: enter,
-      // The fade carries the transition; the offset only hints at
-      // direction.
-      child: FadeTransition(
-        opacity: CurvedAnimation(parent: animation, curve: MTMotion.entrance),
-        child: child,
-      ),
-    );
-  }
 }
 
 /// Page changes on a computer: **a fade-through**, the old page gone first
@@ -207,11 +206,3 @@ class MTDesktopPageTransition extends PageTransitionsBuilder {
     );
   }
 }
-
-/// Installed on `ThemeData.pageTransitionsTheme` in both apps.
-const mtPageTransitionsTheme = PageTransitionsTheme(
-  builders: {
-    TargetPlatform.android: MTSlidePageTransition(),
-    TargetPlatform.iOS: MTSlidePageTransition(),
-  },
-);

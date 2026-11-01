@@ -109,7 +109,7 @@ void main() {
   group('the shell frame', () {
     testWidgets('a phone keeps the bottom bar and has no rail', (tester) async {
       await pump(tester, const Size(411, 914));
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(MTBottomBar), findsOneWidget);
       expect(find.byType(NavigationRail), findsNothing);
     });
 
@@ -117,7 +117,7 @@ void main() {
       tester,
     ) async {
       await pump(tester, const Size(599, 360));
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(MTBottomBar), findsOneWidget);
     });
 
     // The owner's 8-inch tablet (2026-10-10): 800x1280 pixels at 216 dpi,
@@ -128,7 +128,7 @@ void main() {
       await pump(tester, const Size(948, 544));
       expect(find.byType(NavigationRail), findsOneWidget);
       await pump(tester, const Size(593, 900));
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(MTBottomBar), findsOneWidget);
     });
 
     testWidgets('the largest phones on their side keep the bar', (
@@ -136,7 +136,7 @@ void main() {
     ) async {
       for (final size in const [Size(1000, 480), Size(932, 430)]) {
         await pump(tester, size);
-        expect(find.byType(NavigationBar), findsOneWidget, reason: '$size');
+        expect(find.byType(MTBottomBar), findsOneWidget, reason: '$size');
       }
     });
 
@@ -145,7 +145,7 @@ void main() {
     ) async {
       await pump(tester, const Size(600, 960));
       expect(find.byType(NavigationRail), findsOneWidget);
-      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byType(MTBottomBar), findsNothing);
     });
 
     testWidgets('in Arabic the rail sits on the right, beside the content', (
@@ -171,7 +171,7 @@ void main() {
       final onPhone = tester.getRect(find.byKey(const Key('mini')));
       expect(
         onPhone.top,
-        lessThan(tester.getRect(find.byType(NavigationBar)).top),
+        lessThan(tester.getRect(find.byType(MTBottomBar)).top),
       );
 
       // The approved mock-up (2026-10-10): the mini player spans the
@@ -238,7 +238,7 @@ void main() {
       // Wider than 840, as inside the video player: the shell beneath must
       // not change shape.
       await pump(tester, const Size(914, 411), endPane: pane);
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(MTBottomBar), findsOneWidget);
       expect(find.byType(NavigationRail), findsNothing);
       expect(find.byKey(const Key('pane')), findsNothing);
     });

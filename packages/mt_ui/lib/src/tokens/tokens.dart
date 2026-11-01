@@ -95,9 +95,9 @@ abstract final class MTMotion {
   // How far an element shrinks while pressed. Glimpsed, not watched.
 
   /// A screen that rises like a sheet from the bottom, such as the audio
-  /// screen opened from the mini player. Longer than [page] because it
-  /// travels the full distance, and still under the agreed 320ms ceiling.
-  static const Duration sheetPage = Duration(milliseconds: 300);
+  /// screen opened from the mini player: at a sheet's pace, longer than
+  /// [page] because it travels the full distance. It goes down in [leave].
+  static const Duration sheetPage = medium;
 
   /// How far an element shrinks while pressed. Glimpsed, not watched.
   static const double pressScale = 0.97;

@@ -161,14 +161,18 @@ class MTToggledIcon extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 21, color: on ? p.ink : p.ink3),
+        // The glyph swaps and the dot grows in, rather than jumping
+        // from one mode to the next.
+        MTIconSwap(icon: icon, size: 21, color: on ? p.ink : p.ink3),
         const SizedBox(height: 2),
-        Container(
-          width: 4,
-          height: 4,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: on ? p.ink : Colors.transparent,
+        AnimatedScale(
+          scale: on ? 1 : 0,
+          duration: mtMotionDuration(context, MTMotion.tap),
+          curve: on ? MTMotion.entrance : MTMotion.exit,
+          child: Container(
+            width: 4,
+            height: 4,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: p.ink),
           ),
         ),
       ],

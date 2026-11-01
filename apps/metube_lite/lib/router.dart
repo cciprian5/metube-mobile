@@ -23,9 +23,12 @@ final router = GoRouter(
   // covering their content (field report).
   observers: [MTRouteDepth.instance],
   routes: [
-    StatefulShellRoute.indexedStack(
+    StatefulShellRoute(
       builder: (context, state, navigationShell) =>
           ShellScreen(navigationShell: navigationShell),
+      // The sections fade into one another rather than cut.
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          MTTabStack(index: navigationShell.currentIndex, children: children),
       branches: [
         StatefulShellBranch(
           routes: [
@@ -94,7 +97,7 @@ final router = GoRouter(
         // background (reported with a screenshot 2026-09-04).
         opaque: false,
         transitionDuration: MTMotion.sheetPage,
-        reverseTransitionDuration: MTMotion.page,
+        reverseTransitionDuration: MTMotion.leave,
         transitionsBuilder: mtSheetPageTransition,
       ),
     ),

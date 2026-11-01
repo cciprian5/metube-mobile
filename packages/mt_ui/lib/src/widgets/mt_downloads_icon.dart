@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import 'mt_desktop_app.dart';
 
 /// **The downloads button's icon: it moves while something downloads.**
 ///
@@ -11,6 +12,11 @@ import '../tokens/tokens.dart';
 /// and fades, then comes back from above, on a calm loop: motion that
 /// means "a download is running now". At zero it stands still, so the
 /// motion itself is the news.
+///
+/// **On a phone it drops a few times and rests**, when a download starts
+/// and again when another joins: an arrow that never stops on the one
+/// screen people stay on longest turns from news into noise. The computer
+/// keeps the calm loop, its icon a small part of a wide window.
 ///
 /// The count changes with a short fade instead of a jump. Within the
 /// identity's rules: no bounce, durations and curves from [MTMotion], and
@@ -27,6 +33,9 @@ class MTDownloadsIcon extends StatefulWidget {
   /// How far the arrow drops, in points. Glimpsed, not watched.
   static const double drop = 3;
 
+  /// How many times it drops on a phone before it rests.
+  static const int phoneDrops = 3;
+
   @override
   State<MTDownloadsIcon> createState() => _MTDownloadsIconState();
 }
@@ -38,25 +47,40 @@ class _MTDownloadsIconState extends State<MTDownloadsIcon>
     duration: MTDownloadsIcon.period,
   );
   bool _still = false;
+  bool _desktop = false;
+
+  /// On a phone, whether this run of downloads has had its drops.
+  bool _dropped = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _still = MediaQuery.disableAnimationsOf(context);
+    _desktop = MTDesktopApp.isDesktop(context);
     _sync();
   }
 
   @override
   void didUpdateWidget(MTDownloadsIcon old) {
     super.didUpdateWidget(old);
+    // Another download joined: the phone says so once more.
+    if (widget.active > old.active) _dropped = false;
     _sync();
   }
 
   void _sync() {
     final moving = widget.active > 0 && !_still;
-    if (moving && !_loop.isAnimating) {
+    if (moving && !_desktop) {
+      if (!_dropped) {
+        _dropped = true;
+        _loop.repeat(count: MTDownloadsIcon.phoneDrops);
+      }
+    } else if (moving && !_loop.isAnimating) {
       _loop.repeat();
-    } else if (!moving && _loop.isAnimating) {
+    } else if (!moving) {
+      _dropped = false;
+    }
+    if (!moving && _loop.isAnimating) {
       // Stops where it stands upright, not half faded.
       _loop
         ..stop()
@@ -76,9 +100,26 @@ class _MTDownloadsIconState extends State<MTDownloadsIcon>
     return Badge(
       isLabelVisible: widget.active > 0,
       label: AnimatedSwitcher(
-        duration: _still ? Duration.zero : MTMotion.tap,
+        duration: _still
+            ? Duration.zero
+            : _desktop
+            ? MTMotion.tap
+            : MTMotion.page,
         switchInCurve: MTMotion.entrance,
         switchOutCurve: MTMotion.exit,
+        // On a phone the new count rises from below.
+        transitionBuilder: _desktop
+            ? AnimatedSwitcher.defaultTransitionBuilder
+            : (child, animation) => FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween(
+                    begin: const Offset(0, 0.6),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                ),
+              ),
         child: Text('${widget.active}', key: ValueKey(widget.active)),
       ),
       backgroundColor: p.accent,

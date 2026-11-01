@@ -30,6 +30,7 @@
     <application
         android:label="MeTube Super"
         android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"

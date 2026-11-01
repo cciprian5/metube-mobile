@@ -152,6 +152,14 @@ class SubscriptionCard extends StatelessWidget {
   Widget _menu(BuildContext context, MTLocalizations l10n) =>
       PopupMenuButton<_CardAction>(
         icon: const Icon(Icons.more_vert_rounded),
+        // In with a page and out quickly, as the sheets and dialogs are.
+        popUpAnimationStyle:
+            mtMotionDuration(context, MTMotion.page) == Duration.zero
+            ? AnimationStyle.noAnimation
+            : const AnimationStyle(
+                duration: MTMotion.page,
+                reverseDuration: MTMotion.fast,
+              ),
         onSelected: (action) => switch (action) {
           _CardAction.open => onOpen(),
           _CardAction.check => onCheckNow(),

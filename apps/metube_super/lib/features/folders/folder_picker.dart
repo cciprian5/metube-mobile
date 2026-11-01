@@ -38,7 +38,7 @@ Future<FolderChoice?> showFolderPicker(
   required FolderChoice current,
   bool offerTop = true,
   bool offerChannelName = false,
-}) => showModalBottomSheet<FolderChoice>(
+}) => showMTSheet<FolderChoice>(
   context: context,
   isScrollControlled: true,
   useSafeArea: true,

@@ -16,7 +16,7 @@ class HelpButton extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       tooltip: context.mtl.helpAboutField,
       icon: Icon(Icons.help_outline_rounded, size: 18, color: p.ink3),
-      onPressed: () => showDialog<void>(
+      onPressed: () => showMTDialog<void>(
         context: context,
         builder: (dialogContext) => AlertDialog(
           title: Text(

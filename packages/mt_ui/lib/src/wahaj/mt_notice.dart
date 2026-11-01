@@ -9,6 +9,7 @@ import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import '../widgets/mt_desktop_app.dart';
 import '../widgets/mt_polish.dart';
+import '../widgets/mt_route_motion.dart';
 
 /// What a notice reports, which sets its colour.
 enum MTNoticeKind { done, failed, info }
@@ -47,14 +48,13 @@ void showMTNotice(
           duration: duration,
         ),
       ),
-      // On the computer, at the app's pace: in as a page comes, out as
-      // quickly as a hover. A phone keeps Flutter's own.
+      // At the app's pace: in as a page comes, out as quickly as a hover.
       snackBarAnimationStyle: MTDesktopApp.isDesktop(context)
           ? AnimationStyle(
               duration: mtMotionDuration(context, MTMotion.page),
               reverseDuration: mtMotionDuration(context, MTMotion.fast),
             )
-          : null,
+          : mtNoticeMotion(still: MediaQuery.disableAnimationsOf(context)),
     );
 }
 

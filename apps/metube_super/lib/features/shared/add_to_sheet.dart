@@ -16,7 +16,7 @@ import '../tags/item_tags_sheet.dart';
 ///
 /// Its Lite counterpart has no tag row (tags are Super only).
 void showAddToSheet(BuildContext context, WidgetRef ref, LibraryItem item) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // The screen's context, not the sheet's: the later sheets open after

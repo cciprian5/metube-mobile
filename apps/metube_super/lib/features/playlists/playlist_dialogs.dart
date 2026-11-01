@@ -53,7 +53,7 @@ void showPlaylistActionsSheet(
   final p = MTThemeX.of(context).palette;
   final store = ref.read(playlistsStoreProvider);
 
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     builder: (sheetContext) => SafeArea(
@@ -159,7 +159,7 @@ void showPlaylistActionsSheet(
 
 Future<bool> _confirmDelete(BuildContext context, String name) async {
   final l10n = context.mtl;
-  final result = await showDialog<bool>(
+  final result = await showMTDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
       content: Text(l10n.deletePlaylistConfirm(mtName(name))),

@@ -14,7 +14,7 @@ void confirmBulkDelete(
   Set<String> selection,
 ) {
   final l10n = context.mtl;
-  showDialog<void>(
+  showMTDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
       content: Text(l10n.deleteMultipleConfirm(selection.length)),

@@ -40,7 +40,7 @@ class _ServerFailuresSectionState extends ConsumerState<ServerFailuresSection> {
   Future<void> _removeAll() async {
     final l10n = context.mtl;
     final count = widget.items.length;
-    final ok = await showDialog<bool>(
+    final ok = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.removeFailedTitle(count)),

@@ -26,7 +26,7 @@ void showItemActionsSheet(
   WidgetRef ref,
   LibraryItem item,
 ) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // As tall as its rows, not the default nine sixteenths of the screen,

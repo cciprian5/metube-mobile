@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import '../widgets/mt_desktop_app.dart';
+import '../widgets/mt_route_motion.dart';
 
 /// Each platform's own scale: the phones share this dialog with the
 /// computer since the mobile plan of 2026-11-01.
@@ -24,7 +25,7 @@ Future<bool> showMTConfirm(
   bool destructive = false,
   Widget? preview,
 }) async =>
-    await showDialog<bool>(
+    await showMTDialog<bool>(
       context: context,
       builder: (_) => MTConfirmDialog(
         title: title,

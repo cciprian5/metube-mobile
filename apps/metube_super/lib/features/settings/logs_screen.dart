@@ -212,7 +212,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
 
   void _confirmClear() {
     final l10n = context.mtl;
-    showDialog<void>(
+    showMTDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         content: Text(l10n.clearLogsConfirm),

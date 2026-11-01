@@ -7,7 +7,7 @@ import 'update_state.dart';
 /// The update sheet: what is new, then one prominent action according to
 /// the phase.
 void showUpdateSheet(BuildContext context) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -118,7 +118,7 @@ class _Actions extends ConsumerWidget {
   /// open where it lives.
   Future<void> _askPermission(BuildContext context, WidgetRef ref) async {
     final l10n = context.mtl;
-    final go = await showDialog<bool>(
+    final go = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.updateAllowInstallTitle),

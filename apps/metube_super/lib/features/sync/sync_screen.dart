@@ -43,7 +43,7 @@ class SyncScreen extends ConsumerWidget {
     SyncDevice device,
   ) async {
     final l10n = context.mtl;
-    final sure = await showDialog<bool>(
+    final sure = await showMTDialog<bool>(
       context: context,
       builder: (dialog) => AlertDialog(
         title: Text(l10n.desktopSyncForget),

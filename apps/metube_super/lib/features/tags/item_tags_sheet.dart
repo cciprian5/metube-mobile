@@ -20,7 +20,7 @@ void showItemTagsSheet(
   List<String> canonicalUrls,
 ) {
   if (canonicalUrls.isEmpty) return;
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,

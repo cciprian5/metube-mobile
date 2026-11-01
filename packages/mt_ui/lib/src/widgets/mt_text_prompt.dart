@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/l10n.dart';
+import 'mt_route_motion.dart';
 
 /// A single-text input dialog: a playlist name, a tag name, an endpoint
 /// URL.
@@ -21,7 +22,7 @@ Future<String?> promptMTText(
   String? labelText,
   String? hintText,
   TextDirection? fieldDirection,
-}) => showDialog<String>(
+}) => showMTDialog<String>(
   context: context,
   builder: (_) => _MTTextPrompt(
     title: title,

@@ -77,6 +77,14 @@ abstract final class MTMotion {
   /// Content appearing inside a screen.
   static const Duration reveal = Duration(milliseconds: 220);
 
+  /// The way back, and anything closing that came up in [medium]: out
+  /// faster than it came in.
+  static const Duration leave = Duration(milliseconds: 200);
+
+  /// How small the page underneath gets while another is pushed over it,
+  /// and the size a dialog grows from.
+  static const double recede = 0.96;
+
   /// Slide offset for an element inside a screen, in points. Small on
   /// purpose.
   static const double slideNudge = 7;

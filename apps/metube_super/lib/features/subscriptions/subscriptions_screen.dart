@@ -160,7 +160,7 @@ class SubscriptionsScreen extends ConsumerWidget {
     ChannelSubscription sub,
   ) async {
     final l10n = context.mtl;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.unfollowConfirm(mtName(sub.name))),

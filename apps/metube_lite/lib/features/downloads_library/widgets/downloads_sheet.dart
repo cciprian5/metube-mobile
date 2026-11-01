@@ -10,7 +10,7 @@ import 'task_card_parts.dart';
 /// The "manage downloads" sheet: in progress, waiting, needs your
 /// attention, with cancel and retry.
 void showDownloadsSheet(BuildContext context) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,

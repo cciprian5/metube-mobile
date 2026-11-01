@@ -80,7 +80,7 @@ class TranscriptsSection extends ConsumerWidget {
 
   Future<void> _turnOn(BuildContext context, WidgetRef ref) async {
     final l10n = context.mtl;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.transcriptsSearch),
@@ -107,7 +107,7 @@ class TranscriptsSection extends ConsumerWidget {
   Future<void> _turnOff(BuildContext context, WidgetRef ref) async {
     final l10n = context.mtl;
     final bytes = ref.read(transcriptStatsProvider).valueOrNull?.bytes ?? 0;
-    final choice = await showDialog<_OffChoice>(
+    final choice = await showMTDialog<_OffChoice>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.transcriptsDisableTitle),
@@ -190,7 +190,7 @@ class TranscriptsSection extends ConsumerWidget {
 
   Future<void> _deleteAll(BuildContext context, WidgetRef ref) async {
     final l10n = context.mtl;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.transcriptsDeleteTitle),

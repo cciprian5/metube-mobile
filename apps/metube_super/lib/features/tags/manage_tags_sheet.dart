@@ -9,7 +9,7 @@ import '../playlists/playlists_providers.dart';
 /// "Manage tags": renaming and deleting a tag only. **Deleting a tag never
 /// deletes media.**
 void showManageTagsSheet(BuildContext context, WidgetRef ref) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -131,7 +131,7 @@ class _TagRow extends ConsumerWidget {
 
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
     final l10n = context.mtl;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         content: Text(l10n.deleteTagConfirm(mtName(tag))),

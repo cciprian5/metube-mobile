@@ -13,7 +13,7 @@ import 'task_card_parts.dart';
 /// attention, with cancel and retry, and what did not finish on the
 /// server. [toFailures] opens it scrolled to that last part.
 void showDownloadsSheet(BuildContext context, {bool toFailures = false}) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,

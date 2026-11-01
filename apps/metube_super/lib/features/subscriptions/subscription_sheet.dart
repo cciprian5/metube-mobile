@@ -20,7 +20,7 @@ Future<void> showSubscriptionSheet(
   BuildContext context,
   WidgetRef ref, {
   ChannelSubscription? editing,
-}) => showModalBottomSheet<void>(
+}) => showMTSheet<void>(
   context: context,
   isScrollControlled: true,
   useSafeArea: true,

@@ -11,6 +11,7 @@ import '../widgets/mt_search_field.dart';
 import '../widgets/mt_section_header.dart';
 import '../widgets/mt_snackbar.dart';
 import '../widgets/mt_url_input_sheet.dart';
+import '../widgets/mt_route_motion.dart';
 
 /// An internal gallery for reviewing every component in both themes and
 /// both text directions. **Not a product screen**: its strings are fixed
@@ -244,7 +245,7 @@ class MTGalleryScreen extends StatelessWidget {
     final controller = TextEditingController(
       text: 'https://youtu.be/dQw4w9WgXcQ',
     );
-    showModalBottomSheet<void>(
+    showMTSheet<void>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,

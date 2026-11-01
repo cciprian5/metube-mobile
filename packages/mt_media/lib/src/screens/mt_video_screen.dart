@@ -285,7 +285,7 @@ class MTVideoScreen extends StatelessWidget {
     if (!context.mounted) return;
     final l10n = context.mtl;
 
-    final choice = await showDialog<bool>(
+    final choice = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.continueAsAudioTitle),

@@ -42,6 +42,7 @@ export 'src/widgets/mt_media_row.dart';
 export 'src/widgets/mt_media_thumb.dart';
 export 'src/widgets/mt_square_png.dart';
 export 'src/widgets/mt_motion.dart';
+export 'src/widgets/mt_route_motion.dart';
 export 'src/widgets/mt_platform_chip.dart';
 export 'src/widgets/mt_polish.dart';
 export 'src/widgets/mt_reorder_motion.dart';

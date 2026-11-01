@@ -23,7 +23,7 @@ Future<void> openAddSheet(
   final logger = ref.read(loggerProvider);
   final opened = DateTime.now();
   unawaited(logger.log('add sheet shown', tag: 'share'));
-  final submitted = await showModalBottomSheet<bool>(
+  final submitted = await showMTSheet<bool>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../wahaj/mt_notice.dart';
+import 'mt_route_motion.dart';
 
 enum MTSnackType { info, success, error }
 
@@ -82,6 +83,13 @@ void showMTSnackOn(
           onAction: onAction,
           duration: duration,
         ),
+      ),
+      snackBarAnimationStyle: mtNoticeMotion(
+        still:
+            MediaQuery.maybeDisableAnimationsOf(
+              themeContext ?? messenger.context,
+            ) ??
+            false,
       ),
     );
 }

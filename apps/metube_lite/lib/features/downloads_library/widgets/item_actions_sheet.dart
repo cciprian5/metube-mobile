@@ -16,7 +16,7 @@ import 'item_details_sheet.dart';
 /// local). Delete comes last, isolated by a divider and in the error
 /// colour, which is a general navigation rule.
 void showItemActionsSheet(BuildContext context, WidgetRef ref, LocalItem item) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // As tall as its rows, not the default nine sixteenths of the screen,
@@ -217,7 +217,7 @@ void confirmBulkDelete(
   Set<String> selection,
 ) {
   final l10n = context.mtl;
-  showDialog<void>(
+  showMTDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
       content: Text(l10n.deleteMultipleConfirm(selection.length)),

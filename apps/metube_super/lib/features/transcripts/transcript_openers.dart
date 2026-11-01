@@ -165,7 +165,7 @@ List<Transcript> _transcriptsOf(ProviderContainer container, String url) =>
     const [];
 
 void _open(BuildContext context, WidgetBuilder builder) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,

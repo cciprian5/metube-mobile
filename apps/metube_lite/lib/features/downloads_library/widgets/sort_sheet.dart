@@ -9,7 +9,7 @@ import 'library_chips.dart';
 /// The sort and platform sheet: the sort and view mode, saved, and the
 /// platform filter, which used to be a second row above the list.
 void showSortSheet(BuildContext context, WidgetRef ref) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // Sized to its options rather than capped at 9/16 of the screen, and

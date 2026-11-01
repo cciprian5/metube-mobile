@@ -15,7 +15,7 @@ import '../playlists/add_to_playlist_sheet.dart';
 ///
 /// **No tags in Lite**, deliberately: tags are a Super feature.
 void showAddToSheet(BuildContext context, WidgetRef ref, LocalItem item) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // The screen's context, not the sheet's: the later sheets open after

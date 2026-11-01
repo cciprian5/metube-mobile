@@ -14,7 +14,7 @@ import '../media_probe.dart';
 /// Item details, opened from the actions sheet and from the reels player
 /// alike.
 void showItemDetailsSheet(BuildContext context, LocalItem item) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     builder: (_) => _DetailsSheet(item: item),

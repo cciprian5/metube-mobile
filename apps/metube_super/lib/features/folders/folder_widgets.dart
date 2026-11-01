@@ -5,7 +5,7 @@ import 'package:mt_ui/mt_ui.dart';
 /// The name of a new folder, nested when typed with a slash. It is made on
 /// the server by the first download saved into it.
 Future<String?> askNewFolder(BuildContext context, String parent) async {
-  final typed = await showDialog<String>(
+  final typed = await showMTDialog<String>(
     context: context,
     builder: (_) => NewFolderDialog(parent: parent),
   );

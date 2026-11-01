@@ -16,7 +16,7 @@ void showAddToPlaylistSheet(
   List<LibraryItem> items,
 ) {
   if (items.isEmpty) return;
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,

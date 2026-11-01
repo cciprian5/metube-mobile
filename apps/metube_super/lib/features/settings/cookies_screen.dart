@@ -214,7 +214,7 @@ class _CookiesScreenState extends ConsumerState<CookiesScreen> {
     final l10n = context.mtl;
     final api = ref.read(apiClientProvider);
     if (api == null) return;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.cookiesDelete),

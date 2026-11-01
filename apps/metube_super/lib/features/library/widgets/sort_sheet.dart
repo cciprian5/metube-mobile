@@ -13,7 +13,7 @@ import 'tag_filter_section.dart';
 /// filters that would crowd the list as rows of their own (platform,
 /// folder, tags).
 void showSortSheet(BuildContext context, WidgetRef ref) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // **Sized to its options, not capped at the default 9/16 of the

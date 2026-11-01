@@ -5,6 +5,8 @@ import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_media/library.dart';
 
+import '../reading/reading_parts.dart';
+import '../reading/reading_screen.dart';
 import 'clip_chapters.dart';
 import 'subtitles.dart';
 import 'transcript_moment.dart';
@@ -32,6 +34,14 @@ void showTranscriptSheet(BuildContext context, LibraryItem item, String query) {
         Navigator.pop(sheetContext);
         playFromMoment(context, container.read, item, start);
       },
+      onRead: (transcript) => openReading(
+        context,
+        title: item.title,
+        byline: item.uploader,
+        transcript: transcript,
+        onMoment: (start) =>
+            playFromMoment(context, container.read, item, start),
+      ),
     ),
   );
 }
@@ -47,9 +57,11 @@ void showPlayingTranscript(
 ) => _openFollowing(
   context,
   playing,
-  position: handler.positionStream,
+  positions: () => handler.positionStream,
   stillPlaying: () => handler.currentItem?.canonicalUrl == playing.canonicalUrl,
   seek: handler.seek,
+  isPlaying: handler.playbackState.map((state) => state.playing),
+  playPause: () => _audioPlayPause(handler),
 );
 
 /// The same, for the video [session] is playing.
@@ -60,9 +72,11 @@ void showVideoTranscript(
 ) => _openFollowing(
   context,
   playing,
-  position: videoPositions(session),
+  positions: () => videoPositions(session),
   stillPlaying: () => session.current?.canonicalUrl == playing.canonicalUrl,
   seek: session.seek,
+  isPlaying: videoPlaying(session),
+  playPause: session.playPause,
 );
 
 /// The same, for the reel on screen, so the shorts reach the transcript
@@ -74,10 +88,8 @@ void showReelTranscript(
 ) => _openFollowing(
   context,
   playing,
-  position: Stream.periodic(
-    const Duration(milliseconds: 250),
-    (_) => reel.position,
-  ),
+  positions: () =>
+      Stream.periodic(const Duration(milliseconds: 250), (_) => reel.position),
   stillPlaying: () => reel.current?.canonicalUrl == playing.canonicalUrl,
   seek: reel.seek,
 );
@@ -111,6 +123,21 @@ MTVideoPanel? Function(PlaylistItem item) transcriptPanels(
               session.current?.canonicalUrl == item.canonicalUrl,
           onMoment: session.seek,
           onClose: close,
+          onRead: (shown) => openReading(
+            context,
+            title: item.title,
+            byline: item.uploader,
+            transcript: shown,
+            onMoment: session.seek,
+            playback: ReadingPlayback(
+              positions: () => videoPositions(session),
+              seek: session.seek,
+              stillPlaying: () =>
+                  session.current?.canonicalUrl == item.canonicalUrl,
+              playing: videoPlaying(session),
+              playPause: session.playPause,
+            ),
+          ),
         );
         if (chapters.isEmpty) return transcript;
         return TranscriptPanelTabs(
@@ -147,6 +174,21 @@ MTVideoPanel? Function(PlaylistItem item) audioTranscriptPanels(
         position: handler.positionStream,
         onMoment: handler.seek,
         onClose: close,
+        onRead: (shown) => openReading(
+          context,
+          title: item.title,
+          byline: item.uploader,
+          transcript: shown,
+          onMoment: handler.seek,
+          playback: ReadingPlayback(
+            positions: () => handler.positionStream,
+            seek: handler.seek,
+            stillPlaying: () =>
+                handler.currentItem?.canonicalUrl == item.canonicalUrl,
+            playing: handler.playbackState.map((state) => state.playing),
+            playPause: () => _audioPlayPause(handler),
+          ),
+        ),
       ),
     );
   };
@@ -157,12 +199,23 @@ MTVideoPanel? Function(PlaylistItem item) audioTranscriptPanels(
 Stream<Duration> videoPositions(MTVideoSession session) =>
     Stream.periodic(const Duration(milliseconds: 250), (_) => session.position);
 
+/// Whether a video plays, sampled as its position is.
+Stream<bool> videoPlaying(MTVideoSession session) => Stream.periodic(
+  const Duration(milliseconds: 250),
+  (_) => session.isPlaying,
+).distinct();
+
+void _audioPlayPause(MTAudioHandler handler) =>
+    handler.playbackState.value.playing ? handler.pause() : handler.play();
+
 void _openFollowing(
   BuildContext context,
   PlaylistItem playing, {
-  required Stream<Duration> position,
+  required Stream<Duration> Function() positions,
   required bool Function() stillPlaying,
   required Future<void> Function(Duration) seek,
+  Stream<bool>? isPlaying,
+  VoidCallback? playPause,
 }) {
   final container = ProviderScope.containerOf(context, listen: false);
   final transcripts = _transcriptsOf(container, playing.canonicalUrl);
@@ -174,9 +227,23 @@ void _openFollowing(
       query: '',
       transcripts: transcripts,
       language: container.read(subtitlePrefsProvider).language,
-      position: position,
+      position: positions(),
       stillPlaying: stillPlaying,
       onMoment: seek,
+      onRead: (shown) => openReading(
+        context,
+        title: playing.title,
+        byline: playing.uploader,
+        transcript: shown,
+        onMoment: seek,
+        playback: ReadingPlayback(
+          positions: positions,
+          seek: seek,
+          stillPlaying: stillPlaying,
+          playing: isPlaying,
+          playPause: playPause,
+        ),
+      ),
     ),
   );
 }

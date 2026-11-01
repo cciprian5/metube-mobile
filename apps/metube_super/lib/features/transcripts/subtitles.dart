@@ -35,12 +35,17 @@ class SubtitlePrefs {
   /// [MTCaptionBackground.values].
   final background = ValueNotifier(0);
 
+  /// The chapters under the player's buttons folded away, kept from clip
+  /// to clip for someone who would rather not see them.
+  final chaptersFolded = ValueNotifier(false);
+
   static const scales = [0.85, 1.0, 1.25];
   static const _shownKey = 'subtitles_shown';
   static const _sizeKey = 'subtitles_size';
   static const _shortsKey = 'subtitles_in_shorts';
   static const _languageKey = 'subtitles_language';
   static const _backgroundKey = 'subtitles_background';
+  static const _chaptersFoldedKey = 'chapters_folded';
 
   double get scale => scales[size.value.clamp(0, scales.length - 1)];
 
@@ -58,6 +63,7 @@ class SubtitlePrefs {
     inShorts.value = await _store.getBool(_shortsKey) ?? false;
     language.value = await _store.getString(_languageKey);
     background.value = await _store.getInt(_backgroundKey) ?? 0;
+    chaptersFolded.value = await _store.getBool(_chaptersFoldedKey) ?? false;
   }
 
   Future<void> _load() async {
@@ -75,6 +81,9 @@ class SubtitlePrefs {
     background.addListener(
       () => _store.setInt(_backgroundKey, background.value),
     );
+    chaptersFolded.addListener(
+      () => _store.setBool(_chaptersFoldedKey, chaptersFolded.value),
+    );
   }
 
   void dispose() {
@@ -83,6 +92,7 @@ class SubtitlePrefs {
     inShorts.dispose();
     language.dispose();
     background.dispose();
+    chaptersFolded.dispose();
   }
 }
 

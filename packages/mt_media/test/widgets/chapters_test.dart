@@ -68,6 +68,36 @@ void main() {
     expect(all, 1);
   });
 
+  // Owner's request 2026-11-02: a way to put the chapters away.
+  testWidgets('**the guard**: the arrow folds the chapters away and back, '
+      'and the app keeps the choice', (tester) async {
+    final folded = ValueNotifier(false);
+    await tester.pumpWidget(
+      host(
+        MTChapterSection(
+          chapters: chapters,
+          current: 0,
+          onSeek: (_) {},
+          onShowAll: () {},
+          folded: folded,
+        ),
+      ),
+    );
+    expect(find.text('Where your photos live now'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('chapters-fold')));
+    await tester.pumpAndSettle();
+    expect(folded.value, isTrue);
+    expect(find.text('Where your photos live now'), findsNothing);
+    expect(find.text('View all chapters'), findsNothing);
+    // The heading stays, to bring them back.
+    expect(find.text('Chapters'), findsOneWidget);
+    expect(find.byTooltip('Show chapters'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('chapters-fold')));
+    await tester.pumpAndSettle();
+    expect(folded.value, isFalse);
+    expect(find.text('Where your photos live now'), findsOneWidget);
+  });
+
   testWidgets('beside the time: the chapter playing, by number', (
     tester,
   ) async {

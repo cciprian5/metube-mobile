@@ -102,6 +102,7 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
       captions: (item) => subtitlesFor(ref, item),
       // From the transcript: none without one, nor under four minutes.
       chapters: (item) => chaptersFor(ref, item),
+      chaptersFolded: ref.read(subtitlePrefsProvider).chaptersFolded,
     );
   }
 

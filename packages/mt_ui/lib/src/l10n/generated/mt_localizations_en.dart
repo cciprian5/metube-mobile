@@ -237,9 +237,23 @@ class MTLocalizationsEn extends MTLocalizations {
   String get channelUrlHint => 'https://www.youtube.com/@name';
 
   @override
+  String chapterCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count chapters',
+      one: '1 chapter',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String chapterNumber(int number) {
     return 'Chapter $number';
   }
+
+  @override
+  String get chaptersFold => 'Hide chapters';
 
   @override
   String chaptersFromTranscript(int count) {
@@ -254,6 +268,9 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get chaptersShowAll => 'View all chapters';
+
+  @override
+  String get chaptersUnfold => 'Show chapters';
 
   @override
   String get checkEvery => 'How often to look';
@@ -2321,6 +2338,57 @@ class MTLocalizationsEn extends MTLocalizations {
       'A shared or pasted link starts downloading immediately at the default quality, with no sheet. Numeric qualities are YouTube-only: anything else downloads at best quality, and an \"audio only\" default applies everywhere.';
 
   @override
+  String get quoteExtendHint => 'Touch another line to take it in';
+
+  @override
+  String get quoteMomentLink => 'Copy link to this moment';
+
+  @override
+  String get quotePlayFrom => 'Play from here';
+
+  @override
+  String get quoteTitle => 'Quote';
+
+  @override
+  String get readingAsMarkdownHint =>
+      'Each paragraph with its time, linked to its moment';
+
+  @override
+  String get readingAsPdfHint => 'To print or keep';
+
+  @override
+  String get readingAsSrtHint => 'Line by line with its times, for any player';
+
+  @override
+  String get readingAsText => 'Text to read';
+
+  @override
+  String get readingAsTextHint => 'Paragraphs without times, to paste anywhere';
+
+  @override
+  String get readingHint => 'Tap a sentence to hear it from there';
+
+  @override
+  String readingMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'About $count minutes to read',
+      one: 'About a minute to read',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get readingRead => 'Read';
+
+  @override
+  String get readingShare => 'Share the text';
+
+  @override
+  String get readingTextSize => 'Text size';
+
+  @override
   String get reelsEndBack => 'Back to library';
 
   @override
@@ -3194,6 +3262,9 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get yourChannelsHint => 'Followed in Settings or the player';
+
+  @override
+  String get yourLibrary => 'Your library';
 
   @override
   String get yourPlaylists => 'Your playlists';

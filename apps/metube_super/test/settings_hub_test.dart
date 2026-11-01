@@ -106,6 +106,7 @@ void main() {
       SettingsPane.playback: l10n.settingsPlayback,
       SettingsPane.appearance: l10n.appearanceAndLanguage,
       SettingsPane.transcripts: l10n.settingsTranscripts,
+      SettingsPane.library: l10n.yourLibrary,
       SettingsPane.backup: l10n.settingsBackup,
       SettingsPane.sync: l10n.syncTitle,
       SettingsPane.updates: l10n.updates,

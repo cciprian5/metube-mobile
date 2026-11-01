@@ -258,9 +258,26 @@ class MTLocalizationsAr extends MTLocalizations {
   String get channelUrlHint => 'https://www.youtube.com/@name';
 
   @override
+  String chapterCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فصل',
+      many: '$count فصلاً',
+      few: '$count فصول',
+      two: 'فصلان',
+      one: 'فصل واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String chapterNumber(int number) {
     return 'الفصل $number';
   }
+
+  @override
+  String get chaptersFold => 'إخفاء الفصول';
 
   @override
   String chaptersFromTranscript(int count) {
@@ -278,6 +295,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get chaptersShowAll => 'عرض كل الفصول';
+
+  @override
+  String get chaptersUnfold => 'إظهار الفصول';
 
   @override
   String get checkEvery => 'معدّل الفحص';
@@ -2368,6 +2388,59 @@ class MTLocalizationsAr extends MTLocalizations {
       'حين تشارك رابطاً أو تلصقه يبدأ تحميله فوراً بالجودة الافتراضية دون أي نافذة. الجودات الرقمية خاصة بيوتيوب، فما سواه يُحمَّل بأفضل جودة، أما «صوت فقط» فيسري على كل المنصات.';
 
   @override
+  String get quoteExtendHint => 'المس سطراً آخر لتوسيع الاقتباس';
+
+  @override
+  String get quoteMomentLink => 'انسخ رابط هذه اللحظة';
+
+  @override
+  String get quotePlayFrom => 'شغّل من هنا';
+
+  @override
+  String get quoteTitle => 'اقتباس';
+
+  @override
+  String get readingAsMarkdownHint => 'عند كل فقرة وقتها برابط إلى لحظتها';
+
+  @override
+  String get readingAsPdfHint => 'للطباعة أو الحفظ';
+
+  @override
+  String get readingAsSrtHint => 'سطراً سطراً بأوقاته، لأي مشغّل';
+
+  @override
+  String get readingAsText => 'نص للقراءة';
+
+  @override
+  String get readingAsTextHint => 'فقرات بلا أوقات، يُلصق في أي تطبيق';
+
+  @override
+  String get readingHint => 'انقر جملة لتسمعها من هناك';
+
+  @override
+  String readingMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'نحو $count دقيقة قراءة',
+      many: 'نحو $count دقيقة قراءة',
+      few: 'نحو $count دقائق قراءة',
+      two: 'نحو دقيقتين قراءة',
+      one: 'نحو دقيقة قراءة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get readingRead => 'اقرأ';
+
+  @override
+  String get readingShare => 'شارك النص';
+
+  @override
+  String get readingTextSize => 'مقاس الخط';
+
+  @override
   String get reelsEndBack => 'عودة للمكتبة';
 
   @override
@@ -3271,6 +3344,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get yourChannelsHint => 'تابعتها من الإعدادات أو من المشغّل';
+
+  @override
+  String get yourLibrary => 'مكتبتك';
 
   @override
   String get yourPlaylists => 'قوائمك';

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:metube_super/features/transcripts/clip_chapters.dart';
+import 'package:metube_super/features/transcripts/subtitles.dart';
 import 'package:metube_super/features/transcripts/transcript_panel_tabs.dart';
 import 'package:metube_super/features/transcripts/transcripts_state.dart';
 import 'package:mt_core/mt_core.dart';
@@ -72,6 +73,32 @@ void main() {
     expect(ar.first.opening, startsWith('سطر'));
     final en = c.read(clipChaptersProvider((url: url, language: 'en')));
     expect(en.first.opening, startsWith('Line'));
+  });
+
+  test('**the guard**: chapters folded away stay folded, clip after clip '
+      'and after a restart', () async {
+    final store = MemoryKeyValueStore();
+    ProviderContainer open() {
+      final c = ProviderContainer(
+        overrides: [
+          keyValueStoreProvider.overrideWithValue(store),
+          secretStoreProvider.overrideWithValue(MemorySecretStore()),
+          prefsMutexProvider.overrideWithValue(PrefsMutex()),
+          initialSettingsProvider.overrideWithValue(const SuperSettings()),
+        ],
+      );
+      addTearDown(c.dispose);
+      return c;
+    }
+
+    final first = open().read(subtitlePrefsProvider);
+    await pumpEventQueue();
+    expect(first.chaptersFolded.value, isFalse);
+    first.chaptersFolded.value = true;
+    await pumpEventQueue();
+    final again = open().read(subtitlePrefsProvider);
+    await pumpEventQueue();
+    expect(again.chaptersFolded.value, isTrue);
   });
 
   test('a short clip has none, and none while transcripts are off', () async {

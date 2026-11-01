@@ -488,11 +488,23 @@ abstract class MTLocalizations {
   /// **'https://www.youtube.com/@name'**
   String get channelUrlHint;
 
+  /// No description provided for @chapterCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 chapter} other{{count} chapters}}'**
+  String chapterCount(int count);
+
   /// No description provided for @chapterNumber.
   ///
   /// In en, this message translates to:
   /// **'Chapter {number}'**
   String chapterNumber(int number);
+
+  /// No description provided for @chaptersFold.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide chapters'**
+  String get chaptersFold;
 
   /// No description provided for @chaptersFromTranscript.
   ///
@@ -505,6 +517,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'View all chapters'**
   String get chaptersShowAll;
+
+  /// No description provided for @chaptersUnfold.
+  ///
+  /// In en, this message translates to:
+  /// **'Show chapters'**
+  String get chaptersUnfold;
 
   /// No description provided for @checkEvery.
   ///
@@ -4022,6 +4040,90 @@ abstract class MTLocalizations {
   /// **'A shared or pasted link starts downloading immediately at the default quality, with no sheet. Numeric qualities are YouTube-only: anything else downloads at best quality, and an \"audio only\" default applies everywhere.'**
   String get quickDownloadHelp;
 
+  /// No description provided for @quoteExtendHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Touch another line to take it in'**
+  String get quoteExtendHint;
+
+  /// No description provided for @quoteMomentLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link to this moment'**
+  String get quoteMomentLink;
+
+  /// No description provided for @quotePlayFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Play from here'**
+  String get quotePlayFrom;
+
+  /// No description provided for @quoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote'**
+  String get quoteTitle;
+
+  /// No description provided for @readingAsMarkdownHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each paragraph with its time, linked to its moment'**
+  String get readingAsMarkdownHint;
+
+  /// No description provided for @readingAsPdfHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To print or keep'**
+  String get readingAsPdfHint;
+
+  /// No description provided for @readingAsSrtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Line by line with its times, for any player'**
+  String get readingAsSrtHint;
+
+  /// No description provided for @readingAsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text to read'**
+  String get readingAsText;
+
+  /// No description provided for @readingAsTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paragraphs without times, to paste anywhere'**
+  String get readingAsTextHint;
+
+  /// No description provided for @readingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a sentence to hear it from there'**
+  String get readingHint;
+
+  /// No description provided for @readingMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{About a minute to read} other{About {count} minutes to read}}'**
+  String readingMinutes(int count);
+
+  /// No description provided for @readingRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get readingRead;
+
+  /// No description provided for @readingShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share the text'**
+  String get readingShare;
+
+  /// No description provided for @readingTextSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Text size'**
+  String get readingTextSize;
+
   /// No description provided for @reelsEndBack.
   ///
   /// In en, this message translates to:
@@ -5455,6 +5557,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Followed in Settings or the player'**
   String get yourChannelsHint;
+
+  /// No description provided for @yourLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Your library'**
+  String get yourLibrary;
 
   /// No description provided for @yourPlaylists.
   ///

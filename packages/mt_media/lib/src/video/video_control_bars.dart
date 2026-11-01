@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../widgets/media_time.dart';
+import '../widgets/mt_chapter_label.dart';
 import '../widgets/mt_chapters.dart';
 import '../widgets/mt_extra_button.dart';
 import '../widgets/mt_player_controls_row.dart';

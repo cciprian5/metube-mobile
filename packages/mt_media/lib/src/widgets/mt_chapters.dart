@@ -100,14 +100,17 @@ class MTChapterRows extends StatelessWidget {
 }
 
 /// **The chapters under the player's buttons**: a few around the one
-/// playing, and the way to all of them.
-class MTChapterSection extends StatelessWidget {
+/// playing, and the way to all of them. An arrow in the heading folds
+/// them away and back; [folded] keeps that choice where the app wants it
+/// kept, and without one it lasts as long as the section.
+class MTChapterSection extends StatefulWidget {
   const MTChapterSection({
     super.key,
     required this.chapters,
     required this.current,
     required this.onSeek,
     required this.onShowAll,
+    this.folded,
   });
 
   /// How many rows the section shows before "View all".
@@ -117,37 +120,82 @@ class MTChapterSection extends StatelessWidget {
   final int? current;
   final ValueChanged<Duration> onSeek;
   final VoidCallback onShowAll;
+  final ValueNotifier<bool>? folded;
+
+  @override
+  State<MTChapterSection> createState() => _MTChapterSectionState();
+}
+
+class _MTChapterSectionState extends State<MTChapterSection> {
+  final _own = ValueNotifier(false);
+
+  ValueNotifier<bool> get _folded => widget.folded ?? _own;
+
+  @override
+  void dispose() {
+    _own.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.mtl;
-    final last = chapters.length - shown;
+    final p = MTThemeX.of(context).palette;
+    final chapters = widget.chapters;
+    final last = chapters.length - MTChapterSection.shown;
     // The one playing second from the top, so what comes next shows.
-    final from = ((current ?? 0) - 1).clamp(0, last < 0 ? 0 : last);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        MTSectionHeader(
-          title: l10n.desktopChapters,
-          trailing: l10n.chaptersFromTranscript(chapters.length),
-        ),
-        const SizedBox(height: MTSpace.xs),
-        MTChapterRows(
-          chapters: chapters,
-          current: current,
-          onSeek: onSeek,
-          from: from,
-          count: shown,
-        ),
-        if (chapters.length > shown)
-          Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: TextButton(
-              onPressed: onShowAll,
-              child: Text(l10n.chaptersShowAll),
+    final from = ((widget.current ?? 0) - 1).clamp(0, last < 0 ? 0 : last);
+    final still = MediaQuery.disableAnimationsOf(context);
+    return ValueListenableBuilder(
+      valueListenable: _folded,
+      builder: (context, folded, _) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          MTSectionHeader(
+            title: l10n.desktopChapters,
+            trailing: l10n.chaptersFromTranscript(chapters.length),
+            action: IconButton(
+              key: const ValueKey('chapters-fold'),
+              onPressed: () => _folded.value = !folded,
+              tooltip: folded ? l10n.chaptersUnfold : l10n.chaptersFold,
+              visualDensity: VisualDensity.compact,
+              icon: AnimatedRotation(
+                turns: folded ? 0.5 : 0,
+                duration: still ? Duration.zero : MTMotion.fast,
+                child: Icon(Icons.expand_less_rounded, color: p.ink2),
+              ),
             ),
           ),
-      ],
+          AnimatedSize(
+            duration: still ? Duration.zero : MTMotion.medium,
+            curve: MTMotion.ease,
+            alignment: AlignmentDirectional.topCenter,
+            child: folded
+                ? const SizedBox(width: double.infinity)
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: MTSpace.xs),
+                      MTChapterRows(
+                        chapters: chapters,
+                        current: widget.current,
+                        onSeek: widget.onSeek,
+                        from: from,
+                        count: MTChapterSection.shown,
+                      ),
+                      if (chapters.length > MTChapterSection.shown)
+                        Align(
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: TextButton(
+                            onPressed: widget.onShowAll,
+                            child: Text(l10n.chaptersShowAll),
+                          ),
+                        ),
+                    ],
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -205,53 +253,3 @@ Future<void> showMTChapterSheet(
     ),
   ),
 );
-
-/// The chapter playing, beside the time over the video: its number and
-/// opening words, which open the list. Nothing before the first chapter.
-class MTChapterLabel extends StatelessWidget {
-  const MTChapterLabel({
-    super.key,
-    required this.chapters,
-    required this.position,
-    required this.onTap,
-  });
-
-  final List<MTChapter> chapters;
-  final Duration position;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final at = mtChapterAt(chapters, position);
-    if (at == null) return const SizedBox.shrink();
-    final ink = MTPalette.serverCardInk.withValues(alpha: 0.85);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(MTRadius.field),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: MTSpace.xs,
-          vertical: MTSpace.xxs,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: Text(
-                mtMetaLine([
-                  context.mtl.chapterNumber(at + 1),
-                  chapters[at].opening,
-                ]),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelSmall!
-                    .copyWith(color: ink),
-              ),
-            ),
-            Icon(Icons.chevron_right_rounded, size: 16, color: ink),
-          ],
-        ),
-      ),
-    );
-  }
-}

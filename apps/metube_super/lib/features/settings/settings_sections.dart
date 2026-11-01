@@ -4,6 +4,7 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../di.dart';
+import '../library/library_providers.dart';
 import '../subscriptions/subscriptions_providers.dart';
 import '../transcripts/subtitles.dart';
 import '../transcripts/transcripts_state.dart';
@@ -24,6 +25,7 @@ enum SettingsPane {
   playback,
   appearance,
   transcripts,
+  library,
   backup,
   sync,
   updates,
@@ -117,6 +119,12 @@ List<(String, List<SettingsEntry>)> settingsGroups(
     (
       l10n.settingsGroupData,
       [
+        SettingsEntry(
+          SettingsPane.library,
+          Icons.bar_chart_rounded,
+          l10n.yourLibrary,
+          v.library(),
+        ),
         SettingsEntry(
           SettingsPane.backup,
           Icons.shield_outlined,
@@ -245,6 +253,17 @@ class _Values {
       ? l10n.settingsValueOn
       // What "off" means here, not a bare word another row also says.
       : l10n.syncPhoneOff;
+
+  /// How many clips, and the room they take: what the page counts in full.
+  String library() {
+    final items = ref.watch(libraryItemsProvider).valueOrNull;
+    if (items == null) return l10n.desktopStatsHint;
+    final bytes = items.fold(0, (sum, i) => sum + (i.sizeBytes ?? 0));
+    return mtMetaLine([
+      l10n.transcriptsClips(items.length),
+      if (bytes > 0) mtFormatSize(bytes),
+    ]);
+  }
 
   String backup() => switch (ref.watch(latestBackupProvider).valueOrNull) {
     final at? => l10n.lastBackup(mtTimeAgo(context, at)),

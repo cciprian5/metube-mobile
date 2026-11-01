@@ -25,6 +25,7 @@ class TranscriptHeading extends StatelessWidget {
     required this.onStep,
     required this.onShow,
     this.onClose,
+    this.onRead,
   });
 
   final String title;
@@ -44,6 +45,9 @@ class TranscriptHeading extends StatelessWidget {
   /// Shown as a close button when the transcript sits in a panel rather
   /// than a sheet, which has no edge to drag down.
   final VoidCallback? onClose;
+
+  /// Opens the text as an article, to read rather than follow.
+  final VoidCallback? onRead;
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +72,16 @@ class TranscriptHeading extends StatelessWidget {
                 style: text.titleMedium,
               ),
             ),
+            if (onRead case final read?)
+              TextButton.icon(
+                onPressed: read,
+                style: TextButton.styleFrom(
+                  foregroundColor: p.ink2,
+                  visualDensity: VisualDensity.compact,
+                ),
+                icon: const Icon(Icons.menu_book_rounded, size: 18),
+                label: Text(l10n.readingRead),
+              ),
             IconButton(
               onPressed: onSearchToggle,
               tooltip: l10n.transcriptFind,

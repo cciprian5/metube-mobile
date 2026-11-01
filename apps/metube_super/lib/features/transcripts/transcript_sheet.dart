@@ -7,6 +7,7 @@ import 'package:mt_ui/mt_ui.dart';
 import 'transcript_heading.dart';
 import 'transcript_language.dart';
 import 'transcript_lines.dart';
+import 'transcript_quote.dart';
 
 /// A clip's whole transcript: in a bottom sheet, or in a panel beside a
 /// full-screen video when [onClose] is given.
@@ -21,6 +22,7 @@ class TranscriptSheet extends StatefulWidget {
     this.stillPlaying,
     this.onClose,
     this.language,
+    this.onRead,
   });
 
   final String title;
@@ -41,6 +43,9 @@ class TranscriptSheet extends StatefulWidget {
   /// and follows a pick made here.
   final ValueNotifier<String?>? language;
 
+  /// Opens the transcript shown as an article.
+  final ValueChanged<Transcript>? onRead;
+
   @override
   State<TranscriptSheet> createState() => _TranscriptSheetState();
 }
@@ -51,6 +56,9 @@ class _TranscriptSheetState extends State<TranscriptSheet> {
   final _panelScroll = ScrollController();
   Transcript? _shown;
   int? _now;
+
+  /// The quote being made, from a long press on a line.
+  QuoteRange? _quote;
   bool _searching = false;
   int _cursor = 0;
   StreamSubscription<Duration>? _ticks;
@@ -129,7 +137,10 @@ class _TranscriptSheetState extends State<TranscriptSheet> {
 
   void _show(Transcript transcript) {
     widget.language?.value = transcript.language;
-    setState(() => _shown = transcript);
+    setState(() {
+      _shown = transcript;
+      _quote = null;
+    });
     _restartMatches();
   }
 
@@ -204,6 +215,10 @@ class _TranscriptSheetState extends State<TranscriptSheet> {
                 onStep: _step,
                 onShow: _show,
                 onClose: widget.onClose,
+                onRead: switch (widget.onRead) {
+                  final read? => () => read(shown),
+                  null => null,
+                },
               ),
             ),
           ),
@@ -218,8 +233,38 @@ class _TranscriptSheetState extends State<TranscriptSheet> {
               controller: scroll,
               opening: _matches(shown).firstOrNull,
               onMoment: widget.onMoment,
+              quote: _quote,
+              onQuote: (index, {required longPress}) => setState(
+                () => _quote = longPress || _quote == null
+                    ? (first: index, last: index)
+                    : extendQuote(_quote!, index),
+              ),
             ),
           ),
+          if (_quote case final quote?) ...[
+            const SizedBox(height: MTSpace.sm),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: box.maxHeight * 0.55),
+              child: TranscriptQuotePanel(
+                text: quoteText(
+                  context.mtl,
+                  segments: shown.segments,
+                  range: quote,
+                  title: widget.title,
+                  canonicalUrl: shown.canonicalUrl,
+                ),
+                link: timedLink(
+                  shown.canonicalUrl,
+                  shown.segments[quote.first].start,
+                ),
+                onPlay: () {
+                  setState(() => _quote = null);
+                  widget.onMoment(shown.segments[quote.first].start);
+                },
+                onClose: () => setState(() => _quote = null),
+              ),
+            ),
+          ],
         ],
       ),
     );

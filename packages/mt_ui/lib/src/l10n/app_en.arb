@@ -459,6 +459,14 @@
   "channelNameFolder": "Named after the channel",
   "channelUrl": "Channel or playlist link",
   "channelUrlHint": "https://www.youtube.com/@name",
+  "chapterCount": "{count, plural, =1{1 chapter} other{{count} chapters}}",
+  "@chapterCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chapterNumber": "Chapter {number}",
   "@chapterNumber": {
     "placeholders": {
@@ -467,6 +475,7 @@
       }
     }
   },
+  "chaptersFold": "Hide chapters",
   "chaptersFromTranscript": "{count, plural, =1{1 chapter from the transcript} other{{count} chapters from the transcript}}",
   "@chaptersFromTranscript": {
     "placeholders": {
@@ -476,6 +485,7 @@
     }
   },
   "chaptersShowAll": "View all chapters",
+  "chaptersUnfold": "Show chapters",
   "checkEvery": "How often to look",
   "checkForUpdates": "Check for updates",
   "checkNow": "Check now",
@@ -1118,6 +1128,27 @@
   "queuedSection": "Waiting",
   "quickDownload": "Quick download",
   "quickDownloadHelp": "A shared or pasted link starts downloading immediately at the default quality, with no sheet. Numeric qualities are YouTube-only: anything else downloads at best quality, and an \"audio only\" default applies everywhere.",
+  "quoteExtendHint": "Touch another line to take it in",
+  "quoteMomentLink": "Copy link to this moment",
+  "quotePlayFrom": "Play from here",
+  "quoteTitle": "Quote",
+  "readingAsMarkdownHint": "Each paragraph with its time, linked to its moment",
+  "readingAsPdfHint": "To print or keep",
+  "readingAsSrtHint": "Line by line with its times, for any player",
+  "readingAsText": "Text to read",
+  "readingAsTextHint": "Paragraphs without times, to paste anywhere",
+  "readingHint": "Tap a sentence to hear it from there",
+  "readingMinutes": "{count, plural, =1{About a minute to read} other{About {count} minutes to read}}",
+  "@readingMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "readingRead": "Read",
+  "readingShare": "Share the text",
+  "readingTextSize": "Text size",
   "reelsEndBack": "Back to library",
   "reelsEndContinue": "Continue the rest of the list",
   "reelsEndReplay": "Replay from the start",
@@ -1366,6 +1397,7 @@
   "wifiOnlyHelp": "Stops pulling files to your device over mobile data. Tasks wait and resume automatically on Wi-Fi.",
   "yourChannels": "Your channels",
   "yourChannelsHint": "Followed in Settings or the player",
+  "yourLibrary": "Your library",
   "yourPlaylists": "Your playlists",
   "yourTags": "Your tags",
   "ytdlpCredit": "The downloader MeTube runs"

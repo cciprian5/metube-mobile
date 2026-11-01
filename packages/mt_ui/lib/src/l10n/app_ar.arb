@@ -38,6 +38,13 @@
       }
     }
   },
+  "@chapterCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@chaptersFromTranscript": {
     "placeholders": {
       "count": {
@@ -81,6 +88,13 @@
     }
   },
   "@queueItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@readingMinutes": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -208,9 +222,12 @@
   "channelNameFolder": "باسم القناة",
   "channelUrl": "رابط قناة أو قائمة",
   "channelUrlHint": "https://www.youtube.com/@name",
+  "chapterCount": "{count, plural, =1{فصل واحد} =2{فصلان} few{{count} فصول} many{{count} فصلاً} other{{count} فصل}}",
   "chapterNumber": "الفصل {number}",
+  "chaptersFold": "إخفاء الفصول",
   "chaptersFromTranscript": "{count, plural, =1{فصل واحد من نص المقطع} =2{فصلان من نص المقطع} few{{count} فصول من نص المقطع} many{{count} فصلاً من نص المقطع} other{{count} فصل من نص المقطع}}",
   "chaptersShowAll": "عرض كل الفصول",
+  "chaptersUnfold": "إظهار الفصول",
   "checkEvery": "معدّل الفحص",
   "checkForUpdates": "التحقق من التحديثات",
   "checkNow": "افحص الآن",
@@ -811,6 +828,20 @@
   "queuedSection": "بالانتظار",
   "quickDownload": "التحميل السريع",
   "quickDownloadHelp": "حين تشارك رابطاً أو تلصقه يبدأ تحميله فوراً بالجودة الافتراضية دون أي نافذة. الجودات الرقمية خاصة بيوتيوب، فما سواه يُحمَّل بأفضل جودة، أما «صوت فقط» فيسري على كل المنصات.",
+  "quoteExtendHint": "المس سطراً آخر لتوسيع الاقتباس",
+  "quoteMomentLink": "انسخ رابط هذه اللحظة",
+  "quotePlayFrom": "شغّل من هنا",
+  "quoteTitle": "اقتباس",
+  "readingAsMarkdownHint": "عند كل فقرة وقتها برابط إلى لحظتها",
+  "readingAsPdfHint": "للطباعة أو الحفظ",
+  "readingAsSrtHint": "سطراً سطراً بأوقاته، لأي مشغّل",
+  "readingAsText": "نص للقراءة",
+  "readingAsTextHint": "فقرات بلا أوقات، يُلصق في أي تطبيق",
+  "readingHint": "انقر جملة لتسمعها من هناك",
+  "readingMinutes": "{count, plural, =1{نحو دقيقة قراءة} =2{نحو دقيقتين قراءة} few{نحو {count} دقائق قراءة} many{نحو {count} دقيقة قراءة} other{نحو {count} دقيقة قراءة}}",
+  "readingRead": "اقرأ",
+  "readingShare": "شارك النص",
+  "readingTextSize": "مقاس الخط",
   "reelsEndBack": "عودة للمكتبة",
   "reelsEndContinue": "متابعة بقية القائمة",
   "reelsEndReplay": "إعادة من البداية",
@@ -1050,6 +1081,7 @@
   "wifiOnlyHelp": "لا تُسحب الملفات إلى جهازك عبر بيانات الجوّال، بل تنتظر المهام وتُستأنف تلقائياً عند الاتصال بشبكة Wi‑Fi.",
   "yourChannels": "قنواتك",
   "yourChannelsHint": "تابعتها من الإعدادات أو من المشغّل",
+  "yourLibrary": "مكتبتك",
   "yourPlaylists": "قوائمك",
   "yourTags": "وسومك",
   "ytdlpCredit": "أداة التنزيل التي يعتمد عليها MeTube"

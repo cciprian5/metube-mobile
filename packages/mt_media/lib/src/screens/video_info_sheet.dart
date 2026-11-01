@@ -24,6 +24,7 @@ class MTVideoInfoSheet extends StatelessWidget {
     this.onShowPlaylist,
     this.playlistName,
     this.chapters,
+    this.chaptersFolded,
   });
 
   final MTVideoSession session;
@@ -39,6 +40,7 @@ class MTVideoInfoSheet extends StatelessWidget {
 
   /// See [MTVideoScreen.chapters].
   final List<MTChapter> Function(PlaylistItem item)? chapters;
+  final ValueNotifier<bool>? chaptersFolded;
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +142,7 @@ class MTVideoInfoSheet extends StatelessWidget {
           chapters: chapters,
           current: mtChapterAt(chapters, session.position),
           onSeek: session.seek,
+          folded: chaptersFolded,
           onShowAll: () => showMTChapterSheet(
             context,
             chapters: chapters,

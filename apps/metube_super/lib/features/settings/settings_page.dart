@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../stats/library_stats_screen.dart';
 import '../subscriptions/subscriptions_screen.dart';
 import '../sync/sync_screen.dart';
 import '../transcripts/transcripts_section.dart';
@@ -58,6 +59,7 @@ class SettingsPage extends StatelessWidget {
         ],
         child: const TranscriptsSection(),
       ),
+      SettingsPane.library => const LibraryStatsScreen(),
       SettingsPane.backup => const BackupScreen(),
       SettingsPane.sync => const SyncScreen(),
       SettingsPane.updates => MTSettingsPage(

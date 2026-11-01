@@ -52,6 +52,7 @@ class MTVideoScreen extends StatelessWidget {
     this.fullscreenPanel,
     this.captions,
     this.chapters,
+    this.chaptersFolded,
   });
 
   final MTVideoSession session;
@@ -104,6 +105,10 @@ class MTVideoScreen extends StatelessWidget {
   /// into the progress bar, named beside the time, and listed under the
   /// buttons. Empty, or null, for a clip without any.
   final List<MTChapter> Function(PlaylistItem item)? chapters;
+
+  /// Whether the chapters under the buttons are folded away; see
+  /// [MTChapterSection.folded].
+  final ValueNotifier<bool>? chaptersFolded;
 
   bool get _offersAudio =>
       onContinueAsAudio != null && (shouldOfferContinueAsAudio?.call() ?? true);
@@ -159,6 +164,7 @@ class MTVideoScreen extends StatelessWidget {
               onShowPlaylist: onShowPlaylist,
               byline: byline,
               chapters: chapters,
+              chaptersFolded: chaptersFolded,
             ),
           ),
         ),
@@ -175,13 +181,9 @@ class MTVideoScreen extends StatelessWidget {
       backgroundColor: MTThemeX.of(context).palette.bg,
       body: ListenableBuilder(
         listenable: session,
-        // **In landscape the video alone fills the screen** (field
-        // report 2026-09-05: "I leave full screen with the device in
-        // landscape and the app shows sideways"). Leaving manually
-        // disarms tilt so full screen is not reopened, and the result
-        // was a light sheet with a squeezed video on a wide screen.
-        // Landscape is now **a form** of this screen rather than a
-        // fault in it.
+        // **In landscape the video alone fills the screen** (field report
+        // 2026-09-05): leaving full screen by hand left a squeezed video
+        // over a light sheet. Landscape is a form of this screen.
         builder: (context, _) => _isWide(context)
             ? _wide(context, openFullscreen)
             : MediaQuery.orientationOf(context) == Orientation.landscape
@@ -220,6 +222,7 @@ class MTVideoScreen extends StatelessWidget {
                       onShowPlaylist: onShowPlaylist,
                       byline: byline,
                       chapters: chapters,
+                      chaptersFolded: chaptersFolded,
                     ),
                   ),
                 ],

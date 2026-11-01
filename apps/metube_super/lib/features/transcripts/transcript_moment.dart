@@ -65,6 +65,8 @@ class TranscriptMomentRow extends ConsumerWidget {
     this.maxLines = 2,
     this.onTap,
     this.current,
+    this.onLongPress,
+    this.quoted = false,
   }) : assert(item != null || onTap != null, 'nothing to do on a tap');
 
   /// Played from [start] on a tap, unless [onTap] says otherwise.
@@ -85,6 +87,12 @@ class TranscriptMomentRow extends ConsumerWidget {
   /// said now. Null outside one, where no line is.
   final bool? current;
 
+  /// Starts a quote from this line, in a transcript that offers one.
+  final VoidCallback? onLongPress;
+
+  /// Whether a quote being made takes in this line.
+  final bool quoted;
+
   @override
   Widget build(BuildContext buildContext, WidgetRef ref) {
     final text = Theme.of(buildContext).textTheme;
@@ -97,6 +105,7 @@ class TranscriptMomentRow extends ConsumerWidget {
     return InkWell(
       onTap:
           onTap ?? () => playFromMoment(buildContext, ref.read, item!, start),
+      onLongPress: onLongPress,
       child: Container(
         padding: EdgeInsetsDirectional.only(
           top: MTSpace.xs,
@@ -106,8 +115,9 @@ class TranscriptMomentRow extends ConsumerWidget {
         // The line being said is marked on the side reading starts from,
         // leaving the lit words their own colour.
         decoration: current == null
-            ? null
+            ? (quoted ? BoxDecoration(color: mtSelectedFill(p)) : null)
             : BoxDecoration(
+                color: quoted ? mtSelectedFill(p) : null,
                 border: BorderDirectional(
                   start: BorderSide(
                     color: now ? p.accent : Colors.transparent,

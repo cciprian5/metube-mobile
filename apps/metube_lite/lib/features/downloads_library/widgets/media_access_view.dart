@@ -47,7 +47,6 @@ class _MediaAccessViewState extends ConsumerState<MediaAccessView> {
   Widget build(BuildContext context) {
     final l10n = MTLocalizations.of(context);
     return MTEmptyState(
-      icon: Icons.perm_media_outlined,
       title: l10n.mediaAccessTitle,
       message: _blocked
           ? l10n.mediaAccessBlockedMessage

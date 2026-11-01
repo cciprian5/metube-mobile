@@ -72,7 +72,6 @@ class PlaylistsScreen extends ConsumerWidget {
             playlists.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (_, _) => MTEmptyState(
-                icon: Icons.error_outline_rounded,
                 title: l10n.errorGeneric(''),
                 message: l10n.tryAgain,
               ),

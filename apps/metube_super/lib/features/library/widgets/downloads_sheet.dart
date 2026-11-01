@@ -147,7 +147,6 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
       (t) => !t.isFinished || t.phase == TaskPhase.failed,
     );
     final empty = MTEmptyState(
-      icon: Icons.download_done_rounded,
       title: l10n.noDownloads,
       message: l10n.allDownloadsFinished,
     );

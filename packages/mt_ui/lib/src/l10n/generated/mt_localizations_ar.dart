@@ -1713,7 +1713,20 @@ class MTLocalizationsAr extends MTLocalizations {
   String get editSubscription => 'تعديل';
 
   @override
+  String get emptyFilteredMessage => 'أزل مرشّحاً من الأعلى لترى مكتبتك كلها.';
+
+  @override
+  String get emptyFilteredTitle => 'لا شيء بهذه المرشّحات';
+
+  @override
   String get emptyLibraryMessage => 'أضِف رابط فيديو، أو اسحب للتحديث.';
+
+  @override
+  String get emptyOfflineMessage =>
+      'اختر «إتاحة دون اتصال» من قائمة مقطع، فيعمل هنا دون السيرفر.';
+
+  @override
+  String get emptyOfflineTitle => 'لا شيء محفوظ على هذا الجوال بعد';
 
   @override
   String get emptyPlaylist => 'قائمة فارغة';
@@ -2886,7 +2899,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get themeLight => 'فاتح';
 
   @override
-  String get themeSystem => 'حسب النظام';
+  String get themeSystem => 'النظام';
 
   @override
   String get titleFilter => 'نزّل فقط المقاطع التي يحتوي عنوانها على';

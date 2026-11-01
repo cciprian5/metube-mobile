@@ -303,7 +303,6 @@ class _EmptyPlayer extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(),
     body: MTEmptyState(
-      icon: Icons.music_note_rounded,
       title: context.mtl.nowPlaying,
       message: context.mtl.nothingHereYet,
     ),
@@ -331,8 +330,10 @@ class _Header extends StatelessWidget {
           child: Text(
             l10n.nowPlaying,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.labelSmall!
-                .copyWith(color: p.ink3, letterSpacing: 1.6),
+            style: Theme.of(context).textTheme.labelSmall!.copyWith(
+              color: p.ink3,
+              letterSpacing: mtLabelTracking(context, 1.6),
+            ),
           ),
         ),
         if (onDetails case final VoidCallback show)

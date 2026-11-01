@@ -94,7 +94,6 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
             ),
           ),
           error: (e, _) => MTEmptyState(
-            icon: Icons.error_outline_rounded,
             title: l10n.failedToLoadPlaylist,
             message: errorText(l10n, e),
             actionLabel: l10n.retry,
@@ -103,7 +102,6 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
           ),
           data: (data) => data == null || data.tracks.isEmpty
               ? MTEmptyState(
-                  icon: Icons.playlist_remove_rounded,
                   title: l10n.failedToLoadPlaylist,
                   message: l10n.couldNotLoadPlaylist,
                 )

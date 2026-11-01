@@ -58,7 +58,6 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.play_disabled_rounded,
           title: l10n.videoPlayer,
           message: l10n.noPlayableSource,
         ),

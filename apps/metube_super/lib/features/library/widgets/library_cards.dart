@@ -61,11 +61,13 @@ class LibraryItemCard extends ConsumerWidget {
             if (item.timestamp != null && columns?.added != true)
               mtTimeAgo(context, item.timestamp!),
           ]);
+    // **One mark, not a mark on every row** (log §4, 2026-10-31): in Super
+    // everything is on the server, so "on the server" said nothing; only a
+    // copy kept on this phone is worth naming.
     final locationLabel = switch (item.location) {
       MTMediaLocation.offline ||
       MTMediaLocation.both => l10n.availabilityOffline,
-      MTMediaLocation.onServer => l10n.filterServer,
-      MTMediaLocation.none => null,
+      MTMediaLocation.onServer || MTMediaLocation.none => null,
     };
     // **Decode at display size, not at original size**: a 1280x720
     // thumbnail

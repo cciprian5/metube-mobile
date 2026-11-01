@@ -16,6 +16,7 @@ export 'src/l10n/l10n.dart';
 export 'src/l10n/language_names.dart';
 export 'src/theme/mt_desktop_theme.dart';
 export 'src/theme/mt_theme.dart';
+export 'src/theme/mt_theme_controls.dart';
 export 'src/tokens/tokens.dart';
 export 'src/widgets/mt_active_downloads_bar.dart';
 export 'src/widgets/mt_adaptive.dart';

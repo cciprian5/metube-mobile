@@ -130,6 +130,13 @@ class LibraryViewOptions {
 
   bool get selecting => selection.isNotEmpty;
 
+  /// Whether a filter hides part of the library, the search aside: an empty
+  /// list then means "nothing here", not "nothing at all".
+  bool get narrowed =>
+      scope != LocalScope.all ||
+      type != MediaTypeFilter.all ||
+      platform != null;
+
   LibraryViewOptions copyWith({
     LocalScope? scope,
     MediaTypeFilter? type,

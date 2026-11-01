@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/tokens.dart';
 import '../widgets/mt_motion.dart';
 import 'mt_theme.dart';
+import 'mt_theme_controls.dart';
 
 /// The Windows app's theme: the Wahaj theme with the desktop type and
 /// corner scales, and the Wahaj components in place of Material's defaults.
@@ -169,6 +170,14 @@ ThemeData mtDesktopTheme(
         ),
       ),
     ),
+    // Ember keeps the ember on a focused field, its one mark of where
+    // typing goes in a window full of panels.
+    inputDecorationTheme: base.inputDecorationTheme.copyWith(
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(corners.field),
+        borderSide: BorderSide(color: p.accent, width: 1.4 * line),
+      ),
+    ),
     dialogTheme: DialogThemeData(
       backgroundColor: p.card,
       surfaceTintColor: Colors.transparent,
@@ -179,24 +188,3 @@ ThemeData mtDesktopTheme(
     ),
   );
 }
-
-/// How much of the ink a hovered control is veiled with: about the card's
-/// own step from the page, in day and night alike.
-const double mtHoverVeil = 0.07;
-
-/// How much of the ember a pressed control is veiled with.
-const double mtPressVeil = 0.16;
-
-/// How much of the ember a filled button keeps while it cannot be pressed.
-const double mtDisabledAccent = 0.25;
-
-/// How much of the ink fills whatever is chosen in the chrome: a sidebar
-/// row, a settings section, a mode that is on. A step over the hover veil,
-/// so a hovered row never reads as the chosen one.
-const double mtSelectedVeil = 0.10;
-
-/// **The chosen row is filled with the ink, not the accent.** With the
-/// accent on every chosen row, on the add button and on the play button at
-/// once, it marked nothing; it is kept for the one action and for the data
-/// that follows playback.
-Color mtSelectedFill(MTPalette p) => p.ink.withValues(alpha: mtSelectedVeil);

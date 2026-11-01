@@ -31,8 +31,13 @@ class MTDownloadProgressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
+    // **Colour for the data alone** (log §4, 2026-10-31): the bar and its
+    // figure in the accent, a failure's sentence in the error colour. The
+    // card itself stays neutral; tinted and framed in the accent, every
+    // download looked like an alert, and a failure wore three marks.
     final tint = isError ? p.err : p.accent;
-    final softInk = isError ? p.err : p.accentInk;
+    final softInk = isError ? p.err : p.ink3;
+    final hairline = MTThemeX.of(context).hairline;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -40,12 +45,9 @@ class MTDownloadProgressCard extends StatelessWidget {
         vertical: MTSpace.md,
       ),
       decoration: BoxDecoration(
-        color: isError ? p.err.withValues(alpha: 0.08) : p.accentSoft,
+        color: p.card,
         borderRadius: BorderRadius.circular(MTRadius.card),
-        border: Border.all(
-          color: tint.withValues(alpha: 0.3),
-          width: MTThemeX.of(context).hairline,
-        ),
+        border: Border.all(color: p.line, width: hairline),
       ),
       child: Row(
         children: [
@@ -54,12 +56,8 @@ class MTDownloadProgressCard extends StatelessWidget {
             height: 50,
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
-              color: p.card,
+              color: p.cardAlt,
               borderRadius: BorderRadius.circular(MTRadius.thumb),
-              border: Border.all(
-                color: tint.withValues(alpha: 0.25),
-                width: MTThemeX.of(context).hairline,
-              ),
             ),
             child:
                 thumbnail ??
@@ -68,7 +66,7 @@ class MTDownloadProgressCard extends StatelessWidget {
                       ? Icons.error_outline_rounded
                       : Icons.download_rounded,
                   size: 22,
-                  color: tint,
+                  color: p.ink3,
                 ),
           ),
           const SizedBox(width: MTSpace.md - 1),
@@ -133,7 +131,7 @@ class MTDownloadProgressCard extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: progress == null ? null : shown,
                         minHeight: 5,
-                        backgroundColor: tint.withValues(alpha: 0.16),
+                        backgroundColor: p.line,
                         valueColor: AlwaysStoppedAnimation(tint),
                       ),
                     ),

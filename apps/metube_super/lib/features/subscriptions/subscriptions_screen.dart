@@ -53,7 +53,6 @@ class SubscriptionsScreen extends ConsumerWidget {
           error: (e, _) => Padding(
             padding: const EdgeInsets.all(MTSpace.pagePad),
             child: MTEmptyState(
-              icon: Icons.error_outline_rounded,
               title: l10n.failed,
               message: errorText(l10n, e),
               actionLabel: l10n.retry,
@@ -76,7 +75,6 @@ class SubscriptionsScreen extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(MTSpace.pagePad),
       child: MTEmptyState(
-        icon: Icons.update_rounded,
         title: l10n.subscriptionsUnsupported,
         message: l10n.subscriptionsUnsupportedBody,
       ),
@@ -93,7 +91,6 @@ class SubscriptionsScreen extends ConsumerWidget {
       return Padding(
         padding: const EdgeInsets.all(MTSpace.pagePad),
         child: MTEmptyState(
-          icon: Icons.rss_feed_rounded,
           title: l10n.subscriptionsEmpty,
           message: l10n.subscriptionsEmptyBody,
           actionLabel: l10n.followChannel,

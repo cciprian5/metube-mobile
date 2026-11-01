@@ -55,7 +55,7 @@ class MTFab extends StatelessWidget {
         decoration: BoxDecoration(
           color: highlighted ? p.accentDeep : p.accent,
           borderRadius: BorderRadius.circular(MTRadius.fab),
-          boxShadow: MTShadow.fab(p),
+          boxShadow: MTShadow.float,
         ),
         child: Material(
           color: Colors.transparent,
@@ -79,26 +79,18 @@ class MTFab extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        width: 26,
-                        height: 26,
-                        decoration: BoxDecoration(
-                          color: p.onAccent.withValues(alpha: 0.22),
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                        child: Center(
-                          child: MTIconSwap(
-                            icon: highlighted
-                                ? Icons.content_paste_go_rounded
-                                : icon,
-                            size: 17,
-                            color: p.onAccent,
-                          ),
-                        ),
+                      // The glyph alone: a tinted square inside the button
+                      // was a box within a box (log §4, 2026-10-31).
+                      MTIconSwap(
+                        icon: highlighted
+                            ? Icons.content_paste_go_rounded
+                            : icon,
+                        size: 20,
+                        color: p.onAccent,
                       ),
                       const SizedBox(width: MTSpace.sm),
                       // **Flexible, so the label yields before the row
-                      // does.** The icon box keeps its size; only the words
+                      // does.** The icon keeps its size; only the words
                       // are shortened, and only on the screens where they
                       // would not have fitted at all.
                       Flexible(

@@ -88,7 +88,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           : _mainAppBar(l10n, active.length),
       body: !settings.isConfigured
           ? MTEmptyState(
-              icon: Icons.cloud_off_rounded,
               title: l10n.noServerTitle,
               message: l10n.noServerMessage,
               actionLabel: l10n.setupServer,
@@ -268,14 +267,12 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
             SliverToBoxAdapter(
               child: error is AuthFailureException
                   ? MTEmptyState(
-                      icon: Icons.lock_outline_rounded,
                       title: l10n.signInRequired,
                       message: l10n.signInRequiredHint,
                       actionLabel: l10n.updateCredentials,
                       onAction: () => context.go(SettingsPane.server.route),
                     )
                   : MTEmptyState(
-                      icon: Icons.error_outline_rounded,
                       title: l10n.connectionFailed,
                       message: errorText(l10n, error),
                       actionLabel: l10n.retry,
@@ -290,17 +287,29 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   ref.watch(transcriptResultsProvider).isEmpty =>
             [
               SliverToBoxAdapter(
-                child: MTEmptyState(
-                  icon: options.query.isEmpty
-                      ? Icons.video_library_outlined
-                      : Icons.search_off_rounded,
-                  title: options.query.isEmpty
-                      ? l10n.noVideosFound
-                      : l10n.noResults,
-                  message: options.query.isEmpty
-                      ? l10n.emptyLibraryMessage
-                      : l10n.noResultsMessage,
-                ),
+                // **Say why it is empty** (audit 2026-10-30): with the
+                // offline chip on and nothing kept here, a full library
+                // was announced as "Your library is empty".
+                child: switch (options) {
+                  LibraryViewOptions(query: final q) when q.isNotEmpty =>
+                    MTEmptyState(
+                      title: l10n.noResults,
+                      message: l10n.noResultsMessage,
+                    ),
+                  LibraryViewOptions(scope: LibraryScope.offline) =>
+                    MTEmptyState(
+                      title: l10n.emptyOfflineTitle,
+                      message: l10n.emptyOfflineMessage,
+                    ),
+                  LibraryViewOptions(narrowed: true) => MTEmptyState(
+                    title: l10n.emptyFilteredTitle,
+                    message: l10n.emptyFilteredMessage,
+                  ),
+                  _ => MTEmptyState(
+                    title: l10n.noVideosFound,
+                    message: l10n.emptyLibraryMessage,
+                  ),
+                },
               ),
             ],
           _ => const <Widget>[],

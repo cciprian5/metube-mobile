@@ -37,7 +37,7 @@ class LanguageScreen extends ConsumerWidget {
       subtitle: subtitle == null
           ? null
           : Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
-      trailing: checked ? Icon(Icons.check_rounded, color: p.accentInk) : null,
+      trailing: checked ? Icon(Icons.check_rounded, color: p.ink) : null,
       onTap: onTap,
     );
 

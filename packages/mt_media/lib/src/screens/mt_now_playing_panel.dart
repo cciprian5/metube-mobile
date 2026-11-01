@@ -75,7 +75,10 @@ class MTNowPlayingPanel extends StatelessWidget {
                         child: Text(
                           l10n.nowPlaying,
                           style: Theme.of(context).textTheme.labelSmall!
-                              .copyWith(color: p.ink3, letterSpacing: 1.6),
+                              .copyWith(
+                                color: p.ink3,
+                                letterSpacing: mtLabelTracking(context, 1.6),
+                              ),
                         ),
                       ),
                       IconButton(

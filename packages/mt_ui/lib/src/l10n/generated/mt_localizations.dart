@@ -2924,11 +2924,35 @@ abstract class MTLocalizations {
   /// **'Edit'**
   String get editSubscription;
 
+  /// No description provided for @emptyFilteredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear a filter above to see your whole library.'**
+  String get emptyFilteredMessage;
+
+  /// No description provided for @emptyFilteredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches these filters'**
+  String get emptyFilteredTitle;
+
   /// No description provided for @emptyLibraryMessage.
   ///
   /// In en, this message translates to:
   /// **'Add a video link, or pull to refresh.'**
   String get emptyLibraryMessage;
+
+  /// No description provided for @emptyOfflineMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose “Make available offline” on a clip, and it plays here without the server.'**
+  String get emptyOfflineMessage;
+
+  /// No description provided for @emptyOfflineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing saved on this phone yet'**
+  String get emptyOfflineTitle;
 
   /// No description provided for @emptyPlaylist.
   ///

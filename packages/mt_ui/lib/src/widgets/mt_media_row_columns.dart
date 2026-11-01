@@ -116,7 +116,7 @@ class MTMediaRowHeader extends StatelessWidget {
     final p = MTThemeX.of(context).palette;
     final l10n = context.mtl;
     final style = Theme.of(context).textTheme.labelSmall!
-        .copyWith(color: p.ink3, letterSpacing: 0.6);
+        .copyWith(color: p.ink3, letterSpacing: mtLabelTracking(context, 0.6));
     Text label(String text, {TextAlign align = TextAlign.start}) => Text(
       text,
       maxLines: 1,

@@ -1,23 +1,25 @@
 import 'package:flutter/widgets.dart';
 
-import 'palette.dart';
-
 export 'palette.dart';
+export 'shadows.dart';
 
-/// Radii are "quiet and printed" (log §4): 28 for sheets, 16 to 18 for
-/// cards, 12 to 13 for fields and icon buttons. Full pills only for round
-/// chips.
+/// **Three corners, not nine** (log §4, 2026-10-31): 8 on what is touched
+/// or shown small (a thumbnail, a field, a chip, a button), 16 on what
+/// floats or gathers (a sheet, a dialog, a settings group, the mini player)
+/// and full pills on round controls; 4 on the small badges. Nine near
+/// values between 6 and 28 read as "everything medium", one of the marks of
+/// a generated screen.
 abstract final class MTRadius {
-  static const double sheet = 28;
+  static const double sheet = 16;
   static const double card = 16;
-  static const double cardLg = 18;
-  static const double field = 13;
-  static const double iconButton = 13;
-  static const double thumb = 12;
-  static const double chip = 10;
+  static const double cardLg = 16;
+  static const double field = 8;
+  static const double iconButton = 8;
+  static const double thumb = 8;
+  static const double chip = 8;
   static const double fab = 16;
-  static const double mini = 18;
-  static const double badge = 6;
+  static const double mini = 16;
+  static const double badge = 4;
   static const double pill = 999;
 }
 
@@ -131,6 +133,7 @@ class MTCorners {
     required this.iconButton,
     required this.tooltip,
     required this.box,
+    required this.button,
   });
 
   final double sheet;
@@ -146,10 +149,13 @@ class MTCorners {
   /// Checkboxes and count badges.
   final double box;
 
+  /// A filled button with a label.
+  final double button;
+
   static const mobile = MTCorners(
     sheet: MTRadius.sheet,
     card: MTRadius.card,
-    dialog: 28,
+    dialog: MTRadius.card,
     field: MTRadius.field,
     thumb: MTRadius.thumb,
     fab: MTRadius.fab,
@@ -157,6 +163,7 @@ class MTCorners {
     iconButton: MTRadius.iconButton,
     tooltip: 4,
     box: 2,
+    button: MTRadius.field,
   );
 
   /// **Two corners, not nine**: 8 on everything that rests and 12 on what
@@ -174,6 +181,7 @@ class MTCorners {
     iconButton: 8,
     tooltip: 6,
     box: 4,
+    button: MTRadius.pill,
   );
 }
 
@@ -266,48 +274,9 @@ extension MTTabularFigures on TextStyle {
   );
 }
 
-/// Warm shadows, copied from the reference values.
-abstract final class MTShadow {
-  /// Daylight card shadow: 0 3 6 at 5% plus 0 30 60 -22 at 22%, in a warm
-  /// brown.
-  static const List<BoxShadow> card = [
-    BoxShadow(color: Color(0x0D50371E), blurRadius: 6, offset: Offset(0, 3)),
-    BoxShadow(
-      color: Color(0x3850371E),
-      blurRadius: 60,
-      offset: Offset(0, 30),
-      spreadRadius: -22,
-    ),
-  ];
-
-  /// FAB shadow: 0 16 32 -10 in accentDeep at 55%, built from the palette.
-  static List<BoxShadow> fab(MTPalette p) => [
-    BoxShadow(
-      color: p.accentDeep.withValues(alpha: 0.55),
-      blurRadius: 32,
-      offset: const Offset(0, 16),
-      spreadRadius: -10,
-    ),
-  ];
-
-  /// A card under the mouse (Windows only): a warm glow lighter than the
-  /// resting card's shadow, so hovering reads as a lift, not a jump.
-  static List<BoxShadow> hover(MTPalette p) => [
-    BoxShadow(
-      color: p.accentDeep.withValues(alpha: 0.22),
-      blurRadius: 28,
-      offset: const Offset(0, 12),
-      spreadRadius: -12,
-    ),
-  ];
-
-  /// Mini player shadow: 0 18 40 -12 in ink at 50%.
-  static List<BoxShadow> mini(MTPalette p) => [
-    BoxShadow(
-      color: p.ink.withValues(alpha: 0.5),
-      blurRadius: 40,
-      offset: const Offset(0, 18),
-      spreadRadius: -12,
-    ),
-  ];
-}
+/// **Tracking for a small label, in Latin script only.** Spacing letters
+/// apart pulls Arabic's joined letters away from each other (the Arabic
+/// "Now playing" read as broken glyphs), so a right-to-left label is set
+/// solid.
+double mtLabelTracking(BuildContext context, double latin) =>
+    Directionality.of(context) == TextDirection.rtl ? 0 : latin;

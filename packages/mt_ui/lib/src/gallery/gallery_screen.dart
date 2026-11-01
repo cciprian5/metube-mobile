@@ -230,7 +230,6 @@ class MTGalleryScreen extends StatelessWidget {
 
           const MTSectionHeader(title: 'حالة فارغة'),
           MTEmptyState(
-            icon: Icons.cloud_off_rounded,
             title: 'لا سيرفر بعد',
             message: 'أدخل رابط سيرفر MeTube من الإعدادات لبدء التحميل',
             actionLabel: 'فتح الإعدادات',

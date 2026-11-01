@@ -89,7 +89,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           : _mainAppBar(l10n, active.length),
       body: needsSetup
           ? MTEmptyState(
-              icon: Icons.cloud_off_rounded,
               title: l10n.noServerTitle,
               message: l10n.noServerMessage,
               actionLabel: l10n.setupServer,
@@ -267,7 +266,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           AsyncError(:final error) => [
             SliverToBoxAdapter(
               child: MTEmptyState(
-                icon: Icons.error_outline_rounded,
                 title: l10n.tryAgain,
                 message: errorText(l10n, error),
                 actionLabel: l10n.retry,
@@ -277,17 +275,23 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           ],
           AsyncValue(valueOrNull: final value?) when value.isEmpty => [
             SliverToBoxAdapter(
-              child: MTEmptyState(
-                icon: options.query.isEmpty
-                    ? Icons.video_library_outlined
-                    : Icons.search_off_rounded,
-                title: options.query.isEmpty
-                    ? l10n.noDownloads
-                    : l10n.noResults,
-                message: options.query.isEmpty
-                    ? l10n.noDownloadsMessage
-                    : l10n.noResultsMessage,
-              ),
+              // **Say why it is empty**, as in Super: a filter that hides
+              // everything is not an empty library.
+              child: switch (options) {
+                LibraryViewOptions(query: final q) when q.isNotEmpty =>
+                  MTEmptyState(
+                    title: l10n.noResults,
+                    message: l10n.noResultsMessage,
+                  ),
+                LibraryViewOptions(narrowed: true) => MTEmptyState(
+                  title: l10n.emptyFilteredTitle,
+                  message: l10n.emptyFilteredMessage,
+                ),
+                _ => MTEmptyState(
+                  title: l10n.noDownloads,
+                  message: l10n.noDownloadsMessage,
+                ),
+              },
             ),
           ],
           _ => const <Widget>[],

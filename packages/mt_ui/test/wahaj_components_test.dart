@@ -8,15 +8,20 @@ double _radius(ShapeBorder? shape) =>
 
 void main() {
   group('corner scales', () {
-    test('**the guard**: the phones keep the corners they always had', () {
+    test('**the guard**: the phones take three corners, 8 · 16 · pill', () {
       // Literal numbers on purpose: editing the mobile scale fails here
-      // before it reaches every card and sheet on the phones.
+      // before it reaches every card and sheet on the phones. Changed from
+      // 16 · 10 · 28 · 13 by the owner's decision of 2026-10-31.
       final t = mtTheme(MTVariant.superApp, Brightness.light);
       expect(_radius(t.cardTheme.shape), 16);
-      expect(_radius(t.chipTheme.shape), 10);
-      expect(_radius(t.bottomSheetTheme.shape), 28);
+      expect(_radius(t.chipTheme.shape), 8);
+      expect(_radius(t.bottomSheetTheme.shape), 16);
+      expect(_radius(t.dialogTheme.shape), 16);
       final field = t.inputDecorationTheme.border! as OutlineInputBorder;
-      expect(field.borderRadius.topLeft.x, 13);
+      expect(field.borderRadius.topLeft.x, 8);
+      final button = t.filledButtonTheme.style!.shape!.resolve({})!;
+      expect(_radius(button), 8);
+      expect(MTRadius.badge, 4);
     });
 
     test('the Windows theme takes two corners: 8 resting, 12 floating', () {
@@ -30,6 +35,86 @@ void main() {
       // weight, never Material's regular fallback.
       expect(t.textTheme.headlineSmall!.fontWeight, FontWeight.w700);
       expect(t.textTheme.headlineSmall!.fontSize, 24);
+    });
+  });
+
+  group('the accent is for the action', () {
+    for (final variant in MTVariant.values) {
+      for (final brightness in Brightness.values) {
+        test('**the guard**: ${variant.name} ${brightness.name}: the chosen '
+            'thing in the chrome is the ink, the filled button the accent', () {
+          final t = mtTheme(variant, brightness);
+          final p = MTPalette.of(variant, brightness);
+          const on = {WidgetState.selected};
+          expect(t.switchTheme.trackColor!.resolve(on), p.ink);
+          expect(t.switchTheme.thumbColor!.resolve(on), p.bg);
+          expect(t.navigationBarTheme.iconTheme!.resolve(on)!.color, p.ink);
+          expect(t.navigationBarTheme.indicatorColor, mtSelectedFill(p));
+          expect(t.navigationRailTheme.selectedIconTheme!.color, p.ink);
+          expect(
+            t.segmentedButtonTheme.style!.backgroundColor!.resolve(on),
+            p.ink,
+          );
+          expect(t.radioTheme.fillColor!.resolve(on), p.ink);
+          expect(t.textButtonTheme.style!.foregroundColor!.resolve({}), p.ink);
+          final focused =
+              t.inputDecorationTheme.focusedBorder! as OutlineInputBorder;
+          expect(focused.borderSide.color, p.ink);
+          final filled = t.filledButtonTheme.style!;
+          expect(filled.backgroundColor!.resolve({}), p.accent);
+          expect(
+            filled.backgroundColor!.resolve({WidgetState.disabled}),
+            p.accent.withValues(alpha: mtDisabledAccent),
+          );
+        });
+      }
+    }
+
+    test('**the guard**: Ember keeps what it had: a pill button, the ember '
+        'on a focused field', () {
+      final t = mtDesktopTheme(MTVariant.superApp, Brightness.light);
+      final p = MTPalette.of(MTVariant.superApp, Brightness.light);
+      final button = t.filledButtonTheme.style!.shape!.resolve({})!;
+      expect(_radius(button), MTRadius.pill);
+      final focused =
+          t.inputDecorationTheme.focusedBorder! as OutlineInputBorder;
+      expect(focused.borderSide.color, p.accent);
+      expect(
+        t.checkboxTheme.fillColor!.resolve({WidgetState.selected}),
+        p.accent,
+      );
+      expect(t.radioTheme.fillColor!.resolve({WidgetState.selected}), p.accent);
+    });
+
+    testWidgets('**the guard**: Arabic labels are set solid, Latin ones '
+        'tracked', (tester) async {
+      late double rtl, ltr;
+      await tester.pumpWidget(
+        Column(
+          children: [
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: Builder(
+                builder: (c) {
+                  rtl = mtLabelTracking(c, 1.6);
+                  return const SizedBox();
+                },
+              ),
+            ),
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: Builder(
+                builder: (c) {
+                  ltr = mtLabelTracking(c, 1.6);
+                  return const SizedBox();
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+      expect(rtl, 0);
+      expect(ltr, 1.6);
     });
   });
 

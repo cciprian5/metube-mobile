@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 
-/// A Wahaj empty state: an icon on a soft disc, a Kufi heading, an
-/// explanation and an optional action.
+/// A Wahaj empty state: an honest heading in Kufi, the next step in one
+/// sentence, and at most one action in the ink.
+///
+/// **No icon on a disc** (log §4, 2026-10-31): an emblem over an empty page
+/// was one of the marks of a generated screen, and the accent on its action
+/// competed with the screen's own add button.
 class MTEmptyState extends StatelessWidget {
   const MTEmptyState({
     super.key,
-    required this.icon,
     required this.title,
     required this.message,
     this.actionLabel,
     this.onAction,
   });
 
-  final IconData icon;
   final String title;
   final String message;
   final String? actionLabel;
@@ -31,16 +33,6 @@ class MTEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: x.palette.accentSoft,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, size: 30, color: x.palette.accentInk),
-            ),
-            const SizedBox(height: MTSpace.lg),
             Text(title, style: text.titleLarge, textAlign: TextAlign.center),
             const SizedBox(height: MTSpace.xs),
             Text(
@@ -49,8 +41,8 @@ class MTEmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             if (actionLabel != null) ...[
-              const SizedBox(height: MTSpace.xl),
-              FilledButton(onPressed: onAction, child: Text(actionLabel!)),
+              const SizedBox(height: MTSpace.md),
+              TextButton(onPressed: onAction, child: Text(actionLabel!)),
             ],
           ],
         ),

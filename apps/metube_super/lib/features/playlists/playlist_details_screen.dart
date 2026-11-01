@@ -30,7 +30,6 @@ class PlaylistDetailsScreen extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.queue_music_rounded,
           title: l10n.playlistDetails,
           message: l10n.noPlaylistsMessage,
         ),
@@ -59,13 +58,11 @@ class PlaylistDetailsScreen extends ConsumerWidget {
           skipLoadingOnReload: true,
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (_, _) => MTEmptyState(
-            icon: Icons.error_outline_rounded,
             title: l10n.tryAgain,
             message: l10n.emptyPlaylistMessage,
           ),
           data: (view) => view.items.isEmpty
               ? MTEmptyState(
-                  icon: Icons.queue_music_outlined,
                   title: l10n.emptyPlaylist,
                   message: l10n.emptyPlaylistMessage,
                 )

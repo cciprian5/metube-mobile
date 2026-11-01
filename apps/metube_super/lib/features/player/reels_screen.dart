@@ -71,7 +71,6 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.bolt_rounded,
           title: l10n.shortsFilter,
           message: l10n.noPlayableSource,
         ),
@@ -98,7 +97,6 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.bolt_rounded,
           title: l10n.shortsFilter,
           message: l10n.noResultsMessage,
         ),

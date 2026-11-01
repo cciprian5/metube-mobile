@@ -2,40 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../tokens/tokens.dart';
 import '../widgets/mt_motion.dart';
+import 'mt_theme_controls.dart';
+import 'mt_theme_x.dart';
 
-/// Theme extension: carries the Wahaj palette to every widget through
-/// `MTThemeX.of(context)` instead of any literal colour (rule 5).
-class MTThemeX extends ThemeExtension<MTThemeX> {
-  const MTThemeX({
-    required this.palette,
-    required this.variant,
-    this.hairline = 1,
-  });
-
-  final MTPalette palette;
-  final MTVariant variant;
-
-  /// How thick a hairline (a border, a rule) is drawn: one pixel, or more
-  /// where the user asked the system for high contrast.
-  final double hairline;
-
-  static MTThemeX of(BuildContext context) =>
-      Theme.of(context).extension<MTThemeX>()!;
-
-  @override
-  MTThemeX copyWith({
-    MTPalette? palette,
-    MTVariant? variant,
-    double? hairline,
-  }) => MTThemeX(
-    palette: palette ?? this.palette,
-    variant: variant ?? this.variant,
-    hairline: hairline ?? this.hairline,
-  );
-
-  @override
-  MTThemeX lerp(MTThemeX? other, double t) => t < 0.5 ? this : other ?? this;
-}
+export 'mt_theme_x.dart';
 
 /// The Wahaj theme. **A documented lesson**: the five surfaceContainer*
 /// roles must be set explicitly, or Material 3 imposes its own greys over
@@ -212,36 +182,69 @@ ThemeData mtTheme(
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(corners.field),
-        borderSide: BorderSide(color: p.accent, width: 1.4 * hairline),
+        borderSide: BorderSide(color: p.ink, width: 1.4 * hairline),
+      ),
+    ),
+    // **One coloured action per screen** (log §4, 2026-10-31): the filled
+    // button. A text button beside it (Cancel, Done) is in the ink; in the
+    // accent it took the colour from the action it sits next to.
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: p.ink,
+        textStyle: body(13.5, FontWeight.w700),
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        backgroundColor: p.accent,
-        foregroundColor: p.onAccent,
-        textStyle: body(13.5, FontWeight.w700),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(corners.fab),
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: MTSpace.xl,
-          vertical: MTSpace.md,
-        ),
+      style:
+          FilledButton.styleFrom(
+            textStyle: body(13.5, FontWeight.w700),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(corners.button),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: MTSpace.xl,
+              vertical: MTSpace.md,
+            ),
+          ).copyWith(
+            // Not yet possible, it stays the ember, pale, so it still reads as
+            // the one action; its label in the accent's own dark ink stays
+            // legible by day and by night.
+            backgroundColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.disabled)
+                  ? p.accent.withValues(alpha: mtDisabledAccent)
+                  : p.accent,
+            ),
+            foregroundColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.disabled)
+                  ? p.accentInk
+                  : p.onAccent,
+            ),
+          ),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: p.card,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(corners.dialog),
+        side: BorderSide(color: p.line2, width: hairline),
       ),
     ),
+    switchTheme: mtSwitchTheme(p),
+    radioTheme: mtRadioTheme(p),
+    checkboxTheme: mtCheckboxTheme(p, corners),
     // Material 3 tints the selected state with secondaryContainer, which is
-    // the olive that means "offline" in this design language (log §4).
-    // Corrected to the accent colour.
+    // the olive that means "offline" in this design language (log §4). The
+    // chosen segment is the ink, as a chosen chip is: the accent is kept for
+    // the action, not for a choice (log §4, 2026-10-31).
     segmentedButtonTheme: SegmentedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? p.accentSoft
+              ? p.ink
               : Colors.transparent,
         ),
         foregroundColor: WidgetStateProperty.resolveWith(
-          (states) =>
-              states.contains(WidgetState.selected) ? p.accentInk : p.ink2,
+          (states) => states.contains(WidgetState.selected) ? p.bg : p.ink2,
         ),
         side: WidgetStatePropertyAll(
           BorderSide(color: p.line2, width: hairline),
@@ -249,29 +252,8 @@ ThemeData mtTheme(
         textStyle: WidgetStatePropertyAll(body(13, FontWeight.w500)),
       ),
     ),
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: p.bg,
-      indicatorColor: Colors.transparent,
-      height: 68,
-      labelTextStyle: WidgetStatePropertyAll(
-        body(11.5, FontWeight.w500, color: p.ink2),
-      ),
-      iconTheme: WidgetStateProperty.resolveWith(
-        (states) => IconThemeData(
-          color: states.contains(WidgetState.selected) ? p.accent : p.ink3,
-        ),
-      ),
-    ),
-    // The rail is the bottom bar turned on its side for wide windows, so it
-    // takes the bar's colours and type rather than Material's defaults.
-    navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: p.bg,
-      indicatorColor: Colors.transparent,
-      selectedIconTheme: IconThemeData(color: p.accent),
-      unselectedIconTheme: IconThemeData(color: p.ink3),
-      selectedLabelTextStyle: body(11.5, FontWeight.w500, color: p.ink2),
-      unselectedLabelTextStyle: body(11.5, FontWeight.w500, color: p.ink2),
-    ),
+    navigationBarTheme: mtNavigationBarTheme(p, body(11.5, FontWeight.w500)),
+    navigationRailTheme: mtNavigationRailTheme(p, body(11.5, FontWeight.w500)),
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: p.card,
       surfaceTintColor: Colors.transparent,

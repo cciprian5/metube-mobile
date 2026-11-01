@@ -1680,7 +1680,21 @@ class MTLocalizationsEn extends MTLocalizations {
   String get editSubscription => 'Edit';
 
   @override
+  String get emptyFilteredMessage =>
+      'Clear a filter above to see your whole library.';
+
+  @override
+  String get emptyFilteredTitle => 'Nothing matches these filters';
+
+  @override
   String get emptyLibraryMessage => 'Add a video link, or pull to refresh.';
+
+  @override
+  String get emptyOfflineMessage =>
+      'Choose “Make available offline” on a clip, and it plays here without the server.';
+
+  @override
+  String get emptyOfflineTitle => 'Nothing saved on this phone yet';
 
   @override
   String get emptyPlaylist => 'Empty playlist';

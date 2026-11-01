@@ -165,7 +165,6 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                   ? const Center(child: CircularProgressIndicator())
                   : visible.isEmpty
                   ? MTEmptyState(
-                      icon: Icons.article_outlined,
                       title: query.isEmpty ? l10n.logsEmpty : l10n.noResults,
                       message: query.isEmpty
                           ? l10n.noLogsFound

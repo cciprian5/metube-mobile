@@ -59,6 +59,17 @@ class LibraryViewOptions {
 
   bool get selecting => selection.isNotEmpty;
 
+  /// Whether a filter hides part of the library, the search aside: an empty
+  /// list then means "nothing here", not "nothing at all".
+  bool get narrowed =>
+      scope != LibraryScope.all ||
+      type != MediaTypeFilter.all ||
+      tags.isNotEmpty ||
+      excludedTags.isNotEmpty ||
+      platform != null ||
+      channel != null ||
+      folder != null;
+
   /// How many filters are active above "all", for the sort button's badge.
   int get activeFilters =>
       (scope == LibraryScope.all ? 0 : 1) +

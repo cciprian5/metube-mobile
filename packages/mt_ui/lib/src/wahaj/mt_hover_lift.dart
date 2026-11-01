@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/mt_desktop_theme.dart';
+import '../theme/mt_theme_controls.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import '../widgets/mt_desktop_app.dart';

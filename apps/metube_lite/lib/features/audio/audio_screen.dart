@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 
 import '../../di.dart';
+import '../downloads_library/library_actions.dart';
 import '../downloads_library/library_providers.dart';
 import '../downloads_library/widgets/item_details_sheet.dart';
 import '../player/playback_providers.dart';
@@ -16,6 +17,7 @@ class AudioScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final handler = ref.watch(audioHandlerProvider);
+    final library = ref.watch(localMediaProvider).valueOrNull ?? const [];
     return MTAudioScreen(
       handler: handler,
       artwork: artworkBuilderFor(ref),
@@ -29,6 +31,13 @@ class AudioScreen extends ConsumerWidget {
       // of
       // the screen.
       onDetails: () => _showDetails(context, ref, handler),
+      // The one-tap heart lives here and in the video player; the library
+      // cards show it on favourites alone.
+      isFavorite: (item) => library.any(
+        (candidate) => candidate.key == item.canonicalUrl && candidate.favorite,
+      ),
+      onFavorite: (item) =>
+          ref.read(libraryActionsProvider).toggleFavorite(item.canonicalUrl),
     );
   }
 

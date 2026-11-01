@@ -19,6 +19,8 @@ class MTAudioTitles extends StatelessWidget {
     required this.total,
     this.playlistName,
     this.showSourceChip = true,
+    this.favorite = false,
+    this.onFavorite,
   });
 
   final PlaylistItem item;
@@ -27,6 +29,10 @@ class MTAudioTitles extends StatelessWidget {
   final int total;
   final String? playlistName;
   final bool showSourceChip;
+
+  /// The heart beside the title, shown when [onFavorite] is given.
+  final bool favorite;
+  final VoidCallback? onFavorite;
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +44,29 @@ class MTAudioTitles extends StatelessWidget {
       if (playlistName != null) '«$playlistName»',
       if (total > 1) mtLtrRun(l10n.playlistOf(index + 1, total)),
     ];
+    final title = MTForeignText(
+      media.title,
+      center: true,
+      maxLines: 2,
+      style: text.titleLarge!.copyWith(fontSize: 19),
+    );
     return Column(
       children: [
         if (showSourceChip) ...[
           MTSourceChip(local: item.hasLocal),
           const SizedBox(height: MTSpace.sm),
         ],
-        MTForeignText(
-          media.title,
-          center: true,
-          maxLines: 2,
-          style: text.titleLarge!.copyWith(fontSize: 19),
-        ),
+        if (onFavorite case final toggle?)
+          Row(
+            children: [
+              // Balances the heart, so the title stays centred.
+              const SizedBox(width: kMinInteractiveDimension),
+              Expanded(child: title),
+              MTFavoriteButton(favorite: favorite, onPressed: toggle),
+            ],
+          )
+        else
+          title,
         if (parts.isNotEmpty) ...[
           const SizedBox(height: MTSpace.xxs),
           Text(

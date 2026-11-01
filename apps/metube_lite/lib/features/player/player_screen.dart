@@ -104,7 +104,20 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
     final l10n = context.mtl;
     final item = session.current;
     if (item == null) return const [];
+    final favorite =
+        ref
+            .watch(localMediaProvider)
+            .valueOrNull
+            ?.any((c) => c.key == item.canonicalUrl && c.favorite) ??
+        false;
     return [
+      // The one-tap heart: the library cards show it on favourites alone.
+      MTPlayerAction(
+        icon: favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+        label: favorite ? l10n.removeFromFavorites : l10n.addToFavorites,
+        onTap: () =>
+            ref.read(libraryActionsProvider).toggleFavorite(item.canonicalUrl),
+      ),
       MTPlayerAction(
         icon: Icons.headphones_rounded,
         label: l10n.continueAsAudio,

@@ -136,7 +136,20 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
             .valueOrNull
             ?.contains(item.canonicalUrl) ??
         false;
+    final favorite =
+        ref
+            .watch(libraryItemsProvider)
+            .valueOrNull
+            ?.any((c) => c.canonicalUrl == item.canonicalUrl && c.favorite) ??
+        false;
     return [
+      // The one-tap heart: the library cards show it on favourites alone.
+      MTPlayerAction(
+        icon: favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+        label: favorite ? l10n.removeFromFavorites : l10n.addToFavorites,
+        onTap: () =>
+            ref.read(libraryActionsProvider).toggleFavorite(item.canonicalUrl),
+      ),
       if (hasTranscript)
         MTPlayerAction(
           icon: Icons.subject_rounded,

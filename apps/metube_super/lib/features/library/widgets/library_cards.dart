@@ -42,7 +42,6 @@ class LibraryItemCard extends ConsumerWidget {
     final l10n = context.mtl;
     final options = ref.watch(libraryViewProvider);
     final controller = ref.read(libraryViewProvider.notifier);
-    final actions = ref.read(libraryActionsProvider);
     // **Pull progress was being computed and nobody displayed it** (field
     // report 2026-09-02: "no counter appears, it looks unresponsive"),
     // whether from "save to device" or from a share, which pulls a

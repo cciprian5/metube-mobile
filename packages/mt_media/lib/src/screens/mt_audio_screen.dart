@@ -31,6 +31,8 @@ class MTAudioScreen extends StatelessWidget {
     this.showSourceChip = true,
     this.extra,
     this.companion,
+    this.isFavorite,
+    this.onFavorite,
   });
 
   final MTAudioHandler handler;
@@ -62,6 +64,11 @@ class MTAudioScreen extends StatelessWidget {
   /// Read along beside the player on a tablet, as a tab next to the queue
   /// (a transcript, in Super). On a phone it is reached through [extra].
   final MTVideoPanel? Function(PlaylistItem item)? companion;
+
+  /// The heart beside the title: whether the clip is a favourite, and the
+  /// toggle. Both or neither.
+  final bool Function(PlaylistItem item)? isFavorite;
+  final void Function(PlaylistItem item)? onFavorite;
 
   @override
   Widget build(BuildContext context) => StreamBuilder<MediaItem?>(
@@ -177,6 +184,8 @@ class MTAudioScreen extends StatelessWidget {
             index: handler.currentIndex,
             total: handler.items.length,
             showSourceChip: showSourceChip,
+            favorite: isFavorite?.call(item) ?? false,
+            onFavorite: onFavorite == null ? null : () => onFavorite!(item),
           ),
           const SizedBox(height: MTSpace.xl),
           MTAudioSlider(handler: handler, media: media),
@@ -247,6 +256,10 @@ class MTAudioScreen extends StatelessWidget {
                                 index: handler.currentIndex,
                                 total: handler.items.length,
                                 showSourceChip: showSourceChip,
+                                favorite: isFavorite?.call(item) ?? false,
+                                onFavorite: onFavorite == null
+                                    ? null
+                                    : () => onFavorite!(item),
                               ),
                               const SizedBox(height: MTSpace.md),
                               MTAudioSlider(handler: handler, media: media),

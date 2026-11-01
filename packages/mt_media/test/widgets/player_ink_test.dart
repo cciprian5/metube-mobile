@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_core/mt_core.dart';
@@ -104,5 +105,36 @@ void main() {
     await tester.runAsync(() => handler.setPlayMode(PlayMode.repeatAll));
     await tester.pump();
     expect(glyph(tester, Icons.repeat_rounded), p.ink);
+  });
+
+  testWidgets('**the guard**: the player title carries the one-tap heart '
+      'when the app gives one, and none otherwise', (tester) async {
+    const item = PlaylistItem(
+      canonicalUrl: 'https://x/a',
+      title: 'a',
+      serverFilename: 'a.mp3',
+      isAudio: true,
+    );
+    var taps = 0;
+    Widget titles({VoidCallback? onFavorite}) => MaterialApp(
+      theme: mtTheme(MTVariant.superApp, Brightness.light),
+      localizationsDelegates: MTLocalizations.localizationsDelegates,
+      supportedLocales: MTLocalizations.supportedLocales,
+      home: Scaffold(
+        body: MTAudioTitles(
+          item: item,
+          media: const MediaItem(id: 'a', title: 'a'),
+          index: 0,
+          total: 1,
+          showSourceChip: false,
+          onFavorite: onFavorite,
+        ),
+      ),
+    );
+    await tester.pumpWidget(titles());
+    expect(find.byType(MTFavoriteButton), findsNothing);
+    await tester.pumpWidget(titles(onFavorite: () => taps++));
+    await tester.tap(find.byType(MTFavoriteButton));
+    expect(taps, 1);
   });
 }

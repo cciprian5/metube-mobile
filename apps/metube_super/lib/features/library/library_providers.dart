@@ -128,6 +128,13 @@ class LibraryViewNotifier extends Notifier<LibraryViewOptions> {
     state = state.copyWith(tags: included, excludedTags: excluded);
   }
 
+  /// Lets one tag go, included or excluded: the ✕ on its chip in the first
+  /// row, where cycling would turn an inclusion into an exclusion.
+  void removeTag(String tag) => state = state.copyWith(
+    tags: {...state.tags}..remove(tag),
+    excludedTags: {...state.excludedTags}..remove(tag),
+  );
+
   void clearTags() =>
       state = state.copyWith(tags: const {}, excludedTags: const {});
 
@@ -239,3 +246,17 @@ final completionGlowProvider = Provider<void>((ref) {
     }
   });
 });
+
+/// Whether a filter chosen inside the sort and filter sheet is on, for the
+/// dot on the button that opens it.
+final sheetFiltersOnProvider = Provider<bool>(
+  (ref) => ref.watch(
+    libraryViewProvider.select(
+      (o) =>
+          o.platform != null ||
+          o.folder != null ||
+          o.tags.isNotEmpty ||
+          o.excludedTags.isNotEmpty,
+    ),
+  ),
+);

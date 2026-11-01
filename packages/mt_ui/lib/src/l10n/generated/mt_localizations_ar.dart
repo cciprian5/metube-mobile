@@ -65,7 +65,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String addedNToServer(int count) {
-    return 'أُضيف $count إلى الخادم';
+    return 'أُضيف $count إلى السيرفر';
   }
 
   @override
@@ -124,7 +124,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get audioStereo => 'ستيريو';
 
   @override
-  String get authHelper => 'اتركه فارغاً إن كان الخادم بلا كلمة مرور';
+  String get authHelper => 'اتركه فارغاً إن كان السيرفر بلا كلمة مرور';
 
   @override
   String get authentication => 'تسجيل الدخول (اختياري)';
@@ -148,11 +148,11 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get autoRetryHelp =>
-      'إذا فشل تحميل بسبب انقطاع الشبكة أعاده التطبيق تلقائياً حين تعود. أما ما رفضه الخادم فلا يُعاد، لأن تكراره دون تغيير سيفشل مجدداً.';
+      'إذا فشل تحميل بسبب انقطاع الشبكة أعاده التطبيق تلقائياً حين تعود. أما ما رفضه السيرفر فلا يُعاد، لأن تكراره دون تغيير سيفشل مجدداً.';
 
   @override
   String get autoSwitchDisabledHint =>
-      'التبديل التلقائي مُعطّل، لذا يستخدم التطبيق عنوان الخادم المحدد في الإعدادات.';
+      'التبديل التلقائي مُعطّل، لذا يستخدم التطبيق عنوان السيرفر المحدد في الإعدادات.';
 
   @override
   String get autoUrlSwitching => 'التبديل التلقائي للعنوان';
@@ -168,7 +168,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get availabilityOffline => 'بلا اتصال (نسخة محلية)';
 
   @override
-  String get availabilityServer => 'الخادم (بث)';
+  String get availabilityServer => 'السيرفر (بث)';
 
   @override
   String get availableOfflineNow => 'صار متاحاً دون اتصال';
@@ -310,7 +310,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get compatiblePlaybackHelp =>
-      'يطلب من الخادم صيغة H.264/AAC التي تشغّلها كل الهواتف بعتادها مباشرة. وإن أطفأته أتاح لك أعلى دقة، لكن يوتيوب قد يرسل حينها صيغة AV1 فتظهر الصورة مشوّشة على أجهزة كثيرة.';
+      'يطلب من السيرفر صيغة H.264/AAC التي تشغّلها كل الهواتف بعتادها مباشرة. وإن أطفأته أتاح لك أعلى دقة، لكن يوتيوب قد يرسل حينها صيغة AV1 فتظهر الصورة مشوّشة على أجهزة كثيرة.';
 
   @override
   String get completed => 'مكتمل';
@@ -424,10 +424,10 @@ class MTLocalizationsAr extends MTLocalizations {
   String get delete => 'حذف';
 
   @override
-  String get deleteFromServer => 'حذف من الخادم';
+  String get deleteFromServer => 'حذف من السيرفر';
 
   @override
-  String get deleteFromServerConfirm => 'إزالة هذا العنصر من الخادم؟';
+  String get deleteFromServerConfirm => 'إزالة هذا العنصر من السيرفر؟';
 
   @override
   String deleteMultipleConfirm(int count) {
@@ -1735,7 +1735,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get emptyPlaylistMessage => 'أضِف فيديوهات من المكتبة';
 
   @override
-  String get endpointUrl => 'عنوان الخادم الخارجي';
+  String get endpointUrl => 'عنوان السيرفر الخارجي';
 
   @override
   String get enterFullscreen => 'ملء الشاشة';
@@ -1842,10 +1842,13 @@ class MTLocalizationsAr extends MTLocalizations {
   String get filterOffline => 'بلا اتصال';
 
   @override
-  String get filterServer => 'الخادم';
+  String get filterServer => 'السيرفر';
 
   @override
   String get filterVideo => 'فيديو';
+
+  @override
+  String get filtersOn => 'مرشّحات مفعّلة';
 
   @override
   String get folder => 'المجلد';
@@ -1948,13 +1951,13 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get localNetworkDesc =>
-      'يتصل التطبيق بالخادم عبر هذا العنوان متى أمكن الوصول إليه.';
+      'يتصل التطبيق بالسيرفر عبر هذا العنوان متى أمكن الوصول إليه.';
 
   @override
   String get localNetworkSection => 'شبكة محلية';
 
   @override
-  String get localUrlLabel => 'عنوان الخادم المحلي';
+  String get localUrlLabel => 'عنوان السيرفر المحلي';
 
   @override
   String get lockTouch => 'قفل اللمس';
@@ -1993,7 +1996,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get mediaAccessTitle => 'اسمح بالوصول إلى الوسائط';
 
   @override
-  String get metubeCredit => 'الخادم ذاتي الاستضافة الذي يتصل به التطبيق';
+  String get metubeCredit => 'السيرفر ذاتي الاستضافة الذي يتصل به التطبيق';
 
   @override
   String get modeAutoNext => 'تلقائي';
@@ -2032,7 +2035,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get networkSettingsSubtitle =>
-      'التبديل التلقائي بين عناوين الخادم المحلية والخارجية';
+      'التبديل التلقائي بين عناوين السيرفر المحلية والخارجية';
 
   @override
   String get neverChecked => 'لم يُتحقَّق بعد';
@@ -2487,7 +2490,7 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
-  String get serverConfiguration => 'إعداد الخادم';
+  String get serverConfiguration => 'إعداد السيرفر';
 
   @override
   String serverFailuresLine(int count) {
@@ -2515,18 +2518,18 @@ class MTLocalizationsAr extends MTLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ملفاً على الخادم',
-      few: '$count ملفات على الخادم',
-      two: 'ملفان على الخادم',
-      one: 'ملف واحد على الخادم',
-      zero: 'لا ملفات على الخادم',
+      other: '$count ملفاً على السيرفر',
+      few: '$count ملفات على السيرفر',
+      two: 'ملفان على السيرفر',
+      one: 'ملف واحد على السيرفر',
+      zero: 'لا ملفات على السيرفر',
     );
     return '$_temp0';
   }
 
   @override
   String get serverKeepsFilesBody =>
-      'يُحذف العنصر من السجل لكن ملفه يبقى على القرص، فتمتلئ مساحة الخادم. اضبط DELETE_FILE_ON_TRASHCAN=true في حاوية MeTube.';
+      'يُحذف العنصر من السجل لكن ملفه يبقى على القرص، فتمتلئ مساحة السيرفر. اضبط DELETE_FILE_ON_TRASHCAN=true في حاوية MeTube.';
 
   @override
   String get serverKeepsFilesTitle => 'خادمك لا يحذف الملفات';
@@ -2549,13 +2552,13 @@ class MTLocalizationsAr extends MTLocalizations {
   String get serverStatusChecking => 'جارٍ فحص الاتصال…';
 
   @override
-  String get serverStatusConnected => 'متصل بالخادم';
+  String get serverStatusConnected => 'متصل بالسيرفر';
 
   @override
   String get serverStatusOffline => 'تعذّر الوصول للخادم';
 
   @override
-  String get serverStatusUnconfigured => 'لم يُضبط الخادم';
+  String get serverStatusUnconfigured => 'لم يُضبط السيرفر';
 
   @override
   String get serverUnreachableLocalHint =>
@@ -2575,7 +2578,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get serverUrlHint => 'http://192.168.1.5:8086 أو https://domain.com';
 
   @override
-  String get serverUrlRequired => 'رابط الخادم مطلوب';
+  String get serverUrlRequired => 'رابط السيرفر مطلوب';
 
   @override
   String serverVersionLabel(String version) {
@@ -2709,6 +2712,12 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get smartPlaylists => 'قوائم ذكية';
+
+  @override
+  String get sortAndFilter => 'الترتيب والتصفية';
+
+  @override
+  String get sortAndPlatform => 'الترتيب والمنصة';
 
   @override
   String get sortBy => 'ترتيب حسب';
@@ -2879,6 +2888,10 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get tagActionsHint => 'اضغط مطوّلاً على وسم لإعادة تسميته أو حذفه.';
+
+  @override
+  String get tagFilterHint =>
+      'اضغط الوسم لإظهار مقاطعه، ومرة ثانية لإخفائها، وثالثة لإلغائه.';
 
   @override
   String get tags => 'الوسوم';

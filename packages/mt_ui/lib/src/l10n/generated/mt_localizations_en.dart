@@ -1812,6 +1812,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get filterVideo => 'Video';
 
   @override
+  String get filtersOn => 'Filters on';
+
+  @override
   String get folder => 'Folder';
 
   @override
@@ -2648,6 +2651,12 @@ class MTLocalizationsEn extends MTLocalizations {
   String get smartPlaylists => 'Smart playlists';
 
   @override
+  String get sortAndFilter => 'Sort and filter';
+
+  @override
+  String get sortAndPlatform => 'Sort and platform';
+
+  @override
   String get sortBy => 'Sort by';
 
   @override
@@ -2817,6 +2826,10 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get tagActionsHint => 'Long-press a tag to rename or delete it.';
+
+  @override
+  String get tagFilterHint =>
+      'Tap a tag to show its clips, again to hide them, and once more to let it go.';
 
   @override
   String get tags => 'Tags';

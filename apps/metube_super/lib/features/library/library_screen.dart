@@ -131,11 +131,12 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           onPressed: () => showDownloadsSheet(context),
           icon: MTDownloadsIcon(active: activeCount),
         ),
-        // One button for sorting and the view mode.
-        IconButton(
-          tooltip: l10n.sortBy,
+        // One button for sorting, the view mode and the filters that have
+        // no row of their own; a dot while one of those is on.
+        MTFilterButton(
+          tooltip: l10n.sortAndFilter,
+          active: ref.watch(sheetFiltersOnProvider),
           onPressed: () => showSortSheet(context, ref),
-          icon: const Icon(Icons.tune_rounded),
         ),
       ],
     );

@@ -45,10 +45,9 @@ class MTPlayerControlsRow extends StatelessWidget {
               IconButton(
                 onPressed: () => handler.setShuffle(!handler.shuffleEnabled),
                 tooltip: l10n.shuffle,
-                icon: Icon(
-                  Icons.shuffle_rounded,
-                  size: 21,
-                  color: handler.shuffleEnabled ? p.accent : p.ink3,
+                icon: MTToggledIcon(
+                  icon: Icons.shuffle_rounded,
+                  on: handler.shuffleEnabled,
                 ),
               ),
               IconButton(
@@ -109,13 +108,10 @@ class _PlayButton extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(size / 3),
-          child: Container(
+          // No coloured shadow: the accent fill alone says "the action".
+          child: SizedBox(
             width: size,
             height: size,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(size / 3),
-              boxShadow: MTShadow.fab(palette),
-            ),
             child: Center(
               child: MTIconSwap(
                 icon: playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
@@ -142,11 +138,40 @@ class _ModeButton extends StatelessWidget {
     return IconButton(
       onPressed: () => handler.setPlayMode(mode.next),
       tooltip: mtPlayModeLabel(context, mode),
-      icon: Icon(
-        mtPlayModeIcon(mode),
-        size: 21,
-        color: mode == PlayMode.autoNext ? palette.ink3 : palette.accent,
+      icon: MTToggledIcon(
+        icon: mtPlayModeIcon(mode),
+        on: mode != PlayMode.autoNext,
       ),
+    );
+  }
+}
+
+/// A switch-like control beside the transport: in ink with a dot under it
+/// while on, grey while off. The accent stays for play and progress, so
+/// "on" is told by the dot rather than a second orange glyph.
+class MTToggledIcon extends StatelessWidget {
+  const MTToggledIcon({super.key, required this.icon, required this.on});
+
+  final IconData icon;
+  final bool on;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 21, color: on ? p.ink : p.ink3),
+        const SizedBox(height: 2),
+        Container(
+          width: 4,
+          height: 4,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: on ? p.ink : Colors.transparent,
+          ),
+        ),
+      ],
     );
   }
 }

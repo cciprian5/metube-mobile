@@ -173,7 +173,7 @@ void main() {
 
       // The state line above already says it; a placeholder underneath
       // would only repeat it.
-      expect(find.textContaining('على الخادم'), findsNothing);
+      expect(find.textContaining('على السيرفر'), findsNothing);
     });
   });
 

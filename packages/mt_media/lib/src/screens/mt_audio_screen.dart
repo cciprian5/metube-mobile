@@ -161,6 +161,9 @@ class MTAudioScreen extends StatelessWidget {
                       item: item,
                       artwork: cover ?? artwork,
                       size: size,
+                      // The glow behind is the light; a deep shadow under
+                      // the plate as well read as two.
+                      shadow: false,
                     ),
                   ),
                 );
@@ -221,6 +224,7 @@ class MTAudioScreen extends StatelessWidget {
                               item: item,
                               artwork: cover ?? artwork,
                               size: size,
+                              shadow: false,
                             ),
                           ),
                         );

@@ -123,7 +123,9 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
       extra: PlaylistDetector.isPlaylist(_url)
           ? null
           : FolderRow(
-              value: _folder.isTop ? l10n.noFolder : mtName(_folder.path),
+              value: _folder.isTop
+                  ? '${l10n.noFolder} · ${l10n.noFolderHint}'
+                  : mtName(_folder.path),
               onTap: () async {
                 // Otherwise the link field takes the focus back when the
                 // picker closes, and the keyboard covers the sheet.

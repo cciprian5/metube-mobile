@@ -3152,6 +3152,12 @@ abstract class MTLocalizations {
   /// **'Video'**
   String get filterVideo;
 
+  /// No description provided for @filtersOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters on'**
+  String get filtersOn;
+
   /// No description provided for @folder.
   ///
   /// In en, this message translates to:
@@ -4544,6 +4550,18 @@ abstract class MTLocalizations {
   /// **'Smart playlists'**
   String get smartPlaylists;
 
+  /// No description provided for @sortAndFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort and filter'**
+  String get sortAndFilter;
+
+  /// No description provided for @sortAndPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort and platform'**
+  String get sortAndPlatform;
+
   /// No description provided for @sortBy.
   ///
   /// In en, this message translates to:
@@ -4849,6 +4867,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Long-press a tag to rename or delete it.'**
   String get tagActionsHint;
+
+  /// No description provided for @tagFilterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a tag to show its clips, again to hide them, and once more to let it go.'**
+  String get tagFilterHint;
 
   /// No description provided for @tags.
   ///

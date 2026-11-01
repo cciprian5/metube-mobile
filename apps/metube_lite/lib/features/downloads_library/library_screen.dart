@@ -134,10 +134,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
           onPressed: () => showDownloadsSheet(context),
           icon: MTDownloadsIcon(active: activeCount),
         ),
-        IconButton(
-          tooltip: l10n.sortBy,
+        // A dot while a platform chosen inside the sheet is on.
+        MTFilterButton(
+          tooltip: l10n.sortAndPlatform,
+          active: ref.watch(
+            libraryViewProvider.select((o) => o.platform != null),
+          ),
           onPressed: () => showSortSheet(context, ref),
-          icon: const Icon(Icons.tune_rounded),
         ),
       ],
     );
@@ -221,8 +224,6 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               ),
               const SizedBox(height: MTSpace.sm),
               const LibraryFilterChips(),
-              const SizedBox(height: MTSpace.xs),
-              const PlatformFilterChips(),
               const SizedBox(height: MTSpace.md),
               ..._activeStrip(l10n, active),
             ],

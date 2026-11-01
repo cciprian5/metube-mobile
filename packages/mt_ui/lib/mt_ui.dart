@@ -29,6 +29,7 @@ export 'src/widgets/mt_equalizer.dart';
 export 'src/widgets/mt_foreign_text.dart';
 export 'src/widgets/mt_downloads_icon.dart';
 export 'src/widgets/mt_fab.dart';
+export 'src/widgets/mt_filter_chips.dart';
 export 'src/widgets/mt_highlight_surface.dart';
 export 'src/widgets/mt_jump_to_end.dart';
 export 'src/widgets/mt_library_sliver.dart';

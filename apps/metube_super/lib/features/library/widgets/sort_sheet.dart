@@ -6,8 +6,12 @@ import 'package:mt_media/library.dart';
 
 import '../../shared/platform_label.dart';
 import '../library_providers.dart';
+import 'folder_filter_section.dart';
+import 'tag_filter_section.dart';
 
-/// The sort and view sheet: one button, with both choices saved.
+/// The sort and filter sheet: the sort and view mode, saved, and the
+/// filters that would crowd the list as rows of their own (platform,
+/// folder, tags).
 void showSortSheet(BuildContext context, WidgetRef ref) {
   showModalBottomSheet<void>(
     context: context,
@@ -58,6 +62,11 @@ class _SortSheet extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text(
+              l10n.sortAndFilter,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: MTSpace.lg),
             MTSectionHeader(title: l10n.sortBy),
             const SizedBox(height: MTSpace.md),
             Wrap(
@@ -112,7 +121,8 @@ class _SortSheet extends ConsumerWidget {
             ),
             // Last, as their length depends on the library.
             const _PlatformSection(),
-            const _FolderSection(),
+            const FolderFilterSection(),
+            const TagFilterSection(),
           ],
         ),
       ),
@@ -174,121 +184,6 @@ class _PlatformSection extends ConsumerWidget {
               ),
           ],
         ),
-      ],
-    );
-  }
-}
-
-/// **The server folders, chosen like the platform** and shown as a
-/// removable chip in the first row once chosen. Absent while every clip
-/// sits at the top of the download directory, which is most servers: the
-/// library looks as it would without folder support.
-///
-/// One row per level: choosing `Ai` adds a row with what is inside it, and
-/// tapping the chosen folder again goes back up a level.
-class _FolderSection extends ConsumerStatefulWidget {
-  const _FolderSection();
-
-  /// Past this many a row folds behind a "more" chip, so a server with
-  /// dozens of folders does not push the sheet off the screen.
-  static const folded = 8;
-
-  @override
-  ConsumerState<_FolderSection> createState() => _FolderSectionState();
-}
-
-class _FolderSectionState extends ConsumerState<_FolderSection> {
-  bool _expanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final items = ref.watch(libraryItemsProvider).valueOrNull ?? const [];
-    final top = folderCounts(items);
-    if (top.isEmpty) return const SizedBox.shrink();
-
-    final l10n = context.mtl;
-    final p = MTThemeX.of(context).palette;
-    final selected = ref.watch(
-      libraryViewProvider.select((options) => options.folder),
-    );
-    final controller = ref.read(libraryViewProvider.notifier);
-
-    String? parentOf(String path) =>
-        path.contains('/') ? path.substring(0, path.lastIndexOf('/')) : null;
-
-    Widget chip(String path, int count) {
-      final on =
-          selected != null &&
-          (selected == path || selected.startsWith('$path/'));
-      return ChoiceChip(
-        label: Text(l10n.platformCount(mtName(path.split('/').last), count)),
-        selected: on,
-        showCheckmark: false,
-        labelStyle: Theme.of(context).textTheme.labelMedium!
-            .copyWith(color: on ? p.bg : p.ink2),
-        onSelected: (_) =>
-            controller.setFolder(selected == path ? parentOf(path) : path),
-      );
-    }
-
-    Widget row(List<Widget> chips) => Padding(
-      padding: const EdgeInsets.only(top: MTSpace.xs),
-      child: Wrap(spacing: MTSpace.xs, runSpacing: MTSpace.xs, children: chips),
-    );
-
-    // The first few of a level, the chosen one always among them, and a
-    // chip for the rest.
-    List<Widget> level(List<MapEntry<String, int>> entries) {
-      if (_expanded || entries.length <= _FolderSection.folded) {
-        return [for (final MapEntry(:key, :value) in entries) chip(key, value)];
-      }
-      bool chosen(String path) =>
-          selected != null &&
-          (selected == path || selected.startsWith('$path/'));
-      final shown = [
-        ...entries.take(_FolderSection.folded),
-        ...entries.skip(_FolderSection.folded).where((e) => chosen(e.key)),
-      ];
-      return [
-        for (final MapEntry(:key, :value) in shown) chip(key, value),
-        ActionChip(
-          label: Text(l10n.moreFolders(entries.length - shown.length)),
-          labelStyle: Theme.of(context).textTheme.labelMedium!
-              .copyWith(color: p.ink2),
-          onPressed: () => setState(() => _expanded = true),
-        ),
-      ];
-    }
-
-    // The levels under the chosen folder, from the top down.
-    final levels = <List<MapEntry<String, int>>>[];
-    if (selected != null) {
-      final parts = selected.split('/');
-      for (var i = 1; i <= parts.length; i++) {
-        final below = folderCounts(items, parent: parts.take(i).join('/'));
-        if (below.isEmpty) break;
-        levels.add(below);
-      }
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: MTSpace.xl),
-        MTSectionHeader(title: l10n.folder),
-        const SizedBox(height: MTSpace.sm),
-        row([
-          ChoiceChip(
-            label: Text(l10n.allFolders),
-            selected: selected == null,
-            showCheckmark: false,
-            labelStyle: Theme.of(context).textTheme.labelMedium!
-                .copyWith(color: selected == null ? p.bg : p.ink2),
-            onSelected: (_) => controller.setFolder(null),
-          ),
-          ...level(top),
-        ]),
-        for (final entries in levels) row(level(entries)),
       ],
     );
   }

@@ -70,7 +70,8 @@ class _MTProgressSliderState extends State<MTProgressSlider> {
               inactiveTrackColor: trackInactive,
               secondaryActiveTrackColor: trackInactive,
               thumbColor: onDark ? p.miniInk : p.ink,
-              overlayColor: p.accent.withValues(alpha: 0.12),
+              // A neutral veil under the finger, not an orange halo.
+              overlayColor: p.ink.withValues(alpha: mtPressVeil),
               thumbShape: RoundSliderThumbShape(
                 enabledThumbRadius: onDark ? 5.5 : 7.5,
               ),

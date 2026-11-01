@@ -160,7 +160,7 @@ class _Pill extends StatelessWidget {
     final p = MTThemeX.of(context).palette;
     final text = Theme.of(context).textTheme;
     final strong = text.labelSmall!.copyWith(
-      color: p.accentInk,
+      color: p.ink,
       fontWeight: FontWeight.w700,
     );
     return Material(

@@ -20,10 +20,10 @@ class FolderRow extends StatelessWidget {
     final p = MTThemeX.of(context).palette;
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(Icons.folder_rounded, color: p.ink2),
+      leading: Icon(Icons.folder_outlined, color: p.ink2),
       title: Text(context.mtl.folder),
       subtitle: Text(value, maxLines: 1, overflow: TextOverflow.ellipsis),
-      trailing: Icon(Icons.unfold_more_rounded, color: p.ink3),
+      trailing: Icon(Icons.chevron_right_rounded, color: p.ink3),
       onTap: onTap,
     );
   }
@@ -84,16 +84,23 @@ class _FolderPicker extends ConsumerWidget {
       required bool selected,
       required FolderChoice choice,
       double indent = 0,
-    }) => ListTile(
-      contentPadding: EdgeInsetsDirectional.only(
-        start: MTSpace.pagePad + indent,
-        end: MTSpace.pagePad,
+    }) => DecoratedBox(
+      // Hairlines between the options, as in a settings group.
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: p.line)),
       ),
-      leading: Icon(icon, color: selected ? p.accent : p.ink2),
-      title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: subtitle == null ? null : Text(subtitle),
-      trailing: selected ? Icon(Icons.check_rounded, color: p.accent) : null,
-      onTap: () => Navigator.of(context).pop(choice),
+      child: ListTile(
+        contentPadding: EdgeInsetsDirectional.only(
+          start: MTSpace.pagePad + indent,
+          end: MTSpace.pagePad,
+        ),
+        leading: Icon(icon, color: p.ink2),
+        title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: subtitle == null ? null : Text(subtitle),
+        // The choice in ink: the accent is for the action.
+        trailing: selected ? Icon(Icons.check_rounded, color: p.ink) : null,
+        onTap: () => Navigator.of(context).pop(choice),
+      ),
     );
 
     return Padding(
@@ -118,14 +125,10 @@ class _FolderPicker extends ConsumerWidget {
                   ),
                 ),
                 // The explanation of folders and of what the server needs
-                // sits behind a help button rather than always showing; the
-                // button pulses as the picker opens so it gets noticed.
-                PulsingHelp(
-                  child: HelpButton(
-                    title: l10n.chooseFolder,
-                    body: l10n.foldersHelp,
-                  ),
-                ),
+                // sits behind a help button rather than always showing.
+                // It stays still: a pulse asked for attention on every
+                // visit, long after the help was read.
+                HelpButton(title: l10n.chooseFolder, body: l10n.foldersHelp),
               ],
             ),
           ),
@@ -140,7 +143,7 @@ class _FolderPicker extends ConsumerWidget {
               children: [
                 if (offerTop)
                   option(
-                    icon: Icons.home_rounded,
+                    icon: Icons.video_library_outlined,
                     title: l10n.noFolder,
                     subtitle: l10n.noFolderHint,
                     selected: current.isTop,
@@ -148,35 +151,40 @@ class _FolderPicker extends ConsumerWidget {
                   ),
                 if (offerChannelName)
                   option(
-                    icon: Icons.subscriptions_rounded,
+                    icon: Icons.subscriptions_outlined,
                     title: l10n.channelNameFolder,
                     selected: current.channelName,
                     choice: FolderChoice.channel,
                   ),
                 for (final path in folders)
                   option(
-                    icon: Icons.folder_rounded,
+                    icon: Icons.folder_outlined,
                     title: mtName(path.split('/').last),
+                    // A nested folder says where it sits.
+                    subtitle: path.contains('/') ? mtName(path) : null,
                     selected: !current.channelName && current.path == path,
                     choice: FolderChoice(path),
                     indent: MTSpace.lg * (path.split('/').length - 1),
                   ),
                 if (!disabled)
-                  ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: MTSpace.pagePad,
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border(top: BorderSide(color: p.line)),
                     ),
-                    leading: Icon(
-                      Icons.create_new_folder_rounded,
-                      color: p.ink2,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: MTSpace.pagePad,
+                      ),
+                      leading: Icon(Icons.add_rounded, color: p.ink2),
+                      title: Text(l10n.newFolder),
+                      subtitle: Text(l10n.newFolderHint),
+                      onTap: () async {
+                        final made = await askNewFolder(context, current.path);
+                        if (made != null && context.mounted) {
+                          Navigator.of(context).pop(FolderChoice(made));
+                        }
+                      },
                     ),
-                    title: Text(l10n.newFolder),
-                    onTap: () async {
-                      final made = await askNewFolder(context, current.path);
-                      if (made != null && context.mounted) {
-                        Navigator.of(context).pop(FolderChoice(made));
-                      }
-                    },
                   ),
               ],
             ),

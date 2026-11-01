@@ -70,17 +70,23 @@ void main() {
         locale: const Locale('en'),
         localizationsDelegates: MTLocalizations.localizationsDelegates,
         supportedLocales: MTLocalizations.supportedLocales,
+        // A tab's own navigator inside the root one, as in the app.
         routerConfig: GoRouter(
           initialLocation: '/playlists',
           routes: [
-            GoRoute(
-              path: '/playlists',
-              builder: (_, _) => const PlaylistsScreen(),
+            ShellRoute(
+              builder: (_, _, child) => child,
               routes: [
                 GoRoute(
-                  path: 'channel/:id',
-                  builder: (_, state) =>
-                      ChannelPage(id: state.pathParameters['id']!),
+                  path: '/playlists',
+                  builder: (_, _) => const PlaylistsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'channel/:id',
+                      builder: (_, state) =>
+                          ChannelPage(id: state.pathParameters['id']!),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -125,6 +131,54 @@ void main() {
     expect(find.text('Every 6 hours'), findsOneWidget);
     expect(find.text('Check now'), findsOneWidget);
     expect(find.text('Trip to the Sarawat mountains'), findsOneWidget);
+  });
+
+  // Field report 2026-11-01: "Edit" on a channel's page opened its sheet
+  // inside the tab, so the shell's add button floated over it.
+  testWidgets('**the guard**: a channel page sheet and menu open above the '
+      'whole app, where the add button hides', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(411, 2000);
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(host(following: subs));
+    await settle(tester);
+    await tester.tap(find.text('Amber Lens'));
+    await settle(tester);
+
+    bool onRoot(Finder inside) {
+      final context = tester.element(inside);
+      return ModalRoute.of(context)!.navigator ==
+          Navigator.of(context, rootNavigator: true);
+    }
+
+    await tester.tap(find.text('Edit'));
+    await settle(tester);
+    expect(onRoot(find.byType(BottomSheet)), isTrue);
+    Navigator.of(tester.element(find.byType(BottomSheet))).pop();
+    await settle(tester);
+
+    await tester.tap(find.byType(PopupMenuButton<VoidCallback>));
+    await settle(tester);
+    expect(onRoot(find.text('Open channel')), isTrue);
+  });
+
+  testWidgets('on a tablet held sideways the setup stands beside the clips', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(948, 544);
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(host(following: subs));
+    await settle(tester);
+    GoRouter.of(tester.element(find.byType(PlaylistsScreen)))
+        .push('/playlists/channel/a');
+    await settle(tester);
+    final setup = tester.getRect(find.text('Check now'));
+    final clip = tester.getRect(find.text('Trip to the Sarawat mountains'));
+    expect(find.byType(VerticalDivider), findsOneWidget);
+    // Side by side, not one under the other.
+    expect(clip.top, lessThan(setup.bottom + 200));
+    expect((clip.center.dx - setup.center.dx).abs(), greaterThan(300));
   });
 
   testWidgets('a server that follows nothing adds nothing to the tab', (

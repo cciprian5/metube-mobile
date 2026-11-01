@@ -26,6 +26,10 @@ Future<void> showSubscriptionSheet(
   context: context,
   isScrollControlled: true,
   useSafeArea: true,
+  // Above the whole app, as every sheet is: opened from a channel's page
+  // inside a tab, it stayed in that tab and the add button floated over
+  // it (field report 2026-11-01).
+  useRootNavigator: true,
   builder: (_) => _SubscriptionSheet(editing: editing, url: url, name: name),
 );
 

@@ -7,6 +7,7 @@ import 'package:mt_ui/mt_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../di.dart';
+import '../library/library_providers.dart';
 import '../library/widgets/library_cards.dart';
 import '../player/playback_providers.dart';
 import 'channel_actions.dart';
@@ -39,6 +40,8 @@ class ChannelPage extends ConsumerWidget {
           if (sub != null)
             PopupMenuButton<VoidCallback>(
               icon: const Icon(Icons.more_vert_rounded),
+              // Above the add button, as sheets and dialogs are.
+              useRootNavigator: true,
               onSelected: (action) => action(),
               itemBuilder: (_) => [
                 PopupMenuItem(
@@ -64,6 +67,56 @@ class ChannelPage extends ConsumerWidget {
           title: l10n.subscriptionsEmpty,
           message: l10n.subscriptionsEmptyBody,
         ),
+        final sub when _twoPanes(context) => Row(
+          children: [
+            // How it is set up on one side, its clips across the rest, as
+            // the library spreads on a tablet held sideways.
+            SizedBox(
+              width: MTBreakpoint.sidePanel,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  MTSpace.pagePad,
+                  0,
+                  MTSpace.pagePad,
+                  MTSpace.xxl,
+                ),
+                children: [_Head(sub: sub)],
+              ),
+            ),
+            const VerticalDivider(width: 1),
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: MTSpace.pagePad,
+                    ),
+                    sliver: SliverList.list(
+                      children: _clipsHeader(context, sub, stats, match),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      MTSpace.pagePad,
+                      MTSpace.sm,
+                      MTSpace.pagePad,
+                      140,
+                    ),
+                    sliver: MTLibrarySliver(
+                      layout: ref.watch(libraryViewProvider).mode.layout,
+                      itemCount: items.length,
+                      itemBuilder: (context, index, columns) => LibraryItemCard(
+                        item: items[index],
+                        columns: columns,
+                        onPlay: () => _play(context, ref, items, items[index]),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         final sub => MTReadableWidth(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(
@@ -75,28 +128,7 @@ class ChannelPage extends ConsumerWidget {
             children: [
               _Head(sub: sub),
               const SizedBox(height: MTSpace.xl),
-              MTSectionHeader(
-                title: l10n.desktopChannelClips,
-                trailing: switch (stats) {
-                  final s? => mtMetaLine([
-                    l10n.desktopInLibrary(s.count),
-                    if (s.unwatched > 0) l10n.desktopNotWatched(s.unwatched),
-                  ]),
-                  null => null,
-                },
-              ),
-              // The server's history may name no channels at all, and then
-              // only a folder of its own matches a channel's clips.
-              if (stats == null &&
-                  !(match?.namesChannels ?? true) &&
-                  (sub.folder?.isEmpty ?? true))
-                Padding(
-                  padding: const EdgeInsets.only(top: MTSpace.sm),
-                  child: Text(
-                    l10n.desktopNoChannelNames,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
+              ..._clipsHeader(context, sub, stats, match),
               for (final item in items)
                 LibraryItemCard(
                   item: item,
@@ -107,6 +139,44 @@ class ChannelPage extends ConsumerWidget {
         ),
       },
     );
+  }
+
+  /// A tablet held sideways: the setup beside the clips.
+  static bool _twoPanes(BuildContext context) =>
+      MTAdaptiveScaffold.hasRail(context) &&
+      MediaQuery.sizeOf(context).width >= MTBreakpoint.expanded;
+
+  List<Widget> _clipsHeader(
+    BuildContext context,
+    ChannelSubscription sub,
+    ChannelStats? stats,
+    ChannelMatch? match,
+  ) {
+    final l10n = context.mtl;
+    return [
+      MTSectionHeader(
+        title: l10n.desktopChannelClips,
+        trailing: switch (stats) {
+          final s? => mtMetaLine([
+            l10n.desktopInLibrary(s.count),
+            if (s.unwatched > 0) l10n.desktopNotWatched(s.unwatched),
+          ]),
+          null => null,
+        },
+      ),
+      // The server's history may name no channels at all, and then only a
+      // folder of its own matches a channel's clips.
+      if (stats == null &&
+          !(match?.namesChannels ?? true) &&
+          (sub.folder?.isEmpty ?? true))
+        Padding(
+          padding: const EdgeInsets.only(top: MTSpace.sm),
+          child: Text(
+            l10n.desktopNoChannelNames,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ),
+    ];
   }
 
   /// A clip plays with the channel's other clips after it, as the library

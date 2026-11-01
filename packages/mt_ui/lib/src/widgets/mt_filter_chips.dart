@@ -88,3 +88,53 @@ class MTFilterButton extends StatelessWidget {
     );
   }
 }
+
+/// A chip arriving in a row, such as a tag chosen in the filter sheet:
+/// **it widens from nothing** and the chips after it make room, rather than
+/// the row jumping by a chip's width. Give it a key per chip, so the chips
+/// already there do not arrive again.
+class MTGrowIn extends StatefulWidget {
+  const MTGrowIn({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  State<MTGrowIn> createState() => _MTGrowInState();
+}
+
+class _MTGrowInState extends State<MTGrowIn>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _grow = AnimationController(
+    vsync: this,
+    duration: MTMotion.medium,
+  );
+  late final Animation<double> _curved = CurvedAnimation(
+    parent: _grow,
+    curve: MTMotion.entrance,
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_grow.isAnimating || _grow.isCompleted) return;
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _grow.value = 1;
+    } else {
+      _grow.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _grow.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => SizeTransition(
+    sizeFactor: _curved,
+    axis: Axis.horizontal,
+    alignment: AlignmentDirectional.centerStart,
+    child: FadeTransition(opacity: _curved, child: widget.child),
+  );
+}

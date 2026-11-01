@@ -53,10 +53,13 @@ class LibraryFilterChips extends ConsumerWidget {
       child: Row(
         children: [
           if (options.platform case final platform?)
-            MTActiveFilterChip(
-              label: platformLabel(l10n, platform),
-              onDeleted: () => controller.setPlatform(null),
-              onPressed: () => showSortSheet(context, ref),
+            MTGrowIn(
+              key: const ValueKey('chip-platform'),
+              child: MTActiveFilterChip(
+                label: platformLabel(l10n, platform),
+                onDeleted: () => controller.setPlatform(null),
+                onPressed: () => showSortSheet(context, ref),
+              ),
             ),
           _Chip(
             label: l10n.filterAll,

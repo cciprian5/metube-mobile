@@ -97,16 +97,25 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
         if (!didPop) closeSearch();
       },
       child: Scaffold(
-        appBar: options.selecting
-            ? librarySelectionBar(context, ref, options)
-            : libraryMainBar(
-                context,
-                ref,
-                activeCount: active.length,
-                searching: searching,
-                onSearch: () => setState(() => _searchOpen = true),
-                onCloseSearch: closeSearch,
-              ),
+        // Selecting swaps the bar with a short fade rather than a cut.
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: MTAnimatedSwap(
+            child: KeyedSubtree(
+              key: ValueKey(options.selecting),
+              child: options.selecting
+                  ? librarySelectionBar(context, ref, options)
+                  : libraryMainBar(
+                      context,
+                      ref,
+                      activeCount: active.length,
+                      searching: searching,
+                      onSearch: () => setState(() => _searchOpen = true),
+                      onCloseSearch: closeSearch,
+                    ),
+            ),
+          ),
+        ),
         body: needsSetup
             ? MTEmptyState(
                 title: l10n.noServerTitle,
@@ -187,12 +196,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
               ),
             ),
           ],
+          // The page keeps its shape while the first answer comes.
           AsyncLoading() => [
-            const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.only(top: 80),
-                child: Center(child: CircularProgressIndicator()),
-              ),
+            const SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: MTSpace.pagePad),
+              sliver: MTRowsSkeleton(),
             ),
           ],
           // The message comes from the error itself rather than from a

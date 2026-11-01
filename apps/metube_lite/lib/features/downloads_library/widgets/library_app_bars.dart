@@ -93,7 +93,14 @@ AppBar librarySelectionBar(
       onPressed: controller.clearSelection,
       icon: const Icon(Icons.close_rounded),
     ),
-    title: Text(l10n.selectedCount(selection.length)),
+    // The count rises to its new value rather than jumping.
+    title: MTAnimatedSwap(
+      alignment: AlignmentDirectional.centerStart,
+      child: Text(
+        l10n.selectedCount(selection.length),
+        key: ValueKey(selection.length),
+      ),
+    ),
     actions: [
       IconButton(
         tooltip: l10n.selectAll,

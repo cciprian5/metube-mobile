@@ -47,6 +47,7 @@ export 'src/widgets/mt_motion.dart';
 export 'src/widgets/mt_page_motion.dart';
 export 'src/widgets/mt_tab_stack.dart';
 export 'src/widgets/mt_route_motion.dart';
+export 'src/widgets/mt_rows_skeleton.dart';
 export 'src/widgets/mt_platform_chip.dart';
 export 'src/widgets/mt_polish.dart';
 export 'src/widgets/mt_reorder_motion.dart';

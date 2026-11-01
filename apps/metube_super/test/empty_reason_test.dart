@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -98,5 +100,39 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(MTQuerySearchField), findsNothing);
     expect(find.text('Clip 2'), findsOneWidget);
+  });
+
+  testWidgets('**the guard**: while the library loads it shows the shape '
+      'of its rows, not a spinner', (tester) async {
+    // A spinner in an empty page gave way to the whole list in one frame.
+    final waiting = Completer<HistoryResponse>();
+    final container = ProviderContainer(
+      overrides: [
+        keyValueStoreProvider.overrideWithValue(MemoryKeyValueStore()),
+        secretStoreProvider.overrideWithValue(MemorySecretStore()),
+        prefsMutexProvider.overrideWithValue(PrefsMutex()),
+        initialSettingsProvider.overrideWithValue(
+          const SuperSettings(activeUrl: 'http://nas.local:8081'),
+        ),
+        historyProvider.overrideWith((ref) => waiting.future),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          localizationsDelegates: MTLocalizations.localizationsDelegates,
+          supportedLocales: MTLocalizations.supportedLocales,
+          theme: mtTheme(MTVariant.superApp, Brightness.light),
+          home: const LibraryScreen(),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.byType(MTRowsSkeleton), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    waiting.complete(history(1));
+    await tester.pump(const Duration(milliseconds: 500));
   });
 }

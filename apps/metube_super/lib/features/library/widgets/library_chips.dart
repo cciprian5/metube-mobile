@@ -40,36 +40,51 @@ class LibraryFilterChips extends ConsumerWidget {
           // list narrows: without a chip here the library would simply
           // look half empty.
           if (options.channel case final channel?)
-            MTActiveFilterChip(
-              icon: Icons.subscriptions_rounded,
-              label: channel,
-              onDeleted: () => controller.toggleChannel(null),
+            MTGrowIn(
+              key: const ValueKey('chip-channel'),
+              child: MTActiveFilterChip(
+                icon: Icons.subscriptions_rounded,
+                label: channel,
+                onDeleted: () => controller.toggleChannel(null),
+              ),
             ),
           if (options.folder case final folder?)
-            MTActiveFilterChip(
-              icon: Icons.folder_rounded,
-              label: mtName(folder),
-              onDeleted: () => controller.setFolder(null),
-              onPressed: openSheet,
+            MTGrowIn(
+              key: const ValueKey('chip-folder'),
+              child: MTActiveFilterChip(
+                icon: Icons.folder_rounded,
+                label: mtName(folder),
+                onDeleted: () => controller.setFolder(null),
+                onPressed: openSheet,
+              ),
             ),
           if (options.platform case final platform?)
-            MTActiveFilterChip(
-              label: platform.label,
-              onDeleted: () => controller.setPlatform(null),
-              onPressed: openSheet,
+            MTGrowIn(
+              key: const ValueKey('chip-platform'),
+              child: MTActiveFilterChip(
+                label: platform.label,
+                onDeleted: () => controller.setPlatform(null),
+                onPressed: openSheet,
+              ),
             ),
           for (final tag in options.tags)
-            MTActiveFilterChip(
-              label: mtLtrRun('# $tag'),
-              onDeleted: () => controller.removeTag(tag),
-              onPressed: openSheet,
+            MTGrowIn(
+              key: ValueKey('chip-tag-$tag'),
+              child: MTActiveFilterChip(
+                label: mtLtrRun('# $tag'),
+                onDeleted: () => controller.removeTag(tag),
+                onPressed: openSheet,
+              ),
             ),
           for (final tag in options.excludedTags)
-            MTActiveFilterChip(
-              label: mtLtrRun('− $tag'),
-              struck: true,
-              onDeleted: () => controller.removeTag(tag),
-              onPressed: openSheet,
+            MTGrowIn(
+              key: ValueKey('chip-not-$tag'),
+              child: MTActiveFilterChip(
+                label: mtLtrRun('− $tag'),
+                struck: true,
+                onDeleted: () => controller.removeTag(tag),
+                onPressed: openSheet,
+              ),
             ),
           chip(
             l10n.filterAll,

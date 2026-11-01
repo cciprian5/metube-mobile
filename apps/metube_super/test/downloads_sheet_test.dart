@@ -121,4 +121,19 @@ void main() {
     expect(find.text('Number 1 in line'), findsOneWidget);
     expect(find.text('Number 2 in line'), findsOneWidget);
   });
+
+  testWidgets('**the guard**: a finished download shows its check, then '
+      'folds away', (tester) async {
+    // It used to vanish in the frame it finished, without a word.
+    final tasks = await open(tester, [running]);
+    tasks.add([running.copyWith(phase: TaskPhase.completed)]);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.byType(MTDrawnCheck), findsOneWidget);
+    expect(find.byIcon(Icons.close_rounded), findsNothing);
+
+    await tester.pumpAndSettle();
+    expect(find.byType(MTDrawnCheck), findsNothing);
+    expect(find.text('No downloads'), findsOneWidget);
+  });
 }

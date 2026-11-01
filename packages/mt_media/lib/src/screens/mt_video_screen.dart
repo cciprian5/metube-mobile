@@ -224,6 +224,9 @@ class MTVideoScreen extends StatelessWidget {
       Navigator.of(context).push(
         mtFullscreenRoute(
           session.controller,
+          from: byRotation || _isWide(context)
+              ? null
+              : mtUprightPlayerPlace(context, _VideoArea.share),
           (_) => MTVideoFullscreenPage(
             session: session,
             byRotation: byRotation,
@@ -320,6 +323,9 @@ class _VideoArea extends StatelessWidget {
     this.captions,
   });
 
+  /// The share of the screen's height the player takes on a phone upright.
+  static const double share = 0.32;
+
   /// Fills the screen in landscape instead of 32% of its height.
   final bool fill;
   final MTArtworkBuilder? artwork;
@@ -341,7 +347,7 @@ class _VideoArea extends StatelessWidget {
       child: SizedBox(
         height: fill
             ? double.infinity
-            : MediaQuery.sizeOf(context).height * 0.32,
+            : MediaQuery.sizeOf(context).height * share,
         child: Stack(
           fit: StackFit.expand,
           children: [

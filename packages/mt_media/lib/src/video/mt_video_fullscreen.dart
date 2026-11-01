@@ -204,18 +204,24 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
                         ),
                       ),
               ),
-              if (panel != null &&
-                  _panelFor != null &&
-                  _panelFor == session.current?.canonicalUrl)
-                MTVideoEndPanel(
+              _presence(
+                context,
+                open:
+                    panel != null &&
+                    _panelFor != null &&
+                    _panelFor == session.current?.canonicalUrl,
+                build: () => MTVideoEndPanel(
                   key: ValueKey(_panelFor),
-                  child: panel.builder(
+                  child: panel!.builder(
                     context,
                     () => setState(() => _panelFor = null),
                   ),
                 ),
-              if (_queueOpen)
-                _SidePanel(
+              ),
+              _presence(
+                context,
+                open: _queueOpen,
+                build: () => _SidePanel(
                   session: session,
                   artwork: widget.artwork,
                   playlistName: widget.playlistName,
@@ -224,6 +230,7 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
                       : () => _leaveThenShowPlaylist(context),
                   onClose: () => setState(() => _queueOpen = false),
                 ),
+              ),
             ],
           );
         },
@@ -231,3 +238,22 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
     );
   }
 }
+
+/// A side panel that **fades out when closed** rather than vanishing in a
+/// frame; it slides in on its own. Its own stack keeps the panel's
+/// position valid inside the switcher.
+Widget _presence(
+  BuildContext context, {
+  required bool open,
+  required Widget Function() build,
+}) => Positioned.fill(
+  child: AnimatedSwitcher(
+    duration: mtMotionDuration(context, MTMotion.medium),
+    reverseDuration: mtMotionDuration(context, MTMotion.fast),
+    transitionBuilder: (child, animation) =>
+        FadeTransition(opacity: animation, child: child),
+    child: open
+        ? Stack(key: const ValueKey('open'), children: [build()])
+        : const SizedBox.shrink(key: ValueKey('closed')),
+  ),
+);

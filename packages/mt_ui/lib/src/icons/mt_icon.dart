@@ -49,7 +49,11 @@ class MTIcon extends StatelessWidget {
   /// the ember from the palette.
   @visibleForTesting
   String svgIn(BuildContext context) {
-    final ink = color ?? IconTheme.of(context).color ?? const Color(0xFF000000);
+    final theme = IconTheme.of(context);
+    var ink = color ?? theme.color ?? const Color(0xFF000000);
+    // A theme's opacity (a disabled button's) dims the glyph, as `Icon` does.
+    final opacity = theme.opacity ?? 1;
+    if (opacity < 1) ink = ink.withValues(alpha: ink.a * opacity);
     // Outside a Wahaj theme (a bare widget in a test) the ember takes the
     // ink, as Material's glyph draws without a theme.
     final ember =
@@ -88,10 +92,18 @@ class MTIcon extends StatelessWidget {
         Directionality.maybeOf(context) == TextDirection.rtl) {
       glyph = Transform.flip(flipX: true, child: glyph);
     }
+    // **A box of its own size with the glyph centred in it**, as `Icon`
+    // lays out: a parent that forces a larger box (an input field's prefix,
+    // a stack that fills its cover) widens the box, never the glyph. Without
+    // it the search lens in a field grew to twice its size.
     return Semantics(
       label: semanticLabel,
       excludeSemantics: semanticLabel == null,
-      child: glyph,
+      child: SizedBox(
+        width: side,
+        height: side,
+        child: Center(child: glyph),
+      ),
     );
   }
 }

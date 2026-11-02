@@ -161,4 +161,38 @@ void main() {
     expect(names, containsAll(['back', 'check']));
     expect(find.byType(Icon), findsNothing);
   });
+
+  testWidgets('**the guard**: a parent that forces a larger box widens the '
+      'box, never the glyph', (tester) async {
+    // An input field's prefix forces 48 by 48; the lens grew to fill it.
+    await tester.pumpWidget(
+      framed(
+        const SizedBox.square(
+          dimension: 48,
+          child: MTIcon(MTIcons.search, size: 20),
+        ),
+      ),
+    );
+    expect(tester.getSize(find.byType(SvgPicture)), const Size(20, 20));
+  });
+
+  testWidgets("a disabled button's dimmed icon theme dims the glyph", (
+    tester,
+  ) async {
+    late BuildContext ctx;
+    await tester.pumpWidget(
+      framed(
+        IconTheme(
+          data: const IconThemeData(color: Color(0xFF112233), opacity: 0.5),
+          child: Builder(
+            builder: (c) {
+              ctx = c;
+              return const MTIcon(MTIcons.close);
+            },
+          ),
+        ),
+      ),
+    );
+    expect(const MTIcon(MTIcons.close).svgIn(ctx), contains('#11223380'));
+  });
 }

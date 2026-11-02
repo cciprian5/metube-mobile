@@ -45,8 +45,4 @@ String errorPlace(FlutterErrorDetails details) {
       .join(' ');
 }
 
-String _where(StackTrace? stack) => (stack?.toString() ?? '')
-    .split('\n')
-    .take(4)
-    .map((line) => line.trim())
-    .join(' | ');
+String _where(StackTrace? stack) => mtStackPlace(stack?.toString());

@@ -109,6 +109,16 @@ abstract final class MTConstants {
   /// backup automatically and never appear among the user's own tags.
   static const String favoritesSystemTag = '__favorites__';
 
+  /// **A limit a person never meets and a screen can hold**: tags are a
+  /// handful of words for sorting, and without a ceiling a stress test of a
+  /// thousand tags made every row of chips a wall. Only the creating of a
+  /// new one stops at it; tags that arrive from a backup or a sync are all
+  /// kept.
+  static const int maxTags = 50;
+
+  /// A tag's name, in characters: a chip that long still fits a phone.
+  static const int maxTagLength = 24;
+
   // `owner/name` for the releases repository. **The single switching
   // point.**
   //

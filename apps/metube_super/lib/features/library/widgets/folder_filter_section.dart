@@ -12,23 +12,11 @@ import '../library_providers.dart';
 ///
 /// One row per level: choosing `Ai` adds a row with what is inside it, and
 /// tapping the chosen folder again goes back up a level.
-class FolderFilterSection extends ConsumerStatefulWidget {
+class FolderFilterSection extends ConsumerWidget {
   const FolderFilterSection({super.key});
 
-  /// Past this many a row folds behind a "more" chip, so a server with
-  /// dozens of folders does not push the sheet off the screen.
-  static const folded = 8;
-
   @override
-  ConsumerState<FolderFilterSection> createState() =>
-      _FolderFilterSectionState();
-}
-
-class _FolderFilterSectionState extends ConsumerState<FolderFilterSection> {
-  bool _expanded = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final items = ref.watch(libraryItemsProvider).valueOrNull ?? const [];
     final top = folderCounts(items);
     if (top.isEmpty) return const SizedBox.shrink();
@@ -60,30 +48,20 @@ class _FolderFilterSectionState extends ConsumerState<FolderFilterSection> {
 
     Widget row(List<Widget> chips) => Padding(
       padding: const EdgeInsets.only(top: MTSpace.xs),
-      child: Wrap(spacing: MTSpace.xs, runSpacing: MTSpace.xs, children: chips),
+      child: MTChipRow(children: chips),
     );
 
-    // The first few of a level, the chosen one always among them, and a
-    // chip for the rest.
+    // A level on one row, the chosen folder first so it is in sight.
     List<Widget> level(List<MapEntry<String, int>> entries) {
-      if (_expanded || entries.length <= FolderFilterSection.folded) {
-        return [for (final MapEntry(:key, :value) in entries) chip(key, value)];
-      }
       bool chosen(String path) =>
           selected != null &&
           (selected == path || selected.startsWith('$path/'));
-      final shown = [
-        ...entries.take(FolderFilterSection.folded),
-        ...entries.skip(FolderFilterSection.folded).where((e) => chosen(e.key)),
-      ];
       return [
-        for (final MapEntry(:key, :value) in shown) chip(key, value),
-        ActionChip(
-          label: Text(l10n.moreFolders(entries.length - shown.length)),
-          labelStyle: Theme.of(context).textTheme.labelMedium!
-              .copyWith(color: p.ink2),
-          onPressed: () => setState(() => _expanded = true),
-        ),
+        for (final MapEntry(:key, :value) in [
+          ...entries.where((e) => chosen(e.key)),
+          ...entries.where((e) => !chosen(e.key)),
+        ])
+          chip(key, value),
       ];
     }
 

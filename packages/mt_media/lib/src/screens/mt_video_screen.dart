@@ -24,12 +24,21 @@ class MTPlayerAction {
     required this.label,
     required this.onTap,
     this.highlighted = false,
+    this.main = false,
+    this.inMenu = false,
   });
 
   final MTIconData icon;
   final String label;
   final VoidCallback onTap;
   final bool highlighted;
+
+  /// The one pill outlined in the ink: what the sheet is mostly for.
+  final bool main;
+
+  /// Under the ⋮ at the end of the row rather than a pill of its own
+  /// (sharing, the original link); the reels' side buttons show it anyway.
+  final bool inMenu;
 }
 
 /// The portrait video player (Wahaj reference B): the video leads with a

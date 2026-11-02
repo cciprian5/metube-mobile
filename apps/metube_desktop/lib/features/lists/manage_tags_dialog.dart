@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../data/lists_data.dart';
@@ -29,6 +30,7 @@ class _ManageTags extends ConsumerWidget {
       confirmLabel: l.rename,
       initialValue: tag,
       hintText: l.newTagHint,
+      maxLength: MTConstants.maxTagLength,
     ))?.trim();
     if (name == null || name.isEmpty || name == tag) return;
     await ref.read(listActionsProvider).renameTag(tag, name);

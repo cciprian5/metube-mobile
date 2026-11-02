@@ -25,6 +25,7 @@ void main() {
   Future<ShellHarness> openClip(
     WidgetTester tester, {
     List<Map<String, Object>> playlists = const [],
+    Map<String, List<String>> tags = const {},
   }) async {
     ShellHarness.useWindow(tester, const Size(1440, 900));
     final h = ShellHarness(
@@ -34,6 +35,9 @@ void main() {
     // Before the first read: lists are read once at start.
     if (playlists.isNotEmpty) {
       await h.store.setString(PlaylistsStore.prefsKey, jsonEncode(playlists));
+    }
+    if (tags.isNotEmpty) {
+      await h.store.setString('tags_index', jsonEncode(tags));
     }
     await tester.pumpWidget(h.app());
     await tester.pumpAndSettle();
@@ -132,5 +136,27 @@ void main() {
     await tester.tap(find.widgetWithText(CheckboxListTile, 'Music'));
     await tester.pumpAndSettle();
     expect((await lists(h)).single['items'], isEmpty);
+  });
+
+  testWidgets('**the guard**: past the limit a new tag is refused and Done '
+      'stays on the reason, as on the phone', (tester) async {
+    final h = await openClip(
+      tester,
+      tags: {
+        'https://youtu.be/bbbbbbbbbbb': [
+          for (var i = 0; i < MTConstants.maxTags; i++) 't$i',
+        ],
+      },
+    );
+    await openPill(tester, 'Tags');
+    await tester.enterText(find.byType(TextField).last, 'one too many');
+    await tester.tap(find.text('Done'));
+    await tester.pumpAndSettle();
+    expect(
+      find.textContaining('up to ${MTConstants.maxTags} tags'),
+      findsOneWidget,
+    );
+    expect(find.text('Done'), findsOneWidget);
+    expect(await tagsOf(h), isEmpty);
   });
 }

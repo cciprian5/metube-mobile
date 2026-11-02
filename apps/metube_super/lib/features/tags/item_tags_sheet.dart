@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -58,6 +59,9 @@ class _ItemTagsSheetState extends ConsumerState<_ItemTagsSheet> {
 
   /// Every tag on display, sorted, including those not on this selection.
   List<String> _all = const [];
+
+  /// The last new tag hit [MTConstants.maxTags].
+  bool _full = false;
 
   /// Those applied to **all** of the selection; a bulk edit shows only what
   /// is common.
@@ -134,6 +138,11 @@ class _ItemTagsSheetState extends ConsumerState<_ItemTagsSheet> {
       return;
     }
     _newTag.clear();
+    // Said in the sheet itself: a notice at the foot of the screen would
+    // sit under it.
+    final full = !_all.contains(name) && _all.length >= MTConstants.maxTags;
+    setState(() => _full = full);
+    if (full) return;
     await _toggle(name);
   }
 
@@ -208,6 +217,11 @@ class _ItemTagsSheetState extends ConsumerState<_ItemTagsSheet> {
                 Expanded(
                   child: TextField(
                     controller: _newTag,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(
+                        MTConstants.maxTagLength,
+                      ),
+                    ],
                     decoration: InputDecoration(hintText: l10n.newTagHint),
                     onSubmitted: (_) => _createTag(),
                   ),
@@ -216,6 +230,14 @@ class _ItemTagsSheetState extends ConsumerState<_ItemTagsSheet> {
                 FilledButton(onPressed: _createTag, child: Text(l10n.create)),
               ],
             ),
+            if (_full) ...[
+              const SizedBox(height: MTSpace.xs),
+              Text(
+                l10n.tagLimitReached(MTConstants.maxTags),
+                style: Theme.of(context).textTheme.bodySmall!
+                    .copyWith(color: MTThemeX.of(context).palette.err),
+              ),
+            ],
             const SizedBox(height: MTSpace.sm),
             TextButton.icon(
               onPressed: () {

@@ -9,6 +9,7 @@ import '../widgets/mt_player_controls_row.dart';
 import '../widgets/mt_queue_panel.dart';
 import '../widgets/mt_up_next_list.dart';
 import 'mt_video_screen.dart';
+import 'video_actions_row.dart';
 
 /// The light sheet under the portrait video (Wahaj reference B): title,
 /// then metadata, then actions, then mode and speed, then the "up next"
@@ -117,19 +118,7 @@ class MTVideoInfoSheet extends StatelessWidget {
       ?byline?.call(context, item),
       if (actions.isNotEmpty) ...[
         const SizedBox(height: MTSpace.md),
-        // One height for every tile: a label on two lines ("open
-        // the original link") made its tile taller than the rest.
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (final action in actions) ...[
-                if (action != actions.first) const SizedBox(width: MTSpace.xs),
-                Expanded(child: _ActionTile(action: action)),
-              ],
-            ],
-          ),
-        ),
+        MTVideoActionsRow(actions: actions),
       ],
       const SizedBox(height: MTSpace.md),
       _ModeRow(session: session),
@@ -156,59 +145,6 @@ class MTVideoInfoSheet extends StatelessWidget {
   }
 }
 
-class _ActionTile extends StatelessWidget {
-  const _ActionTile({required this.action});
-
-  final MTPlayerAction action;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final fg = action.highlighted ? p.accentInk : p.ink2;
-    return Material(
-      color: action.highlighted ? p.accentSoft : p.card,
-      borderRadius: BorderRadius.circular(MTRadius.field + 1),
-      child: InkWell(
-        onTap: action.onTap,
-        borderRadius: BorderRadius.circular(MTRadius.field + 1),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: MTSpace.sm + 1),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(MTRadius.field + 1),
-            border: Border.all(
-              color: action.highlighted
-                  ? p.accent.withValues(alpha: 0.3)
-                  : p.line,
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MTIcon(action.icon, size: 17, color: fg),
-              const SizedBox(height: MTSpace.xxs + 2),
-              Text(
-                action.label,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                  color: fg,
-                  fontSize: 9.5,
-                  height: 1.35,
-                  fontWeight: action.highlighted ? FontWeight.w700 : null,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The mode and speed row (reference B): a chip for the current mode with
-/// the speed at the far end.
 class _ModeRow extends StatelessWidget {
   const _ModeRow({required this.session});
 

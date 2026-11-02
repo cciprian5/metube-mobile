@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -88,18 +89,30 @@ class _TagsDialogState extends ConsumerState<_TagsDialog> {
     await _load();
   }
 
-  Future<void> _add(String raw) async {
+  /// The last new name hit [MTConstants.maxTags].
+  bool _full = false;
+
+  /// False when the name was refused for the limit, so Done keeps the
+  /// dialog open on the reason rather than close as if it were made.
+  Future<bool> _add(String raw) async {
     final tag = raw.trim();
+    if (tag.isEmpty || tag == MTConstants.favoritesSystemTag) {
+      _field.clear();
+      return true;
+    }
+    final full = !_all.contains(tag) && _all.length >= MTConstants.maxTags;
+    setState(() => _full = full);
+    if (full) return false;
     _field.clear();
-    if (tag.isEmpty || tag == MTConstants.favoritesSystemTag) return;
-    if (_state(tag) == true) return;
+    if (_state(tag) == true) return true;
     await _toggle(tag);
+    return true;
   }
 
   /// What is still in the field is added before the dialog closes.
   Future<void> _done(BuildContext context) async {
     final navigator = Navigator.of(context);
-    if (_field.text.trim().isNotEmpty) await _add(_field.text);
+    if (_field.text.trim().isNotEmpty && !await _add(_field.text)) return;
     navigator.pop();
   }
 
@@ -119,6 +132,9 @@ class _TagsDialogState extends ConsumerState<_TagsDialog> {
             TextField(
               controller: _field,
               autofocus: true,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(MTConstants.maxTagLength),
+              ],
               decoration: InputDecoration(
                 hintText: l.newTagHint,
                 suffixIcon: IconButton(
@@ -129,6 +145,13 @@ class _TagsDialogState extends ConsumerState<_TagsDialog> {
               ),
               onSubmitted: (v) => unawaited(_add(v)),
             ),
+            if (_full) ...[
+              const SizedBox(height: MTSpace.xs),
+              Text(
+                l.tagLimitReached(MTConstants.maxTags),
+                style: text.bodySmall?.copyWith(color: p.err),
+              ),
+            ],
             const SizedBox(height: MTSpace.sm),
             Flexible(
               child: SingleChildScrollView(

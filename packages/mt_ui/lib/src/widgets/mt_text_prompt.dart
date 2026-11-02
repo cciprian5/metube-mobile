@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../l10n/l10n.dart';
 import 'mt_route_motion.dart';
@@ -22,6 +23,7 @@ Future<String?> promptMTText(
   String? labelText,
   String? hintText,
   TextDirection? fieldDirection,
+  int? maxLength,
 }) => showMTDialog<String>(
   context: context,
   builder: (_) => _MTTextPrompt(
@@ -31,6 +33,7 @@ Future<String?> promptMTText(
     labelText: labelText,
     hintText: hintText,
     fieldDirection: fieldDirection,
+    maxLength: maxLength,
   ),
 );
 
@@ -42,6 +45,7 @@ class _MTTextPrompt extends StatefulWidget {
     this.labelText,
     this.hintText,
     this.fieldDirection,
+    this.maxLength,
   });
 
   final String title;
@@ -52,6 +56,9 @@ class _MTTextPrompt extends StatefulWidget {
 
   /// URLs are typed left to right even when the interface is Arabic.
   final TextDirection? fieldDirection;
+
+  /// Characters the answer may hold; typing stops there.
+  final int? maxLength;
 
   @override
   State<_MTTextPrompt> createState() => _MTTextPromptState();
@@ -76,6 +83,10 @@ class _MTTextPromptState extends State<_MTTextPrompt> {
     return AlertDialog(
       title: Text(widget.title),
       content: TextField(
+        inputFormatters: [
+          if (widget.maxLength case final max?)
+            LengthLimitingTextInputFormatter(max),
+        ],
         controller: _controller,
         autofocus: true,
         textDirection: widget.fieldDirection,

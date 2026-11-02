@@ -127,11 +127,13 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
         icon: MTIcons.share,
         label: l10n.share,
         onTap: () => _share(item),
+        inMenu: true,
       ),
       if (item.canonicalUrl.startsWith('http'))
         MTPlayerAction(
           icon: MTIcons.external,
           label: l10n.openOriginalLink,
+          inMenu: true,
           onTap: () => launchUrl(
             Uri.parse(item.canonicalUrl),
             mode: LaunchMode.externalApplication,

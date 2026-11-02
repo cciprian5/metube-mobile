@@ -97,18 +97,26 @@ void main() {
       ),
     );
 
-    testWidgets('folds after eight, and "more" shows the rest', (tester) async {
+    testWidgets('**the guard**: the folders sit on one row that scrolls, '
+        'none behind a "more" chip, so the sheet stays short', (tester) async {
+      // Owner's report 2026-11-02: platforms, folders and tags wrapped into
+      // a sheet longer than the screen.
       tester.view.physicalSize = const Size(384, 823);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       await tester.pumpWidget(host(many));
       await tester.pumpAndSettle();
-      expect(find.text('More · 16'), findsOneWidget);
-      await tester.ensureVisible(find.text('More · 16'));
-      await tester.tap(find.text('More · 16'));
-      await tester.pumpAndSettle();
       expect(find.textContaining('More ·'), findsNothing);
-      expect(find.textContaining('Folder 0'), findsOneWidget);
+      final row = find.ancestor(
+        of: find.textContaining('Folder 0'),
+        matching: find.byType(MTChipRow),
+      );
+      expect(row, findsOneWidget);
+      // Every folder is on that one row, reached by scrolling it.
+      expect(
+        find.descendant(of: row, matching: find.byType(ChoiceChip)),
+        findsNWidgets(24 + 1),
+      );
     });
 
     testWidgets('holds on every device and text scale, in both languages', (

@@ -2056,7 +2056,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get modeStopAtEnd => 'التوقف في النهاية';
 
   @override
-  String moreFolders(int count) {
+  String moreChips(int count) {
     return 'المزيد · $count';
   }
 
@@ -3006,6 +3006,11 @@ class MTLocalizationsAr extends MTLocalizations {
   @override
   String get tagFilterHint =>
       'اضغط الوسم لإظهار مقاطعه، ومرة ثانية لإخفائها، وثالثة لإلغائه.';
+
+  @override
+  String tagLimitReached(int max) {
+    return 'الحد الأقصى $max وسماً. احذف وسماً من «إدارة الوسوم» لتضيف غيره.';
+  }
 
   @override
   String get tags => 'الوسوم';

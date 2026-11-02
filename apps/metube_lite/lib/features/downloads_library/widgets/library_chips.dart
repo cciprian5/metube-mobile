@@ -125,16 +125,17 @@ class PlatformFilterChips extends ConsumerWidget {
         const SizedBox(height: MTSpace.xl),
         MTSectionHeader(title: l10n.platform),
         const SizedBox(height: MTSpace.md),
-        Wrap(
-          spacing: MTSpace.xs,
-          runSpacing: MTSpace.xs,
+        MTChipRow(
           children: [
             _Chip(
               label: l10n.allPlatforms,
               selected: selected == null,
               onTap: () => controller.setPlatform(null),
             ),
-            for (final MapEntry(:key, :value) in counts)
+            for (final MapEntry(:key, :value) in [
+              ...counts.where((e) => e.key == selected),
+              ...counts.where((e) => e.key != selected),
+            ])
               _Chip(
                 label: l10n.platformCount(platformLabel(l10n, key), value),
                 selected: selected == key,

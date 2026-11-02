@@ -2011,7 +2011,7 @@ class MTLocalizationsEn extends MTLocalizations {
   String get modeStopAtEnd => 'Stop at end';
 
   @override
-  String moreFolders(int count) {
+  String moreChips(int count) {
     return 'More · $count';
   }
 
@@ -2936,6 +2936,11 @@ class MTLocalizationsEn extends MTLocalizations {
   @override
   String get tagFilterHint =>
       'Tap a tag to show its clips, again to hide them, and once more to let it go.';
+
+  @override
+  String tagLimitReached(int max) {
+    return 'You can have up to $max tags. Remove one in Manage tags to add another.';
+  }
 
   @override
   String get tags => 'Tags';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../di.dart';
@@ -118,6 +119,7 @@ class _TagRow extends ConsumerWidget {
       confirmLabel: l10n.rename,
       initialValue: tag,
       hintText: l10n.newTagHint,
+      maxLength: MTConstants.maxTagLength,
     );
     if (name == null || name.isEmpty || name == tag) return;
     await ref.read(tagsIndexProvider).renameTag(tag, name);

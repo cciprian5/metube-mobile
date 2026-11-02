@@ -232,24 +232,37 @@ class _NewPlaylistTile extends StatelessWidget {
   }
 }
 
-/// "Your tags" chips with counts; a tap opens the library filtered.
-class _TagChips extends ConsumerWidget {
+/// "Your tags" chips with counts; a tap opens the library filtered. Past
+/// [folded] the rest wait behind a "more" chip, so a full set of tags does
+/// not push the channels off the bottom of the tab.
+class _TagChips extends ConsumerStatefulWidget {
   const _TagChips({required this.counts});
 
   final Map<String, int> counts;
 
+  static const folded = 12;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_TagChips> createState() => _TagChipsState();
+}
+
+class _TagChipsState extends ConsumerState<_TagChips> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.mtl;
+    final counts = widget.counts;
     if (counts.isEmpty) {
       return Text(l10n.noTagsYet, style: Theme.of(context).textTheme.bodySmall);
     }
     final names = counts.keys.toList()..sort();
+    final shown = _open ? names : names.take(_TagChips.folded).toList();
     return Wrap(
       spacing: MTSpace.xs + 1,
       runSpacing: MTSpace.xs + 1,
       children: [
-        for (final tag in names)
+        for (final tag in shown)
           _TagChip(
             label: '# $tag',
             count: counts[tag],
@@ -257,6 +270,12 @@ class _TagChips extends ConsumerWidget {
               ref.read(libraryViewProvider.notifier).setTag(tag);
               context.go('/');
             },
+          ),
+        if (shown.length < names.length)
+          _TagChip(
+            label: l10n.moreChips(names.length - shown.length),
+            manage: true,
+            onTap: () => setState(() => _open = true),
           ),
         _TagChip(
           label: l10n.manageTags,

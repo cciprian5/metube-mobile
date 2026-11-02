@@ -3470,11 +3470,11 @@ abstract class MTLocalizations {
   /// **'Stop at end'**
   String get modeStopAtEnd;
 
-  /// No description provided for @moreFolders.
+  /// No description provided for @moreChips.
   ///
   /// In en, this message translates to:
   /// **'More · {count}'**
-  String moreFolders(int count);
+  String moreChips(int count);
 
   /// No description provided for @navLibrary.
   ///
@@ -5023,6 +5023,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Tap a tag to show its clips, again to hide them, and once more to let it go.'**
   String get tagFilterHint;
+
+  /// No description provided for @tagLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You can have up to {max} tags. Remove one in Manage tags to add another.'**
+  String tagLimitReached(int max);
 
   /// No description provided for @tags.
   ///

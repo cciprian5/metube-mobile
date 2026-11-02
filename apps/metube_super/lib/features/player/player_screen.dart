@@ -150,6 +150,17 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
             ?.any((c) => c.canonicalUrl == item.canonicalUrl && c.favorite) ??
         false;
     return [
+      MTPlayerAction(
+        icon: pulling != null
+            ? MTIcons.download
+            : (offline ? MTIcons.offline : MTIcons.download),
+        label: pulling != null
+            ? l10n.percentValue((pulling * 100).round())
+            : (offline ? l10n.savedOnDevice : l10n.saveToDevice),
+        highlighted: offline,
+        main: true,
+        onTap: (offline || pulling != null) ? () {} : () => _makeOffline(item),
+      ),
       // The one-tap heart: the library cards show it on favourites alone.
       MTPlayerAction(
         icon: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
@@ -164,16 +175,6 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
           onTap: () => showVideoTranscript(context, session, item),
         ),
       MTPlayerAction(
-        icon: pulling != null
-            ? MTIcons.download
-            : (offline ? MTIcons.offline : MTIcons.download),
-        label: pulling != null
-            ? l10n.percentValue((pulling * 100).round())
-            : (offline ? l10n.savedOnDevice : l10n.saveToDevice),
-        highlighted: offline,
-        onTap: (offline || pulling != null) ? () {} : () => _makeOffline(item),
-      ),
-      MTPlayerAction(
         icon: MTIcons.headphones,
         label: l10n.continueAsAudio,
         onTap: () => _continueAsAudio(item, session.position, pop: true),
@@ -182,10 +183,12 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
         icon: MTIcons.share,
         label: l10n.share,
         onTap: () => _share(item),
+        inMenu: true,
       ),
       MTPlayerAction(
         icon: MTIcons.external,
         label: l10n.openOriginalLink,
+        inMenu: true,
         onTap: () => launchUrl(
           Uri.parse(item.canonicalUrl),
           mode: LaunchMode.externalApplication,

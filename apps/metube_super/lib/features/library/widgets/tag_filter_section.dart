@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../playlists/playlists_providers.dart';
@@ -15,11 +16,19 @@ import '../library_providers.dart';
 /// combination with no dropdown and no settings screen. It used to be a
 /// second row above the list, which pushed the first clip down on every
 /// visit; the chosen tags still show in the first row, removable.
-class TagFilterSection extends ConsumerWidget {
+class TagFilterSection extends ConsumerStatefulWidget {
   const TagFilterSection({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TagFilterSection> createState() => _TagFilterSectionState();
+}
+
+class _TagFilterSectionState extends ConsumerState<TagFilterSection> {
+  /// "More" was tapped: every tag is on the row.
+  bool _all = false;
+
+  @override
+  Widget build(BuildContext context) {
     final counts =
         ref.watch(tagCountsProvider).valueOrNull ?? const <String, int>{};
     if (counts.isEmpty) return const SizedBox.shrink();
@@ -28,7 +37,17 @@ class TagFilterSection extends ConsumerWidget {
     final options = ref.watch(libraryViewProvider);
     final controller = ref.read(libraryViewProvider.notifier);
     final p = MTThemeX.of(context).palette;
-    final names = counts.keys.toList()..sort();
+    final sorted = counts.keys.toList()..sort();
+    bool active(String tag) =>
+        options.tags.contains(tag) || options.excludedTags.contains(tag);
+    final ordered = [
+      ...sorted.where(active),
+      ...sorted.where((t) => !active(t)),
+    ];
+    // **No more than can be made, unless asked**: a backup or a sync can
+    // bring more tags than [MTConstants.maxTags], and a row of a thousand
+    // chips, all built at once, made the sheet stall as it opened.
+    final names = _all ? ordered : ordered.take(MTConstants.maxTags).toList();
     final anyActive =
         options.tags.isNotEmpty || options.excludedTags.isNotEmpty;
 
@@ -38,9 +57,7 @@ class TagFilterSection extends ConsumerWidget {
         const SizedBox(height: MTSpace.xl),
         MTSectionHeader(title: l10n.tags),
         const SizedBox(height: MTSpace.md),
-        Wrap(
-          spacing: MTSpace.xs,
-          runSpacing: MTSpace.xs,
+        MTChipRow(
           children: [
             if (anyActive)
               ActionChip(
@@ -58,6 +75,11 @@ class TagFilterSection extends ConsumerWidget {
                   HapticFeedback.selectionClick();
                   controller.cycleTag(tag);
                 },
+              ),
+            if (names.length < ordered.length)
+              ActionChip(
+                label: Text(l10n.moreChips(ordered.length - names.length)),
+                onPressed: () => setState(() => _all = true),
               ),
           ],
         ),

@@ -1025,8 +1025,8 @@
   "modeRepeatAll": "Repeat all",
   "modeRepeatOne": "Repeat one",
   "modeStopAtEnd": "Stop at end",
-  "moreFolders": "More · {count}",
-  "@moreFolders": {
+  "moreChips": "More · {count}",
+  "@moreChips": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -1301,6 +1301,14 @@
   "syncTitle": "Sync with the computer",
   "tagActionsHint": "Long-press a tag to rename or delete it.",
   "tagFilterHint": "Tap a tag to show its clips, again to hide them, and once more to let it go.",
+  "tagLimitReached": "You can have up to {max} tags. Remove one in Manage tags to add another.",
+  "@tagLimitReached": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "tags": "Tags",
   "tagsOpenFiltered": "Opens the library filtered",
   "testingConnection": "Testing connection…",

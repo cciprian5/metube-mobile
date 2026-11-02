@@ -129,9 +129,6 @@ class MainActivity : AudioServiceActivity() {
         ShareInbox.offer(intent, restored = savedInstanceState != null)
     }
 
-    // With `launchMode="singleTask"` a running app is not recreated, so the
-    // new intent arrives here and nowhere else. Without this the shortcut
-    // works exactly once.
     // Picture in picture (see PictureInPicture): before Android 12 the
     // activity asks for it as the user leaves; the Dart side learns when the
     // window moves into a corner or back.
@@ -148,6 +145,9 @@ class MainActivity : AudioServiceActivity() {
         PictureInPicture.onModeChanged(isInPictureInPictureMode)
     }
 
+    // With `launchMode="singleTask"` a running app is not recreated, so the
+    // new intent arrives here and nowhere else. Without this the shortcut
+    // works exactly once.
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)

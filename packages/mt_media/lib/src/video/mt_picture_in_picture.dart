@@ -26,9 +26,9 @@ class MTPictureInPicture {
   /// picture without its controls.
   final active = ValueNotifier(false);
 
-  /// The players on screen and whether each is playing: leaving the app
-  /// enters picture in picture while any of them plays.
-  final _players = <Object, ({bool playing, double? aspect})>{};
+  /// The players on screen: whether each is playing, how its picture is
+  /// shaped, and how to play or pause it from the window's own button.
+  final _players = <Object, _Player>{};
 
   /// Android keeps the window between these shapes.
   static const _widest = 2.39;
@@ -38,9 +38,15 @@ class MTPictureInPicture {
       _call('enter', {'aspect': _shape(aspect)});
 
   /// Tells whether player [owner] is playing, and how its picture is
-  /// shaped, while it is on screen.
-  void attach(Object owner, {required bool playing, double? aspect}) {
-    _players[owner] = (playing: playing, aspect: aspect);
+  /// shaped, while it is on screen; [button] plays or pauses it from the
+  /// window.
+  void attach(
+    Object owner, {
+    required bool playing,
+    double? aspect,
+    MTPictureButton? button,
+  }) {
+    _players[owner] = (playing: playing, aspect: aspect, button: button);
     _update();
   }
 
@@ -49,17 +55,47 @@ class MTPictureInPicture {
     if (_players.remove(owner) != null) _update();
   }
 
-  bool _auto = false;
-  double? _aspect;
+  /// The player the window shows: the one playing, or else the last one on
+  /// screen.
+  _Player? get _current =>
+      _players.values.where((p) => p.playing).firstOrNull ??
+      _players.values.lastOrNull;
 
+  /// What the activity was last told; nothing at all while turned off.
+  _Sent _sent = _off;
+  static const _Sent _off = (
+    auto: false,
+    aspect: null,
+    playing: null,
+    play: null,
+    pause: null,
+  );
+
+  /// **The window carries its own play and pause button.** Without one
+  /// Android fills it with the buttons of the app's media session, which
+  /// belongs to the audio player: a video playing in the corner showed the
+  /// paused audio's play button, and pressing it started the audio and
+  /// stopped the video.
   void _update() {
-    final playing = _players.values.where((p) => p.playing).firstOrNull;
-    final auto = enabled.value && playing != null;
-    final aspect = _shape(playing?.aspect);
-    if (auto == _auto && aspect == _aspect) return;
-    _auto = auto;
-    _aspect = aspect;
-    _call('setAuto', {'on': auto, 'aspect': aspect});
+    final current = _current;
+    final _Sent sent = !enabled.value || current == null
+        ? _off
+        : (
+            auto: current.playing,
+            aspect: _shape(current.aspect),
+            playing: current.button == null ? null : current.playing,
+            play: current.button?.play,
+            pause: current.button?.pause,
+          );
+    if (sent == _sent) return;
+    _sent = sent;
+    _call('setAuto', {
+      'on': sent.auto,
+      'aspect': sent.aspect,
+      'playing': sent.playing,
+      'play': sent.play,
+      'pause': sent.pause,
+    });
   }
 
   /// [aspect] within what Android accepts; null leaves it to the system.
@@ -76,7 +112,12 @@ class MTPictureInPicture {
     if (!_listening) {
       _listening = true;
       _channel.setMethodCallHandler((call) async {
-        if (call.method == 'changed') active.value = call.arguments == true;
+        switch (call.method) {
+          case 'changed':
+            active.value = call.arguments == true;
+          case 'toggle':
+            _current?.button?.toggle();
+        }
       });
     }
     try {
@@ -92,12 +133,25 @@ class MTPictureInPicture {
   @visibleForTesting
   void reset() {
     _players.clear();
-    _auto = false;
-    _aspect = null;
+    _sent = _off;
     enabled.value = false;
     active.value = false;
   }
 }
+
+/// The window's play and pause button: what it does, and its two names in
+/// the user's language.
+typedef MTPictureButton = ({VoidCallback toggle, String play, String pause});
+
+typedef _Player = ({bool playing, double? aspect, MTPictureButton? button});
+
+typedef _Sent = ({
+  bool auto,
+  double? aspect,
+  bool? playing,
+  String? play,
+  String? pause,
+});
 
 /// The shape of the picture [session] plays, once its video is ready: a
 /// player not ready yet reports a square, which would shape the corner

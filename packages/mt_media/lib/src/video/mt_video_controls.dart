@@ -66,6 +66,13 @@ class _MTVideoControlsState extends State<MTVideoControls> {
     super.initState();
     _restartTimer();
     widget.session.addListener(_reportPlaying);
+  }
+
+  /// Here rather than in [initState]: the window's button takes its names
+  /// from the user's language, which may change while the player is open.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _reportPlaying();
   }
 
@@ -83,6 +90,11 @@ class _MTVideoControlsState extends State<MTVideoControls> {
     this,
     playing: widget.session.isPlaying,
     aspect: mtPictureShape(widget.session),
+    button: (
+      toggle: widget.session.playPause,
+      play: context.mtl.play,
+      pause: context.mtl.pause,
+    ),
   );
 
   void _restartTimer() {

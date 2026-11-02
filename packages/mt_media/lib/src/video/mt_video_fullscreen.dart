@@ -8,6 +8,7 @@ import '../widgets/mt_extra_button.dart';
 import '../widgets/mt_queue_panel.dart';
 import '../widgets/mt_up_next_list.dart';
 import 'mt_orientation.dart';
+import 'mt_picture_in_picture.dart';
 import 'mt_video_controls.dart';
 import 'mt_video_frame.dart';
 import 'mt_video_session.dart';
@@ -164,9 +165,14 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: ListenableBuilder(
-        listenable: session,
+        listenable: Listenable.merge([
+          session,
+          MTPictureInPicture.instance.active,
+        ]),
         builder: (context, _) {
           final controller = session.controller;
+          // In a corner of the screen the picture shows alone.
+          final inCorner = MTPictureInPicture.instance.active.value;
           final panel = switch (session.current) {
             final item? => widget.panel?.call(item),
             null => null,
@@ -216,6 +222,7 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
               _presence(
                 context,
                 open:
+                    !inCorner &&
                     panel != null &&
                     _panelFor != null &&
                     _panelFor == session.current?.canonicalUrl,
@@ -229,7 +236,7 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
               ),
               _presence(
                 context,
-                open: _queueOpen,
+                open: !inCorner && _queueOpen,
                 build: () => _SidePanel(
                   session: session,
                   artwork: widget.artwork,

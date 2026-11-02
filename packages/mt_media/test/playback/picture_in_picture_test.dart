@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
+import 'package:mt_media/src/video/mt_video_frame.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 
@@ -89,6 +90,39 @@ void main() {
     expect(calls.last.arguments['on'], isFalse);
   });
 
+  test("**the guard**: the window carries the video's own button", () async {
+    final owner = Object();
+    var toggled = 0;
+    pip.enabled.value = true;
+    pip.attach(
+      owner,
+      playing: true,
+      aspect: 16 / 9,
+      button: (toggle: () => toggled++, play: 'Play', pause: 'Pause'),
+    );
+    expect(calls.last.arguments['playing'], isTrue);
+    expect(calls.last.arguments['pause'], 'Pause');
+    // Android presses it.
+    await TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .handlePlatformMessage(
+          'mt/pip',
+          const StandardMethodCodec().encodeMethodCall(
+            const MethodCall('toggle'),
+          ),
+          (_) {},
+        );
+    expect(toggled, 1);
+    // Paused in the corner, it still shows the paused video's button.
+    pip.attach(
+      owner,
+      playing: false,
+      aspect: 16 / 9,
+      button: (toggle: () => toggled++, play: 'Play', pause: 'Pause'),
+    );
+    expect(calls.last.arguments['playing'], isFalse);
+    expect(calls.last.arguments['aspect'], closeTo(16 / 9, 0.001));
+  });
+
   test('the shape stays within what Android takes', () {
     pip.enabled.value = true;
     pip.attach(Object(), playing: true, aspect: 9);
@@ -107,6 +141,20 @@ void main() {
     // The player's double tap holds a single one until its moment passes.
     await tester.pump(kDoubleTapTimeout + const Duration(milliseconds: 50));
     expect(calls.map((c) => c.method), contains('enter'));
+    await close(tester, session);
+  });
+
+  testWidgets('**the guard**: an upright clip in a corner shows the video '
+      'alone', (tester) async {
+    final session = await open(tester);
+    expect(find.byType(MTVideoInfoSheet), findsOneWidget);
+    pip.active.value = true;
+    await tester.pump();
+    expect(find.byType(MTVideoInfoSheet), findsNothing);
+    expect(find.byType(MTVideoFrame), findsOneWidget);
+    pip.active.value = false;
+    await tester.pump();
+    expect(find.byType(MTVideoInfoSheet), findsOneWidget);
     await close(tester, session);
   });
 

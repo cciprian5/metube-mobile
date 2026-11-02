@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:mt_media/mt_media.dart';
 
@@ -11,7 +12,7 @@ export 'one_player_guard.dart';
 /// [MediaPlayerPort] over a media_kit [Player], so the shared session
 /// player drives libmpv exactly as it drives just_audio on the phones.
 class MediaKitPort implements MediaPlayerPort {
-  MediaKitPort._(this._player, this._trace) {
+  MediaKitPort._(this._player, this._trace, [this._askEngine]) {
     final s = _player.stream;
     _subs
       ..add(s.playing.listen((_) => _changed()))
@@ -37,8 +38,16 @@ class MediaKitPort implements MediaPlayerPort {
     );
   }
 
+  /// Over an engine a test drives; [stillPlaying] answers what mpv would.
+  @visibleForTesting
+  factory MediaKitPort.over(
+    Player player, {
+    required Future<bool> Function() stillPlaying,
+  }) => MediaKitPort._(player, silentTrace, stillPlaying);
+
   final Player _player;
   final PlayerTrace _trace;
+  final Future<bool> Function()? _askEngine;
   final _repeats = LogRepeats();
   Timer? _judging;
   bool _streaming = false;
@@ -123,7 +132,7 @@ class MediaKitPort implements MediaPlayerPort {
 
   Future<void> _judge(String error) async {
     _judging = null;
-    if (_loading || await _stillPlaying()) return;
+    if (_loading || await (_askEngine ?? _stillPlaying)()) return;
     _trace('playback failed: $error', problem: true);
     if (!_errors.isClosed) _errors.add(error);
   }

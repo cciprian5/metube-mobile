@@ -195,6 +195,9 @@ def main():
     for key, body in w.ICONS.items():
         if key in SKIP:
             continue
+        if key in w.DOCS:
+            lines.append("")
+            lines += [f"  /// {line}" for line in w.DOCS[key].splitlines()]
         lines.append(f"  static const {camel(key)} = MTIconData('{key}', r'''{to_svg(body)}''');")
     lines.append("")
     names = ", ".join(camel(k) for k in w.ICONS if k not in SKIP)

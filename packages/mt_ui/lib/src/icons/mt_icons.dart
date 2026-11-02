@@ -242,6 +242,156 @@ abstract final class MTIcons {
     'info',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 11v5.4"/><circle fill="{ink}" stroke="none" cx="12" cy="7.9" r="1.05"/></svg>''',
   );
+  static const share = MTIconData(
+    'share',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="17.4" cy="5.8" r="2.3"/><circle cx="6.6" cy="12" r="2.3"/><circle cx="17.4" cy="18.2" r="2.3"/><path d="M8.6 10.9l6.8-3.9"/><path d="M8.6 13.1l6.8 3.9"/></svg>''',
+  );
+
+  /// More actions behind a menu on a phone: three dots down.
+  static const moreVert = MTIconData(
+    'more_vert',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle fill="{ink}" stroke="none" cx="12" cy="5.6" r="1.5"/><circle fill="{ink}" stroke="none" cx="12" cy="12" r="1.5"/><circle fill="{ink}" stroke="none" cx="12" cy="18.4" r="1.5"/></svg>''',
+  );
+  static const refresh = MTIconData(
+    'refresh',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12.4a7 7 0 1 1-2.2-5.4"/><path d="M19.2 4.6v3.8h-3.8"/></svg>''',
+  );
+  static const music = MTIconData(
+    'music',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 17.4V6.2l9.2-2v11"/><circle cx="7" cy="17.4" r="2.4"/><circle cx="16.2" cy="15.2" r="2.4"/></svg>''',
+  );
+  static const video = MTIconData(
+    'video',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.6" width="16.8" height="12.8" rx="2.4"/><path d="M10.2 9.4v5.2l4.4-2.6z"/></svg>''',
+  );
+  static const cloud = MTIconData(
+    'cloud',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/><circle fill="{ember}" stroke="none" cx="12.4" cy="14.3" r="1.7"/></svg>''',
+  );
+  static const cloudCheck = MTIconData(
+    'cloud_check',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/><path d="M9.6 14.2l1.8 1.8 3.4-3.4"/></svg>''',
+  );
+  static const cloudWait = MTIconData(
+    'cloud_wait',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/><circle fill="{ink}" stroke="none" cx="9.6" cy="14.6" r=".9"/><circle fill="{ink}" stroke="none" cx="12.4" cy="14.6" r=".9"/><circle fill="{ember}" stroke="none" cx="15.2" cy="14.6" r=".9"/></svg>''',
+  );
+  static const cloudOff = MTIconData(
+    'cloud_off',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/><path d="M4.4 4.4l15.2 15.2"/></svg>''',
+  );
+  static const lock = MTIconData(
+    'lock',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="10.5" width="13" height="9.5" rx="2.2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/><circle fill="{ember}" stroke="none" cx="12" cy="15.2" r="1.25"/></svg>''',
+  );
+  static const unlock = MTIconData(
+    'unlock',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="10.5" width="13" height="9.5" rx="2.2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 6.8-1.2"/><circle fill="{ember}" stroke="none" cx="12" cy="15.2" r="1.25"/></svg>''',
+  );
+  static const linkOff = MTIconData(
+    'link_off',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 7.6l1.3-1.3a3.6 3.6 0 0 1 5.1 5.1L16.1 12.7"/><path d="M13 16.4l-1.3 1.3a3.6 3.6 0 0 1-5.1-5.1L7.9 11.3"/><path d="M4.6 4.6l14.8 14.8"/></svg>''',
+  );
+  static const pin = MTIconData(
+    'pin',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.2 4.2h5.6"/><path d="M10 4.2v5.2L7.4 13h9.2L14 9.4V4.2"/><path d="M12 13v6.8"/></svg>''',
+  );
+  static const pinOn = MTIconData(
+    'pin_on',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.2 4.2h5.6"/><path fill="{ink}" stroke="none" d="M10 4.2v5.2L7.4 13h9.2L14 9.4V4.2z"/><path d="M12 13v6.8"/></svg>''',
+  );
+  static const help = MTIconData(
+    'help',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M9.7 9.6a2.4 2.4 0 1 1 3.3 2.2c-.6.3-1 .8-1 1.5v.5"/><circle fill="{ink}" stroke="none" cx="12" cy="16.6" r="1.05"/></svg>''',
+  );
+  static const alert = MTIconData(
+    'alert',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6V13"/><circle fill="{ink}" stroke="none" cx="12" cy="16.1" r="1.05"/></svg>''',
+  );
+  static const edit = MTIconData(
+    'edit',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.6 5.6l3.8 3.8L9 18.8l-4.6.8.8-4.6z"/><path d="M12.8 7.4l3.8 3.8"/></svg>''',
+  );
+  static const shield = MTIconData(
+    'shield',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8l6.6 2.6v5c0 4.2-2.8 7.4-6.6 8.8-3.8-1.4-6.6-4.6-6.6-8.8v-5z"/><circle fill="{ember}" stroke="none" cx="12" cy="11.6" r="1.3"/></svg>''',
+  );
+  static const sparkle = MTIconData(
+    'sparkle',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.2c.5 3.9 2 5.4 5.8 5.8-3.8.5-5.3 2-5.8 5.8-.5-3.8-2-5.3-5.8-5.8 3.8-.4 5.3-1.9 5.8-5.8z"/><path d="M18 16v3.6"/><path d="M16.2 17.8h3.6"/></svg>''',
+  );
+  static const selectAll = MTIconData(
+    'select_all',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3" stroke-dasharray="2.4 2.6"/><path d="M8.4 12.2l2.6 2.6 4.8-5"/></svg>''',
+  );
+  static const clock = MTIconData(
+    'clock',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.6V12l3 1.8"/></svg>''',
+  );
+  static const code = MTIconData(
+    'code',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.6 7.4L4 12l4.6 4.6"/><path d="M15.4 7.4L20 12l-4.6 4.6"/><path d="M13.2 5.8l-2.4 12.4"/></svg>''',
+  );
+  static const mail = MTIconData(
+    'mail',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.6" width="16.8" height="12.8" rx="2.4"/><path d="M4.4 7.2l7.6 5.6 7.6-5.6"/></svg>''',
+  );
+  static const bug = MTIconData(
+    'bug',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7.4" y="7.8" width="9.2" height="11.6" rx="4.6"/><path d="M12 11.4v8"/><path d="M9.4 5.2l1.2 2.2"/><path d="M14.6 5.2l-1.2 2.2"/><path d="M7.4 12.6h-3"/><path d="M16.6 12.6h3"/><path d="M7.6 16.6L5 18.2"/><path d="M16.4 16.6l2.6 1.6"/></svg>''',
+  );
+  static const phone = MTIconData(
+    'phone',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6.8" y="3.4" width="10.4" height="17.2" rx="2.6"/><path d="M11 17.4h2"/></svg>''',
+  );
+  static const phoneOff = MTIconData(
+    'phone_off',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6.8" y="3.4" width="10.4" height="17.2" rx="2.6"/><path d="M10 8.6l4 4"/><path d="M14 8.6l-4 4"/><path d="M11 17.4h2"/></svg>''',
+  );
+  static const folderOff = MTIconData(
+    'folder_off',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5A2 2 0 0 1 5.5 5.5h4l2 2h7a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/><path d="M4.4 4.4l15.2 15.2"/></svg>''',
+  );
+  static const textSize = MTIconData(
+    'text_size',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18.4L9 6.4l5 12"/><path d="M5.8 14.4h6.4"/><path d="M15 18.4l2.6-6.4 2.6 6.4"/><path d="M15.9 16.4h3.4"/></svg>''',
+  );
+  static const upload = MTIconData(
+    'upload',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.6 3.6H7.2a1.8 1.8 0 0 0-1.8 1.8v13.2a1.8 1.8 0 0 0 1.8 1.8h9.6a1.8 1.8 0 0 0 1.8-1.8V8.6z"/><path d="M13.6 3.6v5h5"/><path d="M12 17v-5.4"/><path d="M9.8 13.8L12 11.6l2.2 2.2"/></svg>''',
+  );
+  static const chevronUp = MTIconData(
+    'chevron_up',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 14.5L12 9l5.5 5.5"/></svg>''',
+  );
+  static const captionsOff = MTIconData(
+    'captions_off',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2.8"/><path d="M10.6 10.3a2.1 2.1 0 1 0 0 3.4"/><path d="M16.6 10.3a2.1 2.1 0 1 0 0 3.4"/><path d="M4 4l16 16"/></svg>''',
+  );
+  static const bolt = MTIconData(
+    'bolt',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.2 3.6L6 13.4h5.4l-.8 7 7.4-9.8h-5.4z"/></svg>''',
+  );
+  static const back10 = MTIconData(
+    'back10',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.4 9.6A7.4 7.4 0 1 1 4.6 13"/><path d="M5.2 5.4v4.4h4.4"/><path d="M10 10.4v5.2"/><rect x="12.4" y="10.4" width="3.4" height="5.2" rx="1.7"/></svg>''',
+  );
+  static const forward10 = MTIconData(
+    'forward10',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18.6 9.6A7.4 7.4 0 1 0 19.4 13"/><path d="M18.8 5.4v4.4h-4.4"/><path d="M8.2 10.4v5.2"/><rect x="10.6" y="10.4" width="3.4" height="5.2" rx="1.7"/></svg>''',
+  );
+  static const paste = MTIconData(
+    'paste',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5.4" y="5" width="13.2" height="15.4" rx="2.2"/><rect x="9" y="3.4" width="6" height="3.4" rx="1.2"/><path d="M9 12h6"/><path d="M9 15.6h4"/></svg>''',
+  );
+  static const queueAdd = MTIconData(
+    'queue_add',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5H3"/><path d="M3 9h10"/><path d="M9 13H3"/><path stroke="{ember}" d="M17 12v8"/><path stroke="{ember}" d="M13 16h8"/></svg>''',
+  );
+  static const queueRemove = MTIconData(
+    'queue_remove',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5H3"/><path d="M3 9h10"/><path d="M9 13H3"/><path d="M13 16h8"/></svg>''',
+  );
   static const winMin = MTIconData(
     'win_min',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h12"/></svg>''',
@@ -314,6 +464,43 @@ abstract final class MTIcons {
     appearance,
     backup,
     info,
+    share,
+    moreVert,
+    refresh,
+    music,
+    video,
+    cloud,
+    cloudCheck,
+    cloudWait,
+    cloudOff,
+    lock,
+    unlock,
+    linkOff,
+    pin,
+    pinOn,
+    help,
+    alert,
+    edit,
+    shield,
+    sparkle,
+    selectAll,
+    clock,
+    code,
+    mail,
+    bug,
+    phone,
+    phoneOff,
+    folderOff,
+    textSize,
+    upload,
+    chevronUp,
+    captionsOff,
+    bolt,
+    back10,
+    forward10,
+    paste,
+    queueAdd,
+    queueRemove,
     winMin,
     winMax,
     winClose,

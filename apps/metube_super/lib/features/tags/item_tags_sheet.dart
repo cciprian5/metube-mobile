@@ -174,11 +174,7 @@ class _ItemTagsSheetState extends ConsumerState<_ItemTagsSheet> {
               const Center(
                 child: Padding(
                   padding: EdgeInsets.all(MTSpace.md),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
+                  child: MTSpinner(size: 20),
                 ),
               )
             else if (_all.isEmpty)

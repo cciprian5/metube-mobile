@@ -44,8 +44,7 @@ class _ManageTagsSheet extends ConsumerWidget {
               const SizedBox(height: MTSpace.sm),
               Flexible(
                 child: counts.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const Center(child: MTSpinner()),
                   error: (_, _) => Text(l10n.tryAgain),
                   data: (map) => map.isEmpty
                       ? Padding(

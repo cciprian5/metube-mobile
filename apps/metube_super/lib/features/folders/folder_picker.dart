@@ -136,7 +136,7 @@ class _FolderPicker extends ConsumerWidget {
               ],
             ),
           ),
-          if (server.isLoading) const LinearProgressIndicator(minHeight: 2),
+          if (server.isLoading) const MTFilmStrip(),
           if (disabled)
             FolderNotice(text: l10n.foldersDisabled)
           else if (ref.watch(foldersIgnoredProvider))

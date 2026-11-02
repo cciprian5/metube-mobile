@@ -46,11 +46,7 @@ class UpdateSection extends ConsumerWidget {
             style: text.bodySmall!.copyWith(color: p.ink3),
           ),
           trailing: state.phase == UpdatePhase.checking
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
+              ? const MTSpinner(size: 18)
               : MTIcon(hasUpdate ? MTIcons.forward : MTIcons.refresh),
           onTap: state.busy
               ? null

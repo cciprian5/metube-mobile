@@ -40,18 +40,27 @@ RadioThemeData mtRadioTheme(MTPalette p) => RadioThemeData(
   ),
 );
 
-/// A hairline square that fills with the ink when on.
-CheckboxThemeData mtCheckboxTheme(MTPalette p, MTCorners corners) =>
-    CheckboxThemeData(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(corners.box),
-      ),
-      fillColor: WidgetStateProperty.resolveWith(
-        (states) =>
-            states.contains(WidgetState.selected) ? p.ink : Colors.transparent,
-      ),
-      checkColor: WidgetStatePropertyAll(p.bg),
-    );
+/// A hairline square that fills with the ink when on: Material's 2-point
+/// frame read heavier than every line around it.
+CheckboxThemeData mtCheckboxTheme(
+  MTPalette p,
+  MTCorners corners, {
+  double hairline = 1,
+}) => CheckboxThemeData(
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(corners.box),
+  ),
+  side: WidgetStateBorderSide.resolveWith(
+    (states) => states.contains(WidgetState.selected)
+        ? BorderSide(color: p.ink, width: 1.6 * hairline)
+        : BorderSide(color: p.ink3, width: hairline),
+  ),
+  fillColor: WidgetStateProperty.resolveWith(
+    (states) =>
+        states.contains(WidgetState.selected) ? p.ink : Colors.transparent,
+  ),
+  checkColor: WidgetStatePropertyAll(p.bg),
+);
 
 /// The chosen section is a pill of the ink's veil, in the ink: an accent
 /// on the chrome marked nothing beside the add and play buttons.
@@ -107,3 +116,35 @@ const double mtSelectedVeil = 0.10;
 /// once, it marked nothing; it is kept for the one action and for the data
 /// that follows playback.
 Color mtSelectedFill(MTPalette p) => p.ink.withValues(alpha: mtSelectedVeil);
+
+/// A dark card for a tooltip, never Material's grey slab: the mini
+/// player's colours, which stay dark by day.
+TooltipThemeData mtTooltipTheme(MTPalette p, MTCorners corners) =>
+    TooltipThemeData(
+      decoration: BoxDecoration(
+        color: p.miniBg,
+        borderRadius: BorderRadius.circular(corners.tooltip),
+      ),
+      textStyle: TextStyle(color: p.miniInk, fontSize: 12.5),
+      padding: const EdgeInsets.symmetric(
+        horizontal: MTSpace.md,
+        vertical: MTSpace.sm,
+      ),
+    );
+
+/// The title in the heading face, as every other heading: Material takes it
+/// from a style the theme does not set, which fell back to the body face.
+DialogThemeData mtDialogTheme(
+  MTPalette p,
+  MTCorners corners, {
+  required double hairline,
+  required TextStyle title,
+}) => DialogThemeData(
+  titleTextStyle: title,
+  backgroundColor: p.card,
+  surfaceTintColor: Colors.transparent,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(corners.dialog),
+    side: BorderSide(color: p.line2, width: hairline),
+  ),
+);

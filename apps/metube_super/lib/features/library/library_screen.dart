@@ -122,7 +122,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                 actionLabel: l10n.setupServer,
                 onAction: () => context.go(SettingsPane.server.route),
               )
-            : RefreshIndicator(
+            : MTPullRefresh(
                 onRefresh: () async {
                   // A failed refresh is shown by the library itself, and
                   // rethrowing here escapes the `RefreshIndicator` with nobody

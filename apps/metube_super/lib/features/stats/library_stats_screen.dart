@@ -72,7 +72,7 @@ class LibraryStatsScreen extends ConsumerWidget {
         ),
         _ => const Padding(
           padding: EdgeInsets.all(MTSpace.xl),
-          child: Center(child: CircularProgressIndicator()),
+          child: Center(child: MTSpinner()),
         ),
       },
     );

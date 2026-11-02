@@ -10,9 +10,13 @@ import '../widgets/mt_polish.dart';
 /// ember riding the head of the arc. Stands still when the system asks for
 /// less motion; the ring and the ember still say "working".
 class MTSpinner extends StatefulWidget {
-  const MTSpinner({super.key, this.size = 34, this.semanticLabel});
+  const MTSpinner({super.key, this.size = 34, this.semanticLabel, this.color});
 
   final double size;
+
+  /// The arc and its track over a ground the palette does not know (a
+  /// video's dark frame); the ember keeps the accent.
+  final Color? color;
 
   /// What is being waited for, read by screen readers.
   final String? semanticLabel;
@@ -53,7 +57,11 @@ class _MTSpinnerState extends State<MTSpinner>
         ),
         child: CustomPaint(
           size: Size.square(widget.size),
-          painter: _RingPainter(track: p.line2, arc: p.ink2, ember: p.accent),
+          painter: _RingPainter(
+            track: widget.color?.withValues(alpha: 0.3) ?? p.line2,
+            arc: widget.color ?? p.ink2,
+            ember: p.accent,
+          ),
         ),
       ),
     );

@@ -169,7 +169,7 @@ class MTCorners {
     fab: MTRadius.fab,
     chip: MTRadius.chip,
     iconButton: MTRadius.iconButton,
-    tooltip: 4,
+    tooltip: 8,
     box: 2,
     button: MTRadius.field,
   );

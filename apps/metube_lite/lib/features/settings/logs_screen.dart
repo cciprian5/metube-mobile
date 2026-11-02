@@ -162,7 +162,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
             const SizedBox(height: MTSpace.sm),
             Expanded(
               child: _loading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(child: MTSpinner())
                   : visible.isEmpty
                   ? MTEmptyState(
                       title: query.isEmpty ? l10n.logsEmpty : l10n.noResults,

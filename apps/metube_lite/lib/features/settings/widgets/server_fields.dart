@@ -148,11 +148,7 @@ class _ServerFieldsState extends ConsumerState<ServerFields> {
         FilledButton.icon(
           onPressed: _testing ? null : _testAndSave,
           icon: _testing
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
+              ? const MTSpinner(size: 16)
               : const MTIcon(MTIcons.check, size: 18),
           label: Text(_testing ? l10n.testingConnection : l10n.saveSettings),
         ),

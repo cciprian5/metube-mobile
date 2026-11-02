@@ -7,6 +7,7 @@ import 'mt_polish.dart';
 
 import '../icons/mt_icon.dart';
 import '../icons/mt_icons.dart';
+import '../wahaj/mt_progress.dart';
 
 /// A live Wahaj download card: a soft accent ground, a progress bar and a
 /// cancel. The status text, whether a phase or an error, arrives already
@@ -151,12 +152,17 @@ class MTDownloadProgressCard extends StatelessWidget {
                   if (!isError && waiting) ...[
                     const SizedBox(height: MTSpace.xs + 1),
                     _DashedLine(color: p.line2),
+                  ] else if (!isError && progress == null) ...[
+                    // Under way with no measure yet: the film strip, not
+                    // Material's sliding bar.
+                    const SizedBox(height: MTSpace.xs + 1),
+                    const MTFilmStrip(),
                   ] else if (!isError) ...[
                     const SizedBox(height: MTSpace.xs + 1),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(3),
                       child: LinearProgressIndicator(
-                        value: progress == null ? null : shown,
+                        value: shown,
                         minHeight: 5,
                         backgroundColor: p.line,
                         valueColor: AlwaysStoppedAnimation(tint),

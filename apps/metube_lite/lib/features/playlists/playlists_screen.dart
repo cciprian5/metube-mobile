@@ -68,7 +68,7 @@ class PlaylistsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: MTSpace.sm),
             playlists.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: MTSpinner()),
               error: (_, _) => MTEmptyState(
                 title: l10n.tryAgain,
                 message: l10n.noPlaylistsMessage,

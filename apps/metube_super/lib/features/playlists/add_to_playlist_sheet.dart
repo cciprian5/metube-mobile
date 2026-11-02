@@ -52,8 +52,7 @@ class _AddToPlaylistSheet extends ConsumerWidget {
               const SizedBox(height: MTSpace.sm),
               Flexible(
                 child: playlists.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const Center(child: MTSpinner()),
                   error: (_, _) => Text(l10n.tryAgain),
                   data: (all) => ListView(
                     shrinkWrap: true,

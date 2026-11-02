@@ -60,9 +60,7 @@ class ChannelPage extends ConsumerWidget {
         ],
       ),
       body: switch (sub) {
-        null when asked.isLoading => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        null when asked.isLoading => const Center(child: MTSpinner()),
         null => MTEmptyState(
           title: l10n.subscriptionsEmpty,
           message: l10n.subscriptionsEmptyBody,

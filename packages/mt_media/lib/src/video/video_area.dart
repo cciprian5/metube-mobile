@@ -68,7 +68,7 @@ class VideoArea extends StatelessWidget {
               Center(
                 child: session.error != null
                     ? MTIcon(MTIcons.alert, color: MTPalette.serverCardInk)
-                    : const CircularProgressIndicator(),
+                    : const MTSpinner(color: MTPalette.serverCardInk),
               ),
             if (ready)
               MTVideoControls(

@@ -192,7 +192,7 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
                   ),
                 )
               else
-                const Center(child: CircularProgressIndicator()),
+                const Center(child: MTSpinner()),
               MTVideoControls(
                 session: session,
                 fullscreen: true,

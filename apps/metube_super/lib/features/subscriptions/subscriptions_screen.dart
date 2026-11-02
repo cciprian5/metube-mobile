@@ -52,7 +52,7 @@ class SubscriptionsScreen extends ConsumerWidget {
           : null,
       body: MTReadableWidth(
         child: state.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: MTSpinner()),
           error: (e, _) => Padding(
             padding: const EdgeInsets.all(MTSpace.pagePad),
             child: MTEmptyState(
@@ -102,7 +102,7 @@ class SubscriptionsScreen extends ConsumerWidget {
         ),
       );
     }
-    return RefreshIndicator(
+    return MTPullRefresh(
       onRefresh: () async => ref.invalidate(subscriptionsProvider),
       child: ListView(
         padding: const EdgeInsets.fromLTRB(

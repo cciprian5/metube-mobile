@@ -233,17 +233,16 @@ ThemeData mtTheme(
             ),
           ),
     ),
-    dialogTheme: DialogThemeData(
-      backgroundColor: p.card,
-      surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(corners.dialog),
-        side: BorderSide(color: p.line2, width: hairline),
-      ),
+    dialogTheme: mtDialogTheme(
+      p,
+      corners,
+      hairline: hairline,
+      title: display(18, FontWeight.w700),
     ),
     switchTheme: mtSwitchTheme(p),
     radioTheme: mtRadioTheme(p),
-    checkboxTheme: mtCheckboxTheme(p, corners),
+    checkboxTheme: mtCheckboxTheme(p, corners, hairline: hairline),
+    tooltipTheme: mtTooltipTheme(p, corners),
     // Material 3 tints the selected state with secondaryContainer, which is
     // the olive that means "offline" in this design language (log §4). The
     // chosen segment is the ink, as a chosen chip is: the accent is kept for

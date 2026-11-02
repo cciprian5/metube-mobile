@@ -84,7 +84,7 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircularProgressIndicator(),
+                const MTSpinner(),
                 const SizedBox(height: MTSpace.md),
                 Text(
                   l10n.batchLoading,

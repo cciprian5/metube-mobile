@@ -293,11 +293,7 @@ class _SubscriptionSheetState extends ConsumerState<_SubscriptionSheet> {
               child: FilledButton.icon(
                 onPressed: canSubmit ? _submit : null,
                 icon: _busy
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
+                    ? const MTSpinner(size: 16)
                     : MTIcon(_isEdit ? MTIcons.check : MTIcons.addlink),
                 label: Text(_isEdit ? l10n.saveSettings : l10n.follow),
               ),

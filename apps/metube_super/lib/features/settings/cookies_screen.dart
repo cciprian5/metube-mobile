@@ -155,11 +155,7 @@ class _CookiesScreenState extends ConsumerState<CookiesScreen> {
               child: FilledButton.icon(
                 onPressed: _busy || api == null ? null : _pickAndUpload,
                 icon: _busy
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
+                    ? const MTSpinner(size: 16)
                     : const MTIcon(MTIcons.upload),
                 label: Text(
                   has == true ? l10n.cookiesReplace : l10n.cookiesUpload,

@@ -56,7 +56,7 @@ class PlaylistDetailsScreen extends ConsumerWidget {
           // once; without this the reload swapped the list
           // for a spinner and rebuilt it from the top.
           skipLoadingOnReload: true,
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: MTSpinner()),
           error: (_, _) => MTEmptyState(
             title: l10n.tryAgain,
             message: l10n.emptyPlaylistMessage,

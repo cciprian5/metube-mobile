@@ -82,7 +82,7 @@ class _MTVideoControlsState extends State<MTVideoControls> {
   void _reportPlaying() => _pip.attach(
     this,
     playing: widget.session.isPlaying,
-    aspect: widget.session.controller?.value.aspectRatio,
+    aspect: mtPictureShape(widget.session),
   );
 
   void _restartTimer() {

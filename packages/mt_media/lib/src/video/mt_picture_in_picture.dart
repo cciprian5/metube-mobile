@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import 'mt_video_session.dart';
+
 /// **Picture in picture** (Android): the app's window shrinks to a corner
 /// of the screen with the video alone, and the user carries on elsewhere.
 ///
@@ -95,4 +97,12 @@ class MTPictureInPicture {
     enabled.value = false;
     active.value = false;
   }
+}
+
+/// The shape of the picture [session] plays, once its video is ready: a
+/// player not ready yet reports a square, which would shape the corner
+/// window wrongly.
+double? mtPictureShape(MTVideoSession session) {
+  final video = session.controller?.value;
+  return video != null && video.isInitialized ? video.aspectRatio : null;
 }

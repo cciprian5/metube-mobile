@@ -106,7 +106,7 @@ class MTVideoTopBar extends StatelessWidget {
                   child: MTVideoIconButton(
                     icon: Icons.picture_in_picture_alt_rounded,
                     onTap: () => MTPictureInPicture.instance.enter(
-                      aspect: session.controller?.value.aspectRatio,
+                      aspect: mtPictureShape(session),
                     ),
                     tooltip: l10n.pictureInPicture,
                   ),

@@ -99,7 +99,7 @@ void main() {
     await tester.pumpWidget(framed(arrow));
     expect(flip(), findsNothing);
     await tester.pumpWidget(
-      framed(const MTIcon(MTIcons.transcript), dir: TextDirection.rtl),
+      framed(const MTIcon(MTIcons.share), dir: TextDirection.rtl),
     );
     expect(flip(), findsNothing);
   });
@@ -194,5 +194,31 @@ void main() {
       ),
     );
     expect(const MTIcon(MTIcons.close).svgIn(ctx), contains('#11223380'));
+  });
+
+  testWidgets("**the guard**: in Arabic a phone turns what Material's glyphs "
+      'turned, and the computer leaves it to its call sites', (tester) async {
+    Finder flip() => find.descendant(
+      of: find.byType(MTIcon),
+      matching: find.byType(Transform),
+    );
+    for (final icon in [
+      MTIcons.external,
+      MTIcons.transcript,
+      MTIcons.queue,
+      MTIcons.queueAdd,
+      MTIcons.help,
+    ]) {
+      await tester.pumpWidget(framed(MTIcon(icon), dir: TextDirection.rtl));
+      expect(flip(), findsOneWidget, reason: icon.name);
+      await tester.pumpWidget(
+        MTDesktopApp(child: framed(MTIcon(icon), dir: TextDirection.rtl)),
+      );
+      expect(flip(), findsNothing, reason: '${icon.name} on the computer');
+    }
+    await tester.pumpWidget(
+      framed(const MTIcon(MTIcons.share), dir: TextDirection.rtl),
+    );
+    expect(flip(), findsNothing);
   });
 }

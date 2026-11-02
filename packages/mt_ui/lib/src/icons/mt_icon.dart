@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/mt_theme.dart';
+import '../widgets/mt_desktop_app.dart';
 import 'mt_icon_data.dart';
 
 /// Draws a Wahaj icon the way `Icon` draws a glyph: colour and size from the
@@ -29,8 +30,21 @@ class MTIcon extends StatelessWidget {
 
   /// Mirrored when the text runs right to left: for the arrows that point
   /// along the reading direction (back, forward, a row's chevron), as
-  /// `Icon` mirrors them. Nothing else turns, as in the Windows app.
+  /// `Icon` mirrors them.
   final bool matchTextDirection;
+
+  /// **On a phone these turn in Arabic by themselves**, as the Material
+  /// glyphs they replaced did: the arrow out of a box, lines of text, the
+  /// queue, adding to it, the question mark. Without it the phone's Arabic
+  /// screens pointed the English way where they never had. The Windows app
+  /// mirrors at its call sites instead, so it is left as it is.
+  static const _readsAlong = {
+    'external',
+    'transcript',
+    'queue',
+    'queue_add',
+    'help',
+  };
 
   /// Drawn beneath the icon, blurred, as `Icon` draws its glyph's shadows:
   /// what keeps an icon legible over a cover of unknown colour.
@@ -88,8 +102,10 @@ class MTIcon extends StatelessWidget {
         ],
       );
     }
-    if (matchTextDirection &&
-        Directionality.maybeOf(context) == TextDirection.rtl) {
+    final turns =
+        matchTextDirection ||
+        (_readsAlong.contains(icon.name) && !MTDesktopApp.isDesktop(context));
+    if (turns && Directionality.maybeOf(context) == TextDirection.rtl) {
       glyph = Transform.flip(flipX: true, child: glyph);
     }
     // **A box of its own size with the glyph centred in it**, as `Icon`

@@ -3800,6 +3800,18 @@ abstract class MTLocalizations {
   /// **'A backup from another phone or an older version'**
   String get pickAnotherFileSubtitle;
 
+  /// No description provided for @pictureInPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture in picture'**
+  String get pictureInPicture;
+
+  /// No description provided for @pictureInPictureHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When you leave the app while a video plays, it stays in a corner of the screen'**
+  String get pictureInPictureHelp;
+
   /// No description provided for @pinPlaylist.
   ///
   /// In en, this message translates to:

@@ -26,6 +26,7 @@ class MainActivity : AudioServiceActivity() {
 
     override fun configureFlutterEngine(engine: FlutterEngine) {
         super.configureFlutterEngine(engine)
+        PictureInPicture.register(this, engine.dartExecutor.binaryMessenger)
         UpdateInstaller.register(this, engine)
         syncTree.register(engine.dartExecutor.binaryMessenger)
         ShareInbox.register(engine.dartExecutor.binaryMessenger)
@@ -123,6 +124,22 @@ class MainActivity : AudioServiceActivity() {
     // With `launchMode="singleTask"` a running app is not recreated, so the
     // new intent arrives here and nowhere else. Without this the shortcut
     // works exactly once.
+    // Picture in picture (see PictureInPicture): before Android 12 the
+    // activity asks for it as the user leaves; the Dart side learns when the
+    // window moves into a corner or back.
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        PictureInPicture.onUserLeaveHint(this)
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: android.content.res.Configuration,
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        PictureInPicture.onModeChanged(isInPictureInPictureMode)
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)

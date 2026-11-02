@@ -6,8 +6,10 @@ import 'package:mt_ui/mt_ui.dart';
 import '../widgets/mt_extra_button.dart';
 import '../widgets/mt_chapters.dart';
 import 'mt_captions.dart';
+import 'mt_picture_in_picture.dart';
 import 'mt_video_session.dart';
 import 'video_buttons.dart';
+import 'video_center_controls.dart';
 import 'video_control_bars.dart';
 
 /// The video chrome over the clip (Wahaj reference C): a touch shows it
@@ -57,17 +59,31 @@ class _MTVideoControlsState extends State<MTVideoControls> {
   bool _locked = false;
   Timer? _hideTimer;
 
+  MTPictureInPicture get _pip => MTPictureInPicture.instance;
+
   @override
   void initState() {
     super.initState();
     _restartTimer();
+    widget.session.addListener(_reportPlaying);
+    _reportPlaying();
   }
 
   @override
   void dispose() {
     _hideTimer?.cancel();
+    widget.session.removeListener(_reportPlaying);
+    _pip.detach(this);
     super.dispose();
   }
+
+  /// While a video plays on screen, leaving the app may move it to a
+  /// corner (when the user has turned that on).
+  void _reportPlaying() => _pip.attach(
+    this,
+    playing: widget.session.isPlaying,
+    aspect: widget.session.controller?.value.aspectRatio,
+  );
 
   void _restartTimer() {
     _hideTimer?.cancel();
@@ -96,8 +112,16 @@ class _MTVideoControlsState extends State<MTVideoControls> {
       ? (widget.fullscreen ? MTSpace.xs : MTSpace.xl) + 76
       : (widget.fullscreen ? MTSpace.lg : MTSpace.xxl);
 
+  /// In a corner of the screen the picture shows alone: no control fits
+  /// there, and the system draws its own.
   @override
-  Widget build(BuildContext context) => Stack(
+  Widget build(BuildContext context) => ValueListenableBuilder(
+    valueListenable: _pip.active,
+    builder: (context, inCorner, _) =>
+        inCorner ? const SizedBox.shrink() : _layers(),
+  );
+
+  Widget _layers() => Stack(
     fit: StackFit.expand,
     children: [
       if ((widget.captions, widget.session.controller) case (

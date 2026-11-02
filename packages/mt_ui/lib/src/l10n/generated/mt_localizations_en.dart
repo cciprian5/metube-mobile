@@ -2198,6 +2198,13 @@ class MTLocalizationsEn extends MTLocalizations {
       'A backup from another phone or an older version';
 
   @override
+  String get pictureInPicture => 'Picture in picture';
+
+  @override
+  String get pictureInPictureHelp =>
+      'When you leave the app while a video plays, it stays in a corner of the screen';
+
+  @override
   String get pinPlaylist => 'Pin to top';
 
   @override

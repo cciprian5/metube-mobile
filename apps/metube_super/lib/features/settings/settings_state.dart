@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/mt_media.dart' show MTPictureInPicture;
 
 import '../../di.dart';
 
@@ -20,6 +21,7 @@ class SuperSettings {
     this.saveBatchToDevice = false,
     this.autoRetry = true,
     this.compatiblePlayback = true,
+    this.pictureInPicture = false,
     this.notifyArrivals = true,
     this.themeMode = ThemeMode.system,
     this.localeCode,
@@ -63,6 +65,10 @@ class SuperSettings {
   /// off allows the highest resolution at the cost of compatibility.
   final bool compatiblePlayback;
 
+  /// Leaving the app while a video plays moves it to a corner of the
+  /// screen, and the player has a button for it. Off unless turned on.
+  final bool pictureInPicture;
+
   /// **Tell me when the server brought something I did not ask for**
   /// (subscription arrivals): one grouped notice per batch, not one per clip. On by
   /// default, because a download nobody was told about is a file that
@@ -102,6 +108,7 @@ class SuperSettings {
     bool? saveBatchToDevice,
     bool? autoRetry,
     bool? compatiblePlayback,
+    bool? pictureInPicture,
     bool? notifyArrivals,
     ThemeMode? themeMode,
     String? localeCode,
@@ -123,6 +130,7 @@ class SuperSettings {
     saveBatchToDevice: saveBatchToDevice ?? this.saveBatchToDevice,
     autoRetry: autoRetry ?? this.autoRetry,
     compatiblePlayback: compatiblePlayback ?? this.compatiblePlayback,
+    pictureInPicture: pictureInPicture ?? this.pictureInPicture,
     notifyArrivals: notifyArrivals ?? this.notifyArrivals,
     themeMode: themeMode ?? this.themeMode,
     localeCode: clearLocale ? null : (localeCode ?? this.localeCode),
@@ -150,6 +158,7 @@ class SuperSettings {
       autoRetry: await store.getBool('auto_retry_downloads') ?? true,
       notifyArrivals: await store.getBool('notify_arrivals') ?? true,
       compatiblePlayback: await store.getBool('compatible_playback') ?? true,
+      pictureInPicture: await store.getBool('picture_in_picture') ?? false,
       themeMode: ThemeMode.values.firstWhere(
         (m) => m.name == themeName,
         orElse: () => ThemeMode.system,
@@ -161,7 +170,11 @@ class SuperSettings {
 
 class SettingsNotifier extends Notifier<SuperSettings> {
   @override
-  SuperSettings build() => ref.read(initialSettingsProvider);
+  SuperSettings build() {
+    final settings = ref.read(initialSettingsProvider);
+    MTPictureInPicture.instance.enabled.value = settings.pictureInPicture;
+    return settings;
+  }
 
   KeyValueStore get _store => ref.read(keyValueStoreProvider);
   SecretStore get _secrets => ref.read(secretStoreProvider);
@@ -245,6 +258,12 @@ class SettingsNotifier extends Notifier<SuperSettings> {
   Future<void> setCompatiblePlayback(bool enabled) async {
     await _mutex.run(() => _store.setBool('compatible_playback', enabled));
     state = state.copyWith(compatiblePlayback: enabled);
+  }
+
+  Future<void> setPictureInPicture(bool enabled) async {
+    await _mutex.run(() => _store.setBool('picture_in_picture', enabled));
+    MTPictureInPicture.instance.enabled.value = enabled;
+    state = state.copyWith(pictureInPicture: enabled);
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {

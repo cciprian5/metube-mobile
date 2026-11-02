@@ -2246,6 +2246,13 @@ class MTLocalizationsAr extends MTLocalizations {
   String get pickAnotherFileSubtitle => 'نسخة من هاتف آخر أو من إصدار سابق';
 
   @override
+  String get pictureInPicture => 'صورة داخل صورة';
+
+  @override
+  String get pictureInPictureHelp =>
+      'حين تخرج من التطبيق والفيديو يعمل، يبقى في زاوية الشاشة';
+
+  @override
   String get pinPlaylist => 'تثبيت في الصدارة';
 
   @override

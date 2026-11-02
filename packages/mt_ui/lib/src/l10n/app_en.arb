@@ -1087,6 +1087,8 @@
   "percentValue": "{percent}%",
   "pickAnotherFile": "From another file…",
   "pickAnotherFileSubtitle": "A backup from another phone or an older version",
+  "pictureInPicture": "Picture in picture",
+  "pictureInPictureHelp": "When you leave the app while a video plays, it stays in a corner of the screen",
   "pinPlaylist": "Pin to top",
   "platform": "Platform",
   "platformCount": "{name} · {count}",

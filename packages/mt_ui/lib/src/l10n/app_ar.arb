@@ -788,6 +788,8 @@
   "percentValue": "{percent}٪",
   "pickAnotherFile": "من ملف آخر…",
   "pickAnotherFileSubtitle": "نسخة من هاتف آخر أو من إصدار سابق",
+  "pictureInPicture": "صورة داخل صورة",
+  "pictureInPictureHelp": "حين تخرج من التطبيق والفيديو يعمل، يبقى في زاوية الشاشة",
   "pinPlaylist": "تثبيت في الصدارة",
   "platform": "المنصّة",
   "platformCount": "{name} · {count}",

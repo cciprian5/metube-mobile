@@ -130,7 +130,7 @@ class DownloadFields extends ConsumerWidget {
   }
 }
 
-/// How a clip plays. One switch today; the place for what playback adds.
+/// How a clip plays: the compatible format, and picture in picture.
 class PlaybackFields extends ConsumerWidget {
   const PlaybackFields({super.key});
 
@@ -138,11 +138,21 @@ class PlaybackFields extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.mtl;
     final settings = ref.watch(settingsProvider);
-    return _SwitchTile(
-      title: l10n.compatiblePlayback,
-      subtitle: l10n.compatiblePlaybackHelp,
-      value: settings.compatiblePlayback,
-      onChanged: ref.read(settingsProvider.notifier).setCompatiblePlayback,
+    return Column(
+      children: [
+        _SwitchTile(
+          title: l10n.compatiblePlayback,
+          subtitle: l10n.compatiblePlaybackHelp,
+          value: settings.compatiblePlayback,
+          onChanged: ref.read(settingsProvider.notifier).setCompatiblePlayback,
+        ),
+        _SwitchTile(
+          title: l10n.pictureInPicture,
+          subtitle: l10n.pictureInPictureHelp,
+          value: settings.pictureInPicture,
+          onChanged: ref.read(settingsProvider.notifier).setPictureInPicture,
+        ),
+      ],
     );
   }
 }

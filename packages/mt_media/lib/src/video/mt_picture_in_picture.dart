@@ -10,9 +10,6 @@ import 'package:flutter/services.dart';
 /// `mt/pip` channel; without it (tests, the Windows app) nothing happens.
 class MTPictureInPicture {
   MTPictureInPicture._() {
-    _channel.setMethodCallHandler((call) async {
-      if (call.method == 'changed') active.value = call.arguments == true;
-    });
     enabled.addListener(_update);
   }
 
@@ -69,7 +66,17 @@ class MTPictureInPicture {
     return aspect.clamp(1 / _widest, _widest);
   }
 
+  /// Whether the activity's word that the window moved is heard. Set on
+  /// the first call, once Flutter's bindings are surely up.
+  bool _listening = false;
+
   Future<void> _call(String method, Map<String, Object?> arguments) async {
+    if (!_listening) {
+      _listening = true;
+      _channel.setMethodCallHandler((call) async {
+        if (call.method == 'changed') active.value = call.arguments == true;
+      });
+    }
     try {
       await _channel.invokeMethod<void>(method, arguments);
     } on MissingPluginException {

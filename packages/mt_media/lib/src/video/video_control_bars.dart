@@ -11,6 +11,7 @@ import 'mt_video_session.dart';
 import 'video_buttons.dart';
 import 'caption_buttons.dart';
 import 'mt_captions.dart';
+import 'mt_picture_in_picture.dart';
 
 /// The top bar: back, the title and its position in the list, speed, lock,
 /// full screen.
@@ -96,6 +97,22 @@ class MTVideoTopBar extends StatelessWidget {
           const SizedBox(width: MTSpace.xs),
           MTCaptionButtons(captions: captions),
         ],
+        // Only once the user has turned picture in picture on.
+        ValueListenableBuilder(
+          valueListenable: MTPictureInPicture.instance.enabled,
+          builder: (context, on, _) => on
+              ? Padding(
+                  padding: const EdgeInsetsDirectional.only(start: MTSpace.xs),
+                  child: MTVideoIconButton(
+                    icon: Icons.picture_in_picture_alt_rounded,
+                    onTap: () => MTPictureInPicture.instance.enter(
+                      aspect: session.controller?.value.aspectRatio,
+                    ),
+                    tooltip: l10n.pictureInPicture,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
         const SizedBox(width: MTSpace.xs),
         MTVideoSpeedButton(session: session),
         const SizedBox(width: MTSpace.xs),
@@ -117,77 +134,6 @@ class MTVideoTopBar extends StatelessWidget {
       ],
     );
   }
-}
-
-/// Screen centre: ten seconds back and forward around a play button in the
-/// accent colour.
-class MTVideoCenterControls extends StatelessWidget {
-  const MTVideoCenterControls({super.key, required this.session});
-
-  final MTVideoSession session;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final l10n = context.mtl;
-    // **Pinned left to right, like the timeline under them.** Media time
-    // runs left to right in every language, so buttons that followed the
-    // interface direction would read as reversed (see MTProgressSlider).
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _Seek(
-            icon: Icons.replay_10_rounded,
-            label: l10n.seekBackward10,
-            onTap: () => session.seekBy(const Duration(seconds: -10)),
-          ),
-          const SizedBox(width: MTSpace.xxl),
-          Material(
-            color: p.accent.withValues(alpha: 0.94),
-            borderRadius: BorderRadius.circular(20),
-            child: InkWell(
-              onTap: session.playPause,
-              borderRadius: BorderRadius.circular(20),
-              child: SizedBox(
-                width: 58,
-                height: 58,
-                child: MTIconSwap(
-                  icon: session.isPlaying
-                      ? Icons.pause_rounded
-                      : Icons.play_arrow_rounded,
-                  size: 26,
-                  color: p.onAccent,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: MTSpace.xxl),
-          _Seek(
-            icon: Icons.forward_10_rounded,
-            label: l10n.seekForward10,
-            onTap: () => session.seekBy(const Duration(seconds: 10)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Seek extends StatelessWidget {
-  const _Seek({required this.icon, required this.label, required this.onTap});
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => IconButton(
-    onPressed: onTap,
-    tooltip: label,
-    icon: Icon(icon, size: 28, color: MTPalette.serverCardInk),
-  );
 }
 
 /// The bottom bar: progress, times, play modes and the queue button.

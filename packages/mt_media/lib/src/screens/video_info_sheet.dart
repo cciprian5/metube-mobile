@@ -211,8 +211,10 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
+    // The chosen chip is filled with the ink, as every chosen chip is: the
+    // action colour is kept for the one thing to press.
     return Material(
-      color: selected ? p.accentSoft : Colors.transparent,
+      color: selected ? p.ink : Colors.transparent,
       borderRadius: BorderRadius.circular(MTRadius.chip),
       child: InkWell(
         onTap: onTap,
@@ -224,12 +226,12 @@ class _Chip extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(MTRadius.chip),
-            border: Border.all(color: selected ? p.accent : p.line2),
+            border: Border.all(color: selected ? p.ink : p.line2),
           ),
           child: Text(
             label,
             style: Theme.of(context).textTheme.labelSmall!.copyWith(
-              color: selected ? p.accentInk : p.ink2,
+              color: selected ? p.bg : p.ink2,
               fontWeight: selected ? FontWeight.w700 : null,
             ),
           ),

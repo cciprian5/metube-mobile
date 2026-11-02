@@ -44,6 +44,7 @@ class FollowLine extends ConsumerWidget {
     );
     final l10n = context.mtl;
     final text = Theme.of(context).textTheme;
+    final p = MTThemeX.of(context).palette;
     return Padding(
       padding: const EdgeInsets.only(top: MTSpace.xs),
       child: Row(
@@ -61,10 +62,40 @@ class FollowLine extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: MTSpace.sm),
+          // A pill in the ink beside the name, and a quiet one once the
+          // channel is followed: the action colour belongs to the page's
+          // one main button, not to every offer on it.
           if (following)
-            Text(l10n.followingChannel, style: text.labelMedium)
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: MTSpace.md,
+                vertical: MTSpace.xs + 2,
+              ),
+              decoration: ShapeDecoration(
+                shape: StadiumBorder(side: BorderSide(color: p.line2)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  MTIcon(MTIcons.check, size: 15, color: p.ink3),
+                  const SizedBox(width: MTSpace.xs),
+                  Text(
+                    l10n.followingChannel,
+                    style: text.labelLarge!.copyWith(color: p.ink3),
+                  ),
+                ],
+              ),
+            )
           else
             OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: p.ink,
+                side: BorderSide(color: p.ink),
+                shape: const StadiumBorder(),
+                textStyle: text.labelLarge!.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               onPressed: () =>
                   showSubscriptionSheet(context, ref, url: url, name: author),
               child: Text(l10n.follow),

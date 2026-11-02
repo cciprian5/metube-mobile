@@ -76,6 +76,16 @@ void main() {
     expect(find.text('https://www.youtube.com/@RickAstleyYT'), findsOneWidget);
   });
 
+  testWidgets('**the guard**: Follow is a pill in the ink, not the accent '
+      '(the action colour is for the one main button)', (tester) async {
+    await pump(tester, item: clip('https://www.youtube.com/watch?v=abc'));
+    final style = tester
+        .widget<OutlinedButton>(find.byType(OutlinedButton))
+        .style!;
+    expect(style.foregroundColor!.resolve({}), MTPalette.superDay.ink);
+    expect(style.shape!.resolve({}), isA<StadiumBorder>());
+  });
+
   testWidgets('a channel already followed says so instead', (tester) async {
     await pump(
       tester,

@@ -62,35 +62,40 @@ class MTVideoInfoSheet extends StatelessWidget {
             top: Radius.circular(MTRadius.sheet - 4),
           ),
         ),
-        padding: const EdgeInsets.fromLTRB(
-          MTSpace.pagePad,
-          MTSpace.xl,
-          MTSpace.pagePad,
-          0,
-        ),
+        // The margins are inside the list, not around it: a list clips what
+        // passes its edges, and the actions row runs out to the screen's.
+        padding: const EdgeInsets.only(top: MTSpace.xl),
         child: CustomScrollView(
           slivers: [
-            SliverList.list(
-              children: [
-                ..._top(context, item),
-                const SizedBox(height: MTSpace.md),
-                MTQueueHeader(
-                  count: ordered.length,
-                  playlistName: playlistName,
-                  onShowAll: onShowPlaylist,
+            for (final sliver in [
+              SliverList.list(
+                children: [
+                  ..._top(context, item),
+                  const SizedBox(height: MTSpace.md),
+                  MTQueueHeader(
+                    count: ordered.length,
+                    playlistName: playlistName,
+                    onShowAll: onShowPlaylist,
+                  ),
+                  const SizedBox(height: MTSpace.xs),
+                ],
+              ),
+              MTUpNextSliver(
+                items: ordered,
+                currentIndex: currentIndex,
+                artwork: artwork,
+                paused: !session.isPlaying,
+                onTap: (index) =>
+                    session.jumpTo(session.items.indexOf(ordered[index])),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: MTSpace.xl)),
+            ])
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: MTSpace.pagePad,
                 ),
-                const SizedBox(height: MTSpace.xs),
-              ],
-            ),
-            MTUpNextSliver(
-              items: ordered,
-              currentIndex: currentIndex,
-              artwork: artwork,
-              paused: !session.isPlaying,
-              onTap: (index) =>
-                  session.jumpTo(session.items.indexOf(ordered[index])),
-            ),
-            const SliverToBoxAdapter(child: SizedBox(height: MTSpace.xl)),
+                sliver: sliver,
+              ),
           ],
         ),
       ),

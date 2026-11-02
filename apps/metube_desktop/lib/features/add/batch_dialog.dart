@@ -11,6 +11,7 @@ import '../../data/downloads_data.dart';
 import '../../shell/shell_metrics.dart';
 import '../library/artwork.dart';
 import 'add_options.dart';
+import 'pull_after.dart';
 import '../../shell/ember_dialog.dart';
 
 /// How a playlist's clips are read; a test puts its own in.
@@ -54,7 +55,7 @@ class _BatchDialogState extends ConsumerState<_BatchDialog> {
   /// Unticked, by link; everything else is sent.
   final _left = <String>{};
 
-  void _send(PlaylistPreview list, List<String> urls) {
+  Future<void> _send(PlaylistPreview list, List<String> urls) async {
     final l = context.mtl;
     final engine = ref.read(downloadEngineProvider);
     if (engine == null) {
@@ -63,6 +64,11 @@ class _BatchDialogState extends ConsumerState<_BatchDialog> {
     }
     final soundOnly = list.kind == PlaylistKind.soundcloud;
     final choice = soundOnly ? _choice.copyWith(audio: true) : _choice;
+    // "Then download it to this computer" holds for every link sent here,
+    // as it does in the add dialog: shown and ignored, it was a promise
+    // the playlist broke.
+    final pull = await PullAfter.ask(ref, choice);
+    if (!pull.go || !mounted) return;
     final ids = [
       for (final url in urls)
         engine
@@ -74,6 +80,7 @@ class _BatchDialogState extends ConsumerState<_BatchDialog> {
             )
             .id,
     ];
+    PullAfter.mark(ref, choice, pull.into, ids);
     if (urls.length > 1) {
       unawaited(ref.read(batchCollectorProvider).begin(list.title, ids));
     }
@@ -263,8 +270,9 @@ class _BatchDialogState extends ConsumerState<_BatchDialog> {
       actions: [
         if (single != null && list != null)
           TextButton(
-            onPressed: () =>
-                _send(list, ['https://www.youtube.com/watch?v=$single']),
+            onPressed: () => unawaited(
+              _send(list, ['https://www.youtube.com/watch?v=$single']),
+            ),
             child: Text(l.batchThisVideoOnly),
           ),
         TextButton(
@@ -274,7 +282,7 @@ class _BatchDialogState extends ConsumerState<_BatchDialog> {
         FilledButton(
           onPressed: list == null || chosen.isEmpty
               ? null
-              : () => _send(list, [for (final t in chosen) t.url]),
+              : () => unawaited(_send(list, [for (final t in chosen) t.url])),
           child: Text(l.batchDownloadSelected),
         ),
       ],

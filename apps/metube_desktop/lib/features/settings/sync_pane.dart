@@ -131,6 +131,8 @@ class SyncPane extends ConsumerWidget {
             ),
         ],
         const SizedBox(height: MTSpace.md),
+        Text(l.desktopSyncGuide, style: note),
+        const SizedBox(height: MTSpace.xs),
         Text(l.desktopSyncNotBackup, style: note),
       ],
     );

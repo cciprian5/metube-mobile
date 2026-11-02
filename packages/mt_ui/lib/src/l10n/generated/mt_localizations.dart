@@ -2612,6 +2612,12 @@ abstract class MTLocalizations {
   /// **'Last from {device}: {ago}'**
   String desktopSyncFrom(String device, String ago);
 
+  /// No description provided for @desktopSyncGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'At home: Syncthing on this computer and Syncthing-Fork (from F-Droid) on the phone, sharing one folder; set Syncthing-Fork to Wi‑Fi only to spare the phone\'s battery. Through a cloud: the cloud app\'s folder on this computer (OneDrive, Google Drive, Dropbox), and FolderSync on the phone with the same folder.'**
+  String get desktopSyncGuide;
+
   /// No description provided for @desktopSyncHint.
   ///
   /// In en, this message translates to:

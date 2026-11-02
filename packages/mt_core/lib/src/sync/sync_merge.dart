@@ -58,28 +58,51 @@ abstract final class SyncMerge {
   /// This device's data after reading [others]: merged, removals past
   /// their time forgotten.
   ///
+  /// **A file nobody has written for longer than [keepRemovals] is left
+  /// out**: the removals made since it was written are forgotten by now,
+  /// so it would bring back what was deleted. Every device writes its file
+  /// at least daily while it runs ([heartbeat]), so only a device really
+  /// gone goes quiet. A file without a time (written before files had one)
+  /// is read as before.
+  ///
   /// [lastSync] is when this device last merged successfully. Away longer
-  /// than [keepRemovals], everything it changed before leaving is set
-  /// aside: the others may have deleted it and since forgotten that they
-  /// did, so it counts as theirs to say. What it changed since it came back
-  /// is kept and merged as usual.
+  /// than [keepRemovals], what it changed before leaving **and before the
+  /// others' forgotten removals** is set aside: the others may have deleted
+  /// it and since forgotten that they did, so it counts as theirs to say.
+  /// Anything newer is kept, since a removal of it would still be in their
+  /// files, and so is everything when no other device is there to say
+  /// anything.
   static SyncOutcome forDevice({
     required SyncSnapshot mine,
     required Iterable<SyncSnapshot> others,
     required int now,
     int? lastSync,
   }) {
-    final away =
-        lastSync != null && now - lastSync > keepRemovals.inMilliseconds;
+    final keep = keepRemovals.inMilliseconds;
+    final live = [
+      for (final other in others)
+        if (other.deviceId != mine.deviceId &&
+            (other.writtenAt <= 0 || now - other.writtenAt <= keep))
+          other,
+    ];
+    final newest = live.fold(0, (at, o) => o.writtenAt > at ? o.writtenAt : at);
+    final forgotten = (newest > 0 ? newest : now) - keep;
+    final away = lastSync != null && now - lastSync > keep && live.isNotEmpty;
     var merged = away
-        ? _filtered(mine, <T>(Stamped<T> s) => s.at > lastSync)
+        ? _filtered(
+            mine,
+            <T>(Stamped<T> s) => s.at > lastSync || s.at >= forgotten,
+          )
         : mine;
-    for (final other in others) {
-      if (other.deviceId == mine.deviceId) continue;
+    for (final other in live) {
       merged = merge(merged, other);
     }
     return SyncOutcome(prune(merged, now: now), cameBack: away);
   }
+
+  /// How stale this device's own file may get before it is written again
+  /// though nothing changed, so the others do not take it for gone.
+  static const heartbeat = Duration(days: 1);
 
   static Map<String, Stamped<T>> _flat<T>(
     Map<String, Stamped<T>> a,

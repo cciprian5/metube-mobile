@@ -137,6 +137,29 @@ void main() {
     );
   });
 
+  test('**the guard**: choosing a folder forgets the last merge with the '
+      'old one, so it is not read as an absence', () async {
+    final c = make();
+    final store = c.read(keyValueStoreProvider);
+    await store.setInt(PhoneSyncSettingsNotifier.lastKey, 1);
+    await c.read(phoneSyncSettingsProvider.notifier).choose();
+    expect(await store.getInt(PhoneSyncSettingsNotifier.lastKey), isNull);
+  });
+
+  test('**the guard**: a file a day old is written again though nothing '
+      'changed, so the others do not take this phone for gone', () async {
+    final c = make();
+    await c.read(phoneSyncSettingsProvider.notifier).choose();
+    await c.read(phoneSyncProvider).run();
+    final id = c.read(phoneSyncSettingsProvider).value!.deviceId!;
+    final old = DateTime.now()
+        .subtract(const Duration(days: 2))
+        .millisecondsSinceEpoch;
+    await folder.write((await folder.read(id))!.copyWith(writtenAt: old));
+    await c.read(phoneSyncProvider).run();
+    expect((await folder.read(id))!.writtenAt, greaterThan(old));
+  });
+
   test('**the guard**: with sync off, a tag change starts no sync timer; '
       'with it on, one does', () async {
     final c = make();

@@ -34,7 +34,13 @@ class EmberNowPlaying extends ConsumerWidget {
               .where((i) => i.canonicalUrl == item.canonicalUrl)
               .firstOrNull;
     final cover = entry?.thumbnail ?? item?.artworkUrl;
-    final art = artworkFor(ref, context, cover, width: side, height: side);
+    final art = squareArtworkFor(
+      ref,
+      context,
+      cover,
+      canonicalUrl: item?.canonicalUrl,
+      side: side,
+    );
     final details = Row(
       children: [
         ClipRRect(

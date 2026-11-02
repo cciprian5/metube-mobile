@@ -346,13 +346,16 @@ class _Progress extends StatelessWidget {
       builder: (context, snap) {
         final total = state.duration?.inMilliseconds ?? 0;
         final at = snap.data?.inMilliseconds ?? 0;
-        return Directionality(
-          textDirection: TextDirection.ltr,
-          child: LinearProgressIndicator(
-            value: total <= 0 ? 0 : (at / total).clamp(0.0, 1.0),
-            minHeight: _hairline,
-            color: p.accent,
-            backgroundColor: Colors.transparent,
+        // Drawn, not Material's bar: the hairline fills left to right as
+        // the playback bar does, whatever the language.
+        return SizedBox(
+          height: _hairline,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: total <= 0 ? 0 : (at / total).clamp(0.0, 1.0),
+              child: ColoredBox(color: p.accent),
+            ),
           ),
         );
       },

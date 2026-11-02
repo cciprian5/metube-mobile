@@ -34,7 +34,7 @@ void main() {
       lastSync: 2 * _day,
     );
     expect(out.snapshot.tags[_trip]?['travel']?.removed, isFalse);
-  }, skip: 'Known defect found by the pre-release audit; unskip with the fix');
+  });
 
   test(
     "a quiet device's old file does not bring back a removal once forgotten",
@@ -66,6 +66,5 @@ void main() {
       );
       expect(out.snapshot.tags[_talk]?['calm']?.removed ?? true, isTrue);
     },
-    skip: 'Known defect found by the pre-release audit; unskip with the fix',
   );
 }

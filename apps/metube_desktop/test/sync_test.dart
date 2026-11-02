@@ -131,6 +131,48 @@ void main() {
       expect(await published.single.readAsString(), contains('fetched0000'));
     });
 
+    test('**the guard**: choosing a folder forgets the last merge with the '
+        'old one, so it is not read as an absence', () async {
+      await store.setInt(SyncSettingsNotifier.lastKey, 1);
+      await c.read(syncSettingsProvider.notifier).choose('${root.path}/Two');
+      expect(await store.getInt(SyncSettingsNotifier.lastKey), isNull);
+    });
+
+    test('**the guard**: a file a day old is written again though nothing '
+        'changed, so the others do not take this computer for gone', () async {
+      await c.read(emberSyncProvider).run();
+      final id = c.read(syncSettingsProvider).value!.deviceId!;
+      final old = DateTime.now()
+          .subtract(const Duration(days: 2))
+          .millisecondsSinceEpoch;
+      await folder.write((await folder.read(id))!.copyWith(writtenAt: old));
+      await c.read(emberSyncProvider).run();
+      expect((await folder.read(id))!.writtenAt, greaterThan(old));
+    });
+
+    test('**the guard**: the seven dated backups are not touched by a '
+        'run, so a sync gone wrong can still be undone', () async {
+      final backups = Directory('${root.path}/backup')..createSync();
+      for (var i = 1; i <= 7; i++) {
+        File('${backups.path}/metube_ember_2026-10-0${i}_120000.json')
+            .writeAsStringSync('{"day":$i}');
+      }
+      String state() =>
+          (backups
+                  .listSync()
+                  .whereType<File>()
+                  .map(
+                    (f) => '${f.uri.pathSegments.last}=${f.readAsStringSync()}',
+                  )
+                  .toList()
+                ..sort())
+              .join(';');
+      final before = state();
+      await _phoneWrote(folder);
+      await c.read(emberSyncProvider).run();
+      expect(state(), before);
+    });
+
     test('turned off, nothing is read or written', () async {
       await _phoneWrote(folder);
       await c.read(syncSettingsProvider.notifier).turnOff();
@@ -175,6 +217,16 @@ void main() {
       await settle(tester);
       return h;
     }
+
+    testWidgets('**the guard**: the pane says which apps keep the folder in '
+        'step, the phone on Wi-Fi only, and that sync is not a backup', (
+      tester,
+    ) async {
+      await open(tester);
+      expect(find.textContaining('FolderSync'), findsOneWidget);
+      expect(find.textContaining('Wi‑Fi only'), findsOneWidget);
+      expect(find.textContaining('not a backup'), findsOneWidget);
+    });
 
     testWidgets('shows this computer and the phone, and forgetting the '
         'phone removes its folder', (tester) async {

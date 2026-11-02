@@ -54,6 +54,9 @@ class SyncSettingsNotifier extends AsyncNotifier<SyncSettings> {
     await ref.read(prefsMutexProvider).run(() async {
       await store.setString(deviceKey, id);
       await store.setString(folderKey, folder);
+      // A new folder starts a new history: the time of the last merge
+      // with an old one would read as an absence and set data aside.
+      await store.remove(lastKey);
     });
     state = AsyncData(SyncSettings(folder: folder, deviceId: id));
   }
@@ -148,7 +151,13 @@ class EmberSync {
       );
       if (await _local.apply(outcome.snapshot)) _refresh();
       final data = outcome.snapshot.encode();
-      if (data != _written || await folder.read(myId) == null) {
+      // Written when it changed, and at least daily though it did not,
+      // or the others would take a quiet device's file for a gone one.
+      final own = await folder.read(myId);
+      if (data != _written ||
+          own == null ||
+          now.millisecondsSinceEpoch - own.writtenAt >
+              SyncMerge.heartbeat.inMilliseconds) {
         await folder.write(
           outcome.snapshot.copyWith(writtenAt: now.millisecondsSinceEpoch),
         );

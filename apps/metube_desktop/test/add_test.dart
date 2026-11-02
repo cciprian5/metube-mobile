@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metube_desktop/data/downloads_data.dart';
 import 'package:metube_desktop/features/add/add_entry.dart';
 import 'package:metube_desktop/features/add/batch_dialog.dart';
 import 'package:metube_desktop/features/add/link_lines.dart';
@@ -307,6 +308,48 @@ void main() {
       mutex: PrefsMutex(),
     ).readAll();
     expect(saved.single.name, 'Homelab Season');
+  });
+
+  testWidgets('**the guard**: "then download it to this computer" in a '
+      'playlist holds for every clip sent', (tester) async {
+    final h = ShellHarness(
+      library: const [],
+      server: ServerConfig(baseUrl: 'http://nas:8081'),
+      overrides: [
+        playlistReaderProvider.overrideWithValue(
+          (url) async => PlaylistPreview(
+            kind: PlaylistKind.youtube,
+            title: 'Homelab Season',
+            tracks: [
+              for (final id in ['aaaaaaaaaaa', 'bbbbbbbbbbb'])
+                PlaylistTrack(
+                  url: 'https://www.youtube.com/watch?v=$id',
+                  title: 'Episode $id',
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+    await open(tester, harness: h);
+    await openDialog(tester, _list);
+    await tester.tap(find.widgetWithText(FilledButton, 'Batch download'));
+    await tester.pumpAndSettle();
+    final pull = find.text(
+      'Then download it to this computer',
+      skipOffstage: false,
+    );
+    await tester.ensureVisible(pull);
+    await tester.tap(pull);
+    await tester.pump();
+    await tester.tap(find.text('Download selected'));
+    await tester.pumpAndSettle();
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(EmberSidebar)),
+    );
+    final pulls = container.read(pullAfterProvider);
+    expect(h.engine.submitted, hasLength(2));
+    expect(pulls.keys.toSet(), {for (final t in h.engine.submitted) t.id});
   });
 
   group('Ctrl+V', () {

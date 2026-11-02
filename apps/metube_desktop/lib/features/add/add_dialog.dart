@@ -9,7 +9,6 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/choices_data.dart';
 import '../../data/downloads_data.dart';
 import '../../data/library_data.dart';
-import '../../data/local_copies.dart';
 import '../../shell/shell_metrics.dart';
 import '../library/platform_label.dart';
 import 'add_options.dart';
@@ -17,6 +16,7 @@ import 'batch_dialog.dart';
 import 'link_lines.dart';
 import 'link_preview_card.dart';
 import 'links_view.dart';
+import 'pull_after.dart';
 import '../../shell/ember_dialog.dart';
 
 /// Opens the add dialog with [text] in its field: a link, or a text that
@@ -72,30 +72,14 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
     if (mounted) showMTNotice(context, message: message, kind: kind);
   }
 
-  /// The folder for "then download it to this computer", **asked now**
-  /// when the user wants to be asked: the server may take minutes, and a
-  /// dialog then would come from nowhere. False when it was closed.
   Future<bool> _askPullFolder() async {
-    if (!_choice.pullAfter) return true;
-    if (_choice.pullInto case final picked?) {
-      _pullInto = picked;
-      return true;
-    }
-    final chosen = await ref
-        .read(localCopiesProvider.notifier)
-        .chooseDownloadFolder();
-    if (chosen.asked && chosen.into == null) return false;
-    _pullInto = chosen.asked ? chosen.into : null;
-    return true;
+    final asked = await PullAfter.ask(ref, _choice);
+    _pullInto = asked.into;
+    return asked.go;
   }
 
-  void _markPull(Iterable<String> taskIds) {
-    if (!_choice.pullAfter) return;
-    final pulls = ref.read(pullAfterProvider);
-    for (final id in taskIds) {
-      pulls[id] = _pullInto;
-    }
-  }
+  void _markPull(Iterable<String> taskIds) =>
+      PullAfter.mark(ref, _choice, _pullInto, taskIds);
 
   /// Several links, sent together with the one choice for all.
   Future<void> _submitMany(ReadLinks read) async {

@@ -7,7 +7,7 @@ import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mt_core/mt_core.dart' show ImageHeaders;
+import 'package:mt_core/mt_core.dart' show ImageHeaders, youtubeWideCover;
 import 'package:mt_ui/mt_ui.dart' show MTMotion, mtMotionDuration;
 
 import '../../data/library_data.dart';
@@ -124,5 +124,37 @@ Widget? artworkFor(
             child: child,
           ),
     errorBuilder: (_, _, _) => const SizedBox.shrink(),
+  );
+}
+
+/// A square cover (the player bar's), which wants a wider picture than a
+/// card.
+///
+/// YouTube's `hqdefault` is 4:3 with the 16:9 picture between black bands:
+/// a card's 16:9 box crops them away, a square one shows them. So a YouTube
+/// cover asks for the wide thumbnail, which has none, and where an upload
+/// has no wide one the 4:3 picture is enlarged by 4/3 so the bands fall
+/// outside the square. A cover kept on this computer takes the wide one
+/// from [canonicalUrl]. Anything else is drawn as [artworkFor] draws it.
+Widget? squareArtworkFor(
+  WidgetRef ref,
+  BuildContext context,
+  String? value, {
+  required String? canonicalUrl,
+  required double side,
+}) {
+  final wide = youtubeWideCover(value, canonicalUrl);
+  final plain = artworkFor(ref, context, value, width: side, height: side);
+  if (wide == null) return plain;
+  return CachedNetworkImage(
+    imageUrl: wide,
+    cacheManager: ref.read(artworkCacheProvider),
+    fit: BoxFit.cover,
+    memCacheWidth: (side * 16 / 9 * MediaQuery.devicePixelRatioOf(context))
+        .round(),
+    fadeInDuration: mtMotionDuration(context, MTMotion.reveal),
+    fadeOutDuration: mtMotionDuration(context, MTMotion.fast),
+    errorWidget: (_, _, _) =>
+        Transform.scale(scale: 4 / 3, child: plain ?? const SizedBox.shrink()),
   );
 }

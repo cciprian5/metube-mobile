@@ -1516,6 +1516,10 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
+  String get desktopSyncGuide =>
+      'At home: Syncthing on this computer and Syncthing-Fork (from F-Droid) on the phone, sharing one folder; set Syncthing-Fork to Wi‑Fi only to spare the phone\'s battery. Through a cloud: the cloud app\'s folder on this computer (OneDrive, Google Drive, Dropbox), and FolderSync on the phone with the same folder.';
+
+  @override
   String get desktopSyncHint =>
       'Mirrors tags, favorites, lists, positions, saved searches and transcripts with your phone and other computers, through a folder a sync app keeps in step (Syncthing at home, or a cloud folder). Nothing goes to any service from here.';
 

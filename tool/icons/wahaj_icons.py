@@ -195,10 +195,10 @@ ICONS = {
     "captions_off": '<rect x="3" y="5.5" width="18" height="13" rx="2.8"/>'
                     '<path d="M10.6 10.3a2.1 2.1 0 1 0 0 3.4"/><path d="M16.6 10.3a2.1 2.1 0 1 0 0 3.4"/><path d="M4 4l16 16"/>',
     "bolt": '<path d="M13.2 3.6L6 13.4h5.4l-.8 7 7.4-9.8h-5.4z"/>',
-    "back10": '<path d="M5.4 9.6A7.4 7.4 0 1 1 4.6 13"/><path d="M5.2 5.4v4.4h4.4"/><path d="M10 10.4v5.2"/>'
-              '<rect x="12.4" y="10.4" width="3.4" height="5.2" rx="1.7"/>',
-    "forward10": '<path d="M18.6 9.6A7.4 7.4 0 1 0 19.4 13"/><path d="M18.8 5.4v4.4h-4.4"/><path d="M8.2 10.4v5.2"/>'
-                 '<rect x="10.6" y="10.4" width="3.4" height="5.2" rx="1.7"/>',
+    "back10": '<path d="M5.4 9.6A7.4 7.4 0 1 1 4.6 13"/><path d="M5.2 6v3.6h3.6"/><path d="M9.4 11v4"/>'
+              '<rect x="11.5" y="11" width="3.2" height="4" rx="1.6"/>',
+    "forward10": '<path d="M18.6 9.6A7.4 7.4 0 1 0 19.4 13"/><path d="M18.8 6v3.6h-3.6"/><path d="M9.4 11v4"/>'
+                 '<rect x="11.5" y="11" width="3.2" height="4" rx="1.6"/>',
     "paste": '<rect x="5.4" y="5" width="13.2" height="15.4" rx="2.2"/><rect x="9" y="3.4" width="6" height="3.4" rx="1.2"/>'
              '<path d="M9 12h6"/><path d="M9 15.6h4"/>',
     "queue_add": '<path d="M13 5H3"/><path d="M3 9h10"/><path d="M9 13H3"/><path class="es" d="M17 12v8"/><path class="es" d="M13 16h8"/>',

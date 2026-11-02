@@ -378,11 +378,11 @@ abstract final class MTIcons {
   );
   static const back10 = MTIconData(
     'back10',
-    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.4 9.6A7.4 7.4 0 1 1 4.6 13"/><path d="M5.2 5.4v4.4h4.4"/><path d="M10 10.4v5.2"/><rect x="12.4" y="10.4" width="3.4" height="5.2" rx="1.7"/></svg>''',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.4 9.6A7.4 7.4 0 1 1 4.6 13"/><path d="M5.2 6v3.6h3.6"/><path d="M9.4 11v4"/><rect x="11.5" y="11" width="3.2" height="4" rx="1.6"/></svg>''',
   );
   static const forward10 = MTIconData(
     'forward10',
-    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18.6 9.6A7.4 7.4 0 1 0 19.4 13"/><path d="M18.8 5.4v4.4h-4.4"/><path d="M8.2 10.4v5.2"/><rect x="10.6" y="10.4" width="3.4" height="5.2" rx="1.7"/></svg>''',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18.6 9.6A7.4 7.4 0 1 0 19.4 13"/><path d="M18.8 6v3.6h-3.6"/><path d="M9.4 11v4"/><rect x="11.5" y="11" width="3.2" height="4" rx="1.6"/></svg>''',
   );
   static const paste = MTIconData(
     'paste',

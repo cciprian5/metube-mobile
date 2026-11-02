@@ -49,7 +49,7 @@ AppBar libraryMainBar(
       IconButton(
         tooltip: MaterialLocalizations.of(context).searchFieldLabel,
         onPressed: onSearch,
-        icon: const Icon(Icons.search_rounded),
+        icon: const MTIcon(MTIcons.search),
       ),
       // The active downloads badge, which opens the management sheet.
       IconButton(
@@ -91,7 +91,7 @@ AppBar librarySelectionBar(
   return AppBar(
     leading: IconButton(
       onPressed: controller.clearSelection,
-      icon: const Icon(Icons.close_rounded),
+      icon: const MTIcon(MTIcons.close),
     ),
     // The count rises to its new value rather than jumping.
     title: MTAnimatedSwap(
@@ -108,25 +108,22 @@ AppBar librarySelectionBar(
           final items = ref.read(visibleLibraryProvider).valueOrNull ?? [];
           controller.selectAll(items.map((i) => i.key));
         },
-        icon: const Icon(Icons.select_all_rounded),
+        icon: const MTIcon(MTIcons.selectAll),
       ),
       IconButton(
         tooltip: l10n.addToPlaylist,
         onPressed: () => showAddToPlaylistSheet(context, ref, selected()),
-        icon: const Icon(Icons.playlist_add_rounded),
+        icon: const MTIcon(MTIcons.queueAdd),
       ),
       IconButton(
         tooltip: l10n.shareSelected,
         onPressed: () => ref.read(libraryActionsProvider).share(selected()),
-        icon: const Icon(Icons.share_rounded),
+        icon: const MTIcon(MTIcons.share),
       ),
       IconButton(
         tooltip: l10n.deleteSelected,
         onPressed: () => confirmBulkDelete(context, ref, selection),
-        icon: Icon(
-          Icons.delete_outline_rounded,
-          color: MTThemeX.of(context).palette.err,
-        ),
+        icon: MTIcon(MTIcons.trash, color: MTThemeX.of(context).palette.err),
       ),
     ],
   );

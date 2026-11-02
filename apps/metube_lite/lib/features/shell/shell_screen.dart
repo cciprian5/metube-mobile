@@ -373,18 +373,18 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
 
   List<MTNavItem> _navItems(MTLocalizations l10n) => [
     MTNavItem(
-      icon: Icons.download_outlined,
-      selectedIcon: Icons.download_rounded,
+      icon: MTIcons.download,
+      selectedIcon: MTIcons.download,
       label: l10n.navMyDownloads,
     ),
     MTNavItem(
-      icon: Icons.queue_music_outlined,
-      selectedIcon: Icons.queue_music_rounded,
+      icon: MTIcons.queue,
+      selectedIcon: MTIcons.queue,
       label: l10n.navPlaylists,
     ),
     MTNavItem(
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings_rounded,
+      icon: MTIcons.settings,
+      selectedIcon: MTIcons.settings,
       label: l10n.navSettings,
     ),
   ];

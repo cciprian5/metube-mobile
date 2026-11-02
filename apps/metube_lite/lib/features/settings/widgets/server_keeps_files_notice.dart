@@ -36,7 +36,7 @@ class ServerKeepsFilesNotice extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.folder_off_outlined, color: p.err),
+            MTIcon(MTIcons.folderOff, color: p.err),
             const SizedBox(width: MTSpace.md),
             Expanded(
               child: Column(

@@ -7,6 +7,8 @@ import 'package:video_player_platform_interface/video_player_platform_interface.
 
 import 'fake_video_platform.dart';
 
+import '../wahaj_finder.dart';
+
 /// **Media time runs left to right in every language** (field report
 /// 2026-09-25).
 ///
@@ -48,12 +50,8 @@ void main() {
           app(locale, MTVideoCenterControls(session: session)),
         );
         await tester.pump();
-        final rewind = tester
-            .getCenter(find.byIcon(Icons.replay_10_rounded))
-            .dx;
-        final forward = tester
-            .getCenter(find.byIcon(Icons.forward_10_rounded))
-            .dx;
+        final rewind = tester.getCenter(byWahaj(MTIcons.back10)).dx;
+        final forward = tester.getCenter(byWahaj(MTIcons.forward10)).dx;
         // Closed inside the test: its save timer would outlive it.
         await tester.pumpWidget(const SizedBox());
         await session.dispose();

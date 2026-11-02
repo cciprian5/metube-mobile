@@ -5,6 +5,9 @@ import '../tokens/tokens.dart';
 import 'mt_platform_chip.dart';
 import 'mt_system_bars.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// A quality option shown in the sheet. Values and labels come from the
 /// app, since mt_ui does not know the server contract: numeric qualities
 /// are only passed through when the link is a YouTube one.
@@ -90,7 +93,7 @@ class MTUrlInputSheet extends StatelessWidget {
               style: text.bodyMedium,
               decoration: InputDecoration(
                 hintText: urlHint,
-                prefixIcon: Icon(Icons.link_rounded, size: 20, color: p.ink3),
+                prefixIcon: MTIcon(MTIcons.link, size: 20, color: p.ink3),
                 // The platform the link was recognised as, inside the
                 // field it was read from, with a check: the field is
                 // right, not a badge on the sheet's frame.
@@ -111,7 +114,7 @@ class MTUrlInputSheet extends StatelessWidget {
                               style: text.labelSmall!.copyWith(color: p.ok),
                             ),
                             const SizedBox(width: MTSpace.xxs),
-                            Icon(Icons.check_rounded, size: 14, color: p.ok),
+                            MTIcon(MTIcons.check, size: 14, color: p.ok),
                           ],
                         ),
                       ),
@@ -145,7 +148,7 @@ class MTUrlInputSheet extends StatelessWidget {
             const SizedBox(height: MTSpace.xl),
             FilledButton.icon(
               onPressed: onStart,
-              icon: const Icon(Icons.download_rounded, size: 18),
+              icon: const MTIcon(MTIcons.download, size: 18),
               label: Text(startLabel),
             ),
           ],

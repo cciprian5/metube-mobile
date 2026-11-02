@@ -153,7 +153,7 @@ class _ServerFieldsState extends ConsumerState<ServerFields> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Icon(Icons.wifi_tethering_rounded, size: 18),
+              : const MTIcon(MTIcons.check, size: 18),
           label: Text(_testing ? l10n.testingConnection : l10n.saveSettings),
         ),
       ],

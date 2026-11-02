@@ -13,6 +13,8 @@ import 'package:mt_media/library.dart';
 
 import 'playback_test_doubles.dart';
 
+import 'wahaj_finder.dart';
+
 /// **Playing a clip low in a playlist keeps the list where it was** (field
 /// report 2026-09-25: it flashed and jumped to the top).
 ///
@@ -173,9 +175,7 @@ void main() {
           .first,
     );
     expect(fade.opacity, 0.5);
-    final headphones = tester.widget<Icon>(
-      find.byIcon(Icons.headphones_rounded),
-    );
+    final headphones = tester.widget<MTIcon>(byWahaj(MTIcons.headphones));
     expect(headphones.color, isNot(MTPalette.superDay.accent));
   });
 }

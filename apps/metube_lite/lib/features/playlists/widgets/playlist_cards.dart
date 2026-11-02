@@ -25,15 +25,11 @@ class SmartPlaylistCard extends StatelessWidget {
     final l10n = context.mtl;
     final (icon, label, glow) = switch (kind) {
       SmartListKind.favorites => (
-        Icons.favorite_rounded,
+        MTIcons.favoriteOn,
         l10n.favorites,
         p.favorite,
       ),
-      SmartListKind.latest => (
-        Icons.schedule_rounded,
-        l10n.latestAdditions,
-        p.accent,
-      ),
+      SmartListKind.latest => (MTIcons.clock, l10n.latestAdditions, p.accent),
     };
 
     return Material(
@@ -90,7 +86,7 @@ class SmartPlaylistCard extends StatelessWidget {
                         color: MTPalette.serverCardInk.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(MTRadius.chip),
                       ),
-                      child: Icon(icon, size: 15, color: glow),
+                      child: MTIcon(icon, size: 15, color: glow),
                     ),
                     const SizedBox(height: MTSpace.xs + 2),
                     Text(
@@ -236,7 +232,7 @@ class _Cover extends StatelessWidget {
   Widget _mosaic(BuildContext context, MTPalette p) {
     Widget cell(Widget? child) => ColoredBox(
       color: p.cardAlt,
-      child: child ?? Icon(Icons.queue_music_rounded, size: 18, color: p.ink3),
+      child: child ?? MTIcon(MTIcons.queue, size: 18, color: p.ink3),
     );
     Widget stretchRow(List<Widget> children) => Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -305,7 +301,7 @@ class _Cover extends StatelessWidget {
               child: SizedBox(
                 width: 28,
                 height: 28,
-                child: Icon(Icons.play_arrow_rounded, size: 16, color: p.bg),
+                child: MTIcon(MTIcons.playFill, size: 16, color: p.bg),
               ),
             ),
           ),

@@ -68,10 +68,8 @@ class MTTiltedArtwork extends StatelessWidget {
               child:
                   artwork?.call(context, item) ??
                   Center(
-                    child: Icon(
-                      item.isAudio
-                          ? Icons.graphic_eq_rounded
-                          : Icons.movie_rounded,
+                    child: MTIcon(
+                      item.isAudio ? MTIcons.music : MTIcons.video,
                       size: size * 0.22,
                       color: p.ink3,
                     ),
@@ -116,8 +114,8 @@ class MTSourceChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          local ? Icons.download_done_rounded : Icons.rss_feed_rounded,
+        MTIcon(
+          local ? MTIcons.offline : MTIcons.subscriptions,
           size: 13,
           color: p.ink3,
         ),

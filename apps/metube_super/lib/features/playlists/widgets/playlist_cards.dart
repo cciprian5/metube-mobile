@@ -115,7 +115,7 @@ class _Cover extends StatelessWidget {
   Widget _mosaic(BuildContext context, MTPalette p) {
     Widget cell(Widget? child) => ColoredBox(
       color: p.cardAlt,
-      child: child ?? Icon(Icons.queue_music_rounded, size: 18, color: p.ink3),
+      child: child ?? MTIcon(MTIcons.queue, size: 18, color: p.ink3),
     );
     Widget stretchRow(List<Widget> children) => Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -184,7 +184,7 @@ class _Cover extends StatelessWidget {
               child: SizedBox(
                 width: 28,
                 height: 28,
-                child: Icon(Icons.play_arrow_rounded, size: 16, color: p.bg),
+                child: MTIcon(MTIcons.playFill, size: 16, color: p.bg),
               ),
             ),
           ),

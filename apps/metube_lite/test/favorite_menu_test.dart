@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_lite/di.dart';
 import 'package:metube_lite/features/downloads_library/library_providers.dart';
@@ -9,6 +8,8 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import 'widget_test.dart' show host;
+
+import 'wahaj_finder.dart';
 
 /// **Favourites from the menu, not an empty heart on every card** (owner's
 /// decision 2026-11-01).
@@ -40,7 +41,7 @@ void main() {
 
   testWidgets('**the guard**: a card carries no heart to tap', (tester) async {
     await pump(tester, clip());
-    expect(find.byIcon(Icons.favorite_border_rounded), findsNothing);
+    expect(byWahaj(MTIcons.favorite), findsNothing);
     expect(find.byType(MTFavoriteMark), findsNothing);
   });
 
@@ -53,7 +54,7 @@ void main() {
     tester,
   ) async {
     await pump(tester, clip());
-    await tester.tap(find.byIcon(Icons.more_vert_rounded));
+    await tester.tap(byWahaj(MTIcons.moreVert));
     await tester.pumpAndSettle();
     expect(find.byType(MTFavoriteTile), findsOneWidget);
   });
@@ -62,7 +63,7 @@ void main() {
     tester,
   ) async {
     await pump(tester, clip());
-    await tester.tap(find.byIcon(Icons.more_vert_rounded));
+    await tester.tap(byWahaj(MTIcons.moreVert));
     await tester.pumpAndSettle();
     final delete = find.text('حذف الفيديو');
     await tester.ensureVisible(delete);

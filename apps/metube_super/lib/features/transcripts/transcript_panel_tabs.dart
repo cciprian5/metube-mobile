@@ -48,13 +48,13 @@ class _TranscriptPanelTabsState extends State<TranscriptPanelTabs> {
                   runSpacing: MTSpace.xs,
                   children: [
                     MTPanelTab(
-                      icon: Icons.subject_rounded,
+                      icon: MTIcons.transcript,
                       label: l10n.transcript,
                       selected: !_chapters,
                       onTap: () => setState(() => _chapters = false),
                     ),
                     MTPanelTab(
-                      icon: Icons.segment_rounded,
+                      icon: MTIcons.list,
                       label: mtMetaLine([
                         l10n.desktopChapters,
                         '${widget.chapters.length}',
@@ -70,7 +70,7 @@ class _TranscriptPanelTabsState extends State<TranscriptPanelTabs> {
                 IconButton(
                   onPressed: widget.onClose,
                   tooltip: MaterialLocalizations.of(context).closeButtonLabel,
-                  icon: const Icon(Icons.close_rounded),
+                  icon: const MTIcon(MTIcons.close),
                 ),
             ],
           ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// **The settings home's rows** (approved mock-up, 2026-10-14): the value
 /// under the title, a chevron where a page is pushed, and the open
 /// section lit on the tablet's list, where nothing is pushed.
@@ -23,13 +25,13 @@ void main() {
           title: 'App',
           rows: [
             MTSettingsRow(
-              icon: Icons.download_rounded,
+              icon: MTIcons.download,
               title: 'Downloads',
               value: 'Best · Wi‑Fi only',
               onTap: () => taps++,
             ),
             MTSettingsRow(
-              icon: Icons.play_arrow_rounded,
+              icon: MTIcons.playFill,
               title: 'Playback',
               value: 'Best compatibility: on',
               onTap: () {},
@@ -39,7 +41,7 @@ void main() {
       ),
     );
     expect(find.text('Best · Wi‑Fi only'), findsOneWidget);
-    expect(find.byIcon(Icons.chevron_right_rounded), findsNWidgets(2));
+    expect(byWahaj(MTIcons.forward), findsNWidgets(2));
     // A hairline between the two rows, none above the first.
     expect(find.byType(Divider), findsOneWidget);
 
@@ -58,7 +60,7 @@ void main() {
           title: 'App',
           rows: [
             MTSettingsRow(
-              icon: Icons.download_rounded,
+              icon: MTIcons.download,
               title: 'Downloads',
               value: 'Best',
               onTap: () {},
@@ -97,7 +99,7 @@ void main() {
           rows: [
             for (final open in [true, false])
               MTSettingsRow(
-                icon: Icons.download_rounded,
+                icon: MTIcons.download,
                 title: open ? 'Open' : 'Closed',
                 value: 'value',
                 selected: open,
@@ -108,7 +110,7 @@ void main() {
         ),
       ),
     );
-    expect(find.byIcon(Icons.chevron_right_rounded), findsNothing);
+    expect(byWahaj(MTIcons.forward), findsNothing);
     expect(find.byType(Divider), findsNothing);
     final tiles = tester.widgetList<ListTile>(find.byType(ListTile)).toList();
     expect(tiles.first.selected, isTrue);
@@ -124,7 +126,7 @@ void main() {
     await tester.pumpWidget(
       host(
         MTSettingsRow(
-          icon: Icons.download_rounded,
+          icon: MTIcons.download,
           title: 'Open',
           value: 'value',
           selected: true,
@@ -154,7 +156,7 @@ void main() {
       await tester.pumpWidget(
         host(
           MTSettingsRow(
-            icon: Icons.subject_rounded,
+            icon: MTIcons.transcript,
             title: 'النصوص والترجمة',
             value: 'مفعّل · 58 مقطعاً · الترجمة ظاهرة · ' * 3,
             onTap: () {},

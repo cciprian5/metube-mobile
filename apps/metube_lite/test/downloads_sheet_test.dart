@@ -8,6 +8,8 @@ import 'package:metube_lite/features/downloads_library/widgets/downloads_sheet.d
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// Field report 2026-10-15: when the last download finished, the open
 /// sheet leapt to the top of the screen to say there were none.
 void main() {
@@ -129,7 +131,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.byType(MTDrawnCheck), findsOneWidget);
-    expect(find.byIcon(Icons.close_rounded), findsNothing);
+    expect(byWahaj(MTIcons.close), findsNothing);
 
     await tester.pumpAndSettle();
     expect(find.byType(MTDrawnCheck), findsNothing);

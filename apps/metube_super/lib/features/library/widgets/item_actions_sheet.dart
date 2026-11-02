@@ -87,12 +87,12 @@ class _ItemActionsSheet extends ConsumerWidget {
     }
 
     ListTile tile(
-      IconData icon,
+      MTIconData icon,
       String label,
       VoidCallback onTap, {
       Color? color,
     }) => ListTile(
-      leading: Icon(icon, color: color ?? p.ink2),
+      leading: MTIcon(icon, color: color ?? p.ink2),
       title: Text(
         label,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color),
@@ -146,7 +146,7 @@ class _ItemActionsSheet extends ConsumerWidget {
             ),
             if (item.onServer && !item.isOffline)
               tile(
-                Icons.download_for_offline_outlined,
+                MTIcons.offline,
                 l10n.makeOffline,
                 () => run(
                   () => actions.makeOffline(item),
@@ -159,14 +159,14 @@ class _ItemActionsSheet extends ConsumerWidget {
             if (item.uploader case final channel?
                 when channel.trim().isNotEmpty)
               tile(
-                Icons.subscriptions_outlined,
+                MTIcons.subscriptions,
                 l10n.showChannel(mtName(channel)),
                 () {
                   Navigator.pop(context);
                   ref.read(libraryViewProvider.notifier).toggleChannel(channel);
                 },
               ),
-            tile(Icons.info_outline_rounded, l10n.details, () {
+            tile(MTIcons.info, l10n.details, () {
               Navigator.pop(context);
               showItemDetailsSheet(host, item);
             }),
@@ -177,12 +177,12 @@ class _ItemActionsSheet extends ConsumerWidget {
                     .valueOrNull
                     ?.contains(item.canonicalUrl) ??
                 false)
-              tile(Icons.subject_rounded, l10n.transcript, () {
+              tile(MTIcons.transcript, l10n.transcript, () {
                 Navigator.pop(context);
                 showTranscriptSheet(host, item, '');
               }),
             tile(
-              Icons.share_rounded,
+              MTIcons.share,
               l10n.share,
               () => run(() => actions.smartShare(item)),
             ),
@@ -193,7 +193,7 @@ class _ItemActionsSheet extends ConsumerWidget {
             // local copy sees "make available offline" above instead.
             if (item.localPath case final String path)
               tile(
-                Icons.open_with_rounded,
+                MTIcons.playback,
                 l10n.openInExternalPlayer,
                 () => run(() async {
                   final opened = await const ExternalPlayer().open(
@@ -211,24 +211,24 @@ class _ItemActionsSheet extends ConsumerWidget {
               ),
             // Every server item has a canonical URL, so the original link
             // is always offered here; Lite offers it only when known.
-            tile(Icons.open_in_new_rounded, l10n.openOriginalLink, () {
+            tile(MTIcons.external, l10n.openOriginalLink, () {
               Navigator.pop(context);
               launchUrl(
                 Uri.parse(item.canonicalUrl),
                 mode: LaunchMode.externalApplication,
               );
             }),
-            tile(Icons.playlist_add_rounded, l10n.addToPlaylist, () {
+            tile(MTIcons.queueAdd, l10n.addToPlaylist, () {
               Navigator.pop(context);
               showAddToPlaylistSheet(host, ref, [item]);
             }),
-            tile(Icons.sell_outlined, l10n.tags, () {
+            tile(MTIcons.tags, l10n.tags, () {
               Navigator.pop(context);
               showItemTagsSheet(host, ref, [item.canonicalUrl]);
             }),
             if (item.isOffline && item.onServer)
               tile(
-                Icons.phonelink_erase_rounded,
+                MTIcons.phoneOff,
                 l10n.removeLocalCopy,
                 () => run(
                   () => actions.removeLocalCopy(item),
@@ -238,7 +238,7 @@ class _ItemActionsSheet extends ConsumerWidget {
             const Divider(),
             if (item.onServer)
               tile(
-                Icons.delete_outline_rounded,
+                MTIcons.trash,
                 l10n.deleteFromServer,
                 () => confirmItemDelete(
                   context,
@@ -254,7 +254,7 @@ class _ItemActionsSheet extends ConsumerWidget {
               ),
             if (!item.onServer && item.isOffline)
               tile(
-                Icons.delete_outline_rounded,
+                MTIcons.trash,
                 l10n.deleteVideo,
                 () => confirmItemDelete(
                   context,

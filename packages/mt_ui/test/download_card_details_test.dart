@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// **The download card as the plan draws it** (mobile plan 2026-11-01): the
 /// clip's picture, the server's speed beside the percentage, and a task
 /// waiting its turn drawn still rather than as a moving bar.
@@ -59,7 +61,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('cover')), findsOneWidget);
-    expect(find.byIcon(Icons.download_rounded), findsNothing);
+    expect(byWahaj(MTIcons.download), findsNothing);
   });
 
   test('the speed reads in kilobytes under a megabyte a second', () {

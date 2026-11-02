@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 void main() {
   Widget host(
     ScrollController controller, {
@@ -61,7 +63,7 @@ void main() {
     await tester.drag(find.byType(ListView), const Offset(0, -300));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.arrow_downward_rounded));
+    await tester.tap(byWahaj(MTIcons.chevronDown));
     await tester.pumpAndSettle();
     expect(controller.position.extentAfter, 0);
     expect(find.text('line 299'), findsOneWidget);
@@ -72,10 +74,7 @@ void main() {
     final controller = ScrollController();
     addTearDown(controller.dispose);
     await tester.pumpWidget(host(controller));
-    await tester.tap(
-      find.byIcon(Icons.arrow_downward_rounded),
-      warnIfMissed: false,
-    );
+    await tester.tap(byWahaj(MTIcons.chevronDown), warnIfMissed: false);
     await tester.pumpAndSettle();
     expect(controller.offset, 0);
   });

@@ -64,7 +64,7 @@ class _MTNowPlayingTabsState extends State<MTNowPlayingTabs> {
                   onTap: () => setState(() => _queue = false),
                 ),
               MTPanelTab(
-                icon: Icons.queue_music_rounded,
+                icon: MTIcons.queue,
                 label: '${context.mtl.upNext} · ${_handler.items.length}',
                 selected: showQueue,
                 onTap: () => setState(() => _queue = true),
@@ -120,7 +120,7 @@ class MTPanelTab extends StatelessWidget {
     required this.onTap,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -151,7 +151,7 @@ class MTPanelTab extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 15, color: fg),
+                MTIcon(icon, size: 15, color: fg),
                 const SizedBox(width: MTSpace.xxs),
                 Text(
                   label,

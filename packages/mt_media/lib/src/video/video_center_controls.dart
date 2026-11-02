@@ -23,7 +23,7 @@ class MTVideoCenterControls extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _Seek(
-            icon: Icons.replay_10_rounded,
+            icon: MTIcons.back10,
             label: l10n.seekBackward10,
             onTap: () => session.seekBy(const Duration(seconds: -10)),
           ),
@@ -38,9 +38,7 @@ class MTVideoCenterControls extends StatelessWidget {
                 width: 58,
                 height: 58,
                 child: MTIconSwap(
-                  icon: session.isPlaying
-                      ? Icons.pause_rounded
-                      : Icons.play_arrow_rounded,
+                  icon: session.isPlaying ? MTIcons.pause : MTIcons.playFill,
                   size: 26,
                   color: p.onAccent,
                 ),
@@ -49,7 +47,7 @@ class MTVideoCenterControls extends StatelessWidget {
           ),
           const SizedBox(width: MTSpace.xxl),
           _Seek(
-            icon: Icons.forward_10_rounded,
+            icon: MTIcons.forward10,
             label: l10n.seekForward10,
             onTap: () => session.seekBy(const Duration(seconds: 10)),
           ),
@@ -62,7 +60,7 @@ class MTVideoCenterControls extends StatelessWidget {
 class _Seek extends StatelessWidget {
   const _Seek({required this.icon, required this.label, required this.onTap});
 
-  final IconData icon;
+  final MTIconData icon;
   final String label;
   final VoidCallback onTap;
 
@@ -70,6 +68,6 @@ class _Seek extends StatelessWidget {
   Widget build(BuildContext context) => IconButton(
     onPressed: onTap,
     tooltip: label,
-    icon: Icon(icon, size: 28, color: MTPalette.serverCardInk),
+    icon: MTIcon(icon, size: 28, color: MTPalette.serverCardInk),
   );
 }

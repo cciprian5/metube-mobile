@@ -5,6 +5,9 @@ import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import 'mt_polish.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// **A favourite's mark on a phone card**: a small crimson heart before the
 /// channel name, a status rather than a button.
 ///
@@ -20,8 +23,8 @@ class MTFavoriteMark extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsetsDirectional.only(end: MTSpace.xxs),
     child: ExcludeSemantics(
-      child: Icon(
-        Icons.favorite_rounded,
+      child: MTIcon(
+        MTIcons.favoriteOn,
         size: 12,
         color: MTThemeX.of(context).palette.favorite,
       ),
@@ -45,8 +48,8 @@ class MTFavoriteTile extends StatelessWidget {
     final p = MTThemeX.of(context).palette;
     final l10n = context.mtl;
     return ListTile(
-      leading: Icon(
-        favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+      leading: MTIcon(
+        favorite ? MTIcons.favoriteOn : MTIcons.favorite,
         color: favorite ? p.favorite : p.ink2,
       ),
       title: Text(
@@ -78,7 +81,7 @@ class MTFavoriteButton extends StatelessWidget {
       tooltip: favorite ? l10n.removeFromFavorites : l10n.addToFavorites,
       onPressed: onPressed,
       icon: MTIconSwap(
-        icon: favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+        icon: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
         size: 22,
         color: favorite ? p.favorite : p.ink3,
       ),

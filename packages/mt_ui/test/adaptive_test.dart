@@ -6,9 +6,13 @@ import 'package:mt_ui/mt_ui.dart';
 /// and a wide window trades the bottom bar for a side rail.
 void main() {
   const items = [
-    MTNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'أ'),
-    MTNavItem(icon: Icons.list_outlined, selectedIcon: Icons.list, label: 'ب'),
-    MTNavItem(icon: Icons.settings, selectedIcon: Icons.settings, label: 'ج'),
+    MTNavItem(icon: MTIcons.library, selectedIcon: MTIcons.library, label: 'أ'),
+    MTNavItem(icon: MTIcons.list, selectedIcon: MTIcons.list, label: 'ب'),
+    MTNavItem(
+      icon: MTIcons.settings,
+      selectedIcon: MTIcons.settings,
+      label: 'ج',
+    ),
   ];
 
   Future<void> pump(

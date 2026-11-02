@@ -216,6 +216,8 @@ class _SubscriptionSheetState extends ConsumerState<_SubscriptionSheet> {
               ),
             const SizedBox(height: MTSpace.md),
             DropdownMenu<int>(
+              trailingIcon: const MTIcon(MTIcons.chevronDown),
+              selectedTrailingIcon: const MTIcon(MTIcons.chevronUp),
               initialSelection: _interval,
               label: Text(l10n.checkEvery),
               expandedInsets: EdgeInsets.zero,
@@ -274,7 +276,7 @@ class _SubscriptionSheetState extends ConsumerState<_SubscriptionSheet> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outline_rounded, size: 16, color: p.ink3),
+                  MTIcon(MTIcons.info, size: 16, color: p.ink3),
                   const SizedBox(width: MTSpace.xs),
                   Expanded(
                     child: Text(
@@ -296,9 +298,7 @@ class _SubscriptionSheetState extends ConsumerState<_SubscriptionSheet> {
                         height: 16,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : Icon(
-                        _isEdit ? Icons.check_rounded : Icons.add_link_rounded,
-                      ),
+                    : MTIcon(_isEdit ? MTIcons.check : MTIcons.addlink),
                 label: Text(_isEdit ? l10n.saveSettings : l10n.follow),
               ),
             ),

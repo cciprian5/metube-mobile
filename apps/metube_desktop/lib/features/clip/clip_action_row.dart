@@ -168,7 +168,7 @@ class RoundAction extends StatelessWidget {
               dimension: MTDensity.desktop.iconButton,
               child: Center(
                 child: MTIconSwap(
-                  wahaj: icon,
+                  icon: icon,
                   size: MTDensity.desktop.icon,
                   color: on ? p.favorite : p.ink2,
                 ),

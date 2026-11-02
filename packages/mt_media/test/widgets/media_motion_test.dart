@@ -80,7 +80,7 @@ void main() {
     Widget icon(bool on) => host(
       Scaffold(
         body: Center(
-          child: MTToggledIcon(icon: Icons.repeat, on: on),
+          child: MTToggledIcon(icon: MTIcons.repeat, on: on),
         ),
       ),
     );

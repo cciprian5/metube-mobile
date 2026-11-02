@@ -226,7 +226,7 @@ class _ItemTagsSheetState extends ConsumerState<_ItemTagsSheet> {
                 Navigator.pop(context);
                 showManageTagsSheet(widget.host, ref);
               },
-              icon: const Icon(Icons.settings_rounded, size: 17),
+              icon: const MTIcon(MTIcons.settings, size: 17),
               label: Text(l10n.manageTags),
             ),
           ],

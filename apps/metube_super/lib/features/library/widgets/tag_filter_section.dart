@@ -44,7 +44,7 @@ class TagFilterSection extends ConsumerWidget {
           children: [
             if (anyActive)
               ActionChip(
-                avatar: Icon(Icons.backspace_outlined, size: 14, color: p.ink2),
+                avatar: MTIcon(MTIcons.close, size: 14, color: p.ink2),
                 label: Text(l10n.clear),
                 onPressed: controller.clearTags,
               ),

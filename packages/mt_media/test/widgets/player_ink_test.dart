@@ -7,6 +7,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../playback/fake_player_port.dart';
 
+import '../wahaj_finder.dart';
+
 /// **The glow stays and the extras go** (mobile plan 2026-10-31): the
 /// accent is for play and progress, so the play button casts no coloured
 /// shadow, and shuffle and repeat say "on" in ink with a dot, not in a
@@ -61,8 +63,8 @@ void main() {
     await tester.pump();
   }
 
-  Color glyph(WidgetTester tester, IconData icon) =>
-      tester.widget<Icon>(find.byIcon(icon)).color!;
+  Color glyph(WidgetTester tester, MTIconData icon) =>
+      tester.widget<MTIcon>(byWahaj(icon)).color!;
 
   testWidgets('**the guard**: the play button casts no shadow', (tester) async {
     await pump(tester);
@@ -83,15 +85,18 @@ void main() {
     tester,
   ) async {
     await pump(tester);
-    expect(glyph(tester, Icons.shuffle_rounded), p.ink3);
+    expect(glyph(tester, MTIcons.shuffle), p.ink3);
 
     await tester.runAsync(() => handler.setShuffle(true));
     await tester.pump();
-    expect(glyph(tester, Icons.shuffle_rounded), p.ink);
-    expect(glyph(tester, Icons.shuffle_rounded), isNot(p.accent));
+    expect(glyph(tester, MTIcons.shuffle), p.ink);
+    expect(glyph(tester, MTIcons.shuffle), isNot(p.accent));
     final dot = tester.widget<Container>(
       find.descendant(
-        of: find.widgetWithIcon(MTToggledIcon, Icons.shuffle_rounded),
+        of: find.ancestor(
+          of: byWahaj(MTIcons.shuffle),
+          matching: find.byType(MTToggledIcon),
+        ),
         matching: find.byType(Container),
       ),
     );
@@ -104,7 +109,7 @@ void main() {
     await pump(tester);
     await tester.runAsync(() => handler.setPlayMode(PlayMode.repeatAll));
     await tester.pump();
-    expect(glyph(tester, Icons.repeat_rounded), p.ink);
+    expect(glyph(tester, MTIcons.repeat), p.ink);
   });
 
   testWidgets('**the guard**: the player title carries the one-tap heart '
@@ -161,7 +166,7 @@ void main() {
           home: MTAudioScreen(
             handler: handler,
             extra: (_) => MTExtraAction(
-              icon: Icons.subject_rounded,
+              icon: MTIcons.transcript,
               label: 'Transcript',
               onTap: () {},
             ),

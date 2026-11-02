@@ -7,6 +7,8 @@ import 'package:video_player_platform_interface/video_player_platform_interface.
 
 import 'fake_video_platform.dart';
 
+import '../wahaj_finder.dart';
+
 /// **Guards from a device review on 2026-09-05**: each one is about a flaw
 /// seen on the device rather than an imagined possibility.
 void main() {
@@ -65,7 +67,7 @@ void main() {
           ),
         ),
       );
-      expect(find.byIcon(Icons.graphic_eq_rounded), findsOneWidget);
+      expect(byWahaj(MTIcons.music), findsOneWidget);
     });
 
     testWidgets('an existing cover is shown, and the icon is not', (
@@ -83,7 +85,7 @@ void main() {
           ),
         ),
       );
-      expect(find.byIcon(Icons.graphic_eq_rounded), findsNothing);
+      expect(byWahaj(MTIcons.music), findsNothing);
     });
 
     testWidgets('a wide YouTube thumbnail fills a square plate', (

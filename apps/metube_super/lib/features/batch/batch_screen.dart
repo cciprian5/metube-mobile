@@ -75,7 +75,7 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
           ? null
           : FloatingActionButton.extended(
               onPressed: _submit,
-              icon: const Icon(Icons.download_rounded),
+              icon: const MTIcon(MTIcons.download),
               label: Text(l10n.batchDownloadSelected),
             ),
       body: MTReadableWidth(
@@ -187,7 +187,7 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
           contentPadding: const EdgeInsets.symmetric(
             horizontal: MTSpace.pagePad,
           ),
-          secondary: const Icon(Icons.save_alt_rounded),
+          secondary: const MTIcon(MTIcons.download),
           title: Text(context.mtl.batchSaveToDevice),
         ),
         Expanded(

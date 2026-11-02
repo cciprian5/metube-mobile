@@ -76,10 +76,8 @@ void showPlaylistActionsSheet(
           ),
           const Divider(),
           ListTile(
-            leading: Icon(
-              playlist.pinned
-                  ? Icons.push_pin_rounded
-                  : Icons.push_pin_outlined,
+            leading: MTIcon(
+              playlist.pinned ? MTIcons.pinOn : MTIcons.pin,
               color: p.ink2,
             ),
             title: Text(
@@ -92,7 +90,7 @@ void showPlaylistActionsSheet(
             },
           ),
           ListTile(
-            leading: Icon(Icons.edit_rounded, color: p.ink2),
+            leading: MTIcon(MTIcons.edit, color: p.ink2),
             title: Text(l10n.rename),
             onTap: () async {
               Navigator.pop(sheetContext);
@@ -118,7 +116,7 @@ void showPlaylistActionsSheet(
           if (ref.read(playlistViewProvider(playlist.id)).valueOrNull
               case final PlaylistView view when view.missing.isNotEmpty)
             ListTile(
-              leading: Icon(Icons.playlist_remove_rounded, color: p.ink2),
+              leading: MTIcon(MTIcons.queueRemove, color: p.ink2),
               title: Text(l10n.removeUnavailable(view.missing.length)),
               onTap: () async {
                 Navigator.pop(sheetContext);
@@ -132,7 +130,7 @@ void showPlaylistActionsSheet(
             ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.delete_outline_rounded, color: p.err),
+            leading: MTIcon(MTIcons.trash, color: p.err),
             title: Text(
               l10n.delete,
               style: Theme.of(context).textTheme.bodyMedium!

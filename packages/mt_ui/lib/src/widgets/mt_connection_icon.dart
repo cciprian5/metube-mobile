@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import '../tokens/tokens.dart';
 import 'mt_polish.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icon_data.dart';
+import '../icons/mt_icons.dart';
+
 /// **The server card's state icon, alive while it means "trying".**
 ///
 /// A still glyph cannot tell a check of one second from one of thirty, so
@@ -23,7 +27,7 @@ class MTConnectionIcon extends StatefulWidget {
   });
 
   /// The still glyph for a settled state; ignored while [checking].
-  final IconData icon;
+  final MTIconData icon;
   final Color color;
   final bool checking;
   final double size;
@@ -121,15 +125,15 @@ class _MTConnectionIconState extends State<MTConnectionIcon>
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Icon(Icons.cloud_outlined, size: size, color: widget.color),
+                MTIcon(MTIcons.cloudLine, size: size, color: widget.color),
                 // Inside the cloud's body, which sits a little low in the
                 // glyph.
                 Padding(
                   padding: EdgeInsets.only(top: size * 0.12),
                   child: RotationTransition(
                     turns: _spin,
-                    child: Icon(
-                      Icons.sync_rounded,
+                    child: MTIcon(
+                      MTIcons.refresh,
                       size: size * 0.42,
                       color: widget.color,
                     ),
@@ -138,7 +142,7 @@ class _MTConnectionIconState extends State<MTConnectionIcon>
               ],
             ),
           )
-        : Icon(
+        : MTIcon(
             widget.icon,
             key: ValueKey(widget.icon),
             size: size,

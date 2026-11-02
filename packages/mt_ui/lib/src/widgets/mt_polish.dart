@@ -69,27 +69,23 @@ class _MTPressableState extends State<MTPressable> {
 /// between play and pause, or between an empty and a filled heart.
 ///
 /// The icon itself is the key, so nothing animates unless it changes.
-/// The Windows app, which draws no Material icon, may give [wahaj] alone.
 class MTIconSwap extends StatelessWidget {
   const MTIconSwap({
     super.key,
-    this.icon,
+    required this.icon,
     this.size,
     this.color,
     this.semanticLabel,
     this.shadows,
-    this.wahaj,
-  }) : assert(icon != null || wahaj != null);
+    this.matchTextDirection = false,
+  });
 
-  final IconData? icon;
-
-  /// The same icon from the Wahaj set, drawn instead in the Windows app,
-  /// which uses no Material icons. The phones keep [icon].
-  final MTIconData? wahaj;
+  final MTIconData icon;
   final double? size;
   final Color? color;
   final String? semanticLabel;
   final List<Shadow>? shadows;
+  final bool matchTextDirection;
 
   @override
   Widget build(BuildContext context) => AnimatedSwitcher(
@@ -106,44 +102,35 @@ class MTIconSwap extends StatelessWidget {
         child: child,
       ),
     ),
-    child: switch (wahaj) {
-      final glyph? when MTDesktopApp.isDesktop(context) || icon == null =>
-        MTIcon(
-          glyph,
-          key: ValueKey(glyph.name),
-          size: size,
-          color: color,
-          semanticLabel: semanticLabel,
-        ),
-      _ => Icon(
-        icon,
-        key: ValueKey(icon!.codePoint),
-        size: size,
-        color: color,
-        semanticLabel: semanticLabel,
-        shadows: shadows,
-      ),
-    },
+    child: MTIcon(
+      icon,
+      key: ValueKey(icon.name),
+      size: size,
+      color: color,
+      semanticLabel: semanticLabel,
+      shadows: shadows,
+      matchTextDirection: matchTextDirection,
+    ),
   );
 }
 
-/// What an item's thumbnail shows when it has no cover: a music note on
-/// the phones, as always; in the Windows app, which uses no Material
-/// icons, the Wahaj headphones for audio and the clip mark for video.
+/// What an item's thumbnail shows when it has no cover: on the phones a
+/// music note, as always; in the Windows app the headphones for audio and
+/// the clip mark for video.
 Widget mtCoverPlaceholder(
   BuildContext context, {
   required double size,
   required Color color,
   bool audio = false,
-}) => MTDesktopApp.isDesktop(context)
-    ? Center(
-        child: MTIcon(
-          audio ? MTIcons.headphones : MTIcons.library,
-          size: size,
-          color: color,
-        ),
-      )
-    : Icon(Icons.music_note_rounded, size: size, color: color);
+}) => Center(
+  child: MTIcon(
+    MTDesktopApp.isDesktop(context)
+        ? (audio ? MTIcons.headphones : MTIcons.library)
+        : MTIcons.music,
+    size: size,
+    color: color,
+  ),
+);
 
 /// **A "rising sheet" transition**: the screen rises whole from the bottom
 /// while the one beneath it dims slightly. For screens that expand out of a

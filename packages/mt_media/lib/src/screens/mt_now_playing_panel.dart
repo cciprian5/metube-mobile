@@ -84,11 +84,7 @@ class MTNowPlayingPanel extends StatelessWidget {
                       IconButton(
                         onPressed: onCollapse,
                         tooltip: l10n.nowPlayingCollapse,
-                        icon: Icon(
-                          Icons.close_fullscreen_rounded,
-                          size: 20,
-                          color: p.ink2,
-                        ),
+                        icon: MTIcon(MTIcons.collapse, size: 20, color: p.ink2),
                       ),
                     ],
                   ),

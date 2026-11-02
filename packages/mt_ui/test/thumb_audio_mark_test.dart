@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// **The music-note mark on an audio item's thumbnail** (field report 2026-09-29):
 /// an audio file from a video site keeps the video's frame as its cover, so
 /// nothing on the card told a song from a video.
@@ -18,7 +20,7 @@ void main() {
       );
 
   const cover = ColoredBox(color: Colors.teal);
-  final note = find.byIcon(Icons.music_note_rounded);
+  final note = byWahaj(MTIcons.music);
 
   final cards = <String, Widget Function({required bool audio, Widget? art})>{
     'list card': ({required audio, art}) =>
@@ -97,7 +99,7 @@ void main() {
         brightness: Brightness.dark,
       ),
     );
-    final icon = tester.widget<Icon>(note);
+    final icon = tester.widget<MTIcon>(note);
     expect(
       icon.color,
       MTPalette.of(MTVariant.superApp, Brightness.dark).bg,

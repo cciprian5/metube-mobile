@@ -6,6 +6,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../playback/fake_player_port.dart';
 
+import '../wahaj_finder.dart';
+
 /// The audio screen is shared: Super adds a transcript button beside
 /// speed and queue, Lite adds nothing and must look as it always has.
 void main() {
@@ -41,7 +43,7 @@ void main() {
   tearDown(() => handler.dispose());
 
   MTExtraAction transcript({VoidCallback? onTap}) => MTExtraAction(
-    icon: Icons.subject_rounded,
+    icon: MTIcons.transcript,
     label: 'Transcript',
     onTap: onTap ?? () {},
   );
@@ -80,7 +82,7 @@ void main() {
     await show(tester, null);
     expect(find.bySemanticsLabel(RegExp('^Queue')), findsOneWidget);
     semantics.dispose();
-    expect(find.byIcon(Icons.subject_rounded), findsNothing);
+    expect(byWahaj(MTIcons.transcript), findsNothing);
   });
 
   // Mobile plan, page 02: two light marks at the ends of the line, not
@@ -94,9 +96,9 @@ void main() {
     expect(find.text('Speed'), findsNothing);
     expect(find.bySemanticsLabel(RegExp('^Playback speed')), findsOneWidget);
     expect(find.textContaining('×'), findsOneWidget);
-    expect(find.byIcon(Icons.queue_music_rounded), findsOneWidget);
+    expect(byWahaj(MTIcons.queue), findsOneWidget);
     final speed = tester.getCenter(find.textContaining('×'));
-    final queue = tester.getCenter(find.byIcon(Icons.queue_music_rounded));
+    final queue = tester.getCenter(byWahaj(MTIcons.queue));
     // At the two ends of the line, not side by side in the middle.
     expect((queue.dx - speed.dx).abs(), greaterThan(200));
     semantics.dispose();
@@ -113,13 +115,13 @@ void main() {
     });
     expect(asked, contains('https://x/talk'));
     expect(find.byTooltip('Transcript'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.subject_rounded));
+    await tester.tap(byWahaj(MTIcons.transcript));
     expect(taps, 1);
   });
 
   testWidgets('a null answer shows nothing', (tester) async {
     await show(tester, (_) => null);
-    expect(find.byIcon(Icons.subject_rounded), findsNothing);
+    expect(byWahaj(MTIcons.transcript), findsNothing);
   });
 
   // The smallest phone at Android's largest text size: the screen used to

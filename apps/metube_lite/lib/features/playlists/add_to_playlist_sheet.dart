@@ -75,7 +75,7 @@ class _AddToPlaylistSheet extends ConsumerWidget {
               const SizedBox(height: MTSpace.sm),
               OutlinedButton.icon(
                 onPressed: () => _createAndAdd(context, ref),
-                icon: const Icon(Icons.add_rounded, size: 18),
+                icon: const MTIcon(MTIcons.plus, size: 18),
                 label: Text(l10n.newPlaylistAction),
               ),
             ],
@@ -100,8 +100,8 @@ class _AddToPlaylistSheet extends ConsumerWidget {
     );
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(
-        playlist.pinned ? Icons.push_pin_rounded : Icons.queue_music_rounded,
+      leading: MTIcon(
+        playlist.pinned ? MTIcons.pinOn : MTIcons.queue,
         color: palette.ink2,
       ),
       title: Text(playlist.name),
@@ -110,9 +110,7 @@ class _AddToPlaylistSheet extends ConsumerWidget {
             ? l10n.alreadyInPlaylist
             : l10n.queueItemsCount(playlist.items.length),
       ),
-      trailing: already
-          ? Icon(Icons.check_circle_rounded, color: palette.accent)
-          : null,
+      trailing: already ? MTIcon(MTIcons.check, color: palette.accent) : null,
       onTap: () => _add(context, ref, playlist, already: already),
     );
   }

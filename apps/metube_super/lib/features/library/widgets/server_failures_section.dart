@@ -172,7 +172,7 @@ class ServerFailuresLine extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                Icon(Icons.error_outline_rounded, size: 18, color: p.err),
+                MTIcon(MTIcons.alert, size: 18, color: p.err),
                 const SizedBox(width: MTSpace.sm),
                 Expanded(
                   child: Text(

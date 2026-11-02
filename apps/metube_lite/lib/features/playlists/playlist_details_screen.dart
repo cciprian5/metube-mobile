@@ -44,7 +44,7 @@ class PlaylistDetailsScreen extends ConsumerWidget {
           IconButton(
             tooltip: l10n.rename,
             onPressed: () => showPlaylistActionsSheet(context, ref, playlist),
-            icon: const Icon(Icons.more_vert_rounded),
+            icon: const MTIcon(MTIcons.moreVert),
           ),
         ],
       ),
@@ -137,7 +137,7 @@ class _Actions extends ConsumerWidget {
               Expanded(
                 child: FilledButton.icon(
                   onPressed: start,
-                  icon: const Icon(Icons.play_arrow_rounded, size: 18),
+                  icon: const MTIcon(MTIcons.playFill, size: 18),
                   label: Text(l10n.playAll),
                 ),
               ),
@@ -145,7 +145,7 @@ class _Actions extends ConsumerWidget {
               IconButton.outlined(
                 tooltip: l10n.shuffle,
                 onPressed: () => start(shuffle: true),
-                icon: const Icon(Icons.shuffle_rounded, size: 19),
+                icon: const MTIcon(MTIcons.shuffle, size: 19),
               ),
               const SizedBox(width: MTSpace.xs),
               // The headphones button: the whole playlist as background audio
@@ -154,7 +154,7 @@ class _Actions extends ConsumerWidget {
                 tooltip: l10n.listenInBackground,
                 onPressed: () => start(audioOnly: true),
                 // In ink: the filled button beside it is the one action in colour.
-                icon: const Icon(Icons.headphones_rounded, size: 19),
+                icon: const MTIcon(MTIcons.headphones, size: 19),
               ),
             ],
           ),
@@ -339,7 +339,7 @@ class _DismissBackground extends StatelessWidget {
       alignment: AlignmentDirectional.centerEnd,
       padding: const EdgeInsets.symmetric(horizontal: MTSpace.xl),
       color: p.err.withValues(alpha: 0.12),
-      child: Icon(Icons.delete_outline_rounded, color: p.err),
+      child: MTIcon(MTIcons.trash, color: p.err),
     );
   }
 }

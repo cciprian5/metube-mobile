@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// **A summary bar for active downloads**, replacing one stacked card per
 /// task at the top of the library.
 ///
@@ -62,7 +65,7 @@ class MTActiveDownloadsBar extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.downloading_rounded, size: 20, color: p.accent),
+                  MTIcon(MTIcons.download, size: 20, color: p.accent),
                   const SizedBox(width: MTSpace.sm),
                   Expanded(
                     child: Text(

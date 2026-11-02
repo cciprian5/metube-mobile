@@ -43,7 +43,7 @@ class LibraryFilterChips extends ConsumerWidget {
             MTGrowIn(
               key: const ValueKey('chip-channel'),
               child: MTActiveFilterChip(
-                icon: Icons.subscriptions_rounded,
+                icon: MTIcons.subscriptions,
                 label: channel,
                 onDeleted: () => controller.toggleChannel(null),
               ),
@@ -52,7 +52,7 @@ class LibraryFilterChips extends ConsumerWidget {
             MTGrowIn(
               key: const ValueKey('chip-folder'),
               child: MTActiveFilterChip(
-                icon: Icons.folder_rounded,
+                icon: MTIcons.folder,
                 label: mtName(folder),
                 onDeleted: () => controller.setFolder(null),
                 onPressed: openSheet,

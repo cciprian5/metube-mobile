@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
 import '../tokens/tokens.dart';
 import '../widgets/mt_page_motion.dart';
 import 'mt_theme_controls.dart';
@@ -108,6 +110,13 @@ ThemeData mtTheme(
     // instead of the default vertical rise that says nothing about how the
     // two screens relate.
     pageTransitionsTheme: mtPageTransitionsTheme,
+    // The back and close buttons Flutter draws by itself (an app bar's
+    // leading arrow) take the Wahaj glyphs, like every other icon.
+    actionIconTheme: ActionIconThemeData(
+      backButtonIconBuilder: (_) =>
+          const MTIcon(MTIcons.back, matchTextDirection: true),
+      closeButtonIconBuilder: (_) => const MTIcon(MTIcons.close),
+    ),
     dividerTheme: DividerThemeData(
       color: p.line,
       thickness: hairline,

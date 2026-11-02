@@ -8,6 +8,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'device_matrix.dart';
 
+import 'wahaj_finder.dart';
+
 /// **Guard: the transcript under the music player follows a language**
 /// (field report 2026-11-01). It showed whichever transcript was kept
 /// first, Arabic whatever the app's language, with no way to switch. It
@@ -87,7 +89,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.swap_horiz_rounded), findsNothing);
+    expect(byWahaj(MTIcons.swap), findsNothing);
     expect(find.text('Tap for the whole text'), findsOneWidget);
   });
 

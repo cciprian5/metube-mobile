@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../models/play_mode.dart';
 import '../widgets/media_time.dart';
 import '../widgets/mt_chapter_label.dart';
 import '../widgets/mt_chapters.dart';
@@ -61,9 +62,7 @@ class MTVideoTopBar extends StatelessWidget {
     return Row(
       children: [
         MTVideoIconButton(
-          icon: fullscreen
-              ? Icons.arrow_back_rounded
-              : Icons.keyboard_arrow_down_rounded,
+          icon: fullscreen ? MTIcons.back : MTIcons.chevronDown,
           onTap: onBack,
           tooltip: l10n.dismiss,
         ),
@@ -104,7 +103,7 @@ class MTVideoTopBar extends StatelessWidget {
               ? Padding(
                   padding: const EdgeInsetsDirectional.only(start: MTSpace.xs),
                   child: MTVideoIconButton(
-                    icon: Icons.picture_in_picture_alt_rounded,
+                    icon: MTIcons.pip,
                     onTap: () => MTPictureInPicture.instance.enter(
                       aspect: mtPictureShape(session),
                     ),
@@ -118,16 +117,14 @@ class MTVideoTopBar extends StatelessWidget {
         const SizedBox(width: MTSpace.xs),
         if (onLock != null) ...[
           MTVideoIconButton(
-            icon: Icons.lock_outline_rounded,
+            icon: MTIcons.lock,
             onTap: onLock!,
             tooltip: l10n.lockTouch,
           ),
           const SizedBox(width: MTSpace.xs),
         ],
         MTVideoIconButton(
-          icon: fullscreen
-              ? Icons.fullscreen_exit_rounded
-              : Icons.fullscreen_rounded,
+          icon: fullscreen ? MTIcons.collapse : MTIcons.fullscreen,
           onTap: onToggleFullscreen,
           tooltip: fullscreen ? l10n.exitFullscreen : l10n.enterFullscreen,
         ),
@@ -215,10 +212,11 @@ class MTVideoBottomBar extends StatelessWidget {
                 onTap: () => session.setPlayMode(session.playMode.next),
                 tooltip: mtPlayModeLabel(context, session.playMode),
                 size: 32,
+                active: session.playMode != PlayMode.autoNext,
               ),
               const SizedBox(width: MTSpace.xxs + 2),
               MTVideoIconButton(
-                icon: Icons.shuffle_rounded,
+                icon: MTIcons.shuffle,
                 onTap: () => session.setShuffle(!session.shuffleEnabled),
                 tooltip: l10n.shuffle,
                 size: 32,
@@ -238,7 +236,7 @@ class MTVideoBottomBar extends StatelessWidget {
               ],
               const SizedBox(width: MTSpace.xxs + 2),
               MTVideoIconButton(
-                icon: Icons.queue_music_rounded,
+                icon: MTIcons.queue,
                 onTap: onQueue,
                 tooltip: l10n.queueLabel,
                 size: 32,

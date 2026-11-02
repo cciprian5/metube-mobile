@@ -64,7 +64,7 @@ class EmberPlayerControl extends StatelessWidget {
     // A mode turned on or off, or the heart filled, swaps its glyph in
     // place rather than jumping.
     icon: MTIconSwap(
-      wahaj: icon,
+      icon: icon,
       size: MTDensity.desktop.icon,
       color: ink,
       semanticLabel: label,
@@ -116,7 +116,7 @@ class EmberPlayButton extends StatelessWidget {
           dimension: MTDensity.desktop.row,
           child: Center(
             child: MTIconSwap(
-              wahaj: playing ? MTIcons.pause : MTIcons.playFill,
+              icon: playing ? MTIcons.pause : MTIcons.playFill,
               size: MTDensity.desktop.icon,
               color: onTap == null ? p.ink3 : ink,
               semanticLabel: label,

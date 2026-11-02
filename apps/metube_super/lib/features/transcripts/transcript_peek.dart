@@ -55,7 +55,7 @@ class TranscriptPeek extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.subject_rounded, size: 16, color: p.ink2),
+                  MTIcon(MTIcons.transcript, size: 16, color: p.ink2),
                   const SizedBox(width: MTSpace.xs),
                   // The title and the note share the line and give way to
                   // each other on a small phone or a large font.
@@ -79,10 +79,7 @@ class TranscriptPeek extends StatelessWidget {
                               foregroundColor: p.ink2,
                               visualDensity: VisualDensity.compact,
                             ),
-                            icon: const Icon(
-                              Icons.swap_horiz_rounded,
-                              size: 16,
-                            ),
+                            icon: const MTIcon(MTIcons.swap, size: 16),
                             label: Text(
                               mtLanguageName(language),
                               maxLines: 1,

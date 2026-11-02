@@ -20,10 +20,14 @@ class FolderRow extends StatelessWidget {
     final p = MTThemeX.of(context).palette;
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(Icons.folder_outlined, color: p.ink2),
+      leading: MTIcon(MTIcons.folder, color: p.ink2),
       title: Text(context.mtl.folder),
       subtitle: Text(value, maxLines: 1, overflow: TextOverflow.ellipsis),
-      trailing: Icon(Icons.chevron_right_rounded, color: p.ink3),
+      trailing: MTIcon(
+        MTIcons.forward,
+        matchTextDirection: true,
+        color: p.ink3,
+      ),
       onTap: onTap,
     );
   }
@@ -78,7 +82,7 @@ class _FolderPicker extends ConsumerWidget {
           );
 
     Widget option({
-      required IconData icon,
+      required MTIconData icon,
       required String title,
       String? subtitle,
       required bool selected,
@@ -94,11 +98,11 @@ class _FolderPicker extends ConsumerWidget {
           start: MTSpace.pagePad + indent,
           end: MTSpace.pagePad,
         ),
-        leading: Icon(icon, color: p.ink2),
+        leading: MTIcon(icon, color: p.ink2),
         title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: subtitle == null ? null : Text(subtitle),
         // The choice in ink: the accent is for the action.
-        trailing: selected ? Icon(Icons.check_rounded, color: p.ink) : null,
+        trailing: selected ? MTIcon(MTIcons.check, color: p.ink) : null,
         onTap: () => Navigator.of(context).pop(choice),
       ),
     );
@@ -143,7 +147,7 @@ class _FolderPicker extends ConsumerWidget {
               children: [
                 if (offerTop)
                   option(
-                    icon: Icons.video_library_outlined,
+                    icon: MTIcons.library,
                     title: l10n.noFolder,
                     subtitle: l10n.noFolderHint,
                     selected: current.isTop,
@@ -151,14 +155,14 @@ class _FolderPicker extends ConsumerWidget {
                   ),
                 if (offerChannelName)
                   option(
-                    icon: Icons.subscriptions_outlined,
+                    icon: MTIcons.subscriptions,
                     title: l10n.channelNameFolder,
                     selected: current.channelName,
                     choice: FolderChoice.channel,
                   ),
                 for (final path in folders)
                   option(
-                    icon: Icons.folder_outlined,
+                    icon: MTIcons.folder,
                     title: mtName(path.split('/').last),
                     // A nested folder says where it sits.
                     subtitle: path.contains('/') ? mtName(path) : null,
@@ -175,7 +179,7 @@ class _FolderPicker extends ConsumerWidget {
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: MTSpace.pagePad,
                       ),
-                      leading: Icon(Icons.add_rounded, color: p.ink2),
+                      leading: MTIcon(MTIcons.plus, color: p.ink2),
                       title: Text(l10n.newFolder),
                       subtitle: Text(l10n.newFolderHint),
                       onTap: () async {

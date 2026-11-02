@@ -42,7 +42,7 @@ class SettingsEntry {
   const SettingsEntry(this.pane, this.icon, this.title, this.value);
 
   final SettingsPane pane;
-  final IconData icon;
+  final MTIconData icon;
   final String title;
 
   /// The setting as it stands, not a description of the section.
@@ -63,25 +63,25 @@ List<(String, List<SettingsEntry>)> settingsGroups(
       [
         SettingsEntry(
           SettingsPane.server,
-          Icons.cloud_outlined,
+          MTIcons.cloud,
           l10n.serverConfiguration,
           v.server(),
         ),
         SettingsEntry(
           SettingsPane.network,
-          Icons.lan_outlined,
+          MTIcons.globe,
           l10n.networkSettings,
           v.network(),
         ),
         SettingsEntry(
           SettingsPane.subscriptions,
-          Icons.rss_feed_rounded,
+          MTIcons.subscriptions,
           l10n.subscriptions,
           v.subscriptions(),
         ),
         SettingsEntry(
           SettingsPane.cookies,
-          Icons.cookie_outlined,
+          MTIcons.cookie,
           l10n.cookies,
           v.cookies(),
         ),
@@ -92,25 +92,25 @@ List<(String, List<SettingsEntry>)> settingsGroups(
       [
         SettingsEntry(
           SettingsPane.downloads,
-          Icons.download_rounded,
+          MTIcons.download,
           l10n.settingsDownloads,
           v.downloads(),
         ),
         SettingsEntry(
           SettingsPane.playback,
-          Icons.play_arrow_rounded,
+          MTIcons.playFill,
           l10n.settingsPlayback,
           v.playback(),
         ),
         SettingsEntry(
           SettingsPane.appearance,
-          Icons.palette_outlined,
+          MTIcons.appearance,
           l10n.appearanceAndLanguage,
           v.appearance(),
         ),
         SettingsEntry(
           SettingsPane.transcripts,
-          Icons.subject_rounded,
+          MTIcons.transcript,
           l10n.settingsTranscripts,
           v.transcripts(),
         ),
@@ -121,37 +121,37 @@ List<(String, List<SettingsEntry>)> settingsGroups(
       [
         SettingsEntry(
           SettingsPane.library,
-          Icons.bar_chart_rounded,
+          MTIcons.stats,
           l10n.yourLibrary,
           v.library(),
         ),
         SettingsEntry(
           SettingsPane.backup,
-          Icons.shield_outlined,
+          MTIcons.backup,
           l10n.settingsBackup,
           v.backup(),
         ),
         SettingsEntry(
           SettingsPane.sync,
-          Icons.sync_rounded,
+          MTIcons.refresh,
           l10n.syncTitle,
           v.sync(),
         ),
         SettingsEntry(
           SettingsPane.updates,
-          Icons.system_update_alt_rounded,
+          MTIcons.saveTo,
           l10n.updates,
           v.updates(),
         ),
         SettingsEntry(
           SettingsPane.logs,
-          Icons.article_outlined,
+          MTIcons.list,
           l10n.diagnosticLogs,
           l10n.diagnosticLogsSubtitle,
         ),
         SettingsEntry(
           SettingsPane.about,
-          Icons.info_outline_rounded,
+          MTIcons.info,
           l10n.aboutApp,
           v.about(),
         ),

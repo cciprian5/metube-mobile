@@ -268,6 +268,10 @@ abstract final class MTIcons {
     'cloud',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/><circle fill="{ember}" stroke="none" cx="12.4" cy="14.3" r="1.7"/></svg>''',
   );
+  static const cloudLine = MTIconData(
+    'cloud_line',
+    r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/></svg>''',
+  );
   static const cloudCheck = MTIconData(
     'cloud_check',
     r'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{ink}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/><path d="M9.6 14.2l1.8 1.8 3.4-3.4"/></svg>''',
@@ -470,6 +474,7 @@ abstract final class MTIcons {
     music,
     video,
     cloud,
+    cloudLine,
     cloudCheck,
     cloudWait,
     cloudOff,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// **Guard: the components' own motion from the mobile plan.** Each of
 /// these jumped, looped without end or vanished in a frame before.
 void main() {
@@ -107,7 +109,7 @@ void main() {
       ),
     );
     expect(find.byType(MTDrawnCheck), findsOneWidget);
-    expect(find.byIcon(Icons.close_rounded), findsNothing);
+    expect(byWahaj(MTIcons.close), findsNothing);
   });
 
   testWidgets('a row folds away after its moment, then says so', (

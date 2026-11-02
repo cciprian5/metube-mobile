@@ -185,7 +185,7 @@ class _ActionTile extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(action.icon, size: 17, color: fg),
+              MTIcon(action.icon, size: 17, color: fg),
               const SizedBox(height: MTSpace.xxs + 2),
               Text(
                 action.label,

@@ -238,19 +238,19 @@ class _ReadingScreenState extends State<ReadingScreen> {
           IconButton(
             onPressed: () => setState(() => _finding = true),
             tooltip: l.desktopReadingFind,
-            icon: const Icon(Icons.search_rounded),
+            icon: const MTIcon(MTIcons.search),
           ),
           IconButton(
             onPressed: () => setState(
               () => _size = (_size + 1) % ReadingScreen.sizes.length,
             ),
             tooltip: l.readingTextSize,
-            icon: const Icon(Icons.format_size_rounded),
+            icon: const MTIcon(MTIcons.textSize),
           ),
           IconButton(
             onPressed: _share,
             tooltip: l.readingShare,
-            icon: const Icon(Icons.ios_share_rounded),
+            icon: const MTIcon(MTIcons.share),
           ),
         ],
       ),

@@ -39,7 +39,7 @@ class ChannelPage extends ConsumerWidget {
         actions: [
           if (sub != null)
             PopupMenuButton<VoidCallback>(
-              icon: const Icon(Icons.more_vert_rounded),
+              icon: const MTIcon(MTIcons.moreVert),
               // Above the add button, as sheets and dialogs are.
               useRootNavigator: true,
               onSelected: (action) => action(),

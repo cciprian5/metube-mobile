@@ -13,6 +13,8 @@ import 'package:mt_media/library.dart';
 
 import 'device_matrix.dart';
 
+import 'wahaj_finder.dart';
+
 /// **One chip row above the list** (mobile plan 2026-10-31): the tags left
 /// their second row for the sort and filter sheet, and a chosen tag shows
 /// in the first row with its way out.
@@ -91,7 +93,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Travel'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.close_rounded));
+    await tester.tap(byWahaj(MTIcons.close));
     await tester.pumpAndSettle();
     expect(options().tags, isEmpty);
     expect(options().excludedTags, isEmpty);

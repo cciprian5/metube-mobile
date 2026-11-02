@@ -110,7 +110,7 @@ MTVideoPanel? Function(PlaylistItem item) transcriptPanels(
       clipChaptersProvider((url: item.canonicalUrl, language: language.value)),
     );
     return MTVideoPanel(
-      icon: Icons.subject_rounded,
+      icon: MTIcons.transcript,
       label: label,
       builder: (context, close) {
         final transcript = TranscriptSheet(
@@ -164,7 +164,7 @@ MTVideoPanel? Function(PlaylistItem item) audioTranscriptPanels(
     final transcripts = _transcriptsOf(container, item.canonicalUrl);
     if (transcripts.isEmpty) return null;
     return MTVideoPanel(
-      icon: Icons.subject_rounded,
+      icon: MTIcons.transcript,
       label: label,
       builder: (context, close) => TranscriptSheet(
         title: item.title,

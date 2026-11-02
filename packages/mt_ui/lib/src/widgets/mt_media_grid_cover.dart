@@ -140,10 +140,7 @@ class MTMediaGridCover extends StatelessWidget {
                   if (onFavoriteToggle != null &&
                       (favorite || hovered || !MTDesktopApp.isDesktop(context)))
                     _CoverButton(
-                      icon: favorite
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_border_rounded,
-                      wahaj: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
+                      icon: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
                       tooltip: favorite
                           ? l10n.removeFromFavorites
                           : l10n.addToFavorites,
@@ -159,7 +156,7 @@ class MTMediaGridCover extends StatelessWidget {
                     ),
                   if (onMore != null)
                     _CoverButton(
-                      icon: Icons.more_vert_rounded,
+                      icon: MTIcons.moreVert,
                       tooltip: l10n.itemOptions,
                       color: Colors.white,
                       onTap: onMore!,
@@ -177,14 +174,12 @@ class MTMediaGridCover extends StatelessWidget {
 class _CoverButton extends StatelessWidget {
   const _CoverButton({
     required this.icon,
-    this.wahaj,
     required this.tooltip,
     required this.color,
     required this.onTap,
   });
 
-  final IconData icon;
-  final MTIconData? wahaj;
+  final MTIconData icon;
   final String tooltip;
   final Color color;
   final VoidCallback onTap;
@@ -216,7 +211,6 @@ class _CoverButton extends StatelessWidget {
         // 2026-09-04).
         child: MTIconSwap(
           icon: icon,
-          wahaj: wahaj,
           size: 17,
           color: color,
           // Icons over a thumbnail of unknown colour: a light shadow keeps

@@ -68,7 +68,7 @@ class ReadingFindBar extends StatelessWidget {
               decoration: InputDecoration(
                 isDense: true,
                 hintText: l.desktopReadingFind,
-                prefixIcon: const Icon(Icons.search_rounded),
+                prefixIcon: const MTIcon(MTIcons.search),
               ),
             ),
           ),
@@ -83,17 +83,17 @@ class ReadingFindBar extends StatelessWidget {
           IconButton(
             onPressed: count == 0 ? null : () => onStep(-1),
             tooltip: l.desktopReadingPreviousMatch,
-            icon: const Icon(Icons.keyboard_arrow_up_rounded),
+            icon: const MTIcon(MTIcons.chevronUp),
           ),
           IconButton(
             onPressed: count == 0 ? null : () => onStep(1),
             tooltip: l.desktopReadingNextMatch,
-            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            icon: const MTIcon(MTIcons.chevronDown),
           ),
           IconButton(
             onPressed: onClose,
             tooltip: l.desktopReadingCloseFind,
-            icon: const Icon(Icons.close_rounded),
+            icon: const MTIcon(MTIcons.close),
           ),
         ],
       ),
@@ -206,8 +206,8 @@ class _ReadingPlaybackBarState extends State<ReadingPlaybackBar> {
                         : context.mtl.play,
                     icon: MTIconSwap(
                       icon: (playing.data ?? false)
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
+                          ? MTIcons.pause
+                          : MTIcons.playFill,
                       color: p.miniInk,
                     ),
                   ),

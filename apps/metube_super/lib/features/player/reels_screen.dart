@@ -148,19 +148,19 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
         return [
           if (hasTranscript)
             MTPlayerAction(
-              icon: Icons.subject_rounded,
+              icon: MTIcons.transcript,
               label: l10n.transcript,
               onTap: () => showReelTranscript(context, _reel, item),
             ),
           MTPlayerAction(
-            icon: Icons.info_outline_rounded,
+            icon: MTIcons.info,
             label: l10n.details,
             onTap: () {
               if (match != null) showItemDetailsSheet(context, match);
             },
           ),
           MTPlayerAction(
-            icon: Icons.playlist_add_rounded,
+            icon: MTIcons.queueAdd,
             label: l10n.addTo,
             onTap: () {
               if (match != null) showAddToSheet(context, ref, match);
@@ -168,7 +168,7 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
           ),
           if (progress != null)
             MTPlayerAction(
-              icon: Icons.downloading_rounded,
+              icon: MTIcons.download,
               label: l10n.percentValue((progress * 100).round()),
               onTap: () {},
             )
@@ -177,19 +177,19 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
             // here and "available offline" there for exactly the same
             // action.
             MTPlayerAction(
-              icon: Icons.download_rounded,
+              icon: MTIcons.download,
               label: l10n.saveToDevice,
               onTap: () => _makeOffline(item),
             )
           else
             MTPlayerAction(
-              icon: Icons.offline_pin_rounded,
+              icon: MTIcons.offline,
               label: l10n.savedOnDevice,
               highlighted: true,
               onTap: () {},
             ),
           MTPlayerAction(
-            icon: Icons.share_rounded,
+            icon: MTIcons.share,
             label: l10n.share,
             onTap: () => _share(item),
           ),

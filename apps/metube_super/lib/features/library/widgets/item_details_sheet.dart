@@ -123,7 +123,7 @@ class _DetailsSheet extends ConsumerWidget {
                       Uri.parse(item.canonicalUrl),
                       mode: LaunchMode.externalApplication,
                     ),
-                    icon: const Icon(Icons.open_in_new_rounded, size: 16),
+                    icon: const MTIcon(MTIcons.external, size: 16),
                     label: Text(
                       l10n.openOriginalLink,
                       maxLines: 1,
@@ -148,7 +148,7 @@ class _DetailsSheet extends ConsumerWidget {
                           );
                         }
                       },
-                      icon: const Icon(Icons.open_with_rounded, size: 16),
+                      icon: const MTIcon(MTIcons.playback, size: 16),
                       label: Text(
                         l10n.externalPlayerShort,
                         maxLines: 1,
@@ -167,7 +167,7 @@ class _DetailsSheet extends ConsumerWidget {
                   showMTSnack(context, l10n.settingsSaved);
                 }
               },
-              icon: const Icon(Icons.copy_rounded, size: 16),
+              icon: const MTIcon(MTIcons.copy, size: 16),
               label: Text(
                 item.canonicalUrl,
                 maxLines: 1,

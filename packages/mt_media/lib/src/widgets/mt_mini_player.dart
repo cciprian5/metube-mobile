@@ -147,8 +147,8 @@ class _Bar extends StatelessWidget {
                             key: ValueKey(current?.canonicalUrl ?? title),
                             child: current != null && artwork != null
                                 ? artwork!(context, current!)
-                                : Icon(
-                                    Icons.music_note_rounded,
+                                : MTIcon(
+                                    MTIcons.music,
                                     size: 18,
                                     color: p.miniInkMuted,
                                   ),
@@ -210,8 +210,8 @@ class _Bar extends StatelessWidget {
                                 onPressed: handler.skipToNext,
                                 tooltip: l10n.next,
                                 visualDensity: VisualDensity.compact,
-                                icon: Icon(
-                                  Icons.skip_next_rounded,
+                                icon: MTIcon(
+                                  MTIcons.next,
                                   size: 24,
                                   color: p.miniInk,
                                 ),
@@ -224,8 +224,8 @@ class _Bar extends StatelessWidget {
                           onPressed: expand,
                           tooltip: l10n.nowPlayingExpand,
                           visualDensity: VisualDensity.compact,
-                          icon: Icon(
-                            Icons.open_in_full_rounded,
+                          icon: MTIcon(
+                            MTIcons.fullscreen,
                             size: 18,
                             color: p.miniInk,
                           ),
@@ -234,8 +234,8 @@ class _Bar extends StatelessWidget {
                         onPressed: handler.stop,
                         tooltip: l10n.closePlayer,
                         visualDensity: VisualDensity.compact,
-                        icon: Icon(
-                          Icons.close_rounded,
+                        icon: MTIcon(
+                          MTIcons.close,
                           size: 20,
                           color: p.miniInkMuted,
                         ),
@@ -273,7 +273,7 @@ class _PlayButton extends StatelessWidget {
         onPressed: playing ? handler.pause : handler.play,
         tooltip: label,
         icon: MTIconSwap(
-          icon: playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
+          icon: playing ? MTIcons.pause : MTIcons.playFill,
           size: 28,
           color: palette.accent,
         ),

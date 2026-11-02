@@ -13,6 +13,9 @@ import '../widgets/mt_snackbar.dart';
 import '../widgets/mt_url_input_sheet.dart';
 import '../widgets/mt_route_motion.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// An internal gallery for reviewing every component in both themes and
 /// both text directions. **Not a product screen**: its strings are fixed
 /// samples on purpose, outside the arb rule.
@@ -43,17 +46,17 @@ class MTGalleryScreen extends StatelessWidget {
           IconButton(
             onPressed: onToggleVariant,
             tooltip: 'Lite/Super',
-            icon: const Icon(Icons.swap_horiz_rounded),
+            icon: const MTIcon(MTIcons.swap),
           ),
           IconButton(
             onPressed: onToggleDirection,
             tooltip: 'RTL/LTR',
-            icon: const Icon(Icons.format_textdirection_r_to_l_rounded),
+            icon: const MTIcon(MTIcons.swap),
           ),
           IconButton(
             onPressed: onToggleTheme,
             tooltip: 'ليل/نهار',
-            icon: const Icon(Icons.dark_mode_rounded),
+            icon: const MTIcon(MTIcons.appearance),
           ),
         ],
       ),

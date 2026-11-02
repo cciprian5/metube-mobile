@@ -10,6 +10,8 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:mt_media/library.dart';
 
+import 'wahaj_finder.dart';
+
 /// **The fourth view mode and the platform filter** (requested 2026-09-08).
 ///
 /// Three independent guards: migrating the view mode from the two old keys,
@@ -162,7 +164,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('YouTube'), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.close_rounded));
+      await tester.tap(byWahaj(MTIcons.close));
       await tester.pumpAndSettle();
       expect(container.read(libraryViewProvider).platform, isNull);
       expect(find.byType(InputChip), findsNothing);

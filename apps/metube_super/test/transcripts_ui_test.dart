@@ -22,6 +22,8 @@ import 'package:mt_media/library.dart';
 
 import 'device_matrix.dart';
 
+import 'wahaj_finder.dart';
+
 /// **The two screens of searching inside clips**: the settings section
 /// that turns it on, and the moments listed under a library search.
 void main() {
@@ -181,7 +183,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byIcon(Icons.help_outline_rounded));
+      await tester.tap(byWahaj(MTIcons.help));
       await tester.pumpAndSettle();
       // Since 2.4.0 a server writing subtitle files covers every site; the
       // help says so, and which languages are read.
@@ -269,7 +271,7 @@ void main() {
             expect(thumb.right, lessThan(title.left));
           }
           // No cover yet: a film, not the music note of the default.
-          expect(find.byIcon(Icons.movie_rounded), findsOneWidget);
+          expect(byWahaj(MTIcons.video), findsOneWidget);
         },
       );
     }

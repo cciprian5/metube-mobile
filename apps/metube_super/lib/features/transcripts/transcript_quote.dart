@@ -103,7 +103,7 @@ class _TranscriptQuotePanelState extends State<TranscriptQuotePanel> {
                 IconButton(
                   onPressed: widget.onClose,
                   tooltip: MaterialLocalizations.of(context).closeButtonLabel,
-                  icon: const Icon(Icons.close_rounded),
+                  icon: const MTIcon(MTIcons.close),
                 ),
               ],
             ),
@@ -128,7 +128,7 @@ class _TranscriptQuotePanelState extends State<TranscriptQuotePanel> {
             Row(
               children: [
                 if (_copied != null) ...[
-                  Icon(Icons.check_rounded, size: 16, color: p.ok),
+                  MTIcon(MTIcons.check, size: 16, color: p.ok),
                   const SizedBox(width: MTSpace.xxs),
                 ],
                 Expanded(
@@ -145,22 +145,22 @@ class _TranscriptQuotePanelState extends State<TranscriptQuotePanel> {
               children: [
                 TextButton.icon(
                   onPressed: () => _copy(widget.text, l10n.desktopQuoteCopied),
-                  icon: const Icon(Icons.copy_rounded, size: 18),
+                  icon: const MTIcon(MTIcons.copy, size: 18),
                   label: Text(l10n.desktopCopyQuote),
                 ),
                 TextButton.icon(
                   onPressed: () => Share.share(widget.text),
-                  icon: const Icon(Icons.share_rounded, size: 18),
+                  icon: const MTIcon(MTIcons.share, size: 18),
                   label: Text(l10n.share),
                 ),
                 TextButton.icon(
                   onPressed: () => _copy(widget.link, l10n.desktopLinkCopied),
-                  icon: const Icon(Icons.link_rounded, size: 18),
+                  icon: const MTIcon(MTIcons.link, size: 18),
                   label: Text(l10n.quoteMomentLink),
                 ),
                 TextButton.icon(
                   onPressed: widget.onPlay,
-                  icon: const Icon(Icons.play_arrow_rounded, size: 18),
+                  icon: const MTIcon(MTIcons.playFill, size: 18),
                   label: Text(l10n.quotePlayFrom),
                 ),
               ],

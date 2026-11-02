@@ -15,6 +15,8 @@ import 'mt_location_badge.dart';
 import 'mt_media_thumb.dart';
 import 'mt_polish.dart';
 
+import '../icons/mt_icon.dart';
+
 /// Where the item lives, which colours its badge: olive for "offline",
 /// soft ember for "on the server".
 enum MTMediaLocation { none, offline, onServer, both }
@@ -234,10 +236,7 @@ class MTMediaCard extends StatelessWidget {
                     // The favourite heart fades and expands rather than
                     // jumping (polish 2026-09-04).
                     icon: MTIconSwap(
-                      icon: favorite
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_border_rounded,
-                      wahaj: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
+                      icon: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
                       size: 20,
                       color: favorite ? p.favorite : p.ink3,
                     ),
@@ -247,11 +246,7 @@ class MTMediaCard extends StatelessWidget {
                     tooltip: l10n.itemOptions,
                     onPressed: onMore,
                     visualDensity: VisualDensity.compact,
-                    icon: Icon(
-                      Icons.more_vert_rounded,
-                      size: 20,
-                      color: p.ink3,
-                    ),
+                    icon: MTIcon(MTIcons.moreVert, size: 20, color: p.ink3),
                   ),
               ],
             ),

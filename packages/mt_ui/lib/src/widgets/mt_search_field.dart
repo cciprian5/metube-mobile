@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// The search field: in a page where search is the task (logs, a
 /// transcript), or in the library's bar once its search button is pressed.
 class MTSearchField extends StatelessWidget {
@@ -29,7 +32,7 @@ class MTSearchField extends StatelessWidget {
       style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
         hintText: hint,
-        prefixIcon: Icon(Icons.search_rounded, size: 20, color: x.palette.ink3),
+        prefixIcon: MTIcon(MTIcons.search, size: 20, color: x.palette.ink3),
         isDense: true,
       ),
     );

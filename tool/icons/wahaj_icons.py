@@ -157,6 +157,8 @@ ICONS = {
     "music": '<path d="M9.4 17.4V6.2l9.2-2v11"/><circle cx="7" cy="17.4" r="2.4"/><circle cx="16.2" cy="15.2" r="2.4"/>',
     "video": '<rect x="3.6" y="5.6" width="16.8" height="12.8" rx="2.4"/><path d="M10.2 9.4v5.2l4.4-2.6z"/>',
     "cloud": '<path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/><circle class="e" cx="12.4" cy="14.3" r="1.7"/>',
+    # The cloud alone, under the arrows that turn while the server is checked.
+    "cloud_line": '<path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/>',
     "cloud_check": '<path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/><path d="M9.6 14.2l1.8 1.8 3.4-3.4"/>',
     "cloud_wait": '<path d="M7.4 18.2h9.7a3.8 3.8 0 0 0 .4-7.58 5.3 5.3 0 0 0-10.2 1.2A3.2 3.2 0 0 0 7.4 18.2z"/><circle class="f" cx="9.6" cy="14.6" r=".9"/>'
                   '<circle class="f" cx="12.4" cy="14.6" r=".9"/><circle class="e" cx="15.2" cy="14.6" r=".9"/>',

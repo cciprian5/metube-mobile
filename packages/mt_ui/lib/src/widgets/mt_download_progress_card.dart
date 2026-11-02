@@ -5,6 +5,9 @@ import '../tokens/tokens.dart';
 import 'mt_done_motion.dart';
 import 'mt_polish.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// A live Wahaj download card: a soft accent ground, a progress bar and a
 /// cancel. The status text, whether a phase or an error, arrives already
 /// translated from the app.
@@ -75,10 +78,8 @@ class MTDownloadProgressCard extends StatelessWidget {
             ),
             child:
                 thumbnail ??
-                Icon(
-                  isError
-                      ? Icons.error_outline_rounded
-                      : Icons.download_rounded,
+                MTIcon(
+                  isError ? MTIcons.alert : MTIcons.download,
                   size: 22,
                   color: p.ink3,
                 ),
@@ -184,7 +185,7 @@ class MTDownloadProgressCard extends StatelessWidget {
                   color: p.card.withValues(alpha: 0.7),
                   borderRadius: BorderRadius.circular(MTRadius.chip),
                 ),
-                child: Icon(Icons.close_rounded, size: 16, color: p.ink3),
+                child: MTIcon(MTIcons.close, size: 16, color: p.ink3),
               ),
             ),
           ],

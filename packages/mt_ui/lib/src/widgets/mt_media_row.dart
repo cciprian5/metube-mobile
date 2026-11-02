@@ -251,9 +251,6 @@ class MTMediaRow extends StatelessWidget {
                           visualDensity: VisualDensity.compact,
                           icon: MTIconSwap(
                             icon: favorite
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded,
-                            wahaj: favorite
                                 ? MTIcons.favoriteOn
                                 : MTIcons.favorite,
                             size: 20,
@@ -265,8 +262,8 @@ class MTMediaRow extends StatelessWidget {
                           tooltip: l10n.itemOptions,
                           onPressed: onMore,
                           visualDensity: VisualDensity.compact,
-                          icon: Icon(
-                            Icons.more_vert_rounded,
+                          icon: MTIcon(
+                            MTIcons.moreVert,
                             size: 20,
                             color: p.ink3,
                           ),

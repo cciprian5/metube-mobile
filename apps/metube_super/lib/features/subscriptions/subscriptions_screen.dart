@@ -35,7 +35,7 @@ class SubscriptionsScreen extends ConsumerWidget {
             IconButton(
               tooltip: l10n.checkNow,
               onPressed: () => checkSubscriptions(context, ref),
-              icon: const Icon(Icons.refresh_rounded),
+              icon: const MTIcon(MTIcons.refresh),
             ),
           ],
         ],
@@ -46,7 +46,7 @@ class SubscriptionsScreen extends ConsumerWidget {
       floatingActionButton: (state.valueOrNull?.supported ?? false)
           ? MTFab(
               label: l10n.followChannel,
-              icon: Icons.add_link_rounded,
+              icon: MTIcons.addlink,
               onPressed: () => showSubscriptionSheet(context, ref),
             )
           : null,

@@ -113,24 +113,24 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
     return [
       // The one-tap heart: the library cards show it on favourites alone.
       MTPlayerAction(
-        icon: favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+        icon: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
         label: favorite ? l10n.removeFromFavorites : l10n.addToFavorites,
         onTap: () =>
             ref.read(libraryActionsProvider).toggleFavorite(item.canonicalUrl),
       ),
       MTPlayerAction(
-        icon: Icons.headphones_rounded,
+        icon: MTIcons.headphones,
         label: l10n.continueAsAudio,
         onTap: () => _continueAsAudio(item, session.position, pop: true),
       ),
       MTPlayerAction(
-        icon: Icons.share_rounded,
+        icon: MTIcons.share,
         label: l10n.share,
         onTap: () => _share(item),
       ),
       if (item.canonicalUrl.startsWith('http'))
         MTPlayerAction(
-          icon: Icons.open_in_new_rounded,
+          icon: MTIcons.external,
           label: l10n.openOriginalLink,
           onTap: () => launchUrl(
             Uri.parse(item.canonicalUrl),

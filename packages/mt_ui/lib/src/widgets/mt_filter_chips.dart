@@ -4,6 +4,10 @@ import '../l10n/l10n.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icon_data.dart';
+import '../icons/mt_icons.dart';
+
 /// One active filter at the head of the chip row, with its way out.
 ///
 /// The filters a sheet holds (platform, folder, tags) would otherwise be
@@ -21,7 +25,7 @@ class MTActiveFilterChip extends StatelessWidget {
   });
 
   final String label;
-  final IconData? icon;
+  final MTIconData? icon;
   final VoidCallback onDeleted;
 
   /// Usually reopens the sheet the filter was chosen in.
@@ -37,7 +41,7 @@ class MTActiveFilterChip extends StatelessWidget {
     return Padding(
       padding: const EdgeInsetsDirectional.only(end: MTSpace.xs),
       child: InputChip(
-        avatar: icon == null ? null : Icon(icon, size: 15, color: bg),
+        avatar: icon == null ? null : MTIcon(icon!, size: 15, color: bg),
         label: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 150),
           child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -45,7 +49,7 @@ class MTActiveFilterChip extends StatelessWidget {
         selected: true,
         showCheckmark: false,
         onDeleted: onDeleted,
-        deleteIcon: const Icon(Icons.close_rounded, size: 16),
+        deleteIcon: const MTIcon(MTIcons.close, size: 16),
         deleteIconColor: bg,
         onPressed: onPressed,
         labelStyle: Theme.of(context).textTheme.labelMedium!.copyWith(
@@ -83,7 +87,7 @@ class MTFilterButton extends StatelessWidget {
         isLabelVisible: active,
         smallSize: 7,
         backgroundColor: p.accent,
-        child: const Icon(Icons.tune_rounded),
+        child: const MTIcon(MTIcons.sort),
       ),
     );
   }

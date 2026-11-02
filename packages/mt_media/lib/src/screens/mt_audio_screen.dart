@@ -366,7 +366,7 @@ class _Header extends StatelessWidget {
         IconButton(
           onPressed: () => Navigator.of(context).maybePop(),
           tooltip: l10n.dismiss,
-          icon: Icon(Icons.keyboard_arrow_down_rounded, color: p.ink2),
+          icon: MTIcon(MTIcons.chevronDown, color: p.ink2),
         ),
         Expanded(
           child: Text(
@@ -382,7 +382,7 @@ class _Header extends StatelessWidget {
           IconButton(
             onPressed: show,
             tooltip: l10n.details,
-            icon: Icon(Icons.info_outline_rounded, color: p.ink2),
+            icon: MTIcon(MTIcons.info, color: p.ink2),
           )
         else
           const SizedBox(width: 48),

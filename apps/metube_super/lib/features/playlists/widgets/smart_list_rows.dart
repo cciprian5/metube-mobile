@@ -36,12 +36,11 @@ class SmartListRows extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
+                    MTIcon(
                       switch (list.kind) {
-                        SmartListKind.favorites =>
-                          Icons.favorite_border_rounded,
-                        SmartListKind.latest => Icons.schedule_rounded,
-                        SmartListKind.offline => Icons.download_done_rounded,
+                        SmartListKind.favorites => MTIcons.favorite,
+                        SmartListKind.latest => MTIcons.clock,
+                        SmartListKind.offline => MTIcons.offline,
                       },
                       size: 20,
                       color: p.ink2,
@@ -71,7 +70,7 @@ class SmartListRows extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Icon(Icons.play_arrow_rounded, size: 22, color: p.ink2),
+                    MTIcon(MTIcons.playFill, size: 22, color: p.ink2),
                   ],
                 ),
               ),

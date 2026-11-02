@@ -162,7 +162,7 @@ class _MTChapterSectionState extends State<MTChapterSection> {
               icon: AnimatedRotation(
                 turns: folded ? 0.5 : 0,
                 duration: still ? Duration.zero : MTMotion.fast,
-                child: Icon(Icons.expand_less_rounded, color: p.ink2),
+                child: MTIcon(MTIcons.chevronUp, color: p.ink2),
               ),
             ),
           ),

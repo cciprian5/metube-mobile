@@ -14,6 +14,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'device_matrix.dart';
 
+import 'wahaj_finder.dart';
+
 /// **Guard: a clip's chapters come from its transcript** (mobile plan,
 /// stage 16/F), in the language its subtitles show, and none for a short
 /// clip or while transcripts are off.
@@ -152,7 +154,7 @@ void main() {
       tester.getSemantics(find.byKey(const ValueKey('chapter-0'))),
       isSemantics(isSelected: true, isButton: true, hasTapAction: true),
     );
-    await tester.tap(find.byIcon(Icons.close_rounded));
+    await tester.tap(byWahaj(MTIcons.close));
     expect(closed, 1);
     await tester.pumpWidget(const SizedBox());
     await tester.runAsync(session.dispose);

@@ -14,6 +14,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'playback_test_doubles.dart';
 
+import 'wahaj_finder.dart';
+
 void main() {
   late MemoryKeyValueStore store;
   late PrefsMutex mutex;
@@ -80,7 +82,7 @@ void main() {
       reason: 'الودجت موجودة لكنها فارغة',
     );
     expect(
-      find.byIcon(Icons.close_rounded),
+      byWahaj(MTIcons.close),
       findsNothing,
       reason: 'لا شريط ظاهر ما دام mediaItem == null',
     );

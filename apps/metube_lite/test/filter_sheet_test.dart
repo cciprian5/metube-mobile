@@ -13,6 +13,8 @@ import 'package:mt_ui/mt_ui.dart';
 import 'device_matrix.dart';
 import 'widget_test.dart' show sample;
 
+import 'wahaj_finder.dart';
+
 /// **One chip row above the list** (mobile plan 2026-10-31): the platform
 /// row moved into the sort sheet, and a chosen platform shows in the first
 /// row with its way out.
@@ -85,7 +87,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.widgetWithText(InputChip, 'YouTube'), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.close_rounded));
+    await tester.tap(byWahaj(MTIcons.close));
     await tester.pumpAndSettle();
     expect(container.read(libraryViewProvider).platform, isNull);
     expect(find.byType(InputChip), findsNothing);

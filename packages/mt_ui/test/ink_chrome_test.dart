@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 // The phones' chrome in the ink (log §4, 2026-10-31): the accent is kept for
 // the one action and for the data, and nothing sits in a tinted square.
 
@@ -32,7 +34,7 @@ void main() {
     await tester.pumpWidget(
       _host(
         MTSettingsRow(
-          icon: Icons.tune_rounded,
+          icon: MTIcons.sort,
           title: 'Playback',
           value: 'Best compatibility',
           selected: true,
@@ -42,7 +44,7 @@ void main() {
     );
     final row = find.byType(MTSettingsRow);
     expect(_boxes(tester, row).where((d) => d.color == _p.accentSoft), isEmpty);
-    final icon = tester.widget<Icon>(find.byIcon(Icons.tune_rounded));
+    final icon = tester.widget<MTIcon>(byWahaj(MTIcons.sort));
     expect(icon.color, _p.ink);
     final tile = tester.widget<ListTile>(find.byType(ListTile));
     expect(tile.selectedTileColor, mtSelectedFill(_p));
@@ -62,7 +64,7 @@ void main() {
     );
     final state = find.byType(MTEmptyState);
     expect(
-      find.descendant(of: state, matching: find.byType(Icon)),
+      find.descendant(of: state, matching: find.byType(MTIcon)),
       findsNothing,
     );
     expect(

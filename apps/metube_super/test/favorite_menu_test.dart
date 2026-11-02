@@ -9,6 +9,8 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// **Favourites from the menu, not an empty heart on every card** (owner's
 /// decision 2026-11-01).
 void main() {
@@ -48,7 +50,7 @@ void main() {
 
   testWidgets('**the guard**: a card carries no heart to tap', (tester) async {
     await pump(tester, clip());
-    expect(find.byIcon(Icons.favorite_border_rounded), findsNothing);
+    expect(byWahaj(MTIcons.favorite), findsNothing);
     expect(find.byTooltip('Add to favorites'), findsNothing);
   });
 

@@ -21,7 +21,7 @@ class MTVideoIconButton extends StatelessWidget {
     this.active = false,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final VoidCallback onTap;
   final String tooltip;
   final double size;

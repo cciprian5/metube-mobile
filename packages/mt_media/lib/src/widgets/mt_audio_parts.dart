@@ -148,7 +148,7 @@ class MTAudioSubControls extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.queue_music_rounded, size: 20, color: p.ink2),
+                    MTIcon(MTIcons.queue, size: 20, color: p.ink2),
                     const SizedBox(width: MTSpace.xxs),
                     Text(
                       '${handler.items.length}',

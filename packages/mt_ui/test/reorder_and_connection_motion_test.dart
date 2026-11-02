@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// Two touches of motion asked for on 2026-10-04: a paused subscription
 /// travels to the end of the list instead of jumping there, and the server
 /// card's cloud turns its arrows while the connection is being checked.
@@ -106,7 +108,7 @@ void main() {
             textDirection: TextDirection.rtl,
             child: Center(
               child: MTConnectionIcon(
-                icon: Icons.cloud_done_rounded,
+                icon: MTIcons.cloudCheck,
                 color: Colors.white,
                 checking: checking,
               ),
@@ -130,7 +132,7 @@ void main() {
       final early = turnOf(tester);
       await tester.pump(const Duration(milliseconds: 300));
       expect(turnOf(tester), isNot(early));
-      expect(find.byIcon(Icons.sync_rounded), findsOneWidget);
+      expect(byWahaj(MTIcons.refresh), findsOneWidget);
     });
 
     testWidgets('once settled, the state glyph stands still', (tester) async {
@@ -138,8 +140,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       await tester.pumpWidget(cloud(checking: false));
       await tester.pumpAndSettle();
-      expect(find.byIcon(Icons.cloud_done_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.sync_rounded), findsNothing);
+      expect(byWahaj(MTIcons.cloudCheck), findsOneWidget);
+      expect(byWahaj(MTIcons.refresh), findsNothing);
       expect(tester.hasRunningAnimations, isFalse);
     });
 
@@ -154,12 +156,12 @@ void main() {
       // Past a crossfade, which would show fading arrows anyway, and short
       // of the shortest turn.
       await tester.pump(MTMotion.reveal + const Duration(milliseconds: 100));
-      expect(find.byIcon(Icons.sync_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.cloud_done_rounded), findsNothing);
+      expect(byWahaj(MTIcons.refresh), findsOneWidget);
+      expect(byWahaj(MTIcons.cloudCheck), findsNothing);
       await tester.pump(MTConnectionIcon.shortestTurn);
       await tester.pumpAndSettle();
-      expect(find.byIcon(Icons.sync_rounded), findsNothing);
-      expect(find.byIcon(Icons.cloud_done_rounded), findsOneWidget);
+      expect(byWahaj(MTIcons.refresh), findsNothing);
+      expect(byWahaj(MTIcons.cloudCheck), findsOneWidget);
     });
 
     testWidgets('a slow answer settles at once when it comes', (tester) async {
@@ -168,8 +170,8 @@ void main() {
       await tester.pumpWidget(cloud(checking: false));
       // Only the crossfade, no hold.
       await tester.pump(MTMotion.reveal + const Duration(milliseconds: 20));
-      expect(find.byIcon(Icons.sync_rounded), findsNothing);
-      expect(find.byIcon(Icons.cloud_done_rounded), findsOneWidget);
+      expect(byWahaj(MTIcons.refresh), findsNothing);
+      expect(byWahaj(MTIcons.cloudCheck), findsOneWidget);
     });
 
     testWidgets('with motion reduced, the arrows do not turn', (tester) async {

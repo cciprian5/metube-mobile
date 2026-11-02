@@ -97,16 +97,12 @@ class _TagRow extends ConsumerWidget {
           IconButton(
             tooltip: l10n.renameTag,
             onPressed: () => _rename(context, ref),
-            icon: Icon(Icons.edit_rounded, size: 19, color: palette.ink2),
+            icon: MTIcon(MTIcons.edit, size: 19, color: palette.ink2),
           ),
           IconButton(
             tooltip: l10n.deleteTag,
             onPressed: () => _delete(context, ref),
-            icon: Icon(
-              Icons.delete_outline_rounded,
-              size: 19,
-              color: palette.err,
-            ),
+            icon: MTIcon(MTIcons.trash, size: 19, color: palette.err),
           ),
         ],
       ),

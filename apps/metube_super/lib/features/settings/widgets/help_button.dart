@@ -15,7 +15,7 @@ class HelpButton extends StatelessWidget {
     return IconButton(
       visualDensity: VisualDensity.compact,
       tooltip: context.mtl.helpAboutField,
-      icon: Icon(Icons.help_outline_rounded, size: 18, color: p.ink3),
+      icon: MTIcon(MTIcons.help, size: 18, color: p.ink3),
       onPressed: () => showMTDialog<void>(
         context: context,
         builder: (dialogContext) => AlertDialog(
@@ -57,7 +57,7 @@ class HelpButtonGap extends StatelessWidget {
     child: IconButton(
       visualDensity: VisualDensity.compact,
       onPressed: null,
-      icon: Icon(Icons.help_outline_rounded, size: 18),
+      icon: MTIcon(MTIcons.help, size: 18),
     ),
   );
 }

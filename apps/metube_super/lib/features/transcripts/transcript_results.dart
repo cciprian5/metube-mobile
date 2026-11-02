@@ -145,8 +145,8 @@ class _ClipMoments extends ConsumerWidget {
                     ),
                   ),
                 ),
-                Icon(
-                  Icons.subject_rounded,
+                MTIcon(
+                  MTIcons.transcript,
                   size: 18,
                   color: p.ink3,
                   semanticLabel: l10n.transcriptFull,
@@ -201,8 +201,8 @@ class _Thumb extends ConsumerWidget {
       height: height,
       child:
           picture ??
-          Icon(
-            item.isAudio ? Icons.music_note_rounded : Icons.movie_rounded,
+          MTIcon(
+            item.isAudio ? MTIcons.music : MTIcons.video,
             size: 16,
             color: p.ink3,
           ),

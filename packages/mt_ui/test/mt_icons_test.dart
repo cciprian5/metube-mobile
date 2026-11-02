@@ -77,4 +77,54 @@ void main() {
       expect(names, isNot(contains(rejected)));
     }
   });
+
+  Widget framed(Widget child, {TextDirection dir = TextDirection.ltr}) =>
+      MaterialApp(
+        theme: mtTheme(MTVariant.superApp, Brightness.light),
+        home: Directionality(
+          textDirection: dir,
+          child: Center(child: child),
+        ),
+      );
+
+  testWidgets('**the guard**: the reading arrows turn in Arabic, nothing '
+      'else does', (tester) async {
+    Finder flip() => find.descendant(
+      of: find.byType(MTIcon),
+      matching: find.byType(Transform),
+    );
+    const arrow = MTIcon(MTIcons.forward, matchTextDirection: true);
+    await tester.pumpWidget(framed(arrow, dir: TextDirection.rtl));
+    expect(flip(), findsOneWidget);
+    await tester.pumpWidget(framed(arrow));
+    expect(flip(), findsNothing);
+    await tester.pumpWidget(
+      framed(const MTIcon(MTIcons.transcript), dir: TextDirection.rtl),
+    );
+    expect(flip(), findsNothing);
+  });
+
+  testWidgets('a shadow draws a blurred copy beneath the icon', (tester) async {
+    await tester.pumpWidget(
+      framed(
+        const MTIcon(
+          MTIcons.moreVert,
+          shadows: [Shadow(color: Color(0x99000000), blurRadius: 5)],
+        ),
+      ),
+    );
+    expect(find.byType(ImageFiltered), findsOneWidget);
+    expect(find.byType(SvgPicture), findsNWidgets(2));
+  });
+
+  testWidgets('outside a Wahaj theme the icon still draws', (tester) async {
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: MTIcon(MTIcons.cloud, color: Color(0xFF445566)),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    expect(find.byType(SvgPicture), findsOneWidget);
+  });
 }

@@ -31,7 +31,7 @@ class PlaylistsScreen extends ConsumerWidget {
           IconButton(
             tooltip: l10n.createPlaylist,
             onPressed: () => showCreatePlaylistDialog(context, ref),
-            icon: const Icon(Icons.add_rounded),
+            icon: const MTIcon(MTIcons.plus),
           ),
         ],
       ),
@@ -211,7 +211,7 @@ class _NewPlaylistTile extends StatelessWidget {
                 color: p.accentSoft,
                 borderRadius: BorderRadius.circular(MTRadius.field - 1),
               ),
-              child: Icon(Icons.add_rounded, size: 17, color: p.accentInk),
+              child: MTIcon(MTIcons.plus, size: 17, color: p.accentInk),
             ),
             const SizedBox(height: MTSpace.xs),
             Text(

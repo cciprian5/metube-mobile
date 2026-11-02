@@ -90,7 +90,7 @@ class SyncScreen extends ConsumerWidget {
             const SizedBox(height: MTSpace.md),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: Icon(Icons.folder_open_rounded, color: p.ink2),
+              leading: MTIcon(MTIcons.folder, color: p.ink2),
               title: Text(l10n.desktopSyncFolder),
               subtitle: Text(
                 on ? syncFolderName(settings!.tree!) : l10n.syncPhoneOff,
@@ -104,7 +104,7 @@ class SyncScreen extends ConsumerWidget {
               children: [
                 FilledButton.tonalIcon(
                   onPressed: () => unawaited(_choose(ref)),
-                  icon: const Icon(Icons.folder_open_rounded),
+                  icon: const MTIcon(MTIcons.folder),
                   label: Text(l10n.desktopSyncChoose),
                 ),
                 if (on)
@@ -120,7 +120,7 @@ class SyncScreen extends ConsumerWidget {
             if (on) ...[
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: Icon(Icons.smartphone_rounded, color: p.ink2),
+                leading: MTIcon(MTIcons.phone, color: p.ink2),
                 title: Text(
                   l10n.syncPhoneThisDevice(
                     syncDeviceName(l10n, settings!.deviceId!),
@@ -151,10 +151,10 @@ class SyncScreen extends ConsumerWidget {
               for (final device in report?.devices ?? const <SyncDevice>[])
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: Icon(
+                  leading: MTIcon(
                     device.id.startsWith('phone')
-                        ? Icons.smartphone_rounded
-                        : Icons.computer_rounded,
+                        ? MTIcons.phone
+                        : MTIcons.monitor,
                     color: p.ink2,
                   ),
                   title: Text(
@@ -170,7 +170,7 @@ class SyncScreen extends ConsumerWidget {
                   ),
                   trailing: IconButton(
                     tooltip: l10n.desktopSyncForget,
-                    icon: Icon(Icons.link_off_rounded, color: p.ink3),
+                    icon: MTIcon(MTIcons.linkOff, color: p.ink3),
                     onPressed: () => unawaited(_forget(context, ref, device)),
                   ),
                 ),

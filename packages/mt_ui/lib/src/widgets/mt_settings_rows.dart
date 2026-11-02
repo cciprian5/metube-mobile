@@ -5,6 +5,10 @@ import '../theme/mt_theme_controls.dart';
 import '../tokens/tokens.dart';
 import 'mt_adaptive.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icon_data.dart';
+import '../icons/mt_icons.dart';
+
 /// One group of the settings home: **a card**, its small heading inside
 /// on top, then its rows (owner's choice, 2026-11-01, as drawn in the
 /// mobile mock-ups). The phone draws a hairline between rows; the tablet's
@@ -83,7 +87,7 @@ class MTSettingsRow extends StatelessWidget {
     this.chevron = true,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String title;
   final String value;
   final VoidCallback onTap;
@@ -107,7 +111,7 @@ class MTSettingsRow extends StatelessWidget {
       contentPadding: const EdgeInsetsDirectional.symmetric(
         horizontal: MTSpace.md,
       ),
-      leading: Icon(icon, size: 20, color: selected ? p.ink : p.ink2),
+      leading: MTIcon(icon, size: 20, color: selected ? p.ink : p.ink2),
       title: Text(
         title,
         style: selected ? const TextStyle(fontWeight: FontWeight.w700) : null,
@@ -119,7 +123,7 @@ class MTSettingsRow extends StatelessWidget {
         style: Theme.of(context).textTheme.bodySmall!.copyWith(color: p.ink3),
       ),
       trailing: chevron
-          ? Icon(Icons.chevron_right_rounded, color: p.ink3)
+          ? MTIcon(MTIcons.forward, matchTextDirection: true, color: p.ink3)
           : null,
       onTap: onTap,
     );

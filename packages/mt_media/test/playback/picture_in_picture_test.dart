@@ -10,6 +10,8 @@ import 'package:video_player_platform_interface/video_player_platform_interface.
 
 import 'fake_video_platform.dart';
 
+import '../wahaj_finder.dart';
+
 /// **Guard: picture in picture stays off until the user turns it on**
 /// (mobile plan, stage 16/F): no button and no arming before, and once on,
 /// leaving the app while a video plays is what moves it to a corner, where
@@ -133,11 +135,11 @@ void main() {
     tester,
   ) async {
     final session = await open(tester);
-    expect(find.byIcon(Icons.picture_in_picture_alt_rounded), findsNothing);
+    expect(byWahaj(MTIcons.pip), findsNothing);
     pip.enabled.value = true;
     await tester.pump();
-    expect(find.byIcon(Icons.picture_in_picture_alt_rounded), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.picture_in_picture_alt_rounded));
+    expect(byWahaj(MTIcons.pip), findsOneWidget);
+    await tester.tap(byWahaj(MTIcons.pip));
     // The player's double tap holds a single one until its moment passes.
     await tester.pump(kDoubleTapTimeout + const Duration(milliseconds: 50));
     expect(calls.map((c) => c.method), contains('enter'));

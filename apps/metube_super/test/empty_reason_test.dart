@@ -11,6 +11,8 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// **An empty list says why it is empty** (audit 2026-10-30): with the
 /// offline chip on and nothing kept on the phone, a full library was
 /// announced as "Your library is empty".
@@ -89,7 +91,7 @@ void main() {
     await pump(tester, items: 3);
     expect(find.byType(MTQuerySearchField), findsNothing);
 
-    await tester.tap(find.byIcon(Icons.search_rounded));
+    await tester.tap(byWahaj(MTIcons.search));
     await tester.pumpAndSettle();
     expect(find.byType(MTQuerySearchField), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'Clip 1');

@@ -5,6 +5,9 @@ import '../tokens/tokens.dart';
 import 'mt_desktop_app.dart';
 import 'mt_bottom_bar.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icon_data.dart';
+
 /// Window size classes, after Material 3's own breakpoints.
 ///
 /// **Measured on the window, not the device**: a tablet in split screen
@@ -119,8 +122,8 @@ class MTNavItem {
     required this.label,
   });
 
-  final IconData icon;
-  final IconData selectedIcon;
+  final MTIconData icon;
+  final MTIconData selectedIcon;
   final String label;
 }
 
@@ -252,8 +255,8 @@ class MTAdaptiveScaffold extends StatelessWidget {
     destinations: [
       for (final item in items)
         NavigationRailDestination(
-          icon: Icon(item.icon),
-          selectedIcon: Icon(item.selectedIcon),
+          icon: MTIcon(item.icon),
+          selectedIcon: MTIcon(item.selectedIcon),
           label: Text(item.label),
           padding: const EdgeInsets.symmetric(vertical: MTSpace.xs),
         ),

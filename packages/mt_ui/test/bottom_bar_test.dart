@@ -8,11 +8,11 @@ import 'package:mt_ui/mt_ui.dart';
 /// one pill sliding in 240 and the sections crossing in 160 each way.
 void main() {
   const items = [
-    MTNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'أ'),
-    MTNavItem(icon: Icons.list_outlined, selectedIcon: Icons.list, label: 'ب'),
+    MTNavItem(icon: MTIcons.library, selectedIcon: MTIcons.library, label: 'أ'),
+    MTNavItem(icon: MTIcons.list, selectedIcon: MTIcons.list, label: 'ب'),
     MTNavItem(
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings,
+      icon: MTIcons.settings,
+      selectedIcon: MTIcons.settings,
       label: 'ج',
     ),
   ];

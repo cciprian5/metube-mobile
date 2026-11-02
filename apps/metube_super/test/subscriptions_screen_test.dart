@@ -18,6 +18,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'device_matrix.dart';
 
+import 'wahaj_finder.dart';
+
 /// A scripted server: the real client, a fake transport. Every request is
 /// recorded so the test can assert on the wire, not on the widgets alone.
 class _Adapter implements HttpClientAdapter {
@@ -262,7 +264,7 @@ void main() {
       await open(tester, (_) => _json(_twoRows));
 
       await openChannel(tester, 'Slow Coffee');
-      await tester.tap(find.byIcon(Icons.more_vert_rounded));
+      await tester.tap(byWahaj(MTIcons.moreVert));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Unfollow').last);
       await tester.pumpAndSettle();
@@ -283,7 +285,7 @@ void main() {
     await open(tester, (_) => _json(_twoRows));
 
     await openChannel(tester, 'Slow Coffee');
-    await tester.tap(find.byIcon(Icons.more_vert_rounded));
+    await tester.tap(byWahaj(MTIcons.moreVert));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Unfollow').last);
     await tester.pumpAndSettle();
@@ -324,7 +326,7 @@ void main() {
     // filter together (2026-09-25).
     expect(find.text('Edit'), findsOneWidget);
     expect(find.text('Rename'), findsNothing);
-    await tester.tap(find.byIcon(Icons.more_vert_rounded));
+    await tester.tap(byWahaj(MTIcons.moreVert));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Open channel'));
     await tester.pumpAndSettle();
@@ -341,7 +343,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Can't be changed after following."), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.help_outline_rounded).first);
+    await tester.tap(byWahaj(MTIcons.help).first);
     await tester.pumpAndSettle();
     expect(
       find.textContaining('Recent phones play it smoothly'),

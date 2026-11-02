@@ -79,19 +79,19 @@ class AboutScreen extends StatelessWidget {
             const SizedBox(height: MTSpace.xxl),
             MTSectionHeader(title: l10n.developer),
             _LinkTile(
-              icon: Icons.code_rounded,
+              icon: MTIcons.code,
               title: l10n.developerName,
               subtitle: 'github.com/sagheerys',
               url: _github,
             ),
             _LinkTile(
-              icon: Icons.alternate_email_rounded,
+              icon: MTIcons.mail,
               title: 'X',
               subtitle: 'x.com/Sagheer700',
               url: _x,
             ),
             _LinkTile(
-              icon: Icons.bug_report_outlined,
+              icon: MTIcons.bug,
               title: l10n.reportBug,
               subtitle: 'metube-mobile/issues',
               url: _issues,
@@ -99,16 +99,16 @@ class AboutScreen extends StatelessWidget {
             const SizedBox(height: MTSpace.xl),
             MTSectionHeader(title: l10n.sourceCode),
             _LinkTile(
-              icon: Icons.folder_open_rounded,
+              icon: MTIcons.folder,
               title: l10n.sourceCode,
               subtitle: 'sagheerys/metube-mobile',
               url: _repo,
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: Icon(Icons.description_outlined, color: p.ink2),
+              leading: MTIcon(MTIcons.list, color: p.ink2),
               title: Text(l10n.licenses),
-              trailing: const Icon(Icons.chevron_right_rounded),
+              trailing: const MTIcon(MTIcons.forward, matchTextDirection: true),
               onTap: () => showLicensePage(
                 context: context,
                 applicationName: l10n.appTitle,
@@ -120,14 +120,14 @@ class AboutScreen extends StatelessWidget {
             const SizedBox(height: MTSpace.xl),
             MTSectionHeader(title: l10n.builtWith),
             _LinkTile(
-              icon: Icons.dns_outlined,
+              icon: MTIcons.server,
               title: 'MeTube',
               subtitle: l10n.metubeCredit,
               url: _metube,
               ltrSubtitle: false,
             ),
             _LinkTile(
-              icon: Icons.download_for_offline_outlined,
+              icon: MTIcons.offline,
               title: 'yt-dlp',
               subtitle: l10n.ytdlpCredit,
               url: _ytdlp,
@@ -178,7 +178,7 @@ class _LinkTile extends StatelessWidget {
     this.ltrSubtitle = true,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String title;
   final String subtitle;
   final String url;
@@ -192,14 +192,14 @@ class _LinkTile extends StatelessWidget {
     final p = MTThemeX.of(context).palette;
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: p.ink2),
+      leading: MTIcon(icon, color: p.ink2),
       title: Text(title),
       subtitle: Text(
         subtitle,
         textDirection: ltrSubtitle ? TextDirection.ltr : null,
         style: Theme.of(context).textTheme.bodySmall,
       ),
-      trailing: const Icon(Icons.open_in_new_rounded, size: 17),
+      trailing: const MTIcon(MTIcons.external, size: 17),
       onTap: () =>
           launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
     );

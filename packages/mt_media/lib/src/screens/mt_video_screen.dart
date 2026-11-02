@@ -26,7 +26,7 @@ class MTPlayerAction {
     this.highlighted = false,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String label;
   final VoidCallback onTap;
   final bool highlighted;

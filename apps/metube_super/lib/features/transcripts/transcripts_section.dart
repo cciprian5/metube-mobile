@@ -55,19 +55,19 @@ class TranscriptsSection extends ConsumerWidget {
                 onPressed: stats.clips == 0
                     ? null
                     : () => _export(context, ref),
-                icon: const Icon(Icons.ios_share_rounded, size: 18),
+                icon: const MTIcon(MTIcons.share, size: 18),
                 label: Text(l10n.transcriptsExport),
               ),
               TextButton.icon(
                 onPressed: () => _import(context, ref),
-                icon: const Icon(Icons.download_rounded, size: 18),
+                icon: const MTIcon(MTIcons.download, size: 18),
                 label: Text(l10n.transcriptsImport),
               ),
               TextButton.icon(
                 onPressed: stats.clips == 0
                     ? null
                     : () => _deleteAll(context, ref),
-                icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                icon: const MTIcon(MTIcons.trash, size: 18),
                 label: Text(l10n.transcriptsDeleteAll),
               ),
             ],

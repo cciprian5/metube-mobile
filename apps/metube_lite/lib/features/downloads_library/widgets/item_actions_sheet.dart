@@ -65,12 +65,12 @@ class _ItemActionsSheet extends ConsumerWidget {
     }
 
     ListTile tile(
-      IconData icon,
+      MTIconData icon,
       String label,
       VoidCallback onTap, {
       Color? color,
     }) => ListTile(
-      leading: Icon(icon, color: color ?? p.ink2),
+      leading: MTIcon(icon, color: color ?? p.ink2),
       title: Text(
         label,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color),
@@ -116,19 +116,19 @@ class _ItemActionsSheet extends ConsumerWidget {
                 }
               },
             ),
-            tile(Icons.info_outline_rounded, l10n.details, () {
+            tile(MTIcons.info, l10n.details, () {
               Navigator.pop(context);
               showItemDetailsSheet(host, item);
             }),
             tile(
-              Icons.share_rounded,
+              MTIcons.share,
               l10n.share,
               () => run(() => actions.share([item])),
             ),
             // An external player gets a file path: Lite has only local
             // files, so no server URL ever leaves the app.
             tile(
-              Icons.open_with_rounded,
+              MTIcons.playback,
               l10n.openInExternalPlayer,
               () => run(() async {
                 final opened = await const ExternalPlayer().open(
@@ -144,14 +144,14 @@ class _ItemActionsSheet extends ConsumerWidget {
                 }
               }),
             ),
-            tile(Icons.playlist_add_rounded, l10n.addToPlaylist, () {
+            tile(MTIcons.queueAdd, l10n.addToPlaylist, () {
               Navigator.pop(context);
               showAddToPlaylistSheet(host, ref, [item]);
             }),
             // The original link is offered only where we know it; it is never
             // rebuilt from a guess.
             if (item.canonicalUrl != null)
-              tile(Icons.open_in_new_rounded, l10n.openOriginalLink, () {
+              tile(MTIcons.external, l10n.openOriginalLink, () {
                 Navigator.pop(context);
                 launchUrl(
                   Uri.parse(item.canonicalUrl!),
@@ -160,7 +160,7 @@ class _ItemActionsSheet extends ConsumerWidget {
               }),
             const Divider(),
             tile(
-              Icons.delete_outline_rounded,
+              MTIcons.trash,
               l10n.deleteVideo,
               () => _confirm(
                 context,

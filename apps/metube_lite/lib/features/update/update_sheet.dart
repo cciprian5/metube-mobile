@@ -61,7 +61,7 @@ class UpdateSheet extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.system_update_rounded, color: p.accent),
+                        MTIcon(MTIcons.saveTo, color: p.accent),
                         const SizedBox(width: MTSpace.sm),
                         Expanded(
                           child: Text(
@@ -190,7 +190,7 @@ class _Actions extends ConsumerWidget {
         children: [
           FilledButton.icon(
             onPressed: () => _install(context, ref),
-            icon: const Icon(Icons.install_mobile_rounded, size: 18),
+            icon: const MTIcon(MTIcons.offline, size: 18),
             label: Text(l10n.updateInstall),
           ),
           const SizedBox(height: MTSpace.xs),
@@ -222,7 +222,7 @@ class _Actions extends ConsumerWidget {
         ],
         FilledButton.icon(
           onPressed: controller.download,
-          icon: const Icon(Icons.download_rounded, size: 18),
+          icon: const MTIcon(MTIcons.download, size: 18),
           label: Text(l10n.updateNow),
         ),
         const SizedBox(height: MTSpace.xxs),

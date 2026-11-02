@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
-/// The library's shared cards draw Wahaj icons in the Windows app, which
-/// uses no Material icons, and exactly what they drew before on a phone.
+import 'wahaj_finder.dart';
+
+/// The library's shared cards draw Wahaj icons on a phone and in the
+/// Windows app alike, and no Material icon on either.
 void main() {
   Widget cards() => ListView(
     children: [
@@ -31,14 +33,14 @@ void main() {
     await tester.pumpWidget(desktop ? MTDesktopApp(child: app) : app);
   }
 
-  testWidgets('**the guard**: a phone keeps its Material icons', (
+  testWidgets('**the guard**: a phone draws the Wahaj icons too', (
     tester,
   ) async {
     await pump(tester, desktop: false);
-    expect(find.byIcon(Icons.favorite_border_rounded), findsNWidgets(2));
-    expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.music_note_rounded), findsWidgets);
-    expect(find.byType(MTIcon), findsNothing);
+    expect(byWahaj(MTIcons.favorite), findsNWidgets(2));
+    expect(byWahaj(MTIcons.favoriteOn), findsOneWidget);
+    expect(byWahaj(MTIcons.music), findsWidgets);
+    expect(find.byType(Icon), findsNothing);
   });
 
   testWidgets('the Windows app draws no Material icon on them', (tester) async {

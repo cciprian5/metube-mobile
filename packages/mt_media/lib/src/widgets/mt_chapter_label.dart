@@ -45,7 +45,12 @@ class MTChapterLabel extends StatelessWidget {
                     .copyWith(color: ink),
               ),
             ),
-            Icon(Icons.chevron_right_rounded, size: 16, color: ink),
+            MTIcon(
+              MTIcons.forward,
+              matchTextDirection: true,
+              size: 16,
+              color: ink,
+            ),
           ],
         ),
       ),

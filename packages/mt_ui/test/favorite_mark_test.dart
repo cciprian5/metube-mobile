@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// **A heart on favourites alone** (owner's decision 2026-11-01): a phone
 /// card no longer carries an empty heart to tap; a favourite shows a small
 /// mark instead, and a card that keeps its toggle (the computer) is as it
@@ -60,7 +62,7 @@ void main() {
         'heart at all', (tester) async {
       await tester.pumpWidget(host(cards(favorite: false)[name]!));
       expect(find.byType(MTFavoriteMark), findsNothing);
-      expect(find.byIcon(Icons.favorite_border_rounded), findsNothing);
+      expect(byWahaj(MTIcons.favorite), findsNothing);
     });
 
     testWidgets('a $name with a toggle keeps its heart button and no mark', (

@@ -170,7 +170,7 @@ class _MTVideoControlsState extends State<MTVideoControls> {
 
   Widget _lockedLayer() => Center(
     child: MTVideoIconButton(
-      icon: Icons.lock_open_rounded,
+      icon: MTIcons.unlock,
       tooltip: context.mtl.unlockTouch,
       onTap: () {
         setState(() => _locked = false);

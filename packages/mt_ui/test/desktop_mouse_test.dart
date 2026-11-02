@@ -101,7 +101,6 @@ void main() {
       ),
       findsNothing,
     );
-    expect(find.byType(MTIcon), findsNothing);
   });
 
   Widget buttons() => MTFocusRingLayer(

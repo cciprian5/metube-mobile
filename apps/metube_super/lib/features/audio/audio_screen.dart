@@ -37,7 +37,7 @@ class AudioScreen extends ConsumerWidget {
       onDetails: () => _showDetails(context, ref, handler),
       extra: (item) => (transcripts?.contains(item.canonicalUrl) ?? false)
           ? MTExtraAction(
-              icon: Icons.subject_rounded,
+              icon: MTIcons.transcript,
               label: context.mtl.transcript,
               onTap: () => showPlayingTranscript(context, handler, item),
             )

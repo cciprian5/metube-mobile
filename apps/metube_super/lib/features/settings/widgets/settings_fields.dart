@@ -17,7 +17,7 @@ class SettingsNavTile extends StatelessWidget {
     required this.route,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String title;
   final String subtitle;
   final String route;
@@ -25,10 +25,10 @@ class SettingsNavTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
     contentPadding: EdgeInsets.zero,
-    leading: Icon(icon),
+    leading: MTIcon(icon),
     title: Text(title),
     subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
-    trailing: const Icon(Icons.chevron_right_rounded),
+    trailing: const MTIcon(MTIcons.forward, matchTextDirection: true),
     onTap: () => context.go(route),
   );
 }
@@ -72,6 +72,8 @@ class DownloadFields extends ConsumerWidget {
           children: [
             Expanded(
               child: DropdownMenu<Quality>(
+                trailingIcon: const MTIcon(MTIcons.chevronDown),
+                selectedTrailingIcon: const MTIcon(MTIcons.chevronUp),
                 initialSelection: settings.quality,
                 label: Text(l10n.defaultQuality),
                 expandedInsets: EdgeInsets.zero,
@@ -214,7 +216,7 @@ class AppearanceFields extends ConsumerWidget {
         // options, so three fit 360dp **and six break**, and the declared
         // plan is to support the common languages.
         SettingsNavTile(
-          icon: Icons.translate_rounded,
+          icon: MTIcons.globe,
           title: l10n.language,
           subtitle: settings.localeCode == null
               ? l10n.languageSystem

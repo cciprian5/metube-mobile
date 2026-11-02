@@ -4,6 +4,9 @@ import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import 'mt_desktop_app.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// **The downloads button's icon: it moves while something downloads.**
 ///
 /// A number on a still arrow said how many, not that anything was
@@ -115,7 +118,7 @@ class _MTDownloadsIconState extends State<MTDownloadsIcon>
         children: [
           const ClipRect(
             clipper: _Band(top: false),
-            child: Icon(Icons.download_rounded),
+            child: MTIcon(MTIcons.download),
           ),
           ClipRect(
             clipper: const _Band(top: true),
@@ -131,7 +134,7 @@ class _MTDownloadsIconState extends State<MTDownloadsIcon>
                   ),
                 );
               },
-              child: const Icon(Icons.download_rounded),
+              child: const MTIcon(MTIcons.download),
             ),
           ),
         ],

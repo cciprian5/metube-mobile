@@ -36,7 +36,9 @@ void main() {
         )
         .opacity;
     expect(ringOpacity(), 0);
-    final gesture = await tester.startGesture(tester.getCenter(find.text('Row 2')));
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.text('Row 2')),
+    );
     await gesture.moveBy(const Offset(0, 300));
     await tester.pump();
     expect(ringOpacity(), 1);
@@ -69,7 +71,10 @@ void main() {
       ),
     );
     final p = MTPalette.of(MTVariant.superApp, Brightness.light);
-    expect(theme.dialogTheme.titleTextStyle!.fontFamily, contains(MTType.display));
+    expect(
+      theme.dialogTheme.titleTextStyle!.fontFamily,
+      contains(MTType.display),
+    );
     final card = theme.tooltipTheme.decoration! as BoxDecoration;
     expect(card.color, p.miniBg);
     expect(card.borderRadius, BorderRadius.circular(8));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import '../widgets/mt_polish.dart';
 import 'mt_progress.dart';
@@ -54,7 +55,25 @@ class _MTPullRefreshState extends State<MTPullRefresh> {
           child: AnimatedOpacity(
             opacity: _opacity,
             duration: mtMotionDuration(context, MTMotion.tap),
-            child: const Center(child: MTSpinner(size: 28)),
+            // Hidden, the ring stops turning rather than spin unseen.
+            child: TickerMode(
+              enabled: _opacity > 0,
+              child: Center(
+                // A flat patch of the ground under the ring, no shadow and
+                // no lift: over a chip's label the bare ring blurred into
+                // the letters.
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: MTThemeX.of(context).palette.bg,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(MTSpace.xs + 2),
+                    child: MTSpinner(size: 28),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

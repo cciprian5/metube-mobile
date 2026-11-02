@@ -19,19 +19,20 @@ void main() {
     expect(offenders, isEmpty);
   });
 
-  test("**the guard**: waiting is the Wahaj ring, never Material's spinner",
-      () {
-    // MTPullRefresh builds on RefreshIndicator.noSpinner, which the pattern
-    // leaves alone; the plain one draws Material's floating disc.
-    final offenders = [
-      for (final f in Directory('lib').listSync(recursive: true))
-        if (f is File &&
-            f.path.endsWith('.dart') &&
-            RegExp(
-              r'CircularProgressIndicator|(?<![\w$.])RefreshIndicator\(',
-            ).hasMatch(f.readAsStringSync()))
-          f.path,
-    ];
-    expect(offenders, isEmpty);
-  });
+  test(
+    "**the guard**: waiting is the Wahaj ring, never Material's spinner",
+    () {
+      // MTPullRefresh builds on RefreshIndicator.noSpinner, which the pattern
+      // leaves alone; the plain one draws Material's floating disc.
+      final offenders = [
+        for (final f in Directory('lib').listSync(recursive: true))
+          if (f is File &&
+              f.path.endsWith('.dart') &&
+              RegExp(r'CircularProgressIndicator|(?<![\w$.])RefreshIndicator\(')
+                  .hasMatch(f.readAsStringSync()))
+            f.path,
+      ];
+      expect(offenders, isEmpty);
+    },
+  );
 }

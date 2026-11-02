@@ -12,9 +12,8 @@ void main() {
       for (final f in Directory('lib').listSync(recursive: true))
         if (f is File &&
             f.path.endsWith('.dart') &&
-            RegExp(
-              r'\bIcons\.|(?<![\w$])Icon\(|(?<![\w$])IconData\b',
-            ).hasMatch(f.readAsStringSync()))
+            RegExp(r'\bIcons\.|(?<![\w$])Icon\(|(?<![\w$])IconData\b')
+                .hasMatch(f.readAsStringSync()))
           f.path,
     ];
     expect(offenders, isEmpty);

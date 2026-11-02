@@ -69,7 +69,7 @@ List<(String, List<SettingsEntry>)> settingsGroups(
         ),
         SettingsEntry(
           SettingsPane.playback,
-          MTIcons.playFill,
+          MTIcons.playback,
           l10n.settingsPlayback,
           v.playback(),
         ),

@@ -127,4 +127,38 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.byType(SvgPicture), findsOneWidget);
   });
+
+  testWidgets('**the guard**: what Flutter draws by itself takes the Wahaj '
+      'glyphs too: the back arrow, the chosen segment', (tester) async {
+    final nav = GlobalKey<NavigatorState>();
+    await tester.pumpWidget(
+      MaterialApp(
+        navigatorKey: nav,
+        theme: mtTheme(MTVariant.lite, Brightness.light),
+        home: const Scaffold(),
+      ),
+    );
+    nav.currentState!.push(
+      MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          appBar: AppBar(),
+          body: SegmentedButton<int>(
+            segments: const [
+              ButtonSegment(value: 0, label: Text('A')),
+              ButtonSegment(value: 1, label: Text('B')),
+            ],
+            selected: const {0},
+            onSelectionChanged: (_) {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final names = [
+      for (final i in tester.widgetList<MTIcon>(find.byType(MTIcon)))
+        i.icon.name,
+    ];
+    expect(names, containsAll(['back', 'check']));
+    expect(find.byType(Icon), findsNothing);
+  });
 }

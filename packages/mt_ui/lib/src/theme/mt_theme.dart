@@ -249,6 +249,8 @@ ThemeData mtTheme(
     // chosen segment is the ink, as a chosen chip is: the accent is kept for
     // the action, not for a choice (log §4, 2026-10-31).
     segmentedButtonTheme: SegmentedButtonThemeData(
+      // The chosen segment's tick is the Wahaj one, not Material's glyph.
+      selectedIcon: const MTIcon(MTIcons.check),
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)

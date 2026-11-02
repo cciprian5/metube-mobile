@@ -149,12 +149,20 @@ Widget? squareArtworkFor(
   return CachedNetworkImage(
     imageUrl: wide,
     cacheManager: ref.read(artworkCacheProvider),
+    // The whole square, not the picture's own 16:9 inside it.
+    width: side,
+    height: side,
     fit: BoxFit.cover,
     memCacheWidth: (side * 16 / 9 * MediaQuery.devicePixelRatioOf(context))
         .round(),
     fadeInDuration: mtMotionDuration(context, MTMotion.reveal),
     fadeOutDuration: mtMotionDuration(context, MTMotion.fast),
-    errorWidget: (_, _, _) =>
-        Transform.scale(scale: 4 / 3, child: plain ?? const SizedBox.shrink()),
+    errorWidget: (_, _, _) => Transform.scale(
+      scale: 4 / 3,
+      child: SizedBox.square(
+        dimension: side,
+        child: plain ?? const SizedBox.shrink(),
+      ),
+    ),
   );
 }

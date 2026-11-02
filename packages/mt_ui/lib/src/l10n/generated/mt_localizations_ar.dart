@@ -1558,7 +1558,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get desktopSyncGuide =>
-      'داخل البيت: Syncthing على هذا الكمبيوتر وSyncthing-Fork (من F-Droid) على الجوال يتشاركان مجلداً واحداً، واضبط Syncthing-Fork على «Wi‑Fi فقط» توفيراً لبطارية الجوال. وعبر السحابة: مجلد برنامج السحابة على هذا الكمبيوتر (OneDrive أو Google Drive أو Dropbox)، وFolderSync على الجوال بالمجلد نفسه.';
+      'داخل البيت: Syncthing على هذا الكمبيوتر وSyncthing‑Fork (من F-Droid) على الجوال يتشاركان مجلداً واحداً، واضبط Syncthing‑Fork على «Wi‑Fi فقط» توفيراً لبطارية الجوال. وعبر السحابة: مجلد برنامج السحابة على هذا الكمبيوتر (OneDrive أو Google Drive أو Dropbox)، وFolderSync على الجوال بالمجلد نفسه.';
 
   @override
   String get desktopSyncHint =>

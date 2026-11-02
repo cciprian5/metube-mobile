@@ -49,5 +49,15 @@ void main() {
         .map((i) => i.imageUrl)
         .toList();
     expect(images, ['https://i.ytimg.com/vi/aaaaaaaaaaa/maxresdefault.jpg']);
+    // It fills the square: left to its own 16:9 it sat in a band of the
+    // card's colour, the bands moved rather than gone.
+    final image = tester.widget<CachedNetworkImage>(
+      find.descendant(
+        of: find.byType(EmberNowPlaying),
+        matching: find.byType(CachedNetworkImage),
+      ),
+    );
+    expect(image.width, isNotNull);
+    expect(image.width, image.height);
   });
 }

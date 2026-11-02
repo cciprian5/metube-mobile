@@ -189,7 +189,13 @@ void main() {
         Directory('${root.path}/Sync/MeTube Sync/$_phone').existsSync(),
         isFalse,
       );
-      expect(find.textContaining('No other device'), findsOneWidget);
+      // The pane re-reads the folder on the real clock; on a busy machine
+      // that outlasts one settle, so give it a few before judging.
+      final none = find.textContaining('No other device');
+      for (var i = 0; i < 10 && none.evaluate().isEmpty; i++) {
+        await settle(tester);
+      }
+      expect(none, findsOneWidget);
     });
   });
 }

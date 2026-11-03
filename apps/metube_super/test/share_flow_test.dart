@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
+import 'package:metube_super/features/home/background_hold.dart';
 import 'package:metube_super/features/home/download_watcher.dart'
     show notificationsProvider;
 import 'package:metube_super/features/home/notifications.dart';
+import 'package:metube_super/features/library/library_actions.dart'
+    show offlinePullProgressProvider;
 import 'package:metube_super/features/library/share_flow.dart';
 import 'package:metube_super/features/library/widgets/share_sheet.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
@@ -75,6 +78,7 @@ const _clip = LibraryItem(
 
 void main() {
   late Directory dir;
+  late List<bool> held;
   late _Notices notices;
   late _Pull pull;
   late List<String> sent;
@@ -86,11 +90,12 @@ void main() {
     pull = _Pull();
     sent = [];
     onScreen = true;
+    held = [];
   });
 
   tearDown(() => dir.delete(recursive: true));
 
-  List<Override> overrides() => [
+  List<Override> overrides({Future<void> Function(String path)? send}) => [
     keyValueStoreProvider.overrideWithValue(MemoryKeyValueStore()),
     secretStoreProvider.overrideWithValue(MemorySecretStore()),
     prefsMutexProvider.overrideWithValue(PrefsMutex()),
@@ -100,9 +105,18 @@ void main() {
     ),
     notificationsProvider.overrideWithValue(notices),
     sharePullProvider.overrideWithValue(pull.call),
-    shareSendProvider.overrideWithValue((path) async => sent.add(path)),
+    shareSendProvider.overrideWithValue(send ?? (path) async => sent.add(path)),
     shareDirProvider.overrideWith((ref) async => dir.path),
     shareForegroundProvider.overrideWithValue(() => onScreen),
+    backgroundHoldProvider.overrideWithValue(
+      BackgroundHold(
+        start: () async {
+          held.add(true);
+          return true;
+        },
+        stop: () async => held.add(false),
+      ),
+    ),
   ];
 
   group('the flow', () {
@@ -138,9 +152,9 @@ void main() {
         pull.gate = Completer();
         final first = flow().start(_clip);
         await Future<void>.delayed(Duration.zero);
-        await flow().start(_clip);
+        final second = flow().start(_clip);
         pull.gate!.complete();
-        await first;
+        await Future.wait([first, second]);
       });
       expect(pull.asked, hasLength(1));
       expect(sent, hasLength(1));
@@ -160,6 +174,20 @@ void main() {
         pull.gate!.complete();
         await running;
       });
+    });
+
+    testWidgets('**the guard**: the background service is held while the '
+        'copy runs, and let go once it is done', (tester) async {
+      await tester.runAsync(() async {
+        pull.gate = Completer();
+        final running = flow().start(_clip);
+        await untilPulling();
+        expect(held, [true], reason: 'leaving the app would freeze the pull');
+        pull.gate!.complete();
+        await running;
+        await Future<void>.delayed(Duration.zero);
+      });
+      expect(held, [true, false]);
     });
 
     testWidgets('**the guard**: cancel stops the pull and shares nothing', (
@@ -214,6 +242,22 @@ void main() {
       flow().dismiss();
       expect(box.read(shareFlowProvider), isNull);
     });
+  });
+
+  testWidgets('**the guard**: the card no longer reads 100% while the '
+      'share menu is open', (tester) async {
+    late ProviderContainer box;
+    Map<String, double>? atMenu;
+    box = ProviderContainer(
+      overrides: overrides(
+        send: (path) async => atMenu = box.read(offlinePullProgressProvider),
+      ),
+    );
+    addTearDown(box.dispose);
+    await tester.runAsync(
+      () => box.read(shareFlowProvider.notifier).start(_clip),
+    );
+    expect(atMenu, isEmpty);
   });
 
   group('the folder', () {

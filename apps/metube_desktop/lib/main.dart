@@ -184,13 +184,7 @@ Future<void> main(List<String> args) async {
     onQuit: window.quit,
   );
   await tray.setOn(toTray);
-  final taskbar = WindowsTaskbarSurface((
-    previous: words.previous,
-    play: words.play,
-    pause: words.pause,
-    next: words.next,
-    downloads: words.activeDownloadsCount,
-  ));
+  final taskbar = WindowsTaskbarSurface.saying(words);
   final bridge = SystemMediaBridge(player, [
     ?await SmtcSurface.start(),
     tray,
@@ -251,9 +245,7 @@ Future<void> main(List<String> args) async {
         initialServerSetupProvider.overrideWithValue(setup),
         offerSetupAtStartProvider.overrideWithValue(true),
         offerWhatsNewProvider.overrideWithValue(true),
-        metubeLatestProvider.overrideWithValue(
-          const MeTubeReleaseChecker(fetch: ioHttpGetString).latestTag,
-        ),
+        metubeLatestProvider.overrideWithValue(metubeLatestOnGitHub),
         initialAppearanceProvider.overrideWithValue(appearance),
         initialDefaultQualityProvider.overrideWithValue(
           Quality.fromWire(await store.getString(DefaultQualityNotifier.key)),

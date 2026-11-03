@@ -9,6 +9,10 @@ final metubeLatestProvider = Provider<Future<String?> Function()>(
       () async => null,
 );
 
+/// The real answer for [metubeLatestProvider].
+Future<String?> metubeLatestOnGitHub() =>
+    const MeTubeReleaseChecker(fetch: ioHttpGetString).latestTag();
+
 /// What the server runs, and whether a newer MeTube is out.
 class ServerRelease {
   const ServerRelease({this.version, this.latest});

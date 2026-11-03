@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:ffi/ffi.dart';
+import 'package:mt_ui/mt_ui.dart' show MTLocalizations;
 import 'package:win32/win32.dart'
     show FindWindow, GetWindowLongPtr, GWL_EXSTYLE, NULL, WS_EX_LAYOUTRTL;
 import 'package:windows_taskbar/windows_taskbar.dart';
@@ -25,6 +26,15 @@ typedef TaskbarWords = ({
 /// taskbar's light or dark.
 class WindowsTaskbarSurface implements SystemMediaSurface, TaskbarPort {
   WindowsTaskbarSurface(this.words);
+
+  factory WindowsTaskbarSurface.saying(MTLocalizations l) =>
+      WindowsTaskbarSurface((
+        previous: l.previous,
+        play: l.play,
+        pause: l.pause,
+        next: l.next,
+        downloads: l.activeDownloadsCount,
+      ));
 
   final TaskbarWords words;
   final _buttons = StreamController<SystemMediaButton>.broadcast();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metube_desktop/data/channels_data.dart';
 import 'package:metube_desktop/data/notices.dart';
 import 'package:metube_desktop/di.dart';
 import 'package:mt_core/mt_core.dart';
@@ -65,6 +66,85 @@ void main() {
       await arrivals.check([_onServer('a')], mine: {});
       final other = [for (var i = 0; i < 50; i++) _onServer('other$i')];
       expect(await arrivals.check(other, mine: {}), isEmpty);
+    });
+  });
+
+  group('where an arrival came from', () {
+    final eric = ChannelSubscription.fromJson({
+      'id': 'e',
+      'name': 'Eric Tech',
+      'url': 'https://www.youtube.com/@erictech',
+      'enabled': true,
+      'check_interval_minutes': 60,
+      'seen_count': 0,
+    })!;
+
+    Future<_Notices> arrive(
+      WidgetTester tester, {
+      required LibraryItem clip,
+      required ClipAuthorLookup author,
+    }) async {
+      ShellHarness.useWindow(tester, const Size(1440, 900));
+      final notices = _Notices();
+      final old = _onServer('old');
+      final store = MemoryKeyValueStore();
+      await store.setStringList(Arrivals.key, [old.canonicalUrl]);
+      final h = ShellHarness(
+        library: [old, clip],
+        server: ServerConfig(baseUrl: 'http://nas:8081'),
+        overrides: [
+          keyValueStoreProvider.overrideWithValue(store),
+          noticePortProvider.overrideWithValue(notices),
+          windowInFrontProvider.overrideWithValue(() async => false),
+          channelsProvider.overrideWith((ref) async => ChannelsState([eric])),
+          arrivalAuthorProvider.overrideWithValue(author),
+        ],
+      );
+      await tester.pumpWidget(h.app());
+      await tester.pumpAndSettle();
+      return notices;
+    }
+
+    final reel = LibraryItem(
+      canonicalUrl: 'https://www.instagram.com/reel/a/',
+      title: 'Reel',
+      onServer: true,
+      serverFilename: 'reel.mp4',
+    );
+    final video = LibraryItem(
+      canonicalUrl: 'https://www.youtube.com/watch?v=a',
+      title: 'Video',
+      onServer: true,
+      serverFilename: 'video.mp4',
+    );
+
+    testWidgets('**the guard**: a reel added elsewhere, with only YouTube '
+        'followed, is not announced', (tester) async {
+      final notices = await arrive(
+        tester,
+        clip: reel,
+        author: (_) async => null,
+      );
+      expect(notices.shown, isEmpty);
+    });
+
+    testWidgets('a clip by a followed channel is called that', (tester) async {
+      final notices = await arrive(
+        tester,
+        clip: video,
+        author: (_) async => (name: 'Eric Tech', url: eric.url),
+      );
+      expect(notices.shown.single.title, contains('channel you follow'));
+    });
+
+    testWidgets('**the guard**: one that cannot be told apart is only "on the '
+        'server"', (tester) async {
+      final notices = await arrive(
+        tester,
+        clip: video,
+        author: (_) async => null,
+      );
+      expect(notices.shown.single.title, contains('on the server'));
     });
   });
 

@@ -1362,6 +1362,9 @@ class MTLocalizationsAr extends MTLocalizations {
       'السيرفر لا يستجيب، فهذا ما كان فيه آخر مرة.';
 
   @override
+  String get desktopServerVersion => 'نسخة السيرفر';
+
+  @override
   String get desktopSetupAgain => 'إعداد من جديد';
 
   @override
@@ -2105,6 +2108,21 @@ class MTLocalizationsAr extends MTLocalizations {
       few: '$count مقاطع جديدة من قنواتك',
       two: 'مقطعان جديدان من قنواتك',
       one: 'مقطع جديد من قناة تتابعها',
+      zero: 'لا جديد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String newOnServer(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقطع جديد على السيرفر',
+      many: '$count مقطعاً جديداً على السيرفر',
+      few: '$count مقاطع جديدة على السيرفر',
+      two: 'مقطعان جديدان على السيرفر',
+      one: 'مقطع جديد على السيرفر',
       zero: 'لا جديد',
     );
     return '$_temp0';

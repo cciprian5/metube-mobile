@@ -155,3 +155,13 @@ class _AddressLine extends StatelessWidget {
     );
   }
 }
+
+/// Whether an address answers, in words.
+String addressStatusText(MTLocalizations l, MTEndpointStatus? status) =>
+    switch (status) {
+      MTEndpointStatus.ok => l.desktopAddressStatusOk,
+      MTEndpointStatus.unauthorized => l.desktopAddressStatusRefused,
+      MTEndpointStatus.notMeTube => l.desktopAddressStatusNotMeTube,
+      MTEndpointStatus.unreachable => l.desktopAddressStatusUnreachable,
+      null => l.serverStatusChecking,
+    };

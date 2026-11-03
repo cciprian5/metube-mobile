@@ -161,3 +161,8 @@ class Arrivals {
 }
 
 final arrivalsProvider = Provider<Arrivals>(Arrivals.new);
+
+/// Who posted an arrived clip, from its public address.
+final arrivalAuthorProvider = Provider<ClipAuthorLookup>(
+  (ref) => clipAuthorFrom(ClipPreviewResolver()),
+);

@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:ui';
 
+import 'package:ffi/ffi.dart';
+import 'package:win32/win32.dart'
+    show FindWindow, GetWindowLongPtr, GWL_EXSTYLE, NULL, WS_EX_LAYOUTRTL;
 import 'package:windows_taskbar/windows_taskbar.dart';
 
 import '../data/system_media.dart';
@@ -27,11 +31,25 @@ class WindowsTaskbarSurface implements SystemMediaSurface, TaskbarPort {
 
   static const _folder = 'assets/tray/';
 
-  /// Windows' own display language, which decides whether its taskbar is
-  /// mirrored; the first of the user's languages.
+  /// Whether the taskbar is mirrored: its own window says, and the first of
+  /// the user's languages stands in if that window cannot be found.
   bool get _mirrored {
     final locales = PlatformDispatcher.instance.locales;
-    return windowsMirrors(locales.isEmpty ? null : locales.first.languageCode);
+    return previewMirrored(
+      taskbarRtl: _taskbarRtl(),
+      languageCode: locales.isEmpty ? null : locales.first.languageCode,
+    );
+  }
+
+  static bool? _taskbarRtl() {
+    final name = 'Shell_TrayWnd'.toNativeUtf16();
+    try {
+      final taskbar = FindWindow(name, nullptr);
+      if (taskbar == NULL) return null;
+      return GetWindowLongPtr(taskbar, GWL_EXSTYLE) & WS_EX_LAYOUTRTL != 0;
+    } finally {
+      calloc.free(name);
+    }
   }
 
   String get _theme =>

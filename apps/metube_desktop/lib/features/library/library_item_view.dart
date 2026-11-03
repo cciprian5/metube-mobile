@@ -14,6 +14,7 @@ import '../../shell/context_menu.dart';
 import 'artwork.dart';
 import 'clip_keys.dart';
 import 'item_menu.dart';
+import 'platform_label.dart';
 import 'choose_mark.dart';
 import 'selection.dart';
 
@@ -165,6 +166,7 @@ class LibraryItemView extends ConsumerWidget {
         tags: item.tags,
         location: item.location,
         locationLabel: locationLabel,
+        sourceName: platformLabel(l, MediaPlatform.detect(item.canonicalUrl)),
         favorite: item.favorite,
         audio: item.isAudio,
         highlighted: playing,

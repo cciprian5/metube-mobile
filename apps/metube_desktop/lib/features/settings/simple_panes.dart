@@ -14,6 +14,7 @@ import '../../shell/pill.dart';
 import '../setup/setup_dialog.dart';
 import 'appearance_pane.dart';
 import 'browser_button.dart';
+import 'server_version_line.dart';
 import '../../shell/folded_text.dart';
 
 /// One setting: its name, a line saying what it does, and its control at
@@ -155,6 +156,7 @@ class ServerPane extends ConsumerWidget {
         ),
         if (config.username case final user? when user.isNotEmpty)
           SettingLine(title: l.username, value: user),
+        const ServerVersionLine(),
       ],
     );
   }
@@ -288,13 +290,3 @@ Future<void> _ask(
   if (await asked || !context.mounted) return;
   showMTNotice(context, message: refused, kind: MTNoticeKind.failed);
 }
-
-/// Whether an address answers, in words.
-String addressStatusText(MTLocalizations l, MTEndpointStatus? status) =>
-    switch (status) {
-      MTEndpointStatus.ok => l.desktopAddressStatusOk,
-      MTEndpointStatus.unauthorized => l.desktopAddressStatusRefused,
-      MTEndpointStatus.notMeTube => l.desktopAddressStatusNotMeTube,
-      MTEndpointStatus.unreachable => l.desktopAddressStatusUnreachable,
-      null => l.serverStatusChecking,
-    };

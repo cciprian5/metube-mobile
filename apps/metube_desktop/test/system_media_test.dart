@@ -67,6 +67,17 @@ void main() {
   });
 
   group("Windows' own right to left", () {
+    test('**the guard**: what the taskbar says beats the first language, '
+        'which on another computer gave the buttons reversed', () {
+      expect(previewMirrored(taskbarRtl: false, languageCode: 'ar'), isFalse);
+      expect(previewMirrored(taskbarRtl: true, languageCode: 'en'), isTrue);
+    });
+
+    test('the language answers only when the taskbar cannot be read', () {
+      expect(previewMirrored(taskbarRtl: null, languageCode: 'ar'), isTrue);
+      expect(previewMirrored(taskbarRtl: null, languageCode: 'en'), isFalse);
+    });
+
     test('**the guard**: a mirrored taskbar is handed the preview buttons '
         'reversed, so they read ⏮ ▶ ⏭ like the player bar', () {
       expect(windowsMirrors('ar'), isTrue);

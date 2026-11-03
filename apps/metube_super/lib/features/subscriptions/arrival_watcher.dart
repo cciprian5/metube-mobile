@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../di.dart';
@@ -21,6 +22,10 @@ const arrivalSeenKey = 'subs_seen_keys';
 /// once to carry its answer over and then removed.
 const arrivalWatermarkKey = 'subs_seen_timestamp';
 
+/// What this phone sent and the server has not finished yet, kept across
+/// runs: [UnfinishedSends].
+const arrivalUnfinishedKey = 'subs_unfinished_sends';
+
 /// A fixed id, so a second batch replaces the first notice instead of
 /// stacking a second one beside it.
 const arrivalNotificationId = 770001;
@@ -37,7 +42,10 @@ const arrivalNotificationId = 770001;
 /// **What counts as an arrival**: a completed item that was not in the
 /// accounted-for set and that this app did not submit. Anything the engine handled is
 /// excluded, because the engine already announced it and a second notice
-/// for the same file is worse than none.
+/// for the same file is worse than none. **Nor does everything left say
+/// "from a channel you follow"**: another device or the web page may have
+/// queued it, so [sortArrivals] drops what no followed channel could have
+/// brought and the notice speaks plainly of the rest.
 ///
 /// **It cannot wake the app up.** There is no periodic background task
 /// here, by choice: the check runs whenever `/history` is read — opening
@@ -64,7 +72,25 @@ class ArrivalWatcher {
 
   void noteOwnTask(String? canonicalUrl) {
     if (canonicalUrl != null && canonicalUrl.isNotEmpty) {
-      _mine.add(canonicalUrl);
+      if (_mine.add(canonicalUrl)) unawaited(_keep(canonicalUrl));
+    }
+  }
+
+  UnfinishedSends get _sends => _unfinished ??= UnfinishedSends(
+    store: _ref.read(keyValueStoreProvider),
+    mutex: _ref.read(prefsMutexProvider),
+    key: arrivalUnfinishedKey,
+  );
+  UnfinishedSends? _unfinished;
+
+  Future<void> _keep(String canonicalUrl) async {
+    try {
+      await _sends.note(
+        canonicalUrl,
+        finished: _seen?.contains(canonicalUrl) ?? false,
+      );
+    } on Object {
+      // Only one notice too many if the app closes before this clip ends.
     }
   }
 
@@ -91,9 +117,11 @@ class ArrivalWatcher {
     final store = _ref.read(keyValueStoreProvider);
     if (!_loaded) {
       _seen = await _load(store, done);
+      _mine.addAll(await _sends.all());
       _loaded = true;
     }
     final seen = _seen;
+    await _sends.settle(now);
 
     // **The first run announces nothing.** A fresh install, or a phone
     // restored from a backup, would otherwise report the server's entire
@@ -146,10 +174,20 @@ class ArrivalWatcher {
       }
       _askedAgain = false;
       if (subs.sorted.any((sub) => sub.enabled)) {
+        final sorted = await sortArrivals<HistoryItem>(
+          arrivals,
+          urlOf: (item) => item.canonicalUrl,
+          uploaderOf: (item) => item.uploader,
+          following: subs.sorted,
+          author: _ref.read(arrivalAuthorProvider),
+        );
         // Marked seen first: a notice twice is worse than a notice lost to
         // a failed write.
         await _save(store, now);
-        await _announce(arrivals);
+        final worth = [...sorted.followed, ...sorted.unknown];
+        if (worth.isNotEmpty) {
+          await _announce(worth, certain: sorted.unknown.isEmpty);
+        }
         return;
       }
     }
@@ -185,7 +223,12 @@ class ArrivalWatcher {
         .run(() => store.setStringList(arrivalSeenKey, keys.toList()));
   }
 
-  Future<void> _announce(List<HistoryItem> arrivals) async {
+  /// [certain] when every clip is known to come from a followed channel;
+  /// otherwise the notice says only that they are new on the server.
+  Future<void> _announce(
+    List<HistoryItem> arrivals, {
+    required bool certain,
+  }) async {
     final l10n = mtLocalizationsFor(_ref.read(settingsProvider).localeCode);
     // **One notice for the batch**, as asked 2026-09-20: a channel checked
     // hourly can deliver several clips at once, and one line per clip
@@ -203,7 +246,9 @@ class ArrivalWatcher {
         .read(notificationsProvider)
         .showResult(
           arrivalNotificationId,
-          title: l10n.newFromSubscriptions(arrivals.length),
+          title: certain
+              ? l10n.newFromSubscriptions(arrivals.length)
+              : l10n.newOnServer(arrivals.length),
           body: body,
           channelName: l10n.subscriptions,
           // Tapping opens the app on the newest of them.
@@ -214,6 +259,11 @@ class ArrivalWatcher {
         .log('subscription arrivals: ${arrivals.length}', tag: 'subs');
   }
 }
+
+/// Who posted an arrived clip, from its public address.
+final arrivalAuthorProvider = Provider<ClipAuthorLookup>(
+  (ref) => clipAuthorFrom(ClipPreviewResolver()),
+);
 
 /// The watcher itself, separate from the wiring below so a test can drive
 /// it a history at a time instead of simulating the whole app.

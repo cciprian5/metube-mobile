@@ -12,6 +12,7 @@ import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:metube_super/features/subscriptions/arrival_watcher.dart';
 import 'package:metube_super/features/subscriptions/subscriptions_providers.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
 
 /// Records what would have been posted, instead of posting it.
 class _SpyNotifications extends DownloadNotifications {
@@ -89,6 +90,8 @@ void main() {
     bool subscribed = true,
     bool notify = true,
     int failFirst = 0,
+    String followedUrl = 'https://yt.example/@homelab',
+    ClipAuthorLookup? author,
   }) {
     var failures = failFirst;
     final api = MeTubeApiClient(
@@ -103,7 +106,7 @@ void main() {
                           {
                             'id': 's1',
                             'name': 'Homelab Hour',
-                            'url': 'https://yt.example/@homelab',
+                            'url': followedUrl,
                             'enabled': true,
                             'check_interval_minutes': 60,
                           },
@@ -125,6 +128,7 @@ void main() {
         ),
         apiClientProvider.overrideWithValue(api),
         notificationsProvider.overrideWithValue(spy),
+        if (author != null) arrivalAuthorProvider.overrideWithValue(author),
       ],
     );
   }
@@ -388,5 +392,96 @@ void main() {
     expect(spy.posted, hasLength(1));
     expect(spy.posted.single.$2, 'New');
     expect(await store.getInt(arrivalWatermarkKey), isNull);
+  });
+
+  group('where an arrival came from', () {
+    const followedUrl = 'https://www.youtube.com/@homelab';
+    const known = ('https://www.youtube.com/watch?v=old', 'Old', 1000);
+
+    Future<ArrivalWatcher> afterFirstLook(ProviderContainer container) async {
+      final watcher = await watcherIn(container);
+      await watcher.onHistory(historyAt([known]));
+      return watcher;
+    }
+
+    test('**the guard**: a reel added from another device, with only YouTube '
+        'followed, says nothing, and is seen', () async {
+      final container = containerWith(followedUrl: followedUrl);
+      addTearDown(container.dispose);
+      final watcher = await afterFirstLook(container);
+
+      await watcher.onHistory(
+        historyAt([known, ('https://www.instagram.com/reel/a/', 'Reel', 5000)]),
+      );
+      expect(spy.posted, isEmpty);
+      expect(await seenKeys(), contains('https://www.instagram.com/reel/a/'));
+    });
+
+    test('**the guard**: a clip by a channel nobody follows says nothing',
+        () async {
+      final container = containerWith(
+        followedUrl: followedUrl,
+        author: (_) async =>
+            (name: 'Someone', url: 'https://www.youtube.com/@someone'),
+      );
+      addTearDown(container.dispose);
+      final watcher = await afterFirstLook(container);
+
+      await watcher.onHistory(
+        historyAt([known, ('https://www.youtube.com/watch?v=a', 'A', 5000)]),
+      );
+      expect(spy.posted, isEmpty);
+    });
+
+    test('a clip by a followed channel is called that', () async {
+      final container = containerWith(
+        followedUrl: followedUrl,
+        author: (_) async => (name: 'Homelab', url: followedUrl),
+      );
+      addTearDown(container.dispose);
+      final watcher = await afterFirstLook(container);
+
+      await watcher.onHistory(
+        historyAt([known, ('https://www.youtube.com/watch?v=a', 'A', 5000)]),
+      );
+      expect(spy.posted.single.$1, contains('channel you follow'));
+    });
+
+    test('**the guard**: one that cannot be told apart is only "on the '
+        'server", never "from a channel you follow"', () async {
+      final container = containerWith(
+        followedUrl: followedUrl,
+        author: (_) async => null,
+      );
+      addTearDown(container.dispose);
+      final watcher = await afterFirstLook(container);
+
+      await watcher.onHistory(
+        historyAt([known, ('https://www.youtube.com/watch?v=a', 'A', 5000)]),
+      );
+      expect(spy.posted.single.$1, contains('on the server'));
+      expect(spy.posted.single.$1, isNot(contains('follow')));
+    });
+
+    test('**the guard**: a clip sent from here that finished while the app '
+        'was closed is not taken for an arrival', () async {
+      const mine = ('https://www.youtube.com/watch?v=mine', 'Mine', 5000);
+      final first = containerWith(followedUrl: followedUrl);
+      final before = await afterFirstLook(first);
+      before.noteOwnTask(mine.$1);
+      await pumpEventQueue();
+      first.dispose();
+
+      final second = containerWith(
+        followedUrl: followedUrl,
+        author: (_) async => (name: 'Homelab', url: followedUrl),
+      );
+      addTearDown(second.dispose);
+      final after = await watcherIn(second);
+      await after.onHistory(historyAt([known, mine]));
+
+      expect(spy.posted, isEmpty);
+      expect(await store.getStringList(arrivalUnfinishedKey), isEmpty);
+    });
   });
 }

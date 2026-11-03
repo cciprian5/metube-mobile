@@ -24,6 +24,7 @@ import 'data/folders_data.dart';
 import 'data/incoming_links.dart';
 import 'data/lab_hover.dart';
 import 'data/lab_server.dart';
+import 'data/server_release.dart';
 import 'data/setup_data.dart';
 import 'data/transcripts_data.dart';
 import 'data/update_data.dart';
@@ -46,6 +47,7 @@ import 'platform/error_log.dart';
 import 'platform/frame_grab.dart';
 import 'platform/hotkeys.dart';
 import 'platform/player_desktop.dart';
+import 'platform/run_note.dart';
 import 'platform/secret_store_windows.dart';
 import 'platform/prefs_store.dart';
 import 'platform/single_instance.dart';
@@ -108,6 +110,8 @@ Future<void> main(List<String> args) async {
     filePath: '${local.path}/logs/${EmberIdentity.logFile}',
   );
   logEveryError(logger);
+  final runNote = RunNote(folder: '${local.path}/logs', logger: logger);
+  await runNote.begin();
 
   final resolver = PlaybackSourceResolver(endpoint: ServerStreamEndpoint.none);
   final desktop = DesktopPlayer.create(
@@ -131,6 +135,7 @@ Future<void> main(List<String> args) async {
   final window = await EmberWindow.open(
     placements: WindowPlacementStore(store: store, mutex: mutex),
     beforeClose: () async {
+      await runNote.end();
       await player.persist();
       for (final step in [...closing]) {
         await step();
@@ -246,6 +251,9 @@ Future<void> main(List<String> args) async {
         initialServerSetupProvider.overrideWithValue(setup),
         offerSetupAtStartProvider.overrideWithValue(true),
         offerWhatsNewProvider.overrideWithValue(true),
+        metubeLatestProvider.overrideWithValue(
+          const MeTubeReleaseChecker(fetch: ioHttpGetString).latestTag,
+        ),
         initialAppearanceProvider.overrideWithValue(appearance),
         initialDefaultQualityProvider.overrideWithValue(
           Quality.fromWire(await store.getString(DefaultQualityNotifier.key)),

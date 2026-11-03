@@ -202,6 +202,31 @@ void main() {
       expect(h.player.sought, const Duration(seconds: 40));
     });
 
+    testWidgets('**the guard**: titles and what was said both show the clip\'s '
+        'cover, and the arrows still reach every row', (tester) async {
+      await open(tester);
+      await ctrlK(tester);
+      await tester.enterText(find.byType(TextField).last, 'replicate');
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byType(SaidRow),
+          matching: find.byType(MTMediaThumb),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.enterText(find.byType(TextField).last, 'pool');
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byType(TitleRow),
+          matching: find.byType(MTMediaThumb),
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('the down arrow moves to the next row', (tester) async {
       await open(tester);
       await ctrlK(tester);

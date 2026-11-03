@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_media/mt_media.dart' show mtFormatDuration;
 import 'package:mt_transcripts/mt_transcripts.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../library/artwork.dart';
 import 'palette_model.dart';
 
 /// What the palette shows when nothing matches.
@@ -120,6 +122,34 @@ class _Row extends StatelessWidget {
   }
 }
 
+/// A clip's cover at the start of its row, as the phone's results show it.
+/// The placeholder takes the same box, so the text lines up with or without
+/// a cover.
+class PaletteCover extends ConsumerWidget {
+  const PaletteCover({super.key, required this.item});
+
+  static const double width = 64;
+  static const double height = 36;
+
+  final LibraryItem item;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => ExcludeSemantics(
+    child: MTMediaThumb(
+      width: width,
+      height: height,
+      audio: item.isAudio,
+      child: artworkFor(
+        ref,
+        context,
+        item.thumbnail,
+        width: width,
+        height: height,
+      ),
+    ),
+  );
+}
+
 class TitleRow extends StatelessWidget {
   const TitleRow({super.key, required this.item, required this.selected});
 
@@ -137,6 +167,7 @@ class TitleRow extends StatelessWidget {
     return _Row(
       icon: item.isAudio ? MTIcons.headphones : MTIcons.play,
       selected: selected,
+      lead: PaletteCover(item: item),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -202,13 +233,20 @@ class SaidRow extends StatelessWidget {
     return _Row(
       icon: MTIcons.transcript,
       selected: selected,
-      // A time reads left to right in either language.
-      lead: Text(
-        mtLtrRun(mtFormatDuration(match.hit.start)),
-        style: text.labelMedium?.tabular.copyWith(
-          color: p.accentInk,
-          fontWeight: FontWeight.w700,
-        ),
+      lead: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PaletteCover(item: match.item),
+          const SizedBox(width: MTSpace.sm),
+          // A time reads left to right in either language.
+          Text(
+            mtLtrRun(mtFormatDuration(match.hit.start)),
+            style: text.labelMedium?.tabular.copyWith(
+              color: p.accentInk,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

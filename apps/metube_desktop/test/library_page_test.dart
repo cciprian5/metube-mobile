@@ -178,6 +178,15 @@ void main() {
     // "Server" on every row, and no platform letters beside the titles.
     expect(find.byType(MTLocationBadge), findsOneWidget);
     expect(find.byType(MTPlatformChip), findsNothing);
+    // **The guard**: the source column names the site, for every row, the
+    // server's too; it used to stay empty.
+    expect(
+      find.descendant(
+        of: find.byType(MTMediaRow),
+        matching: find.text('YouTube'),
+      ),
+      findsWidgets,
+    );
     expect(await h.store.getString(EmberLibraryNotifier.modeKey), 'list');
 
     await tester.tap(find.text('Size'));

@@ -124,6 +124,13 @@ const _mirroredLanguages = {'ar', 'fa', 'he', 'ps', 'ur'};
 bool windowsMirrors(String? languageCode) =>
     _mirroredLanguages.contains(languageCode?.toLowerCase());
 
+/// Whether the preview's buttons go on a mirrored taskbar. What the taskbar
+/// itself says ([taskbarRtl]) decides; a list of languages only guesses, and
+/// its first need not be the one Windows is shown in. The language answers
+/// only when the taskbar could not be read.
+bool previewMirrored({required bool? taskbarRtl, String? languageCode}) =>
+    taskbarRtl ?? windowsMirrors(languageCode);
+
 /// The preview's buttons in the order Windows is handed them. Media
 /// controls read ⏮ ▶ ⏭ left to right in every language, as the app's own
 /// player bar does; a mirrored taskbar lays them out from the right, so it

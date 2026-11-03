@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/data/library_data.dart';
+import 'package:metube_desktop/data/server_release.dart';
 import 'package:metube_desktop/shell/server_line.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -19,6 +20,7 @@ void main() {
             ServerConfig(baseUrl: 'http://nas:8081'),
           ),
           historyProvider.overrideWith((ref) => history()),
+          serverReleaseProvider.overrideWith((ref) async => null),
         ],
         child: MaterialApp(
           localizationsDelegates: MTLocalizations.localizationsDelegates,

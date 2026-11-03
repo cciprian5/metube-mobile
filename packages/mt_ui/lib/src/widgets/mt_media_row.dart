@@ -36,6 +36,7 @@ class MTMediaRow extends StatelessWidget {
     this.tags = const [],
     this.location = MTMediaLocation.none,
     this.locationLabel,
+    this.sourceName,
     this.selected = false,
     this.highlighted = false,
     this.paused,
@@ -63,6 +64,11 @@ class MTMediaRow extends StatelessWidget {
   final List<String> tags;
   final MTMediaLocation location;
   final String? locationLabel;
+
+  /// The site the clip came from, for the source column on the computer's
+  /// table, with the location badge under it. Null (the phones) leaves the
+  /// badge alone in that column.
+  final String? sourceName;
   final bool selected;
   final bool highlighted;
 
@@ -82,6 +88,7 @@ class MTMediaRow extends StatelessWidget {
     ?duration,
     if (columns.size) ?size,
     if (columns.added) ?added,
+    if (columns.location) ?sourceName,
     // The tags the row shows beside the source.
     if (columns.added)
       for (final tag in tags.take(3)) mtName('#$tag'),
@@ -221,14 +228,26 @@ class MTMediaRow extends StatelessWidget {
                   location: ExcludeSemantics(
                     child: Align(
                       alignment: AlignmentDirectional.centerStart,
-                      child:
-                          location == MTMediaLocation.none ||
-                              locationLabel == null
-                          ? const SizedBox.shrink()
-                          : MTLocationBadge(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (sourceName case final name?)
+                            Text(
+                              name,
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.fade,
+                              style: figure,
+                            ),
+                          if (location != MTMediaLocation.none &&
+                              locationLabel != null)
+                            MTLocationBadge(
                               location: location,
                               label: locationLabel!,
                             ),
+                        ],
+                      ),
                     ),
                   ),
                   actions: Row(

@@ -7,6 +7,7 @@ import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../../data/channels_data.dart';
 import '../../data/choices_data.dart';
 import '../../data/downloads_data.dart';
 import '../../data/folders_data.dart';
@@ -35,8 +36,16 @@ class _NoticesWiringState extends ConsumerState<NoticesWiring> {
   final _phases = <String, TaskPhase>{};
   final _copyPhases = <String, CopyPhase>{};
 
-  /// What this app sent in this run: the engine announces those.
+  /// What this app sent: the engine announces those. It reaches back across
+  /// runs, through [_sends], for what finished while the app was closed.
   final _mine = <String>{};
+  var _sendsRead = false;
+
+  late final _sends = UnfinishedSends(
+    store: ref.read(keyValueStoreProvider),
+    mutex: ref.read(prefsMutexProvider),
+    key: 'ember_unfinished_sends',
+  );
 
   @override
   void initState() {
@@ -58,7 +67,9 @@ class _NoticesWiringState extends ConsumerState<NoticesWiring> {
 
   void _onTasks(List<DownloadTask> tasks) {
     for (final task in tasks) {
-      if (task.canonicalUrl case final url?) _mine.add(url);
+      if (task.canonicalUrl case final url?) {
+        if (_mine.add(url)) unawaited(_sends.note(url, finished: false));
+      }
     }
     final ended = newlyEnded(_phases, tasks);
     _phases
@@ -88,23 +99,57 @@ class _NoticesWiringState extends ConsumerState<NoticesWiring> {
   }
 
   Future<void> _onLibrary(List<LibraryItem> items) async {
+    if (!_sendsRead) {
+      _sendsRead = true;
+      _mine.addAll(await _sends.all());
+    }
     // Checked even when the notice is off, so turning it on later does not
     // announce everything that came in the meantime.
     final arrived = await ref.read(arrivalsProvider).check(items, mine: _mine);
+    await _sends.settle([
+      for (final item in items)
+        if (item.onServer && item.serverFilename != null) item.canonicalUrl,
+    ]);
     if (arrived.isEmpty || !mounted || !ref.read(notifyArrivalsProvider)) {
       return;
     }
+    final sorted = await sortArrivals<LibraryItem>(
+      arrived,
+      urlOf: (item) => item.canonicalUrl,
+      uploaderOf: (item) => item.uploader,
+      following: await _following(),
+      author: ref.read(arrivalAuthorProvider),
+    );
+    final worth = [...sorted.followed, ...sorted.unknown];
+    if (worth.isEmpty || !mounted) return;
     final l = context.mtl;
     // One notice for the batch, as on the phone.
     String name(LibraryItem item) =>
         item.title.trim().isEmpty ? item.canonicalUrl : item.title.trim();
     await _show(
       EmberNotice(
-        title: l.newFromSubscriptions(arrived.length),
-        body: arrived.take(3).map(name).join(' · '),
-        onClick: () => unawaited(_open(arrived.first.canonicalUrl)),
+        title: sorted.unknown.isEmpty
+            ? l.newFromSubscriptions(worth.length)
+            : l.newOnServer(worth.length),
+        body: worth.take(3).map(name).join(' · '),
+        onClick: () => unawaited(_open(worth.first.canonicalUrl)),
       ),
     );
+  }
+
+  /// The channels followed. No list at all is asked for twice before it
+  /// counts as none, since a failed request and an old server read alike.
+  Future<List<ChannelSubscription>> _following() async {
+    try {
+      var state = await ref.read(channelsProvider.future);
+      if (!state.supported) {
+        ref.invalidate(channelsProvider);
+        state = await ref.read(channelsProvider.future);
+      }
+      return state.subscriptions ?? const [];
+    } on Object {
+      return const [];
+    }
   }
 
   EmberNotice? _forTask(DownloadTask task) {

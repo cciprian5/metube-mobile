@@ -7,6 +7,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../data/addresses_data.dart';
 import '../data/library_data.dart';
+import '../data/server_release.dart';
 import '../router.dart';
 import 'context_menu.dart';
 
@@ -38,6 +39,10 @@ class SidebarServerLine extends ConsumerWidget {
       AsyncError() => (l.serverStatusOffline, p.err),
       _ => (l.serverStatusChecking, p.ink3),
     };
+    final release = ref.watch(serverReleaseProvider).valueOrNull;
+    final update = release != null && release.isOutdated
+        ? l.serverVersionOutdated(release.latest!)
+        : null;
     final dot = history is AsyncData
         ? MTIcon(
             MTIcons.server,
@@ -52,10 +57,14 @@ class SidebarServerLine extends ConsumerWidget {
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           );
     return MTShortcutTooltip(
-      message: '$status · $host',
+      message: [status, host, ?update].join(' · '),
       child: Semantics(
         button: true,
-        label: '${l.desktopAddresses}: $host, $status',
+        label: [
+          '${l.desktopAddresses}: $host',
+          status,
+          ?update,
+        ].join(l.listSeparator),
         excludeSemantics: true,
         child: InkWell(
           borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
@@ -82,6 +91,21 @@ class SidebarServerLine extends ConsumerWidget {
                           style: text.labelSmall?.copyWith(color: p.ink2),
                         ),
                       ),
+                      // Information, not a fault: the ink's own shade, and the
+                      // words in the tooltip.
+                      if (update != null) ...[
+                        const SizedBox(width: MTSpace.xs),
+                        Container(
+                          key: const ValueKey('server-outdated'),
+                          width: MTSpace.xs,
+                          height: MTSpace.xs,
+                          decoration: BoxDecoration(
+                            color: p.ink2,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: MTSpace.xs),
+                      ],
                       MTIcon(MTIcons.swap, size: MTSpace.md, color: p.ink3),
                     ],
                   ),

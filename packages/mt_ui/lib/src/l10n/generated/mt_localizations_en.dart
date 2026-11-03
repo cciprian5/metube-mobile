@@ -1324,6 +1324,9 @@ class MTLocalizationsEn extends MTLocalizations {
       'The server isn\'t answering, so this is what it held last time.';
 
   @override
+  String get desktopServerVersion => 'Server version';
+
+  @override
   String get desktopSetupAgain => 'Set up again';
 
   @override
@@ -2057,6 +2060,17 @@ class MTLocalizationsEn extends MTLocalizations {
       locale: localeName,
       other: '$count new from the channels you follow',
       one: '1 new from a channel you follow',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String newOnServer(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new clips on the server',
+      one: '1 new clip on the server',
     );
     return '$_temp0';
   }

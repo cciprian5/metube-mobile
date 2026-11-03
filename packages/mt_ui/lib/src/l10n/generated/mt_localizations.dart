@@ -2282,6 +2282,12 @@ abstract class MTLocalizations {
   /// **'The server isn\'t answering, so this is what it held last time.'**
   String get desktopServerPartMissing;
 
+  /// No description provided for @desktopServerVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Server version'**
+  String get desktopServerVersion;
+
   /// No description provided for @desktopSetupAgain.
   ///
   /// In en, this message translates to:
@@ -3547,6 +3553,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 new from a channel you follow} other{{count} new from the channels you follow}}'**
   String newFromSubscriptions(int count);
+
+  /// No description provided for @newOnServer.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 new clip on the server} other{{count} new clips on the server}}'**
+  String newOnServer(int count);
 
   /// No description provided for @newPlaylistAction.
   ///

@@ -5,6 +5,12 @@ import 'package:mt_core/mt_core.dart';
 /// The real client for a server that is never reached: only deleting is
 /// replaced, recorded instead of sent.
 class FakeApi extends MeTubeApiClient {
+  /// What `/version` answers; none, as from an old server, unless set.
+  ServerVersion? version;
+
+  @override
+  Future<ServerVersion?> fetchVersion({Duration? timeout}) async => version;
+
   FakeApi(ServerConfig config) : super(config: config);
 
   final List<List<String>> deleted = [];

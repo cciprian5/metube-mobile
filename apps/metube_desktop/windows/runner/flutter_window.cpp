@@ -7,6 +7,7 @@
 #include <string>
 
 #include "flutter/generated_plugin_registrant.h"
+#include "run_note.h"
 
 namespace {
 
@@ -122,6 +123,9 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
   // Before the plugins: window_manager answers WM_NCHITTEST for its own
   // resize edges and would swallow the maximise button.
   switch (message) {
+    case WM_ENDSESSION:
+      if (wparam) NoteWindowsEnding();
+      break;
     case WM_NCHITTEST:
       if (InMaxRect(lparam)) return HTMAXBUTTON;
       break;

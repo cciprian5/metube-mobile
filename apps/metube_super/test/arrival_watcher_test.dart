@@ -417,21 +417,23 @@ void main() {
       expect(await seenKeys(), contains('https://www.instagram.com/reel/a/'));
     });
 
-    test('**the guard**: a clip by a channel nobody follows says nothing',
-        () async {
-      final container = containerWith(
-        followedUrl: followedUrl,
-        author: (_) async =>
-            (name: 'Someone', url: 'https://www.youtube.com/@someone'),
-      );
-      addTearDown(container.dispose);
-      final watcher = await afterFirstLook(container);
+    test(
+      '**the guard**: a clip by a channel nobody follows says nothing',
+      () async {
+        final container = containerWith(
+          followedUrl: followedUrl,
+          author: (_) async =>
+              (name: 'Someone', url: 'https://www.youtube.com/@someone'),
+        );
+        addTearDown(container.dispose);
+        final watcher = await afterFirstLook(container);
 
-      await watcher.onHistory(
-        historyAt([known, ('https://www.youtube.com/watch?v=a', 'A', 5000)]),
-      );
-      expect(spy.posted, isEmpty);
-    });
+        await watcher.onHistory(
+          historyAt([known, ('https://www.youtube.com/watch?v=a', 'A', 5000)]),
+        );
+        expect(spy.posted, isEmpty);
+      },
+    );
 
     test('a clip by a followed channel is called that', () async {
       final container = containerWith(

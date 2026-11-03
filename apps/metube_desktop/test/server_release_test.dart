@@ -36,9 +36,8 @@ void main() {
     }
 
     test('**the guard**: a server behind the newest release says so', () async {
-      final release = await container(
-        version: old,
-      ).read(serverReleaseProvider.future);
+      final release = await container(version: old)
+          .read(serverReleaseProvider.future);
       expect(release?.isOutdated, isTrue);
       expect(release?.latest, newest);
     });
@@ -52,13 +51,9 @@ void main() {
 
     test('**the guard**: a version that cannot be compared is never called '
         'out of date, and GitHub is not asked', () async {
-      for (final version in [
-        const ServerVersion(version: 'dev'),
-        null,
-      ]) {
-        final release = await container(
-          version: version,
-        ).read(serverReleaseProvider.future);
+      for (final version in [const ServerVersion(version: 'dev'), null]) {
+        final release = await container(version: version)
+            .read(serverReleaseProvider.future);
         expect(release?.isOutdated, isFalse);
         expect(asked, 0);
       }

@@ -19,8 +19,9 @@ enum ArrivalOrigin {
 
 /// Who posted a clip, from its public address; null when that cannot be
 /// learned (a site with no public answer, or no network).
-typedef ClipAuthorLookup =
-    Future<({String? name, String? url})?> Function(String url);
+typedef ClipAuthorLookup = Future<({String? name, String? url})?> Function(
+  String url,
+);
 
 /// The origin of one clip. [uploader] is what the server said, when it did.
 Future<ArrivalOrigin> arrivalOrigin(
@@ -154,7 +155,6 @@ class UnfinishedSends {
     if (kept.length != before) await _write();
   }
 
-  Future<void> _write() => mutex.run(
-    () async => store.setStringList(key, (await _read()).toList()),
-  );
+  Future<void> _write() =>
+      mutex.run(() async => store.setStringList(key, (await _read()).toList()));
 }

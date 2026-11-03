@@ -54,9 +54,8 @@ void main() {
   test('**the guard**: the note from the runner reaches the log once, as a '
       'crash', () async {
     await note.begin();
-    await named(
-      RunNote.crashName,
-    ).writeAsString('code 0xC0000005 in flutter_windows.dll at +0x3C18A\n');
+    await named(RunNote.crashName)
+        .writeAsString('code 0xC0000005 in flutter_windows.dll at +0x3C18A\n');
 
     final next = nextRun();
     await next.begin();

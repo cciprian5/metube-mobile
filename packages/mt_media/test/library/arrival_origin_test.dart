@@ -2,18 +2,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 
-ChannelSubscription _sub(
-  String name,
-  String url, {
-  bool enabled = true,
-}) => ChannelSubscription.fromJson({
-  'id': name,
-  'name': name,
-  'url': url,
-  'enabled': enabled,
-  'check_interval_minutes': 60,
-  'seen_count': 0,
-})!;
+ChannelSubscription _sub(String name, String url, {bool enabled = true}) =>
+    ChannelSubscription.fromJson({
+      'id': name,
+      'name': name,
+      'url': url,
+      'enabled': enabled,
+      'check_interval_minutes': 60,
+      'seen_count': 0,
+    })!;
 
 ClipAuthorLookup _says(String? name, String? url) =>
     (_) async => (name: name, url: url);
@@ -72,20 +69,23 @@ void main() {
       );
     });
 
-    test('the address matches whichever host and tab it was written with', () async {
-      final tabbed = _sub(
-        'Renamed',
-        'https://m.youtube.com/@ERICTECH/videos',
-      );
-      expect(
-        await arrivalOrigin(
-          clip,
-          following: [tabbed],
-          author: _says('Eric', 'https://www.youtube.com/@erictech'),
-        ),
-        ArrivalOrigin.followed,
-      );
-    });
+    test(
+      'the address matches whichever host and tab it was written with',
+      () async {
+        final tabbed = _sub(
+          'Renamed',
+          'https://m.youtube.com/@ERICTECH/videos',
+        );
+        expect(
+          await arrivalOrigin(
+            clip,
+            following: [tabbed],
+            author: _says('Eric', 'https://www.youtube.com/@erictech'),
+          ),
+          ArrivalOrigin.followed,
+        );
+      },
+    );
 
     test('a channel followed by its id matches on the name', () async {
       final byId = _sub(
@@ -121,20 +121,20 @@ void main() {
       );
     });
 
-    test('a followed playlist holds other authors, so one proves nothing', () async {
-      final list = _sub(
-        'Mix',
-        'https://www.youtube.com/playlist?list=PL123',
-      );
-      expect(
-        await arrivalOrigin(
-          clip,
-          following: [list],
-          author: _says('Someone', 'https://www.youtube.com/@someone'),
-        ),
-        ArrivalOrigin.unknown,
-      );
-    });
+    test(
+      'a followed playlist holds other authors, so one proves nothing',
+      () async {
+        final list = _sub('Mix', 'https://www.youtube.com/playlist?list=PL123');
+        expect(
+          await arrivalOrigin(
+            clip,
+            following: [list],
+            author: _says('Someone', 'https://www.youtube.com/@someone'),
+          ),
+          ArrivalOrigin.unknown,
+        );
+      },
+    );
   });
 
   group('sorting a batch', () {
@@ -143,30 +143,32 @@ void main() {
         ['$clip&1', '$clip&2', reel],
         urlOf: (url) => url,
         following: [eric],
-        author: (url) async => url.endsWith('&1')
-            ? (name: 'Eric Tech', url: null)
-            : null,
+        author: (url) async =>
+            url.endsWith('&1') ? (name: 'Eric Tech', url: null) : null,
       );
       expect(sorted.followed, ['$clip&1']);
       expect(sorted.unknown, ['$clip&2']);
     });
 
-    test('a long absence asks only so many, and the rest stay unknown', () async {
-      var asked = 0;
-      final sorted = await sortArrivals<String>(
-        [for (var i = 0; i < 30; i++) '$clip&$i'],
-        urlOf: (url) => url,
-        following: [eric],
-        maxLookups: 5,
-        author: (_) async {
-          asked++;
-          return (name: 'Eric Tech', url: null);
-        },
-      );
-      expect(asked, 5);
-      expect(sorted.followed, hasLength(5));
-      expect(sorted.unknown, hasLength(25));
-    });
+    test(
+      'a long absence asks only so many, and the rest stay unknown',
+      () async {
+        var asked = 0;
+        final sorted = await sortArrivals<String>(
+          [for (var i = 0; i < 30; i++) '$clip&$i'],
+          urlOf: (url) => url,
+          following: [eric],
+          maxLookups: 5,
+          author: (_) async {
+            asked++;
+            return (name: 'Eric Tech', url: null);
+          },
+        );
+        expect(asked, 5);
+        expect(sorted.followed, hasLength(5));
+        expect(sorted.unknown, hasLength(25));
+      },
+    );
   });
 
   group('what was sent from here', () {

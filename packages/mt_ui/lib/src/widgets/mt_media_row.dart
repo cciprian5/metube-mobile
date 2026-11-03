@@ -228,25 +228,11 @@ class MTMediaRow extends StatelessWidget {
                   location: ExcludeSemantics(
                     child: Align(
                       alignment: AlignmentDirectional.centerStart,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (sourceName case final name?)
-                            Text(
-                              name,
-                              maxLines: 1,
-                              softWrap: false,
-                              overflow: TextOverflow.fade,
-                              style: figure,
-                            ),
-                          if (location != MTMediaLocation.none &&
-                              locationLabel != null)
-                            MTLocationBadge(
-                              location: location,
-                              label: locationLabel!,
-                            ),
-                        ],
+                      child: _SourceCell(
+                        name: sourceName,
+                        location: location,
+                        locationLabel: locationLabel,
+                        style: figure,
                       ),
                     ),
                   ),
@@ -294,33 +280,6 @@ class MTMediaRow extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _Tag extends StatelessWidget {
-  const _Tag(this.tag);
-
-  final String tag;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: MTSpace.xs - 1),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: p.line2,
-          width: MTThemeX.of(context).hairline,
-        ),
-        borderRadius: BorderRadius.circular(MTRadius.thumb),
-      ),
-      child: Text(
-        mtName('#$tag'),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: p.ink2),
       ),
     );
   }

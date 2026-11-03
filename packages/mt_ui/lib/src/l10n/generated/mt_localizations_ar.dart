@@ -297,6 +297,35 @@ class MTLocalizationsAr extends MTLocalizations {
   String get closePlayer => 'إغلاق المشغل';
 
   @override
+  String get cloudflareAccess => 'Cloudflare Access (اختياري)';
+
+  @override
+  String get cloudflareBothRequired =>
+      'أدخل معرّف العميل وسرّ العميل معًا، أو اترك الحقلين فارغين';
+
+  @override
+  String get cloudflareClientId => 'معرّف العميل (Client ID)';
+
+  @override
+  String get cloudflareClientSecret => 'سرّ العميل (Client Secret)';
+
+  @override
+  String get cloudflareHelpBody =>
+      'أنشئ رمز خدمة (Service Token) من لوحة Cloudflare Zero Trust، ثم اسمح به بسياسة Service Auth على اسم نطاق هذا السيرفر. الصق هنا معرّف العميل وسرّ العميل. تعرض Cloudflare السرّ مرة واحدة فقط. تُرسَل القيم إلى عناوين HTTPS فقط.';
+
+  @override
+  String get cloudflareHelpTitle => 'Cloudflare Access';
+
+  @override
+  String get cloudflareHelper => 'فقط إذا كان السيرفر خلف Cloudflare Access';
+
+  @override
+  String get cloudflareHideSecret => 'إخفاء السرّ';
+
+  @override
+  String get cloudflareShowSecret => 'إظهار السرّ';
+
+  @override
   String get columnAdded => 'تاريخ الإضافة';
 
   @override
@@ -555,6 +584,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get enterFullscreen => 'ملء الشاشة';
+
+  @override
+  String get errAccessRejected => 'رفضت Cloudflare معرّف العميل أو سرّ العميل';
 
   @override
   String get errAuth => 'اسم المستخدم أو كلمة المرور خاطئة';

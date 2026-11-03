@@ -103,3 +103,10 @@ third_party/*/pubspec.lock
 # Transcripts backfill tool: answers kept between runs, and its import file
 .mtf-transcripts/
 mtf-transcripts-library*.json
+
+# Bob and speckit
+.specify/
+.bob/
+specs/
+# Widget Preview related
+.widget_preview/

@@ -9,6 +9,23 @@ only one.
 
 ## [Unreleased]
 
+### Added
+
+- **Cloudflare Access service token (Lite and Super).** Settings → Server has
+  an optional "Cloudflare Access" group with a Client ID and a Client Secret.
+  When both are filled in, every request to your MeTube server carries the
+  two `CF-Access-Client-*` headers, so a server published behind Cloudflare
+  Access works from outside the home network. Leave the fields empty and
+  nothing changes. The headers go only to the server address you entered and
+  only over `https`; a redirect to another host is not followed with them,
+  and they are never sent to a thumbnail or caption host. The secret is kept
+  in the device's secure storage, hidden by default, left out of backups and
+  scrubbed from the log and from what you share. If Cloudflare refuses the
+  values, the apps say the Access credentials were rejected instead of "not a
+  MeTube server". What Cloudflare itself answers on a rejection has not yet
+  been measured against a live hostname, so a rejection that comes from the
+  Cloudflare side still shows today's message. See `docs/SERVER-SETUP.md`.
+
 ## [2.6.0] - 2026-10-23
 
 ### Added

@@ -293,14 +293,18 @@ final playbackWiringProvider = Provider<void>((ref) {
       : ServerStreamEndpoint.fromApi(api);
 });
 
-/// The endpoint resolver: it probes with the account's own credentials.
+/// The endpoint resolver: it probes with the account's own credentials and,
+/// when set, its Cloudflare Access pair (which `ServerConfig` still sends
+/// only to https addresses).
 /// **It watches the credentials alone rather than the whole settings object
 ///:** without `select`, changing the theme or the quality rebuilt
 /// the resolver, re-probing every endpoint while you were standing in the
 /// network screen.
 final endpointResolverProvider = Provider((ref) {
   final credentials = ref.watch(
-    settingsProvider.select((s) => (s.username ?? '', s.password ?? '')),
+    settingsProvider.select(
+      (s) => (s.username ?? '', s.password ?? '', s.cloudflareAccess),
+    ),
   );
   return EndpointResolver.withClientFactory(
     (baseUrl) => MeTubeApiClient(
@@ -308,6 +312,7 @@ final endpointResolverProvider = Provider((ref) {
         baseUrl: baseUrl,
         username: credentials.$1,
         password: credentials.$2,
+        access: credentials.$3,
       ),
     ),
   );

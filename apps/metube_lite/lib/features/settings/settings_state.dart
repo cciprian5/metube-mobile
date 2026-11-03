@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
@@ -13,6 +14,7 @@ class LiteSettings {
     this.serverUrl = '',
     this.username,
     this.password,
+    this.cloudflareAccess,
     this.quality = Quality.best,
     this.quickDownload = false,
     this.wifiOnly = false,
@@ -25,6 +27,10 @@ class LiteSettings {
   final String serverUrl;
   final String? username;
   final String? password;
+
+  /// The optional Cloudflare Access service token; `null` for everyone who
+  /// is not behind Access.
+  final CloudflareAccess? cloudflareAccess;
   final Quality quality;
 
   /// **Quick download**: a shared or pasted link downloads immediately at
@@ -54,13 +60,20 @@ class LiteSettings {
   bool get isConfigured => serverUrl.trim().isNotEmpty;
 
   ServerConfig? get serverConfig => isConfigured
-      ? ServerConfig(baseUrl: serverUrl, username: username, password: password)
+      ? ServerConfig(
+          baseUrl: serverUrl,
+          username: username,
+          password: password,
+          access: cloudflareAccess,
+        )
       : null;
 
   LiteSettings copyWith({
     String? serverUrl,
     String? username,
     String? password,
+    CloudflareAccess? cloudflareAccess,
+    bool clearCloudflareAccess = false,
     Quality? quality,
     bool? quickDownload,
     bool? wifiOnly,
@@ -76,6 +89,9 @@ class LiteSettings {
     serverUrl: serverUrl ?? this.serverUrl,
     username: username ?? this.username,
     password: password ?? this.password,
+    cloudflareAccess: clearCloudflareAccess
+        ? null
+        : (cloudflareAccess ?? this.cloudflareAccess),
     quality: quality ?? this.quality,
     quickDownload: quickDownload ?? this.quickDownload,
     wifiOnly: wifiOnly ?? this.wifiOnly,
@@ -95,6 +111,7 @@ class LiteSettings {
       serverUrl: await store.getString('server_url') ?? '',
       username: await secrets.read(SecretKeys.username),
       password: await secrets.read(SecretKeys.password),
+      cloudflareAccess: await _readAccess(secrets),
       quality: Quality.fromWire(await store.getString('video_quality')),
       quickDownload: await store.getBool('quick_download_enabled') ?? false,
       wifiOnly: await store.getBool('wifi_only_downloads') ?? false,
@@ -106,6 +123,15 @@ class LiteSettings {
       ),
       localeCode: await store.getString('app_locale'),
     );
+  }
+
+  /// Both values or nothing: half a pair would only produce a rejection.
+  static Future<CloudflareAccess?> _readAccess(SecretStore secrets) async {
+    final access = CloudflareAccess(
+      clientId: await secrets.read(SecretKeys.cfAccessClientId) ?? '',
+      clientSecret: await secrets.read(SecretKeys.cfAccessClientSecret) ?? '',
+    );
+    return access.isComplete ? access : null;
   }
 }
 
@@ -125,17 +151,24 @@ class SettingsNotifier extends Notifier<LiteSettings> {
   /// Rule 1: test the connection, then save. **A broken setting is never
   /// saved silently.** Throws a classified [MTApiException] for the UI to
   /// display.
+  ///
+  /// [access] is tested together with the rest and stored beside the
+  /// password; `null` removes a stored pair. [clientFor] lets a test supply
+  /// a client with a fake transport.
   Future<void> saveServer({
     required String url,
     String? username,
     String? password,
+    CloudflareAccess? access,
+    @visibleForTesting MeTubeApiClient Function(ServerConfig)? clientFor,
   }) async {
     final config = ServerConfig(
       baseUrl: url,
       username: username,
       password: password,
+      access: access,
     );
-    final client = MeTubeApiClient(config: config);
+    final client = clientFor?.call(config) ?? MeTubeApiClient(config: config);
     try {
       await client.testConnection();
     } finally {
@@ -144,10 +177,14 @@ class SettingsNotifier extends Notifier<LiteSettings> {
     await _mutex.run(() => _store.setString('server_url', config.baseUrl));
     await _writeSecret(SecretKeys.username, username);
     await _writeSecret(SecretKeys.password, password);
+    await _writeSecret(SecretKeys.cfAccessClientId, access?.clientId);
+    await _writeSecret(SecretKeys.cfAccessClientSecret, access?.clientSecret);
     state = state.copyWith(
       serverUrl: config.baseUrl,
       username: username,
       password: password,
+      cloudflareAccess: access,
+      clearCloudflareAccess: access == null,
     );
   }
 

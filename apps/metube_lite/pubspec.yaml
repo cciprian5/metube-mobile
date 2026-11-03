@@ -47,6 +47,10 @@ dependencies:
   url_launcher: ^6.3.1
 
 dev_dependencies:
+  # The settings tests inject a fake HTTP adapter into `MeTubeApiClient`. dio
+  # is a transitive dependency through mt_core, and declaring it here makes the
+  # import legitimate (the same reason Super declares it).
+  dio: ^5.11.1
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0

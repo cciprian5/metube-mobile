@@ -30,13 +30,22 @@ class _ServerFieldsState extends ConsumerState<ServerFields> {
   late final _passController = TextEditingController(
     text: ref.read(settingsProvider).password ?? '',
   );
+  late final _cfIdController = TextEditingController(
+    text: ref.read(settingsProvider).cloudflareAccess?.clientId ?? '',
+  );
+  late final _cfSecretController = TextEditingController(
+    text: ref.read(settingsProvider).cloudflareAccess?.clientSecret ?? '',
+  );
   bool _testing = false;
+  bool _showCfSecret = false;
 
   @override
   void dispose() {
     _urlController.dispose();
     _userController.dispose();
     _passController.dispose();
+    _cfIdController.dispose();
+    _cfSecretController.dispose();
     super.dispose();
   }
 
@@ -45,6 +54,18 @@ class _ServerFieldsState extends ConsumerState<ServerFields> {
     final url = _urlController.text.trim();
     if (url.isEmpty) {
       showMTSnack(context, l10n.serverUrlRequired, type: MTSnackType.error);
+      return;
+    }
+    // Both values or neither: one alone only earns a rejection that looks
+    // like a wrong address.
+    final cfId = _cfIdController.text.trim();
+    final cfSecret = _cfSecretController.text.trim();
+    if (cfId.isEmpty != cfSecret.isEmpty) {
+      showMTSnack(
+        context,
+        l10n.cloudflareBothRequired,
+        type: MTSnackType.error,
+      );
       return;
     }
     setState(() => _testing = true);
@@ -57,6 +78,9 @@ class _ServerFieldsState extends ConsumerState<ServerFields> {
             url: url,
             username: _userController.text.trim(),
             password: _passController.text,
+            access: cfId.isEmpty
+                ? null
+                : CloudflareAccess(clientId: cfId, clientSecret: cfSecret),
           );
       ref.invalidate(serverStatusProvider);
       if (mounted) {
@@ -142,6 +166,61 @@ class _ServerFieldsState extends ConsumerState<ServerFields> {
               ),
             ),
             HelpButton(title: l10n.authentication, body: l10n.authHelper),
+          ],
+        ),
+        const SizedBox(height: MTSpace.lg),
+        // Only for a server behind Cloudflare Access; empty for everyone
+        // else, and then nothing is sent.
+        Text(
+          l10n.cloudflareAccess,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: MTSpace.xs),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _cfIdController,
+                textDirection: TextDirection.ltr,
+                decoration: InputDecoration(
+                  labelText: l10n.cloudflareClientId,
+                  helperText: l10n.cloudflareHelper,
+                  helperMaxLines: 2,
+                ),
+              ),
+            ),
+            HelpButton(
+              title: l10n.cloudflareHelpTitle,
+              body: l10n.cloudflareHelpBody,
+            ),
+          ],
+        ),
+        const SizedBox(height: MTSpace.md),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _cfSecretController,
+                obscureText: !_showCfSecret,
+                textDirection: TextDirection.ltr,
+                decoration: InputDecoration(
+                  labelText: l10n.cloudflareClientSecret,
+                  suffixIcon: IconButton(
+                    tooltip: _showCfSecret
+                        ? l10n.cloudflareHideSecret
+                        : l10n.cloudflareShowSecret,
+                    icon: Icon(
+                      _showCfSecret
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
+                    onPressed: () =>
+                        setState(() => _showCfSecret = !_showCfSecret),
+                  ),
+                ),
+              ),
+            ),
+            const HelpButtonGap(),
           ],
         ),
         const SizedBox(height: MTSpace.lg),

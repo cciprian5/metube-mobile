@@ -7,8 +7,15 @@ enum LogLevel { debug, info, warn, error }
 
 /// A diagnostic log in a ring file: trimmed to the last [maxLines] lines,
 /// and sharing passes **mandatorily** through [sanitizeForShare], which
-/// removes URLs, IP addresses, authentication headers and storage paths.
-/// The app supplies the path from path_provider.
+/// removes URLs, IP addresses, authentication headers (Basic, Bearer and the
+/// Cloudflare Access pair) and storage paths. The app supplies the path from
+/// path_provider.
+///
+/// **One thing is removed earlier, when a line is written**: the value of a
+/// `CF-Access-Client-Id` or `CF-Access-Client-Secret` header. The logs screen
+/// shows the file as it is, so a service token that reached it would be
+/// readable by anyone holding the phone. Everything else is kept readable on
+/// the device and removed only when shared.
 class MTLogger {
   MTLogger({required this.filePath, this.maxLines = 1000});
 
@@ -23,6 +30,12 @@ class MTLogger {
 
   static final RegExp _authPattern = RegExp(
     r'(?:Basic|Bearer)\s+[A-Za-z0-9+/=._-]{8,}',
+    caseSensitive: false,
+  );
+  // The header name and separator are kept so the line still says which
+  // header was involved; only the value goes.
+  static final RegExp _cloudflarePattern = RegExp(
+    r'''(CF-Access-Client-(?:Id|Secret)["']?\s*[:=]\s*["']?)[^\s,;}"')\]]+''',
     caseSensitive: false,
   );
   static final RegExp _urlPattern = RegExp(
@@ -50,7 +63,7 @@ class MTLogger {
       final stamp = DateTime.now().toIso8601String();
       final tagPart = tag == null ? '' : '[$tag] ';
       await file.writeAsString(
-        '$stamp ${level.name.toUpperCase()} $tagPart$message\n',
+        '$stamp ${level.name.toUpperCase()} $tagPart${_hideAccess(message)}\n',
         mode: FileMode.append,
         flush: true,
       );
@@ -103,12 +116,16 @@ class MTLogger {
     }
   }
 
+  static String _hideAccess(String text) =>
+      text.replaceAllMapped(_cloudflarePattern, (m) => '${m[1]}[AUTH]');
+
   /// Replaces credentials, URLs, paths and IP addresses with opaque
   /// markers. **Order matters**: authentication before URLs.
-  static String sanitizeForShare(String text) => text
-      .replaceAll(_authPattern, '[AUTH]')
-      .replaceAll(_urlPattern, '[URL]')
-      .replaceAll(_filePattern, '[FILE]')
-      .replaceAllMapped(_hostLookupPattern, (m) => "${m[1]}[HOST]'")
-      .replaceAll(_ipPattern, '[IP]');
+  static String sanitizeForShare(String text) =>
+      _hideAccess(text)
+          .replaceAll(_authPattern, '[AUTH]')
+          .replaceAll(_urlPattern, '[URL]')
+          .replaceAll(_filePattern, '[FILE]')
+          .replaceAllMapped(_hostLookupPattern, (m) => "${m[1]}[HOST]'")
+          .replaceAll(_ipPattern, '[IP]');
 }

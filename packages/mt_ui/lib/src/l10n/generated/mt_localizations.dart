@@ -566,6 +566,60 @@ abstract class MTLocalizations {
   /// **'Close player'**
   String get closePlayer;
 
+  /// No description provided for @cloudflareAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudflare Access (optional)'**
+  String get cloudflareAccess;
+
+  /// No description provided for @cloudflareBothRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter both the Client ID and the Client Secret, or leave both empty'**
+  String get cloudflareBothRequired;
+
+  /// No description provided for @cloudflareClientId.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID'**
+  String get cloudflareClientId;
+
+  /// No description provided for @cloudflareClientSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Client Secret'**
+  String get cloudflareClientSecret;
+
+  /// No description provided for @cloudflareHelpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a service token in the Cloudflare Zero Trust dashboard, then allow it with a Service Auth policy on this server\'s hostname. Paste the Client ID and the Client Secret here. Cloudflare shows the secret only once. The values are sent only to HTTPS addresses.'**
+  String get cloudflareHelpBody;
+
+  /// No description provided for @cloudflareHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudflare Access'**
+  String get cloudflareHelpTitle;
+
+  /// No description provided for @cloudflareHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if your server sits behind Cloudflare Access'**
+  String get cloudflareHelper;
+
+  /// No description provided for @cloudflareHideSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide secret'**
+  String get cloudflareHideSecret;
+
+  /// No description provided for @cloudflareShowSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Show secret'**
+  String get cloudflareShowSecret;
+
   /// No description provided for @columnAdded.
   ///
   /// In en, this message translates to:
@@ -1027,6 +1081,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Fullscreen'**
   String get enterFullscreen;
+
+  /// No description provided for @errAccessRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudflare rejected the Client ID or Client Secret'**
+  String get errAccessRejected;
 
   /// No description provided for @errAuth.
   ///

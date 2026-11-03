@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'di.dart';
 import 'features/library/library_actions.dart';
+import 'features/library/share_flow.dart';
 import 'features/settings/auto_switch.dart';
 import 'features/settings/settings_state.dart';
 import 'features/shared/error_report.dart';
@@ -116,6 +117,13 @@ Future<void> main() async {
     sweepPartialFiles(
       superMediaDir,
     ).then((count) => count == 0 ? null : logger.log('swept $count partials')),
+  );
+  // Copies made for sharing are kept an hour for the receiving app; what
+  // the last run left past that goes now.
+  unawaited(
+    getTemporaryDirectory().then(
+      (tmp) => sweepShareFolder('${tmp.path}/share'),
+    ),
   );
 
   runApp(

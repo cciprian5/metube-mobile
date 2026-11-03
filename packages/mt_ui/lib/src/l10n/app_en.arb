@@ -310,6 +310,23 @@
       }
     }
   },
+  "@shareLargeTitle": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "@shareProgressOf": {
+    "placeholders": {
+      "received": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "@showChannel": {
     "placeholders": {
       "channel": {
@@ -1246,7 +1263,12 @@
   "settingsValueWifiOnly": "Wi‑Fi only",
   "setupServer": "Set up the server",
   "share": "Share",
+  "shareLargeBody": "It downloads to this phone first, then the share menu opens.",
+  "shareLargeTitle": "Download {size} to share?",
   "shareLogs": "Share logs",
+  "sharePreparing": "Preparing to share",
+  "shareProgressOf": "{received} of {total}",
+  "shareReady": "Ready to share",
   "shareSelected": "Share selected",
   "shortsFilter": "Shorts",
   "showChannel": "Everything from {channel}",

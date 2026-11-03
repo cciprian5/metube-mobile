@@ -8,6 +8,8 @@ import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/library_actions.dart';
+import '../library/widgets/share_sheet.dart';
+import '../shared/error_report.dart';
 import '../library/library_providers.dart';
 import '../library/widgets/item_details_sheet.dart';
 import '../shared/add_to_sheet.dart';
@@ -234,7 +236,11 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
   Future<void> _share(PlaylistItem item) async {
     final match = _libraryItemOf(item);
     if (match == null) return;
-    await ref.read(libraryActionsProvider).smartShare(match);
+    try {
+      await shareClip(context, ref, match);
+    } on Object catch (e) {
+      if (mounted) showErrorSnack(context, ref, e, tag: 'share');
+    }
   }
 
   /// "Continue with the rest of the list": the first non-short item opens

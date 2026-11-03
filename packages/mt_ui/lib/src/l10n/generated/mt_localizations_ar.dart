@@ -2820,7 +2820,27 @@ class MTLocalizationsAr extends MTLocalizations {
   String get share => 'مشاركة';
 
   @override
+  String get shareLargeBody =>
+      'يُنزَّل إلى هذا الجوال أولاً، ثم تُفتح قائمة المشاركة.';
+
+  @override
+  String shareLargeTitle(String size) {
+    return 'تنزيل $size للمشاركة؟';
+  }
+
+  @override
   String get shareLogs => 'مشاركة السجلات';
+
+  @override
+  String get sharePreparing => 'تجهيز المشاركة';
+
+  @override
+  String shareProgressOf(String received, String total) {
+    return '$received من $total';
+  }
+
+  @override
+  String get shareReady => 'جاهز للمشاركة';
 
   @override
   String get shareSelected => 'مشاركة المحدد';

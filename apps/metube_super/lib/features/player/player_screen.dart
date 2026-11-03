@@ -11,6 +11,8 @@ import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/library_actions.dart';
+import '../library/widgets/share_sheet.dart';
+import '../shared/error_report.dart';
 import '../library/library_providers.dart';
 import '../shared/membership.dart';
 import '../shared/platform_label.dart';
@@ -216,7 +218,11 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
   Future<void> _share(PlaylistItem item) async {
     final match = _libraryItemOf(item);
     if (match == null) return;
-    await ref.read(libraryActionsProvider).smartShare(match);
+    try {
+      await shareClip(context, ref, match);
+    } on Object catch (e) {
+      if (mounted) showErrorSnack(context, ref, e, tag: 'share');
+    }
   }
 
   /// The question is only worth asking when there is something to carry

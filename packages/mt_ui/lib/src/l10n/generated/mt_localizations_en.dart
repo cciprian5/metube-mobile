@@ -2745,7 +2745,27 @@ class MTLocalizationsEn extends MTLocalizations {
   String get share => 'Share';
 
   @override
+  String get shareLargeBody =>
+      'It downloads to this phone first, then the share menu opens.';
+
+  @override
+  String shareLargeTitle(String size) {
+    return 'Download $size to share?';
+  }
+
+  @override
   String get shareLogs => 'Share logs';
+
+  @override
+  String get sharePreparing => 'Preparing to share';
+
+  @override
+  String shareProgressOf(String received, String total) {
+    return '$received of $total';
+  }
+
+  @override
+  String get shareReady => 'Ready to share';
 
   @override
   String get shareSelected => 'Share selected';

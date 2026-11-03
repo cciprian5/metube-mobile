@@ -17,6 +17,7 @@ import '../library_actions.dart';
 import '../library_providers.dart';
 import 'confirm_bulk_delete.dart';
 import 'item_details_sheet.dart';
+import 'share_sheet.dart';
 
 /// The item actions sheet, by state (rule 5). Delete comes last, isolated
 /// by a divider and in the error colour, which is a general navigation
@@ -184,7 +185,7 @@ class _ItemActionsSheet extends ConsumerWidget {
             tile(
               MTIcons.share,
               l10n.share,
-              () => run(() => actions.smartShare(item)),
+              () => run(() => shareClip(host, ref, item)),
             ),
             // **The external player is offered for a local copy only**
             // (decision 2026-09-05): a Super server runs without

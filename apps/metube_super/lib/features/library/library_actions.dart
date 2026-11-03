@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:mt_media/library.dart';
 
 import '../../di.dart';
@@ -97,7 +95,7 @@ class LibraryActions {
     final savePath =
         '$superMediaDir/${buildLocalFilename(title, serverFilename: filename)}';
 
-    _setProgress(canonicalUrl, 0);
+    notePullProgress(_ref, canonicalUrl, 0);
     final String finalPath;
     try {
       // The final path comes from `pull`: a collision shifts it, and
@@ -106,10 +104,10 @@ class LibraryActions {
       finalPath = await Transfer(api: _api).pull(
         serverFilename: filename,
         savePath: savePath,
-        onProgress: (p) => _setProgress(canonicalUrl, p),
+        onProgress: (p) => notePullProgress(_ref, canonicalUrl, p),
       );
     } finally {
-      _clearProgress(canonicalUrl);
+      notePullProgress(_ref, canonicalUrl, null);
     }
     await _ref.read(offlineIndexProvider).put(canonicalUrl, finalPath);
     if (thumbnail != null) {
@@ -209,63 +207,17 @@ class LibraryActions {
     // The file is gone, so the key lands in `gone` and is pruned.
     await pruneItemData([item.canonicalUrl]);
   }
+}
 
-  /// Smart sharing: the local file if there is one, otherwise download then
-  /// share. **Field report 2026-09-02:** "there is no counter showing it is
-  /// downloading, it looks unresponsive". The progress was being computed
-  /// in [offlinePullProgressProvider] and nobody displayed it. The share
-  /// screens show it now, and the temporary file **is deleted after
-  /// sharing** rather than left to accumulate in the system temp folder.
-  Future<void> smartShare(LibraryItem item) async {
-    final localPath = item.localPath;
-    if (localPath != null) {
-      await Share.shareXFiles([XFile(localPath)]);
-      return;
-    }
-    if (!canPullNow) throw const NetworkException(wifiOnlyRejection);
-    final filename = item.serverFilename;
-    if (filename == null) throw const UnsafeFilenameException();
-    final tmp = await getTemporaryDirectory();
-    final path =
-        '${tmp.path}/${buildLocalFilename(item.title, serverFilename: filename)}';
-    _setProgress(item.canonicalUrl, 0);
-    try {
-      await Transfer(api: _api).pull(
-        serverFilename: filename,
-        savePath: path,
-        onProgress: (p) => _setProgress(item.canonicalUrl, p),
-      );
-    } finally {
-      _clearProgress(item.canonicalUrl);
-    }
-    try {
-      await Share.shareXFiles([XFile(path)]);
-    } finally {
-      // A transient copy the offline index knows nothing about; leaving it
-      // is a silent leak.
-      try {
-        final file = File(path);
-        if (await file.exists()) await file.delete();
-      } on FileSystemException {
-        // The sharing app is still reading it; the system will clean it up
-        // later.
-      }
-    }
-  }
-
-  void _setProgress(String url, double value) {
-    final map = Map<String, double>.from(
-      _ref.read(offlinePullProgressProvider),
-    );
-    map[url] = value;
-    _ref.read(offlinePullProgressProvider.notifier).state = map;
-  }
-
-  void _clearProgress(String url) {
-    final map = Map<String, double>.from(
-      _ref.read(offlinePullProgressProvider),
-    );
+/// Shows or clears ([value] null) the progress of a pull on the item's
+/// card and in the player, for every kind of pull: offline copies and the
+/// temporary copy a share makes.
+void notePullProgress(Ref ref, String url, double? value) {
+  final map = Map<String, double>.from(ref.read(offlinePullProgressProvider));
+  if (value == null) {
     map.remove(url);
-    _ref.read(offlinePullProgressProvider.notifier).state = map;
+  } else {
+    map[url] = value;
   }
+  ref.read(offlinePullProgressProvider.notifier).state = map;
 }

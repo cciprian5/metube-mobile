@@ -376,6 +376,7 @@ class _RecordingTransfer implements Transfer {
     required String serverFilename,
     required String savePath,
     void Function(double progress)? onProgress,
+    void Function(int received, int total)? onBytes,
     CancelToken? cancelToken,
     TransferCancel? cancel,
   }) async {

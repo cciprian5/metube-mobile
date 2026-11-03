@@ -35,10 +35,14 @@ class Transfer {
   /// Returns **the path actually used**, which may differ from [savePath]
   /// if that was taken. The caller indexes what comes back,
   /// not what it asked for.
+  ///
+  /// [onBytes] carries the raw counts for a caller that shows a size or a
+  /// speed; [onProgress] is the same report as a fraction.
   Future<String> pull({
     required String serverFilename,
     required String savePath,
     void Function(double progress)? onProgress,
+    void Function(int received, int total)? onBytes,
     CancelToken? cancelToken,
     TransferCancel? cancel,
   }) async {
@@ -52,6 +56,7 @@ class Transfer {
           partPath,
           cancelToken: cancelToken,
           onProgress: (received, total) {
+            onBytes?.call(received, total);
             if (onProgress != null && total > 0) {
               onProgress(received / total);
             }

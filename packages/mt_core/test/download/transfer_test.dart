@@ -31,6 +31,19 @@ void main() {
       expect(progress, [0.5, 1.0]);
     });
 
+    test(
+      'the raw counts reach a caller that shows a size or a speed',
+      () async {
+        final bytes = <(int, int)>[];
+        await makeTransfer(FakeApi()).pull(
+          serverFilename: 'a.mp4',
+          savePath: pathOf('a.mp4'),
+          onBytes: (received, total) => bytes.add((received, total)),
+        );
+        expect(bytes, [(50, 100), (100, 100)]);
+      },
+    );
+
     // A regression (field report 2026-09-02): "the clip appears in the
     // library before it has finished downloading". Lite's library is built
     // by **scanning the folder**, and Dio writes incrementally, so the

@@ -4664,11 +4664,41 @@ abstract class MTLocalizations {
   /// **'Share'**
   String get share;
 
+  /// No description provided for @shareLargeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It downloads to this phone first, then the share menu opens.'**
+  String get shareLargeBody;
+
+  /// No description provided for @shareLargeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download {size} to share?'**
+  String shareLargeTitle(String size);
+
   /// No description provided for @shareLogs.
   ///
   /// In en, this message translates to:
   /// **'Share logs'**
   String get shareLogs;
+
+  /// No description provided for @sharePreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing to share'**
+  String get sharePreparing;
+
+  /// No description provided for @shareProgressOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{received} of {total}'**
+  String shareProgressOf(String received, String total);
+
+  /// No description provided for @shareReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to share'**
+  String get shareReady;
 
   /// No description provided for @shareSelected.
   ///

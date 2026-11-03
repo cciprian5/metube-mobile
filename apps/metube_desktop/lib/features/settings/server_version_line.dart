@@ -29,7 +29,7 @@ class ServerVersionLine extends ConsumerWidget {
         },
         if (version?.ytDlp case final ytDlp? when ytDlp.isNotEmpty)
           mtLtrRun('yt-dlp $ytDlp'),
-      ].join(l.listSeparator),
+      ].join(' · '),
       hint: release.isOutdated
           ? l.serverVersionOutdated(release.latest!)
           : null,

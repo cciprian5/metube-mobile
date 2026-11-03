@@ -65,6 +65,7 @@ void main() {
       WidgetTester tester,
       Widget child, {
       required ServerRelease? release,
+      Locale locale = const Locale('en'),
     }) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -77,6 +78,7 @@ void main() {
             serverReleaseProvider.overrideWith((ref) async => release),
           ],
           child: MaterialApp(
+            locale: locale,
             localizationsDelegates: MTLocalizations.localizationsDelegates,
             supportedLocales: MTLocalizations.supportedLocales,
             theme: mtDesktopTheme(MTVariant.superApp, Brightness.light),
@@ -98,6 +100,18 @@ void main() {
       expect(find.textContaining('MeTube 2026.10.09'), findsOneWidget);
       expect(find.textContaining('2026.08.19'), findsOneWidget);
       expect(find.text('Update available: $newest'), findsOneWidget);
+    });
+
+    testWidgets('**the guard**: in Arabic the two versions are not split by '
+        'a comma that reads as a full stop after the number', (tester) async {
+      await pump(
+        tester,
+        const ServerVersionLine(),
+        release: const ServerRelease(version: old),
+        locale: const Locale('ar'),
+      );
+      expect(find.textContaining('2026.10.09 · '), findsOneWidget);
+      expect(find.textContaining('2026.10.09،'), findsNothing);
     });
 
     testWidgets('settings say nothing of an update when none is known', (

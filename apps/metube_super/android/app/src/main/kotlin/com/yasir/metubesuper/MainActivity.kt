@@ -100,6 +100,16 @@ class MainActivity : AudioServiceActivity() {
                         result.success(pendingShortcut)
                         pendingShortcut = null
                     }
+                    // Room left where a copy is about to land, asked before a
+                    // pull so a full phone fails at once, not halfway through.
+                    "freeBytes" -> {
+                        val path = call.argument<String>("path")
+                        try {
+                            result.success(android.os.StatFs(path).availableBytes)
+                        } catch (e: IllegalArgumentException) {
+                            result.success(null)
+                        }
+                    }
                     else -> result.notImplemented()
                 }
             }

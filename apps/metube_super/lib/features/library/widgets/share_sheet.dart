@@ -8,7 +8,9 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../shared/error_text.dart';
 import '../library_actions.dart';
+import '../device_pulls.dart';
 import '../share_flow.dart';
+import 'phone_pulls.dart';
 
 bool _asking = false;
 bool _sheetOpen = false;
@@ -58,7 +60,11 @@ Future<bool> _confirmLarge(BuildContext context, int size) {
   return showMTConfirm(
     context,
     title: l10n.shareLargeTitle(mtFormatSize(size)),
-    message: l10n.shareLargeBody,
+    // Messaging apps refuse files over 2 GB, said before an hour of
+    // downloading rather than after it.
+    message: size >= shareMessagingBytes
+        ? '${l10n.shareLargeBody}\n\n${l10n.shareMessagingLimit}'
+        : l10n.shareLargeBody,
     confirmLabel: l10n.download,
     cancelLabel: l10n.cancel,
   );
@@ -91,9 +97,13 @@ class _ShareSheetState extends ConsumerState<ShareSheet> {
   @override
   Widget build(BuildContext context) {
     ref.listen(shareFlowProvider, (_, next) {
-      if (next == null && (ModalRoute.of(context)?.isCurrent ?? false)) {
-        Navigator.of(context).pop();
-      }
+      final route = ModalRoute.of(context);
+      if (next != null || route == null || !route.isActive) return;
+      // Removed even when another sheet has opened above it, or an empty
+      // sheet was left behind once that one closed.
+      route.isCurrent
+          ? Navigator.of(context).pop()
+          : Navigator.of(context).removeRoute(route);
     });
     final job = ref.watch(shareFlowProvider);
     if (job == null) return const SizedBox.shrink();
@@ -125,7 +135,15 @@ class _ShareSheetState extends ConsumerState<ShareSheet> {
           ),
           const SizedBox(height: MTSpace.lg),
           ...switch (job.phase) {
-            SharePhase.pulling => _pulling(job, l10n, p, text),
+            SharePhase.pulling => [
+              PhonePullProgress(
+                pull: ref.watch(
+                  devicePullsProvider,
+                )[DevicePull.keyOf(job.kind, job.url)],
+              ),
+              const SizedBox(height: MTSpace.sm),
+              TextButton(onPressed: _flow.cancel, child: Text(l10n.cancel)),
+            ],
             SharePhase.ready => [
               FilledButton.icon(
                 onPressed: () => unawaited(_flow.sendReady()),
@@ -146,51 +164,5 @@ class _ShareSheetState extends ConsumerState<ShareSheet> {
         ],
       ),
     );
-  }
-
-  List<Widget> _pulling(
-    ShareJob job,
-    MTLocalizations l10n,
-    MTPalette p,
-    TextTheme text,
-  ) {
-    final progress = job.progress;
-    final rate = job.rate;
-    final line = [
-      job.total > 0
-          ? l10n.shareProgressOf(
-              mtFormatSize(job.received),
-              mtFormatSize(job.total),
-            )
-          : mtFormatSize(job.received),
-      if (rate != null) mtFormatTransferRate(rate),
-    ].join(' · ');
-    final small = text.labelSmall!.copyWith(color: p.ink2);
-    return [
-      ClipRRect(
-        borderRadius: BorderRadius.circular(MTRadius.pill),
-        child: LinearProgressIndicator(
-          value: progress,
-          minHeight: 7,
-          // Both colours from the palette, as in the update sheet: the
-          // Material track comes out greenish over the Wahaj ground.
-          backgroundColor: p.accent.withValues(alpha: 0.16),
-          valueColor: AlwaysStoppedAnimation(p.accent),
-        ),
-      ),
-      const SizedBox(height: MTSpace.sm),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(child: Text(line, style: small)),
-          if (progress != null) ...[
-            const SizedBox(width: MTSpace.sm),
-            Text(mtLtrRun('${(progress * 100).floor()}%'), style: small),
-          ],
-        ],
-      ),
-      const SizedBox(height: MTSpace.sm),
-      TextButton(onPressed: _flow.cancel, child: Text(l10n.cancel)),
-    ];
   }
 }

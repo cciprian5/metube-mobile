@@ -246,6 +246,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get cancel => 'إلغاء';
 
   @override
+  String get cancelSaveToDevice => 'إيقاف الحفظ في الجوال';
+
+  @override
   String get changeQuality => 'تغيير الجودة';
 
   @override
@@ -442,6 +445,21 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get copiedToClipboard => 'نُسِخ إلى الحافظة';
+
+  @override
+  String copyingToPhone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقطع إلى الجوال',
+      many: '$count مقطعاً إلى الجوال',
+      few: '$count مقاطع إلى الجوال',
+      two: 'مقطعان إلى الجوال',
+      one: 'مقطع واحد إلى الجوال',
+      zero: 'لا مقاطع',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get copyright => '© 2026 ياسر صغير';
@@ -2192,6 +2210,11 @@ class MTLocalizationsAr extends MTLocalizations {
       'تطبيق غير رسمي، لا صلة له بمشروع MeTube ولا yt-dlp، ولا يحظى بتأييدهما.';
 
   @override
+  String notEnoughSpace(String needed, String free) {
+    return 'لا تتسع ذاكرة الجوال: يحتاج $needed والمتاح $free';
+  }
+
+  @override
   String get nothingHereYet => 'لا يوجد شيء بعد';
 
   @override
@@ -2260,6 +2283,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String percentValue(Object percent) {
     return '$percent٪';
   }
+
+  @override
+  String get phoneCopiesSection => 'إلى الجوال';
 
   @override
   String get pickAnotherFile => 'من ملف آخر…';
@@ -2830,6 +2856,10 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get shareLogs => 'مشاركة السجلات';
+
+  @override
+  String get shareMessagingLimit =>
+      'واتساب وتيليجرام يقبلان حتى 2 GB؛ وللأكبر استعمل Drive أو Quick Share.';
 
   @override
   String get sharePreparing => 'تجهيز المشاركة';

@@ -211,7 +211,14 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
   Future<void> _makeOffline(PlaylistItem item) async {
     final match = _libraryItemOf(item);
     if (match == null) return;
-    await ref.read(libraryActionsProvider).makeOffline(match);
+    try {
+      await ref.read(libraryActionsProvider).makeOffline(match);
+    } on CancelledException {
+      return;
+    } on Object catch (e) {
+      if (mounted) showErrorSnack(context, ref, e, tag: 'library');
+      return;
+    }
     if (mounted) showMTSnack(context, context.mtl.madeOffline);
   }
 

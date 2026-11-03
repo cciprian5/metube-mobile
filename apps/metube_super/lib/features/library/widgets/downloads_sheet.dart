@@ -6,6 +6,8 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../../di.dart';
 import '../../home/add_flow.dart';
 import '../server_failures.dart';
+import '../device_pulls.dart';
+import 'phone_pulls.dart';
 import 'server_failures_section.dart';
 import 'task_card_parts.dart';
 
@@ -81,6 +83,9 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
     final queued = tasks.where((t) => t.phase == TaskPhase.queued).toList();
     final failed = tasks.where((t) => t.phase == TaskPhase.failed).toList();
     final serverFailed = ref.watch(serverFailuresProvider);
+    // Super alone: Lite's copy of this sheet has no copies to the phone
+    // outside its download tasks.
+    final phone = ref.watch(devicePullsProvider).values.toList();
 
     Widget section(
       String title,
@@ -183,7 +188,11 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
       title: l10n.noDownloads,
       message: l10n.allDownloadsFinished,
     );
-    final nothing = shown.isEmpty && serverFailed.isEmpty && finishing.isEmpty;
+    final nothing =
+        shown.isEmpty &&
+        serverFailed.isEmpty &&
+        finishing.isEmpty &&
+        phone.isEmpty;
     if (nothing && !_framed) {
       return Padding(
         padding: EdgeInsets.fromLTRB(
@@ -249,6 +258,7 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
                       controller: scrollController,
                       padding: EdgeInsets.zero,
                       children: [
+                        if (phone.isNotEmpty) PhonePullsSection(pulls: phone),
                         section(l10n.activeNow, [...running, ...finishing]),
                         section(l10n.queuedSection, queued),
                         section(l10n.needsAttention, failed, error: true),

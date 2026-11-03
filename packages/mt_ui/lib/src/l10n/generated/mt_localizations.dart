@@ -464,6 +464,12 @@ abstract class MTLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @cancelSaveToDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop saving to the phone'**
+  String get cancelSaveToDevice;
+
   /// No description provided for @changeQuality.
   ///
   /// In en, this message translates to:
@@ -787,6 +793,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Copied to clipboard'**
   String get copiedToClipboard;
+
+  /// No description provided for @copyingToPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 clip to this phone} other{{count} clips to this phone}}'**
+  String copyingToPhone(int count);
 
   /// No description provided for @copyright.
   ///
@@ -3680,6 +3692,12 @@ abstract class MTLocalizations {
   /// **'Unofficial client, not affiliated with the MeTube project or yt-dlp, and not endorsed by them.'**
   String get notAffiliated;
 
+  /// No description provided for @notEnoughSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough room on the phone: needs {needed}, {free} free'**
+  String notEnoughSpace(String needed, String free);
+
   /// No description provided for @nothingHereYet.
   ///
   /// In en, this message translates to:
@@ -3805,6 +3823,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'{percent}%'**
   String percentValue(Object percent);
+
+  /// No description provided for @phoneCopiesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'To this phone'**
+  String get phoneCopiesSection;
 
   /// No description provided for @pickAnotherFile.
   ///
@@ -4681,6 +4705,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Share logs'**
   String get shareLogs;
+
+  /// No description provided for @shareMessagingLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp and Telegram take up to 2 GB; for larger files use Drive or Quick Share.'**
+  String get shareMessagingLimit;
 
   /// No description provided for @sharePreparing.
   ///

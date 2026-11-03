@@ -20,6 +20,13 @@
       }
     }
   },
+  "@copyingToPhone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@framesPerSecond": {
     "placeholders": {
       "count": {
@@ -175,6 +182,16 @@
     "placeholders": {
       "count": {
         "type": "int"
+      }
+    }
+  },
+  "@notEnoughSpace": {
+    "placeholders": {
+      "needed": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
       }
     }
   },
@@ -479,6 +496,7 @@
   "bitrateMbps": "{value} Mb/s",
   "builtWith": "Built with",
   "cancel": "Cancel",
+  "cancelSaveToDevice": "Stop saving to the phone",
   "changeQuality": "Change quality",
   "channelNameFolder": "Named after the channel",
   "channelUrl": "Channel or playlist link",
@@ -554,6 +572,7 @@
   "cookiesUploaded": "Cookies sent to the server",
   "cookiesWhat": "Some platforms refuse to hand a video over unless the request looks like a signed-in browser. A cookies file exported from your browser gives the server that.",
   "copiedToClipboard": "Copied to clipboard",
+  "copyingToPhone": "{count, plural, =1{1 clip to this phone} other{{count} clips to this phone}}",
   "copyright": "© 2026 Yasir Sagheer",
   "couldNotLoadPlaylist": "Couldn't load this playlist. Check the URL and your connection.",
   "create": "Create",
@@ -1091,6 +1110,7 @@
   "noVideosFound": "Your library is empty",
   "noWarranty": "Provided as is, without any warranty.",
   "notAffiliated": "Unofficial client, not affiliated with the MeTube project or yt-dlp, and not endorsed by them.",
+  "notEnoughSpace": "Not enough room on the phone: needs {needed}, {free} free",
   "nothingHereYet": "Nothing here yet",
   "notifyArrivals": "Tell me what arrives by itself",
   "notifyArrivalsDesc": "One notice when a followed channel's new videos land on the server. It appears when you open the app, return to it, or refresh the library, not while the app is in the background.",
@@ -1112,6 +1132,7 @@
   "pause": "Pause",
   "pauseSubscription": "Pause",
   "percentValue": "{percent}%",
+  "phoneCopiesSection": "To this phone",
   "pickAnotherFile": "From another file…",
   "pickAnotherFileSubtitle": "A backup from another phone or an older version",
   "pictureInPicture": "Picture in picture",
@@ -1266,6 +1287,7 @@
   "shareLargeBody": "It downloads to this phone first, then the share menu opens.",
   "shareLargeTitle": "Download {size} to share?",
   "shareLogs": "Share logs",
+  "shareMessagingLimit": "WhatsApp and Telegram take up to 2 GB; for larger files use Drive or Quick Share.",
   "sharePreparing": "Preparing to share",
   "shareProgressOf": "{received} of {total}",
   "shareReady": "Ready to share",

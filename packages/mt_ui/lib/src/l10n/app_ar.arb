@@ -52,6 +52,13 @@
       }
     }
   },
+  "@copyingToPhone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@desktopAddLinks": {
     "placeholders": {
       "count": {
@@ -81,6 +88,13 @@
     }
   },
   "@desktopNotWatched": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@newOnServer": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -218,6 +232,7 @@
   "bitrateMbps": "{value} ميغابت/ث",
   "builtWith": "بُني باستخدام",
   "cancel": "إلغاء",
+  "cancelSaveToDevice": "إيقاف الحفظ في الجوال",
   "changeQuality": "تغيير الجودة",
   "channelNameFolder": "باسم القناة",
   "channelUrl": "رابط قناة أو قائمة",
@@ -272,6 +287,7 @@
   "cookiesUploaded": "أُرسلت الكوكيز إلى السيرفر",
   "cookiesWhat": "بعض المنصات لا تسمح بتحميل المقطع إلا إذا بدا الطلب قادماً من متصفح سُجّل فيه الدخول، وملف الكوكيز المصدَّر من متصفحك يمنح السيرفر هذه الصفة.",
   "copiedToClipboard": "نُسِخ إلى الحافظة",
+  "copyingToPhone": "{count, plural, =0{لا مقاطع} =1{مقطع واحد إلى الجوال} =2{مقطعان إلى الجوال} few{{count} مقاطع إلى الجوال} many{{count} مقطعاً إلى الجوال} other{{count} مقطع إلى الجوال}}",
   "copyright": "© 2026 ياسر صغير",
   "couldNotLoadPlaylist": "تعذّر فتح هذه القائمة. تحقّق من الرابط ومن اتصالك.",
   "create": "إنشاء",
@@ -768,6 +784,7 @@
   "noVideosFound": "مكتبتك فارغة",
   "noWarranty": "يُقدَّم كما هو، بلا أي ضمان.",
   "notAffiliated": "تطبيق غير رسمي، لا صلة له بمشروع MeTube ولا yt-dlp، ولا يحظى بتأييدهما.",
+  "notEnoughSpace": "لا تتسع ذاكرة الجوال: يحتاج {needed} والمتاح {free}",
   "nothingHereYet": "لا يوجد شيء بعد",
   "notifyArrivals": "نبّهني بما يصل تلقائياً",
   "notifyArrivalsDesc": "يصلك إشعار واحد حين تصل إلى السيرفر مقاطع جديدة من قناة تتابعها، ويظهر عند فتح التطبيق أو العودة إليه أو تحديث المكتبة، لا أثناء عمله في الخلفية.",
@@ -789,6 +806,7 @@
   "pause": "إيقاف مؤقت",
   "pauseSubscription": "إيقاف مؤقت",
   "percentValue": "{percent}٪",
+  "phoneCopiesSection": "إلى الجوال",
   "pickAnotherFile": "من ملف آخر…",
   "pickAnotherFileSubtitle": "نسخة من هاتف آخر أو من إصدار سابق",
   "pictureInPicture": "صورة داخل صورة",
@@ -935,6 +953,7 @@
   "shareLargeBody": "يُنزَّل إلى هذا الجوال أولاً، ثم تُفتح قائمة المشاركة.",
   "shareLargeTitle": "تنزيل {size} للمشاركة؟",
   "shareLogs": "مشاركة السجلات",
+  "shareMessagingLimit": "واتساب وتيليجرام يقبلان حتى 2 GB؛ وللأكبر استعمل Drive أو Quick Share.",
   "sharePreparing": "تجهيز المشاركة",
   "shareProgressOf": "{received} من {total}",
   "shareReady": "جاهز للمشاركة",

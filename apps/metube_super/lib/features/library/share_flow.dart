@@ -10,9 +10,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../di.dart';
-import '../home/background_hold.dart';
 import '../home/download_watcher.dart' show notificationsProvider;
 import '../shared/error_report.dart';
+import 'device_pulls.dart';
 import 'library_actions.dart';
 import 'share_job.dart';
 
@@ -24,32 +24,6 @@ const shareNotificationId = 770002;
 /// A clip this large asks before it downloads: on mobile data one stray
 /// tap would otherwise cost the whole file.
 const shareConfirmBytes = 500 * 1024 * 1024;
-
-typedef SharePull = Future<String> Function({
-  required String serverFilename,
-  required String savePath,
-  required void Function(int received, int total) onBytes,
-  required TransferCancel cancel,
-});
-
-final sharePullProvider = Provider<SharePull>(
-  (ref) =>
-      ({
-        required serverFilename,
-        required savePath,
-        required onBytes,
-        required cancel,
-      }) {
-        final api = ref.read(apiClientProvider);
-        if (api == null) throw const NetworkException('no server configured');
-        return Transfer(api: api).pull(
-          serverFilename: serverFilename,
-          savePath: savePath,
-          onBytes: onBytes,
-          cancel: cancel,
-        );
-      },
-);
 
 final shareSendProvider = Provider<Future<void> Function(String path)>(
   (ref) =>
@@ -75,7 +49,9 @@ final shareFlowProvider = NotifierProvider<ShareFlow, ShareJob?>(ShareFlow.new);
 
 /// Pulls a clip that is only on the server, then opens the share menu.
 class ShareFlow extends Notifier<ShareJob?> {
-  TransferCancel? _cancel;
+  /// Bumped by every start and cancel, so a copy that ends after its share
+  /// was cancelled shares nothing.
+  int _run = 0;
   AppLifecycleListener? _life;
   String? _ready;
   bool _noticed = false;
@@ -96,53 +72,27 @@ class ShareFlow extends Notifier<ShareJob?> {
     if (state != null) return;
     final filename = item.serverFilename;
     if (filename == null) throw const UnsafeFilenameException();
-    final cancel = _cancel = TransferCancel();
     final url = item.canonicalUrl;
-    state = ShareJob(url: url, title: item.title, total: item.sizeBytes ?? 0);
-    notePullProgress(ref, url, 0);
-    // Held while the copy runs, so leaving the app does not freeze it.
-    final hold = ref.read(backgroundHoldProvider);
-    unawaited(hold.set('share', true));
-    final rate = TransferRate();
-    final clock = Stopwatch()..start();
-    var shownAt = const Duration(days: -1);
+    final run = ++_run;
+    // A clip already being saved to the phone is shared from that copy
+    // rather than downloaded a second time.
+    final saving = ref.read(libraryActionsProvider).runningOffline(url);
+    state = ShareJob(
+      url: url,
+      title: item.title,
+      kind: saving == null ? PullKind.share : PullKind.offline,
+    );
     try {
-      final dir = await ref.read(shareDirProvider.future);
-      await Directory(dir).create(recursive: true);
-      await sweepShareFolder(dir);
-      final name = buildLocalFilename(item.title, serverFilename: filename);
-      // The pull may pick another name if this one is taken, so what is
-      // shared is the path it returns.
-      final path = await ref.read(sharePullProvider)(
-        serverFilename: filename,
-        savePath: '$dir/$name',
-        cancel: cancel,
-        onBytes: (received, total) {
-          final at = clock.elapsed;
-          final speed = rate.sample(received, at);
-          // Many reports a second would rebuild the sheet for nothing.
-          if (at - shownAt < const Duration(milliseconds: 200) &&
-              received < total) {
-            return;
-          }
-          shownAt = at;
-          if (state?.phase != SharePhase.pulling) return;
-          state = state!.copyWith(
-            received: received,
-            total: total,
-            rate: speed,
-          );
-          if (total > 0) notePullProgress(ref, url, received / total);
-        },
-      );
-      // Cleared before the share menu: it is awaited until it closes, and
-      // the card read 100% all that time.
-      notePullProgress(ref, url, null);
+      final path = saving == null
+          ? await _copy(item, filename, run)
+          : await saving;
+      // Cancelled while the copy ran: nothing is shared.
+      if (path == null || run != _run || state == null) return;
       await _deliver(path);
     } on CancelledException {
-      _finish();
+      if (run == _run) _finish();
     } on Object catch (e) {
-      if (state == null) return;
+      if (run != _run || state == null) return;
       unawaited(logError(ref.read(loggerProvider), e, tag: 'share'));
       if (watched && ref.read(shareForegroundProvider)()) {
         state = state!.copyWith(phase: SharePhase.failed, error: e);
@@ -150,10 +100,41 @@ class ShareFlow extends Notifier<ShareJob?> {
         await _notice(e);
         state = null;
       }
+    }
+  }
+
+  /// The share's own copy, in a folder of its own. Null when the share was
+  /// cancelled before the copy began.
+  Future<String?> _copy(LibraryItem item, String filename, int run) async {
+    final url = item.canonicalUrl;
+    final dir = await ref.read(shareDirProvider.future);
+    await Directory(dir).create(recursive: true);
+    await sweepShareFolder(dir);
+    await ensureRoom(ref, dir, item.sizeBytes);
+    if (run != _run) return null;
+    final pulls = ref.read(devicePullsProvider.notifier);
+    final cancel = pulls.begin(
+      PullKind.share,
+      url,
+      item.title,
+      total: item.sizeBytes,
+    );
+    if (cancel == null) return null;
+    try {
+      // The pull may pick another name if this one is taken, so what is
+      // shared is the path it returns.
+      return await ref.read(phonePullProvider)(
+        serverFilename: filename,
+        savePath:
+            '$dir/${buildLocalFilename(item.title, serverFilename: filename)}',
+        cancel: cancel,
+        onBytes: (received, total) =>
+            pulls.report(PullKind.share, url, received, total),
+      );
     } finally {
-      notePullProgress(ref, url, null);
-      _cancel = null;
-      unawaited(hold.set('share', false));
+      // Ended before the share menu: it is awaited until it closes, and the
+      // card read 100% all that time.
+      pulls.end(PullKind.share, url);
     }
   }
 
@@ -178,13 +159,15 @@ class ShareFlow extends Notifier<ShareJob?> {
     await ref.read(shareSendProvider)(path);
   }
 
-  /// Stops the pull, or drops a finished copy nobody shared.
+  /// Stops the share. Its own copy stops with it; an offline copy it was
+  /// waiting on goes on, being something the user asked for separately.
   void cancel() {
-    final pulling = _cancel;
-    if (pulling != null && !pulling.isCancelled) {
-      pulling.cancel();
-      return;
+    final job = state;
+    if (job == null) return;
+    if (job.kind == PullKind.share) {
+      ref.read(devicePullsProvider.notifier).cancel(PullKind.share, job.url);
     }
+    _run++;
     _finish();
   }
 

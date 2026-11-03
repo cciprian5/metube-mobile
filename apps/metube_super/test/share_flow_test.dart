@@ -9,6 +9,7 @@ import 'package:metube_super/features/home/background_hold.dart';
 import 'package:metube_super/features/home/download_watcher.dart'
     show notificationsProvider;
 import 'package:metube_super/features/home/notifications.dart';
+import 'package:metube_super/features/library/device_pulls.dart';
 import 'package:metube_super/features/library/library_actions.dart'
     show offlinePullProgressProvider;
 import 'package:metube_super/features/library/share_flow.dart';
@@ -39,6 +40,18 @@ class _Notices extends DownloadNotifications {
 
   @override
   Future<void> cancel(int id) async => cancelled.add(id);
+
+  /// The progress notice, as (title, percent).
+  final List<(String, int?)> progress = [];
+
+  @override
+  Future<void> showProgress(
+    int id, {
+    required String title,
+    required String channelName,
+    required int? percent,
+    String? body,
+  }) async => progress.add((title, percent));
 }
 
 /// A pull that waits for the test to let it finish.
@@ -104,7 +117,8 @@ void main() {
       MTLogger(filePath: '${dir.path}/test.log'),
     ),
     notificationsProvider.overrideWithValue(notices),
-    sharePullProvider.overrideWithValue(pull.call),
+    phonePullProvider.overrideWithValue(pull.call),
+    freeBytesProvider.overrideWithValue((_) async => null),
     shareSendProvider.overrideWithValue(send ?? (path) async => sent.add(path)),
     shareDirProvider.overrideWith((ref) async => dir.path),
     shareForegroundProvider.overrideWithValue(() => onScreen),
@@ -167,10 +181,12 @@ void main() {
         pull.gate = Completer();
         final running = flow().start(_clip);
         await untilPulling();
-        final job = box.read(shareFlowProvider)!;
-        expect(job.received, 50 * _mb);
-        expect(job.total, 100 * _mb);
-        expect(job.progress, 0.5);
+        final copy = box.read(
+          devicePullsProvider,
+        )[DevicePull.keyOf(PullKind.share, _clip.canonicalUrl)]!;
+        expect(copy.received, 50 * _mb);
+        expect(copy.total, 100 * _mb);
+        expect(copy.progress, 0.5);
         pull.gate!.complete();
         await running;
       });
@@ -219,7 +235,8 @@ void main() {
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pump();
       expect(sent, hasLength(1));
-      expect(notices.cancelled, [shareNotificationId]);
+      expect(notices.cancelled, contains(shareNotificationId));
+      expect(notices.cancelled, contains(pullNoticeId));
       expect(box.read(shareFlowProvider), isNull);
     });
 
@@ -352,7 +369,10 @@ void main() {
       await tester.runAsync(() async {
         pull.gate = Completer();
         await tester.tap(find.text('server'));
-        await Future<void>.delayed(const Duration(milliseconds: 20));
+        // Until the copy has begun, however busy the machine is.
+        while (pull.asked.isEmpty) {
+          await Future<void>.delayed(const Duration(milliseconds: 5));
+        }
       });
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
@@ -362,7 +382,10 @@ void main() {
 
       await tester.runAsync(() async {
         pull.gate!.complete();
-        await Future<void>.delayed(const Duration(milliseconds: 50));
+        // Until the share menu opens, however busy the machine is.
+        while (sent.isEmpty) {
+          await Future<void>.delayed(const Duration(milliseconds: 5));
+        }
       });
       await tester.pumpAndSettle();
       expect(sent, hasLength(1));
@@ -388,6 +411,18 @@ void main() {
       overrides: [
         ...overrides(),
         shareFlowProvider.overrideWith(() => _Fixed(job)),
+        devicePullsProvider.overrideWith(
+          () => _FixedPulls({
+            DevicePull.keyOf(PullKind.share, job.url): DevicePull(
+              kind: PullKind.share,
+              url: job.url,
+              title: job.title,
+              received: 1500 * _mb,
+              total: 3000 * _mb,
+              rate: 12.5 * _mb,
+            ),
+          }),
+        ),
       ],
       child: MaterialApp(
         theme: mtTheme(MTVariant.superApp, Brightness.dark),
@@ -403,15 +438,7 @@ void main() {
     testWidgets('pulling', (tester) async {
       await expectNoOverflow(
         tester,
-        () => sheet(
-          ShareJob(
-            url: _clip.canonicalUrl,
-            title: 'A' * 200,
-            received: 1500 * _mb,
-            total: 3000 * _mb,
-            rate: 12.5 * _mb,
-          ),
-        ),
+        () => sheet(ShareJob(url: _clip.canonicalUrl, title: 'A' * 200)),
       );
     });
 
@@ -438,4 +465,13 @@ class _Fixed extends ShareFlow {
 
   @override
   ShareJob? build() => job;
+}
+
+class _FixedPulls extends DevicePulls {
+  _FixedPulls(this.pulls);
+
+  final Map<String, DevicePull> pulls;
+
+  @override
+  Map<String, DevicePull> build() => pulls;
 }

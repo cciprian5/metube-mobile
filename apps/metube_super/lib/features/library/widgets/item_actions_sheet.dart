@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mt_core/mt_core.dart' show ImageHeaders;
+import 'package:mt_core/mt_core.dart' show CancelledException, ImageHeaders;
 import 'package:mt_ui/mt_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mt_media/library.dart';
@@ -13,6 +13,7 @@ import '../../transcripts/transcript_openers.dart';
 import '../../transcripts/transcripts_state.dart';
 import '../../../di.dart';
 import '../artwork_view.dart';
+import '../device_pulls.dart';
 import '../library_actions.dart';
 import '../library_providers.dart';
 import 'confirm_bulk_delete.dart';
@@ -57,6 +58,9 @@ class _ItemActionsSheet extends ConsumerWidget {
     final l10n = context.mtl;
     final p = MTThemeX.of(context).palette;
     final actions = ref.read(libraryActionsProvider);
+    final saving = ref
+        .watch(devicePullsProvider)
+        .containsKey(DevicePull.keyOf(PullKind.offline, item.canonicalUrl));
     final clip = MTDialogClip(
       title: mtName(item.title),
       thumbnail: artworkFor(
@@ -80,6 +84,8 @@ class _ItemActionsSheet extends ConsumerWidget {
         if (successText != null && messenger != null && context.mounted) {
           showMTSnack(context, successText, type: MTSnackType.success);
         }
+      } on CancelledException {
+        // Stopped on purpose; nothing went wrong.
       } catch (e) {
         if (context.mounted) {
           showErrorSnack(context, ref, e, tag: 'library');
@@ -145,7 +151,16 @@ class _ItemActionsSheet extends ConsumerWidget {
                 }
               },
             ),
-            if (item.onServer && !item.isOffline)
+            // While its copy runs the row stops it instead: a second tap
+            // used to start a second copy of the same clip.
+            if (saving)
+              tile(MTIcons.close, l10n.cancelSaveToDevice, () {
+                Navigator.pop(context);
+                ref
+                    .read(devicePullsProvider.notifier)
+                    .cancel(PullKind.offline, item.canonicalUrl);
+              })
+            else if (item.onServer && !item.isOffline)
               tile(
                 MTIcons.offline,
                 l10n.makeOffline,

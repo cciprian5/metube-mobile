@@ -226,6 +226,8 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
           type: MTSnackType.success,
         );
       }
+    } on CancelledException {
+      // Stopped on purpose; nothing went wrong.
     } on Object {
       if (mounted) {
         showMTSnack(context, l10n.failed, type: MTSnackType.error);

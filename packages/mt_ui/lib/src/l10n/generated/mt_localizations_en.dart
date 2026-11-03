@@ -225,6 +225,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get cancelSaveToDevice => 'Stop saving to the phone';
+
+  @override
   String get changeQuality => 'Change quality';
 
   @override
@@ -416,6 +419,17 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get copiedToClipboard => 'Copied to clipboard';
+
+  @override
+  String copyingToPhone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count clips to this phone',
+      one: '1 clip to this phone',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get copyright => '© 2026 Yasir Sagheer';
@@ -2139,6 +2153,11 @@ class MTLocalizationsEn extends MTLocalizations {
       'Unofficial client, not affiliated with the MeTube project or yt-dlp, and not endorsed by them.';
 
   @override
+  String notEnoughSpace(String needed, String free) {
+    return 'Not enough room on the phone: needs $needed, $free free';
+  }
+
+  @override
   String get nothingHereYet => 'Nothing here yet';
 
   @override
@@ -2207,6 +2226,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String percentValue(Object percent) {
     return '$percent%';
   }
+
+  @override
+  String get phoneCopiesSection => 'To this phone';
 
   @override
   String get pickAnotherFile => 'From another file…';
@@ -2755,6 +2777,10 @@ class MTLocalizationsEn extends MTLocalizations {
 
   @override
   String get shareLogs => 'Share logs';
+
+  @override
+  String get shareMessagingLimit =>
+      'WhatsApp and Telegram take up to 2 GB; for larger files use Drive or Quick Share.';
 
   @override
   String get sharePreparing => 'Preparing to share';

@@ -1,51 +1,40 @@
 import 'dart:io';
 
+import 'device_pulls.dart' show PullKind;
+
 /// How long a shared copy stays. The share menu returns before the
 /// receiving app has finished reading the file, so deleting it at once
 /// broke the share in apps that read it late.
 const shareKeep = Duration(hours: 1);
 
+/// The size messaging apps stop at; past it the large-file question says
+/// which apps will still take the file.
+const shareMessagingBytes = 2 * 1024 * 1024 * 1024;
+
 enum SharePhase { pulling, ready, failed }
 
-/// The share in flight, as the sheet shows it.
+/// The share in flight, as the sheet shows it. How far the copy has got
+/// is read from the copy itself, [kind] saying which one: the share's own,
+/// or an offline copy of the same clip already running.
 class ShareJob {
   const ShareJob({
     required this.url,
     required this.title,
-    this.received = 0,
-    this.total = 0,
-    this.rate,
+    this.kind = PullKind.share,
     this.phase = SharePhase.pulling,
     this.error,
   });
 
   final String url;
   final String title;
-  final int received;
-
-  /// Zero until the server says, unless the library already knew the size.
-  final int total;
-
-  /// Bytes a second, smoothed; null until there is enough to measure.
-  final double? rate;
+  final PullKind kind;
   final SharePhase phase;
   final Object? error;
 
-  double? get progress =>
-      total > 0 ? (received / total).clamp(0.0, 1.0).toDouble() : null;
-
-  ShareJob copyWith({
-    int? received,
-    int? total,
-    double? rate,
-    SharePhase? phase,
-    Object? error,
-  }) => ShareJob(
+  ShareJob copyWith({SharePhase? phase, Object? error}) => ShareJob(
     url: url,
     title: title,
-    received: received ?? this.received,
-    total: total ?? this.total,
-    rate: rate ?? this.rate,
+    kind: kind,
     phase: phase ?? this.phase,
     error: error ?? this.error,
   );

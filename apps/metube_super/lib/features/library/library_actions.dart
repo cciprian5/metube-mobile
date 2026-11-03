@@ -9,20 +9,33 @@ import '../../di.dart';
 import '../settings/auto_backup.dart';
 import '../home/network_gate.dart';
 import '../transcripts/sidecar_backfill.dart';
+import 'device_pulls.dart';
 import 'library_providers.dart';
 import 'quality_cache.dart';
 
 /// Super's "offline" media folder (§5.3).
 const superMediaDir = '/storage/emulated/0/Download/MeTube_Super';
 
+/// Where offline copies land; a provider so a test copies into a folder of
+/// its own instead of a phone path.
+final mediaDirProvider = Provider<String>((ref) => superMediaDir);
+
 /// The `detail` marker that distinguishes a "Wi-Fi only" refusal from a
 /// real network outage; `errorText` reads it to show the right message.
 const wifiOnlyRejection = 'wifi-only';
 
-/// Progress of an "available offline" pull in flight: canonicalUrl to 0-1.
-final offlinePullProgressProvider = StateProvider<Map<String, double>>(
-  (ref) => {},
-);
+/// Progress of a copy to this phone in flight, canonicalUrl to 0-1, for
+/// the card and the player. An offline copy wins over a share's copy of
+/// the same clip, being the one the save button stands for.
+final offlinePullProgressProvider = Provider<Map<String, double>>((ref) {
+  final pulls = ref.watch(devicePullsProvider).values;
+  return {
+    for (final pull in pulls.where((p) => p.kind == PullKind.share))
+      pull.url: pull.progress ?? 0,
+    for (final pull in pulls.where((p) => p.kind == PullKind.offline))
+      pull.url: pull.progress ?? 0,
+  };
+});
 
 final libraryActionsProvider = Provider((ref) => LibraryActions(ref));
 
@@ -71,7 +84,15 @@ class LibraryActions {
     serverFilename: item.serverFilename,
     title: item.title,
     thumbnail: item.thumbnail,
+    sizeBytes: item.sizeBytes,
   );
+
+  /// Offline copies in flight, so asking again for the same clip waits on
+  /// the copy already running instead of starting a second one.
+  final _running = <String, Future<String>>{};
+
+  /// The offline copy of [canonicalUrl] in flight, if any.
+  Future<String>? runningOffline(String canonicalUrl) => _running[canonicalUrl];
 
   /// The same action for an item that has **just completed** and has not
   /// appeared in the library yet. Collecting a batch on the device needs it
@@ -82,6 +103,31 @@ class LibraryActions {
     required String? serverFilename,
     required String title,
     String? thumbnail,
+    int? sizeBytes,
+  }) {
+    final running = _running[canonicalUrl];
+    if (running != null) return running;
+    final pull =
+        _pullToDevice(
+          canonicalUrl: canonicalUrl,
+          serverFilename: serverFilename,
+          title: title,
+          thumbnail: thumbnail,
+          sizeBytes: sizeBytes,
+        ).whenComplete(() {
+          // A block, not an arrow: `remove` returns this very future, and
+          // `whenComplete` would wait on it, so the copy never finished.
+          _running.remove(canonicalUrl);
+        });
+    return _running[canonicalUrl] = pull;
+  }
+
+  Future<String> _pullToDevice({
+    required String canonicalUrl,
+    required String? serverFilename,
+    required String title,
+    required String? thumbnail,
+    required int? sizeBytes,
   }) async {
     // **Refused outright rather than waiting**: the add pipeline in Lite
     // has a queue where an item can be patient, but this is a direct action
@@ -90,24 +136,33 @@ class LibraryActions {
     if (!canPullNow) throw const NetworkException(wifiOnlyRejection);
     final filename = serverFilename;
     if (filename == null) throw const UnsafeFilenameException();
-    final dir = Directory(superMediaDir);
-    await dir.create(recursive: true);
+    final media = _ref.read(mediaDirProvider);
+    await Directory(media).create(recursive: true);
+    await ensureRoom(_ref, media, sizeBytes);
     final savePath =
-        '$superMediaDir/${buildLocalFilename(title, serverFilename: filename)}';
+        '$media/${buildLocalFilename(title, serverFilename: filename)}';
 
-    notePullProgress(_ref, canonicalUrl, 0);
+    final pulls = _ref.read(devicePullsProvider.notifier);
+    final cancel = pulls.begin(
+      PullKind.offline,
+      canonicalUrl,
+      title,
+      total: sizeBytes,
+    )!;
     final String finalPath;
     try {
       // The final path comes from `pull`: a collision shifts it, and
       // indexing the requested path instead would have pointed at a
       // different file.
-      finalPath = await Transfer(api: _api).pull(
+      finalPath = await _ref.read(phonePullProvider)(
         serverFilename: filename,
         savePath: savePath,
-        onProgress: (p) => notePullProgress(_ref, canonicalUrl, p),
+        cancel: cancel,
+        onBytes: (received, total) =>
+            pulls.report(PullKind.offline, canonicalUrl, received, total),
       );
     } finally {
-      notePullProgress(_ref, canonicalUrl, null);
+      pulls.end(PullKind.offline, canonicalUrl);
     }
     await _ref.read(offlineIndexProvider).put(canonicalUrl, finalPath);
     if (thumbnail != null) {
@@ -207,17 +262,4 @@ class LibraryActions {
     // The file is gone, so the key lands in `gone` and is pruned.
     await pruneItemData([item.canonicalUrl]);
   }
-}
-
-/// Shows or clears ([value] null) the progress of a pull on the item's
-/// card and in the player, for every kind of pull: offline copies and the
-/// temporary copy a share makes.
-void notePullProgress(Ref ref, String url, double? value) {
-  final map = Map<String, double>.from(ref.read(offlinePullProgressProvider));
-  if (value == null) {
-    map.remove(url);
-  } else {
-    map[url] = value;
-  }
-  ref.read(offlinePullProgressProvider.notifier).state = map;
 }

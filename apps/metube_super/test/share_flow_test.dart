@@ -392,6 +392,72 @@ void main() {
       expect(find.byType(ShareSheet), findsNothing);
     });
 
+    // Real time for the copy, frames for the screen, turn about: the share
+    // begins under the test's frames and its file work under real time.
+    Future<void> until(WidgetTester tester, bool Function() done) async {
+      for (var i = 0; i < 400 && !done(); i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 5)),
+        );
+        await tester.pump();
+      }
+    }
+
+    testWidgets('**the guard**: a large clip, once confirmed, shows its '
+        'progress even when the card that asked is gone', (tester) async {
+      final shown = ValueNotifier(true);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overrides(),
+          child: MaterialApp(
+            theme: mtTheme(MTVariant.superApp, Brightness.light),
+            localizationsDelegates: MTLocalizations.localizationsDelegates,
+            supportedLocales: MTLocalizations.supportedLocales,
+            home: Scaffold(
+              body: ValueListenableBuilder<bool>(
+                valueListenable: shown,
+                builder: (_, on, _) => on
+                    ? Consumer(
+                        builder: (context, ref, _) => TextButton(
+                          onPressed: () => shareClip(
+                            context,
+                            ref,
+                            const LibraryItem(
+                              canonicalUrl: 'https://youtu.be/big',
+                              title: 'Big',
+                              serverFilename: 'big.mp4',
+                              sizeBytes: 2 * shareConfirmBytes,
+                            ),
+                          ),
+                          child: const Text('big'),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('big'));
+      await tester.pumpAndSettle();
+      // The list rebuilds while the question is open, as a library does.
+      shown.value = false;
+      await tester.pump();
+      await tester.runAsync(() async => pull.gate = Completer());
+      await tester.tap(find.text('Download'));
+      await until(tester, () => pull.asked.isNotEmpty);
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(pull.asked, ['big.mp4'], reason: 'the share stopped in silence');
+      expect(
+        find.byType(ShareSheet),
+        findsOneWidget,
+        reason: 'nothing on screen reads as a tap that did not register',
+      );
+      await tester.runAsync(() async => pull.gate!.complete());
+      await until(tester, () => sent.isNotEmpty);
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('**the guard**: a large clip asks first, and no is no', (
       tester,
     ) async {

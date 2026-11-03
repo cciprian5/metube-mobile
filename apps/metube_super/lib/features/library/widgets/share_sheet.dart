@@ -27,6 +27,12 @@ Future<void> shareClip(
 ) async {
   final local = item.localPath;
   if (local != null) return ref.read(shareSendProvider)(local);
+  // The app's own navigator, not [context]: shared from a clip's menu,
+  // [context] is the clip's card, which the list may rebuild while the
+  // question is open. The share used to stop there in silence, so a tap on
+  // "download" showed nothing and was tapped again and again.
+  final navigator = Navigator.of(context, rootNavigator: true);
+  final flow = ref.read(shareFlowProvider.notifier);
   if (ref.read(shareFlowProvider) == null) {
     if (_asking) return;
     if (!ref.read(libraryActionsProvider).canPullNow) {
@@ -40,15 +46,15 @@ Future<void> shareClip(
         context,
         size,
       ).whenComplete(() => _asking = false);
-      if (!go || !context.mounted) return;
+      if (!go) return;
     }
-    unawaited(ref.read(shareFlowProvider.notifier).start(item));
+    unawaited(flow.start(item));
   }
-  if (_sheetOpen) return;
+  if (_sheetOpen || !navigator.mounted) return;
   _sheetOpen = true;
   unawaited(
     showMTSheet<void>(
-      context: context,
+      context: navigator.context,
       useRootNavigator: true,
       builder: (_) => const ShareSheet(),
     ).whenComplete(() => _sheetOpen = false),

@@ -195,7 +195,7 @@ void main() {
       expect(last, isNot(contains('folder')));
     });
 
-    test('it sends url and quality, applying the platform rule: a height stays on TikTok, SoundCloud gets best', () async {
+    test('it sends url and quality, applying the platform rule: a height stays on TikTok, SoundCloud gets audio', () async {
       final (client, adapter) = makeClient((o) => _json('{"status": "ok"}'));
       await client.add(
         'https://www.tiktok.com/@u/video/7301234567890123456',
@@ -208,7 +208,22 @@ void main() {
       expect(body['quality'], '1080');
       expect(body['url'], contains('tiktok.com'));
       final sound = json.decode(adapter.requests.last.data as String) as Map;
-      expect(sound['quality'], 'best');
+      expect(sound['quality'], 'audio');
+    });
+
+    test('**the guard**: "best" with playback compatibility on SoundCloud '
+        'is sent as audio, with no video codec or preset', () async {
+      final (client, adapter) = makeClient((o) => _json('{"status": "ok"}'));
+      await client.add(
+        'https://soundcloud.com/artist/track',
+        Quality.best,
+        compatibleVideo: true,
+      );
+      final body = json.decode(adapter.requests.single.data as String) as Map;
+      expect(body['quality'], 'audio');
+      expect(body.containsKey('download_type'), isFalse);
+      expect(body.containsKey('codec'), isFalse);
+      expect(body.containsKey('ytdl_options_presets'), isFalse);
     });
 
     // **Playback compatibility** (field report 2026-09-03: "reels look

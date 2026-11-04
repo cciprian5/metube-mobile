@@ -18,7 +18,7 @@ void main() {
       expect(Quality.q360.applyRule(tiktok), Quality.q360);
       expect(
         Quality.q360.applyRule('https://soundcloud.com/a/b'),
-        Quality.best,
+        Quality.audio,
       );
       expect(Quality.fromWire('360'), Quality.q360);
     });
@@ -28,9 +28,13 @@ void main() {
       expect(Quality.q480.applyRule(tiktok), Quality.q480);
     });
 
-    test('an audio-only platform has no heights, so it gets best', () {
-      expect(Quality.q720.applyRule(soundcloud), Quality.best);
-      expect(Quality.q1080.applyRule(soundcloud), Quality.best);
+    // The owner's decision of 2026-11-04: "best" on SoundCloud came without
+    // its cover, while "audio" embedded it.
+    test('**the guard**: an audio-only platform always gets audio, so its '
+        'cover comes with it', () {
+      expect(Quality.best.applyRule(soundcloud), Quality.audio);
+      expect(Quality.q720.applyRule(soundcloud), Quality.audio);
+      expect(Quality.q1080.applyRule(soundcloud), Quality.audio);
       expect(Quality.audio.applyRule(soundcloud), Quality.audio);
     });
 

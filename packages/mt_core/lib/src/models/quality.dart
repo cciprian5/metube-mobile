@@ -24,12 +24,18 @@ enum Quality {
       this == Quality.q360;
 
   /// **The platform rule:** a numeric quality is a height ceiling, sent to
-  /// every video platform; an audio-only one gets `best`. Outside YouTube a
-  /// site may list no heights at all, so the download engine retries such a
-  /// refusal at `best` once. `audio` and `best` are available everywhere.
+  /// every video platform. Outside YouTube a site may list no heights at
+  /// all, so the download engine retries such a refusal at `best` once.
+  ///
+  /// An audio-only platform gets `audio` whatever was chosen: there is no
+  /// picture to pick a height or a codec for, and only the audio path asks
+  /// the server to embed the track's cover. `best` there was sent as a video
+  /// download, which kept the sound and dropped the cover (measured on a
+  /// real server: 48 audio tracks with covers, 2 "best" ones without).
   Quality applyRule(String url) {
-    if (!isNumeric) return this;
-    return MediaPlatform.detect(url).isAudioOnly ? Quality.best : this;
+    if (this == Quality.audio) return this;
+    if (MediaPlatform.detect(url).isAudioOnly) return Quality.audio;
+    return this;
   }
 
   /// Tolerant reading of a stored or incoming value; anything unknown

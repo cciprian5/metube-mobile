@@ -175,6 +175,18 @@ void main() {
     expect(find.text('Up to 1080p'), findsNothing);
   });
 
+  // The owner's decision of 2026-11-04: "best" on SoundCloud came as a video
+  // download without its cover; audio embeds it.
+  testWidgets('**the guard**: a SoundCloud track is sent as audio', (
+    tester,
+  ) async {
+    final h = await open(tester);
+    await openDialog(tester, 'https://soundcloud.com/artist/track');
+    await tester.tap(find.widgetWithText(FilledButton, 'Start download'));
+    await tester.pumpAndSettle();
+    expect(h.engine.submitted.single.quality, Quality.audio);
+  });
+
   testWidgets('another video site offers the heights, and audio is audio', (
     tester,
   ) async {

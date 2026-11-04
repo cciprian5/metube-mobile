@@ -4,6 +4,7 @@ import 'dart:convert';
 import '../urls/platform_detector.dart';
 import '../urls/url_kit.dart';
 import 'http_fetch.dart';
+import 'page_preview.dart';
 import 'soundcloud_resolver.dart';
 
 /// What a link is, shown in the add sheet before anything is downloaded.
@@ -34,16 +35,39 @@ class ClipPreview {
 /// platform without a usable endpoint or more than [timeout] all return
 /// null, and the sheet simply shows no preview. Instagram and Facebook want
 /// a login or a key, and TikTok's answer names no title or picture (all
-/// three measured 2026-10 for the computer's add dialog, which asks the
-/// same four sites). The download itself never waits for this.
+/// three measured 2026-10). An X post and a Reddit post come by
+/// [PagePreview] instead, with no author, so who posted them is never
+/// guessed from a preview. The download itself never waits for this.
 class ClipPreviewResolver {
-  ClipPreviewResolver({HttpGetString? httpGet, this.timeout = defaultTimeout})
-    : _httpGet = httpGet ?? ioHttpGetString;
+  ClipPreviewResolver({
+    HttpGetString? httpGet,
+    HttpGetString? pageGet,
+    this.timeout = defaultTimeout,
+  }) : _httpGet = httpGet ?? ioHttpGetString,
+       // A test that answers for the network answers for pages too.
+       _pageGet = pageGet ?? httpGet ?? _cappedGet;
 
   final HttpGetString _httpGet;
+
+  /// For a whole page, read only as far as its head needs.
+  final HttpGetString _pageGet;
   final Duration timeout;
 
   static const defaultTimeout = Duration(seconds: 3);
+
+  /// An X page names its picture in the first few kilobytes, and runs to
+  /// several hundred.
+  static const pageBytes = 64 * 1024;
+
+  static Future<String> _cappedGet(Uri uri) =>
+      ioHttpGetString(uri, maxBytes: pageBytes);
+
+  /// Is there anything to ask for [url]? The add sheet shows its grey
+  /// placeholder only when there is.
+  static bool supports(String url) =>
+      oEmbedEndpoint(MediaPlatform.detect(url), url) != null ||
+      PagePreview.xPostPage(url) != null ||
+      PagePreview.redditOEmbed(url) != null;
 
   Future<ClipPreview?> resolve(String url) async {
     try {
@@ -55,6 +79,15 @@ class ClipPreviewResolver {
   }
 
   Future<ClipPreview?> _resolve(String url) async {
+    if (PagePreview.xPostPage(url) case final page?) {
+      final x = PagePreview.fromXPage(await _pageGet(page));
+      return ClipPreview(title: x.title, thumbnail: x.picture);
+    }
+    if (PagePreview.redditOEmbed(url) case final endpoint?) {
+      return ClipPreview(
+        title: PagePreview.fromRedditOEmbed(await _pageGet(endpoint)),
+      );
+    }
     final platform = MediaPlatform.detect(url);
     final endpoint = oEmbedEndpoint(platform, url);
     if (endpoint == null) return null;

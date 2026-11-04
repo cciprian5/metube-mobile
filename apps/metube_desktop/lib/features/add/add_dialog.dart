@@ -121,8 +121,8 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
     final many = lines.length > 1 || read.dropped > 0;
     final single = lines.length == 1 ? lines.single : null;
     final url = single?.url;
-    final youtube =
-        lines.isNotEmpty && lines.every((line) => line.platform.isYouTube);
+    final heights =
+        lines.isNotEmpty && lines.every((line) => !line.platform.isAudioOnly);
     final canSubmit = many ? read.ready.isNotEmpty && !_sent : url != null;
 
     return AlertDialog(
@@ -190,7 +190,7 @@ class _AddDialogState extends ConsumerState<_AddDialog> {
               if (single?.state != LinkState.playlist)
                 AddOptions(
                   choice: _choice,
-                  youtube: youtube,
+                  heights: heights,
                   offerTranscript:
                       !many &&
                       url != null &&

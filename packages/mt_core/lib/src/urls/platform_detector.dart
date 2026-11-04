@@ -22,6 +22,9 @@ enum MediaPlatform {
 
   bool get isYouTube => this == MediaPlatform.youtube;
 
+  /// Sound and nothing else, so a video height means nothing there.
+  bool get isAudioOnly => this == MediaPlatform.soundcloud;
+
   /// The platform from a URL. Short links (vm./vt.tiktok, fb.watch,
   /// on.soundcloud) are attributed to their platform before resolution, so
   /// the badge can show it immediately.

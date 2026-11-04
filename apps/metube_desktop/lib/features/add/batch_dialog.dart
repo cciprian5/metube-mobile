@@ -249,7 +249,7 @@ class _BatchDialogState extends ConsumerState<_BatchDialog> {
           const SizedBox(height: MTSpace.md),
           AddOptions(
             choice: _choice,
-            youtube: list.kind == PlaylistKind.youtube,
+            heights: list.kind != PlaylistKind.soundcloud,
             audioOnly: list.kind == PlaylistKind.soundcloud,
             onChanged: (choice) => setState(() => _choice = choice),
           ),

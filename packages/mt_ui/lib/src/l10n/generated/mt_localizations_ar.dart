@@ -2380,13 +2380,13 @@ class MTLocalizationsAr extends MTLocalizations {
   String get quality => 'الجودة';
 
   @override
-  String get quality1080 => '1080p';
+  String get quality1080 => 'حتى 1080p';
 
   @override
-  String get quality480 => '480p';
+  String get quality480 => 'حتى 480p';
 
   @override
-  String get quality720 => '720p';
+  String get quality720 => 'حتى 720p';
 
   @override
   String get qualityAudio => 'الصوت';

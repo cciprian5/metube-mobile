@@ -2,17 +2,26 @@ import 'package:mt_core/mt_core.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Quality.applyRule: the numeric qualities are YouTube only', () {
+  group('Quality.applyRule: a height for every video platform', () {
     const youtube = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
     const tiktok = 'https://www.tiktok.com/@user/video/7301234567890123456';
+    const soundcloud = 'https://soundcloud.com/artist/track';
 
     test('1080 on YouTube survives', () {
       expect(Quality.q1080.applyRule(youtube), Quality.q1080);
     });
 
-    test('720 and 480 on TikTok are forced to best', () {
-      expect(Quality.q720.applyRule(tiktok), Quality.best);
-      expect(Quality.q480.applyRule(tiktok), Quality.best);
+    // The owner's decision of 2026-11-04: outside YouTube a height is sent as a
+    // ceiling, and the engine falls back to best when the site has none.
+    test('720 and 480 on TikTok are kept', () {
+      expect(Quality.q720.applyRule(tiktok), Quality.q720);
+      expect(Quality.q480.applyRule(tiktok), Quality.q480);
+    });
+
+    test('an audio-only platform has no heights, so it gets best', () {
+      expect(Quality.q720.applyRule(soundcloud), Quality.best);
+      expect(Quality.q1080.applyRule(soundcloud), Quality.best);
+      expect(Quality.audio.applyRule(soundcloud), Quality.audio);
     });
 
     test('audio works everywhere', () {

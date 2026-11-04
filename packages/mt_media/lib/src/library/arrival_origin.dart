@@ -110,10 +110,12 @@ Future<SortedArrivals<T>> sortArrivals<T>(
 }
 
 /// The author of a clip from the same public answer the add sheet previews,
-/// which carries no credentials of the user's server.
+/// which carries no credentials of the user's server. A preview that names
+/// no author (an X or Reddit post) knows nothing of who posted it, so the
+/// clip stays "unknown" rather than "not followed".
 ClipAuthorLookup clipAuthorFrom(ClipPreviewResolver resolver) => (url) async {
   final preview = await resolver.resolve(url);
-  return preview == null
+  return preview == null || (preview.author == null && preview.authorUrl == null)
       ? null
       : (name: preview.author, url: preview.authorUrl);
 };

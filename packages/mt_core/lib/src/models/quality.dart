@@ -16,12 +16,13 @@ enum Quality {
   bool get isNumeric =>
       this == Quality.q1080 || this == Quality.q720 || this == Quality.q480;
 
-  /// **The mandatory platform rule:** numeric qualities are for YouTube
-  /// only; every other platform is forced to `best`. `audio` and `best` are
-  /// available everywhere. This is a yt-dlp constraint.
+  /// **The platform rule:** a numeric quality is a height ceiling, sent to
+  /// every video platform; an audio-only one gets `best`. Outside YouTube a
+  /// site may list no heights at all, so the download engine retries such a
+  /// refusal at `best` once. `audio` and `best` are available everywhere.
   Quality applyRule(String url) {
     if (!isNumeric) return this;
-    return MediaPlatform.detect(url).isYouTube ? this : Quality.best;
+    return MediaPlatform.detect(url).isAudioOnly ? Quality.best : this;
   }
 
   /// Tolerant reading of a stored or incoming value; anything unknown

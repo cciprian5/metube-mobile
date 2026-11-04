@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 
@@ -12,51 +10,34 @@ class LinkPreview {
   final String? author;
 }
 
-/// How the preview reaches the sites; a test puts its own in.
-final previewFetchProvider = Provider<HttpGetString>((ref) => ioHttpGetString);
+/// How the preview reaches the sites; a test puts its own in. Capped, since
+/// an X post is read from its whole page.
+final previewFetchProvider = Provider<HttpGetString>(
+  (ref) =>
+      (uri) => ioHttpGetString(uri, maxBytes: ClipPreviewResolver.pageBytes),
+);
 
-/// The sites that describe a link through oEmbed, by the address they
-/// answer on.
-const _oembed = {
-  MediaPlatform.youtube: 'https://www.youtube.com/oembed',
-  MediaPlatform.soundcloud: 'https://soundcloud.com/oembed',
-  MediaPlatform.vimeo: 'https://vimeo.com/api/oembed.json',
-  MediaPlatform.dailymotion: 'https://www.dailymotion.com/services/oembed',
-};
-
-/// The preview of [url], or null for a site that offers none or when it
-/// cannot be reached. Instagram and Facebook want a login or a key, and
-/// TikTok's answer names no title or picture (all three measured 2026-10);
-/// a clip of theirs gets its cover from its own frames once downloaded.
+/// The preview of [url], or null for a site that offers none, when it
+/// cannot be reached, or after the resolver's few seconds. The phones' own
+/// resolver, so the three apps ask the same sites in the same way: oEmbed
+/// where a site has one, an X post's page, Reddit's oEmbed for a title.
+/// Instagram, Facebook and TikTok offer nothing usable (measured 2026-10); a
+/// clip of theirs gets its cover from its own frames once downloaded.
 ///
 /// **Asked of the clip's own site with a plain request**, never through
 /// the server's client, so the server's password goes nowhere else; the
 /// site learns only the link the user is about to download from it anyway.
 final linkPreviewProvider = FutureProvider.autoDispose
     .family<LinkPreview?, String>((ref, url) async {
-      final platform = MediaPlatform.detect(url);
-      final endpoint = _oembed[platform];
-      if (endpoint == null || PlaylistDetector.isPlaylist(url)) return null;
-      try {
-        final body = await ref.read(previewFetchProvider)(
-          Uri.parse(endpoint)
-              .replace(queryParameters: {'format': 'json', 'url': url}),
-        );
-        final data = json.decode(body);
-        if (data is! Map) return null;
-        final title = data['title']?.toString().trim() ?? '';
-        if (title.isEmpty) return null;
-        final thumb = data['thumbnail_url']?.toString();
-        return LinkPreview(
-          title: title,
-          author: data['author_name']?.toString(),
-          thumbnail: switch (platform) {
-            MediaPlatform.soundcloud when thumb != null =>
-              SoundCloudResolver.upscaleArtwork(thumb),
-            _ => thumb,
-          },
-        );
-      } on Object {
-        return null;
-      }
+      if (PlaylistDetector.isPlaylist(url)) return null;
+      final preview = await ClipPreviewResolver(
+        httpGet: ref.read(previewFetchProvider),
+      ).resolve(url);
+      final title = preview?.title;
+      if (title == null) return null;
+      return LinkPreview(
+        title: title,
+        author: preview!.author,
+        thumbnail: preview.thumbnail,
+      );
     });

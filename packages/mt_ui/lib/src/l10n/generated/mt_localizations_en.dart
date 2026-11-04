@@ -2324,13 +2324,13 @@ class MTLocalizationsEn extends MTLocalizations {
   String get quality => 'Quality';
 
   @override
-  String get quality1080 => '1080p';
+  String get quality1080 => 'Up to 1080p';
 
   @override
-  String get quality480 => '480p';
+  String get quality480 => 'Up to 480p';
 
   @override
-  String get quality720 => '720p';
+  String get quality720 => 'Up to 720p';
 
   @override
   String get qualityAudio => 'Audio';

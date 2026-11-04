@@ -4001,19 +4001,19 @@ abstract class MTLocalizations {
   /// No description provided for @quality1080.
   ///
   /// In en, this message translates to:
-  /// **'1080p'**
+  /// **'Up to 1080p'**
   String get quality1080;
 
   /// No description provided for @quality480.
   ///
   /// In en, this message translates to:
-  /// **'480p'**
+  /// **'Up to 480p'**
   String get quality480;
 
   /// No description provided for @quality720.
   ///
   /// In en, this message translates to:
-  /// **'720p'**
+  /// **'Up to 720p'**
   String get quality720;
 
   /// No description provided for @qualityAudio.

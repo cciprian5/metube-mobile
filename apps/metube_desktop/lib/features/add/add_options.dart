@@ -44,7 +44,7 @@ class AddChoice {
   final String? pullInto;
 
   /// What is sent for [url]: sound, or the video quality after the rule
-  /// that numbers are for YouTube alone.
+  /// that an audio-only platform has no heights.
   Quality qualityFor(String url) =>
       audio ? Quality.audio : quality.applyRule(url);
 
@@ -73,7 +73,7 @@ class AddOptions extends ConsumerWidget {
     super.key,
     required this.choice,
     required this.onChanged,
-    required this.youtube,
+    required this.heights,
     this.offerTranscript = false,
     this.audioOnly = false,
   });
@@ -81,8 +81,8 @@ class AddOptions extends ConsumerWidget {
   final AddChoice choice;
   final ValueChanged<AddChoice> onChanged;
 
-  /// Whether the numbered qualities apply (every link is YouTube).
-  final bool youtube;
+  /// Whether the heights apply: no link is sound alone (SoundCloud).
+  final bool heights;
   final bool offerTranscript;
 
   /// A SoundCloud set: sound is the only choice.
@@ -115,7 +115,7 @@ class AddOptions extends ConsumerWidget {
     final audio = choice.audio || audioOnly;
     final qualities = [
       (Quality.best, l.qualityBest),
-      if (youtube) ...[
+      if (heights) ...[
         (Quality.q1080, l.quality1080),
         (Quality.q720, l.quality720),
         (Quality.q480, l.quality480),
@@ -154,7 +154,7 @@ class AddOptions extends ConsumerWidget {
                   label: label,
                   selected:
                       choice.quality == quality ||
-                      (!youtube && quality == Quality.best),
+                      (!heights && quality == Quality.best),
                   onTap: () => onChanged(choice.copyWith(quality: quality)),
                 ),
             ],

@@ -25,8 +25,7 @@ final linkPreviewProvider = FutureProvider.autoDispose
 Widget? linkPreviewFor(WidgetRef ref, String text) {
   final url = UrlKit.extractUrl(text);
   if (!url.startsWith('http') || PlaylistDetector.isPlaylist(url)) return null;
-  final platform = MediaPlatform.detect(url);
-  if (ClipPreviewResolver.oEmbedEndpoint(platform, url) == null) return null;
+  if (!ClipPreviewResolver.supports(url)) return null;
   String? meta(ClipPreview preview) {
     final line = mtMetaLine([
       preview.author,

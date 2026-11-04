@@ -96,10 +96,11 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
   Widget build(BuildContext context) {
     final l10n = widget.l10n;
     final platform = MediaPlatform.detect(_url);
-    // The quality rule: numeric qualities are offered for YouTube only.
+    // The quality rule: heights for every platform but an audio-only one;
+    // outside YouTube the engine falls back to best if the site has none.
     final qualities = [
       MTQualityOption(value: 'best', label: l10n.qualityBest),
-      if (platform.isYouTube) ...[
+      if (!platform.isAudioOnly) ...[
         MTQualityOption(value: '1080', label: l10n.quality1080),
         MTQualityOption(value: '720', label: l10n.quality720),
         MTQualityOption(value: '480', label: l10n.quality480),

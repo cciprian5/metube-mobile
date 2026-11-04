@@ -117,6 +117,7 @@ class DownloadTask {
   String get effectiveUrl => resolvedUrl ?? inputUrl;
 
   DownloadTask copyWith({
+    Quality? quality,
     String? resolvedUrl,
     String? canonicalUrl,
     String? serverFilename,
@@ -131,7 +132,7 @@ class DownloadTask {
   }) => DownloadTask(
     id: id,
     inputUrl: inputUrl,
-    quality: quality,
+    quality: quality ?? this.quality,
     resolvedUrl: resolvedUrl ?? this.resolvedUrl,
     canonicalUrl: canonicalUrl ?? this.canonicalUrl,
     serverFilename: serverFilename ?? this.serverFilename,

@@ -333,7 +333,10 @@ class _QualityRow extends StatelessWidget {
     // Rule 2: no heights for sound alone (a SoundCloud set).
     // 360 is Lite's alone.
     final options = heights
-        ? [for (final q in Quality.values) if (q != Quality.q360) q]
+        ? [
+            for (final q in Quality.values)
+              if (q != Quality.q360) q,
+          ]
         : [Quality.best, Quality.audio];
     return SizedBox(
       height: 46,

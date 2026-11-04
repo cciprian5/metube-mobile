@@ -15,6 +15,7 @@ import '../clip/copy_pills.dart';
 import '../clip/tags_dialog.dart';
 import '../lists/list_dialogs.dart';
 import 'clip_keys.dart';
+import 'copy_file.dart';
 
 enum ItemChoice {
   play,
@@ -23,6 +24,7 @@ enum ItemChoice {
   favorite,
   makeOffline,
   copyLink,
+  copyFile,
   showInFolder,
   openOriginal,
   addToList,
@@ -79,6 +81,13 @@ List<EmberMenuEntry<ItemChoice>> itemMenuEntries(
       l.desktopCopyLink,
       shortcut: ClipKeys.copyLink,
     ),
+    if (hasFile || source != null)
+      EmberMenuEntry(
+        ItemChoice.copyFile,
+        MTIcons.copy,
+        l.desktopCopyFile,
+        shortcut: ClipKeys.copyFile,
+      ),
     if (hasFile)
       EmberMenuEntry(
         ItemChoice.showInFolder,
@@ -150,6 +159,8 @@ Future<void> showItemMenu(
       if (source != null) await makeOfflineCopy(context, ref, source);
     case ItemChoice.copyLink:
       await copyLinkOf(context, item.canonicalUrl);
+    case ItemChoice.copyFile:
+      await copyFileOf(context, item);
     case ItemChoice.showInFolder:
       if (file != null) await ref.read(desktopFoldersProvider).reveal(file);
     case ItemChoice.openOriginal:

@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../data/backup_data.dart';
 import '../data/covers/covers_data.dart';
+import '../data/shapes/shapes_data.dart';
 import '../data/library_data.dart';
 import '../data/library_watch.dart';
 import '../data/sync_runner.dart';
@@ -124,6 +125,7 @@ class _EmberShellState extends ConsumerState<EmberShell> {
     ref.watch(playbackWiringProvider);
     ref.watch(sessionRestoreProvider);
     ref.watch(coverEnrichmentProvider);
+    ref.watch(shapeEnrichmentProvider);
     ref.watch(startupBackupProvider);
     ref.watch(syncRunnerProvider);
     ref.watch(libraryWatchProvider);

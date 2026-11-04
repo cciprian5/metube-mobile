@@ -1208,6 +1208,42 @@ abstract class MTLocalizations {
   /// **'Cancelled'**
   String get desktopCopyCancelled;
 
+  /// No description provided for @desktopCopyFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy file'**
+  String get desktopCopyFile;
+
+  /// No description provided for @desktopCopyFileFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The file could not be copied'**
+  String get desktopCopyFileFailed;
+
+  /// No description provided for @desktopCopyFileLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'A large file'**
+  String get desktopCopyFileLarge;
+
+  /// No description provided for @desktopCopyFileLargeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This clip is {size}. It is saved to your download folder first, then copied; many chat apps refuse a file this big.'**
+  String desktopCopyFileLargeMessage(String size);
+
+  /// No description provided for @desktopCopyFileNoSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough space on the drive: the file is {needed} and {free} is free'**
+  String desktopCopyFileNoSpace(String needed, String free);
+
+  /// No description provided for @desktopCopyFilePreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing the file to copy; its progress is in Downloads'**
+  String get desktopCopyFilePreparing;
+
   /// No description provided for @desktopCopyLink.
   ///
   /// In en, this message translates to:
@@ -1537,6 +1573,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Saved {name}'**
   String desktopExported(String name);
+
+  /// No description provided for @desktopFileReadyToPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to paste: {name} · {size}'**
+  String desktopFileReadyToPaste(String name, String size);
 
   /// No description provided for @desktopFolderUnavailable.
   ///

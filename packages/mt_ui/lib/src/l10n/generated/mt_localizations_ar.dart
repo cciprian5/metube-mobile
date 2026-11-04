@@ -703,6 +703,29 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopCopyCancelled => 'أُلغي';
 
   @override
+  String get desktopCopyFile => 'نسخ الملف';
+
+  @override
+  String get desktopCopyFileFailed => 'تعذّر نسخ الملف';
+
+  @override
+  String get desktopCopyFileLarge => 'ملف كبير';
+
+  @override
+  String desktopCopyFileLargeMessage(String size) {
+    return 'حجم هذا المقطع $size. يُحفظ أولاً في مجلد التنزيل ثم يُنسخ، وكثير من برامج المحادثة يرفض ملفاً بهذا الحجم.';
+  }
+
+  @override
+  String desktopCopyFileNoSpace(String needed, String free) {
+    return 'المساحة على القرص لا تكفي: الملف $needed والمتاح $free';
+  }
+
+  @override
+  String get desktopCopyFilePreparing =>
+      'يُجهَّز الملف للنسخ، وتقدّمه في التنزيلات';
+
+  @override
   String get desktopCopyLink => 'نسخ الرابط';
 
   @override
@@ -901,6 +924,11 @@ class MTLocalizationsAr extends MTLocalizations {
   @override
   String desktopExported(String name) {
     return 'حُفظ $name';
+  }
+
+  @override
+  String desktopFileReadyToPaste(String name, String size) {
+    return 'جاهز للصق: $name · $size';
   }
 
   @override

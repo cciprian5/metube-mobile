@@ -673,6 +673,29 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopCopyCancelled => 'Cancelled';
 
   @override
+  String get desktopCopyFile => 'Copy file';
+
+  @override
+  String get desktopCopyFileFailed => 'The file could not be copied';
+
+  @override
+  String get desktopCopyFileLarge => 'A large file';
+
+  @override
+  String desktopCopyFileLargeMessage(String size) {
+    return 'This clip is $size. It is saved to your download folder first, then copied; many chat apps refuse a file this big.';
+  }
+
+  @override
+  String desktopCopyFileNoSpace(String needed, String free) {
+    return 'Not enough space on the drive: the file is $needed and $free is free';
+  }
+
+  @override
+  String get desktopCopyFilePreparing =>
+      'Preparing the file to copy; its progress is in Downloads';
+
+  @override
   String get desktopCopyLink => 'Copy link';
 
   @override
@@ -869,6 +892,11 @@ class MTLocalizationsEn extends MTLocalizations {
   @override
   String desktopExported(String name) {
     return 'Saved $name';
+  }
+
+  @override
+  String desktopFileReadyToPaste(String name, String size) {
+    return 'Ready to paste: $name · $size';
   }
 
   @override

@@ -642,6 +642,29 @@
   "desktopCopiedLinkAdd": "Add…",
   "desktopCopiedLinkTitle": "Add this link to the server?",
   "desktopCopyCancelled": "Cancelled",
+  "desktopCopyFile": "Copy file",
+  "desktopCopyFileFailed": "The file could not be copied",
+  "desktopCopyFileLarge": "A large file",
+  "desktopCopyFileLargeMessage": "This clip is {size}. It is saved to your download folder first, then copied; many chat apps refuse a file this big.",
+  "@desktopCopyFileLargeMessage": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "desktopCopyFileNoSpace": "Not enough space on the drive: the file is {needed} and {free} is free",
+  "@desktopCopyFileNoSpace": {
+    "placeholders": {
+      "needed": {
+        "type": "String"
+      },
+      "free": {
+        "type": "String"
+      }
+    }
+  },
+  "desktopCopyFilePreparing": "Preparing the file to copy; its progress is in Downloads",
   "desktopCopyLink": "Copy link",
   "desktopCopyQueued": "Waiting its turn",
   "desktopCopyQuote": "Copy with time and link",
@@ -700,6 +723,17 @@
   "desktopExportSrt": "Subtitles (SRT)",
   "desktopExported": "Saved {name}",
   "@desktopExported": {"placeholders": {"name": {"type": "String"}}},
+  "desktopFileReadyToPaste": "Ready to paste: {name} · {size}",
+  "@desktopFileReadyToPaste": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "desktopFolderUnavailable": "No folder available",
   "desktopFolders": "Folders",
   "desktopForward": "Forward",

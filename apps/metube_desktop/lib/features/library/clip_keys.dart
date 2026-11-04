@@ -10,6 +10,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../di.dart';
 import '../../router.dart';
 import '../clip/clip_actions.dart';
+import 'copy_file.dart';
 
 /// The keys of a chosen clip in a list, as the right-click menu and the
 /// shortcuts sheet write them. Enter is any button's own key: it plays.
@@ -22,6 +23,9 @@ abstract final class ClipKeys {
   static const reading = 'Ctrl R';
   static const favorite = 'F';
   static const copyLink = 'Ctrl C';
+
+  /// Shift beside the link's own key: the file, where Ctrl C is the link.
+  static const copyFile = 'Ctrl Shift C';
 }
 
 /// Queues [item] after what plays, and says so: nothing on screen moves.
@@ -81,6 +85,10 @@ class ClipKeyArea extends ConsumerWidget {
         PhysicalKeyboardKey.keyC when control && !shift => () => copyLinkOf(
           context,
           url,
+        ),
+        PhysicalKeyboardKey.keyC when control && shift => () => copyFileOf(
+          context,
+          item,
         ),
         _ => null,
       };

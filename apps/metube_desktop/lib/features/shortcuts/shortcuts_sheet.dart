@@ -31,6 +31,7 @@ List<(String, List<ShortcutLine>)> shortcutGroups(MTLocalizations l) => [
       (keys: [ClipKeys.reading], does: l.desktopReadingRoom),
       (keys: [ClipKeys.favorite], does: l.desktopKeyFavorite),
       (keys: [ClipKeys.copyLink], does: l.desktopCopyLink),
+      (keys: [ClipKeys.copyFile], does: l.desktopCopyFile),
       (keys: ['Shift F10'], does: l.desktopKeyMenu),
     ],
   ),

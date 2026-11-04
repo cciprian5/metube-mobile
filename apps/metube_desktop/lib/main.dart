@@ -44,7 +44,6 @@ import 'platform/link_drop.dart';
 import 'platform/media_kit_debug.dart';
 import 'platform/notifications.dart';
 import 'platform/error_log.dart';
-import 'platform/frame_grab.dart';
 import 'platform/hotkeys.dart';
 import 'platform/player_desktop.dart';
 import 'platform/run_note.dart';
@@ -62,6 +61,7 @@ import 'platform/taskbar.dart';
 import 'platform/tray.dart';
 import 'platform/volume_windows.dart';
 import 'platform/window_placement.dart';
+import 'platform/windows_files.dart';
 import 'shell/shell_layout.dart';
 import 'shell/shell_state.dart';
 import 'shell/ui_zoom.dart';
@@ -288,7 +288,7 @@ Future<void> main(List<String> args) async {
         coverFolderProvider.overrideWithValue(
           Directory('${local.path}/cache/embedded'),
         ),
-        frameGrabProvider.overrideWithValue(grabFrame),
+        ...windowsFileOverrides(),
       ],
       child: EmberApp(
         locale: labLocale == null ? null : Locale(labLocale),

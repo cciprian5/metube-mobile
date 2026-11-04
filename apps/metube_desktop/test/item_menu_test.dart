@@ -50,6 +50,7 @@ void main() {
       expect(choices(_clip()), [
         ItemChoice.makeOffline,
         ItemChoice.copyLink,
+        ItemChoice.copyFile,
         ItemChoice.openOriginal,
         ItemChoice.addToList,
         ItemChoice.tags,
@@ -65,6 +66,7 @@ void main() {
         'making it again', () {
       expect(choices(_clip(localPath: r'C:\x.mp4'), hasFile: true), [
         ItemChoice.copyLink,
+        ItemChoice.copyFile,
         ItemChoice.showInFolder,
         ItemChoice.openOriginal,
         ItemChoice.addToList,
@@ -82,6 +84,7 @@ void main() {
         choices(_clip(onServer: false, localPath: r'C:\x.mp4'), hasFile: true),
         [
           ItemChoice.copyLink,
+          ItemChoice.copyFile,
           ItemChoice.showInFolder,
           ItemChoice.openOriginal,
           ItemChoice.addToList,

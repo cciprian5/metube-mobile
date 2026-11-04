@@ -392,6 +392,66 @@ void main() {
       expect(find.byType(ShareSheet), findsNothing);
     });
 
+    testWidgets('**the guard**: closed while the copy goes on, it says the '
+        'copy goes on', (tester) async {
+      await tester.pumpWidget(app());
+      await tester.runAsync(() async {
+        pull.gate = Completer();
+        await tester.tap(find.text('server'));
+        while (pull.asked.isEmpty) {
+          await Future<void>.delayed(const Duration(milliseconds: 5));
+        }
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(ShareSheet), findsOneWidget);
+
+      // A tap on the empty space above the sheet.
+      await tester.tapAt(const Offset(20, 20));
+      // The share began under real time, so its sheet closes there too.
+      final notice = find.textContaining('Still preparing');
+      for (var i = 0; i < 100 && notice.evaluate().isEmpty; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 5)),
+        );
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(ShareSheet), findsNothing);
+      expect(notice, findsOneWidget);
+
+      await tester.runAsync(() async {
+        pull.gate!.complete();
+        while (sent.isEmpty) {
+          await Future<void>.delayed(const Duration(milliseconds: 5));
+        }
+      });
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('a share that ends with the sheet open says nothing more', (
+      tester,
+    ) async {
+      await tester.pumpWidget(app());
+      await tester.runAsync(() async {
+        pull.gate = Completer();
+        await tester.tap(find.text('server'));
+        while (pull.asked.isEmpty) {
+          await Future<void>.delayed(const Duration(milliseconds: 5));
+        }
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.runAsync(() async {
+        pull.gate!.complete();
+        while (sent.isEmpty) {
+          await Future<void>.delayed(const Duration(milliseconds: 5));
+        }
+      });
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Still preparing'), findsNothing);
+    });
+
     // Real time for the copy, frames for the screen, turn about: the share
     // begins under the test's frames and its file work under real time.
     Future<void> until(WidgetTester tester, bool Function() done) async {

@@ -114,6 +114,8 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
         MTQualityOption(value: '1080', label: l10n.quality1080),
         MTQualityOption(value: '720', label: l10n.quality720),
         MTQualityOption(value: '480', label: l10n.quality480),
+        // Lite alone: a family phone keeps what it downloads.
+        MTQualityOption(value: '360', label: l10n.quality360),
       ],
       MTQualityOption(value: 'audio', label: l10n.audioOnly),
     ];

@@ -6,6 +6,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../../di.dart';
 import '../../shared/error_report.dart';
 import 'help_button.dart';
+import 'lan_search_sheet.dart';
 import 'server_status_card.dart';
 
 /// The server's address and sign-in, tested before they are saved. One
@@ -75,6 +76,11 @@ class _ServerFieldsState extends ConsumerState<ServerFields> {
     }
   }
 
+  Future<void> _searchNetwork() async {
+    final url = await showLanSearch(context, current: _urlController.text);
+    if (url != null && mounted) _urlController.text = url;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.mtl;
@@ -103,6 +109,17 @@ class _ServerFieldsState extends ConsumerState<ServerFields> {
               body: l10n.serverUrlHelpBody,
             ),
           ],
+        ),
+        // The address found is only filled in: it is tested and saved by
+        // the button below, as one typed by hand.
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: MTLinkButton(
+            key: const ValueKey('lan-search'),
+            label: l10n.desktopSetupSearch,
+            icon: MTIcons.search,
+            onPressed: _searchNetwork,
+          ),
         ),
         const SizedBox(height: MTSpace.md),
         // **A gap exactly as wide as the help button** (review 2026-09-05):

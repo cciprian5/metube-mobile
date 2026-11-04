@@ -39,6 +39,7 @@ void main() {
   Future<(ProviderContainer, MemoryKeyValueStore)> container({
     bool enabled = true,
     String locale = 'ar',
+    List<Transcript>? kept,
   }) async {
     final store = MemoryKeyValueStore();
     final c = ProviderContainer(
@@ -49,11 +50,18 @@ void main() {
         initialSettingsProvider.overrideWithValue(
           SuperSettings(localeCode: locale),
         ),
-        transcriptIndexProvider.overrideWith(
-          (ref) async => TranscriptIndex()
-            ..add(talk('en', 'hello there', timed: true))
-            ..add(talk('ar', 'مرحبا هناك')),
-        ),
+        transcriptIndexProvider.overrideWith((ref) async {
+          final index = TranscriptIndex();
+          for (final t
+              in kept ??
+                  [
+                    talk('en', 'hello there', timed: true),
+                    talk('ar', 'مرحبا هناك'),
+                  ]) {
+            index.add(t);
+          }
+          return index;
+        }),
       ],
     );
     addTearDown(c.dispose);
@@ -78,6 +86,30 @@ void main() {
     expect(ar.read(subtitleTracksProvider(url))!.keys, ['ar', 'en']);
     final (en, _) = await container(locale: 'en');
     expect(en.read(subtitleTracksProvider(url))!.keys, ['en', 'ar']);
+  });
+
+  test('**the guard**: only another language kept is not switched on '
+      'unasked, but the one picked is', () async {
+    final (en, _) = await container(
+      locale: 'en',
+      kept: [talk('ar', 'مرحبا هناك')],
+    );
+    final tracks = en.read(subtitleTracksProvider(url));
+    final order = en.read(transcriptsServiceProvider).languages;
+    expect(order, ['en']);
+    expect(offeredTracks(tracks, order: order, chosen: null), isNull);
+    expect(offeredTracks(tracks, order: order, chosen: 'ar')!.keys, ['ar']);
+
+    // Kept in the reader's language, every other one stays a switch away.
+    final (both, _) = await container(locale: 'en');
+    expect(
+      offeredTracks(
+        both.read(subtitleTracksProvider(url)),
+        order: order,
+        chosen: null,
+      )!.keys,
+      ['en', 'ar'],
+    );
   });
 
   test('the language picked with the switch is kept', () async {

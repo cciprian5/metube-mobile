@@ -72,7 +72,7 @@ final transcriptForProvider = FutureProvider.family<Transcript?, TranscriptKey>(
     if (store == null) return null;
     final languages = readerLanguages(ref.watch(appearanceProvider).locale);
     final stored = await store.readFor(key.canonicalUrl);
-    if (stored.isNotEmpty) return _pick(stored, languages);
+    if (_pick(stored, languages) case final kept?) return kept;
 
     final api = ref.watch(apiClientProvider);
     final filename = key.serverFilename;
@@ -118,13 +118,15 @@ List<String> readerLanguages(String? chosen) {
   return {own, 'en'}.toList();
 }
 
-/// The transcript in the first of [languages] there is one for, else the
-/// first one kept.
-Transcript _pick(List<Transcript> all, List<String> languages) {
+/// The transcript in the first of [languages] there is one for. Null when
+/// only other languages are kept: one is never put in front of the reader
+/// unasked (owner's decision 2026-11-04), so the server is asked for the
+/// reader's own instead, and the reading room still offers the rest.
+Transcript? _pick(List<Transcript> all, List<String> languages) {
   for (final language in languages) {
     for (final t in all) {
       if (Transcript.baseLanguage(t.language) == language) return t;
     }
   }
-  return all.first;
+  return null;
 }

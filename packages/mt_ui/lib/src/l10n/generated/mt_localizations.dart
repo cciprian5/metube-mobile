@@ -4004,6 +4004,12 @@ abstract class MTLocalizations {
   /// **'Up to 1080p'**
   String get quality1080;
 
+  /// No description provided for @quality360.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 360p'**
+  String get quality360;
+
   /// No description provided for @quality480.
   ///
   /// In en, this message translates to:
@@ -4454,6 +4460,12 @@ abstract class MTLocalizations {
   /// **'{count, plural, =0{} =1{1 in the queue} other{{count} in the queue}}'**
   String serverQueueCount(int count);
 
+  /// No description provided for @serverSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks for MeTube on the Wi-Fi this phone is on, only when you tap.'**
+  String get serverSearchHint;
+
   /// No description provided for @serverStatusChecking.
   ///
   /// In en, this message translates to:
@@ -4687,6 +4699,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get share;
+
+  /// No description provided for @shareGoesOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Still preparing in the background. The share menu opens when it is ready; its progress is in Downloads.'**
+  String get shareGoesOn;
 
   /// No description provided for @shareLargeBody.
   ///

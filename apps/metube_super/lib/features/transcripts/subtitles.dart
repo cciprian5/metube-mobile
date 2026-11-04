@@ -150,6 +150,20 @@ final subtitleLinesProvider = Provider.family<List<MTCaptionLine>?, String>(
   (ref, url) => ref.watch(subtitleTracksProvider(url))?.values.first,
 );
 
+/// [tracks] as a player is given them: null when the clip keeps only
+/// languages outside [order] (the reader's, then English) and none of them
+/// is [chosen] with the switch. Another language is never switched on
+/// unasked (owner's decision 2026-11-04).
+Map<String, List<MTCaptionLine>>? offeredTracks(
+  Map<String, List<MTCaptionLine>>? tracks, {
+  required List<String> order,
+  required String? chosen,
+}) {
+  if (tracks == null) return null;
+  final wanted = tracks.keys.any((l) => l == chosen || order.contains(l));
+  return wanted ? tracks : null;
+}
+
 /// What a player draws for [item]: its lines in every language it has,
 /// shown as [shown] says.
 MTCaptions? subtitlesFor(
@@ -157,9 +171,13 @@ MTCaptions? subtitlesFor(
   PlaylistItem item, {
   ValueNotifier<bool>? shown,
 }) {
-  final tracks = ref.read(subtitleTracksProvider(item.canonicalUrl));
-  if (tracks == null) return null;
   final prefs = ref.read(subtitlePrefsProvider);
+  final tracks = offeredTracks(
+    ref.read(subtitleTracksProvider(item.canonicalUrl)),
+    order: ref.read(transcriptsServiceProvider).languages,
+    chosen: prefs.language.value,
+  );
+  if (tracks == null) return null;
   return MTCaptions(
     lines: tracks.values.first,
     tracks: tracks,

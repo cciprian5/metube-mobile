@@ -47,7 +47,6 @@ void main() {
   Future<ProviderContainer> container({
     bool enabled = true,
     String localeCode = 'ar',
-    String? spoken,
   }) async {
     final c = ProviderContainer(
       overrides: [
@@ -66,7 +65,6 @@ void main() {
         captionsFetcherFactoryProvider.overrideWithValue(
           (api) => CaptionsFetcher(api, wait: (_) async {}),
         ),
-        spokenLanguageProvider.overrideWithValue((_) async => spoken),
       ],
     );
     addTearDown(c.dispose);
@@ -128,26 +126,25 @@ void main() {
     );
   });
 
-  // Owner's request 2026-10-15: a reader of English gets the clip's own
-  // language beside English, as said rather than as translated.
-  test('in English, a clip spoken in Spanish keeps its Spanish too', () async {
+  // Owner's decision 2026-11-04, replacing the request of 2026-10-15: a
+  // reader of English gets English alone, even for a clip spoken in Spanish
+  // whose own Spanish is right there on the server.
+  test('**the guard**: in English, a clip spoken in Spanish keeps English '
+      'alone', () async {
     server.texts['Me at the zoo [$id].es-orig.srt'] =
         '1\n00:00:01,000 --> 00:00:02,000\nlos elefantes\n';
-    final c = await container(localeCode: 'en', spoken: 'es');
+    final c = await container(localeCode: 'en');
     await c
         .read(transcriptsServiceProvider)
         .fetchBeforeAdd(task('https://youtu.be/$id'), server);
 
-    expect(server.captionsAsked, ['$watch en', '$watch es-orig']);
+    expect(server.captionsAsked, ['$watch en']);
     final store = await c.read(transcriptStoreProvider.future);
-    expect(
-      (await store.read(watch, 'es'))!.segments.single.text,
-      'los elefantes',
-    );
+    expect(await store.read(watch, 'es'), isNull);
   });
 
   test('in Arabic, Arabic and English whatever is spoken', () async {
-    final c = await container(spoken: 'es');
+    final c = await container();
     await c
         .read(transcriptsServiceProvider)
         .fetchBeforeAdd(task('https://youtu.be/$id'), server);

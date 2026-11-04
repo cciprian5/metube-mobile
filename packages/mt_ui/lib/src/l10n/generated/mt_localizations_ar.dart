@@ -2383,6 +2383,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get quality1080 => 'حتى 1080p';
 
   @override
+  String get quality360 => 'حتى 360p';
+
+  @override
   String get quality480 => 'حتى 480p';
 
   @override
@@ -2711,6 +2714,10 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String get serverSearchHint =>
+      'يبحث عن MeTube في شبكة Wi‑Fi التي يتصل بها هذا الجوال، حين تنقر فقط.';
+
+  @override
   String get serverStatusChecking => 'جارٍ فحص الاتصال…';
 
   @override
@@ -2844,6 +2851,10 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get share => 'مشاركة';
+
+  @override
+  String get shareGoesOn =>
+      'التجهيز مستمر في الخلفية، وتُفتح قائمة المشاركة حين يجهز. تقدّمه في التنزيلات.';
 
   @override
   String get shareLargeBody =>

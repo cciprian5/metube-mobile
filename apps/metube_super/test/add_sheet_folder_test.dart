@@ -151,6 +151,8 @@ void main() {
   ) async {
     await open(tester, 'https://www.instagram.com/reel/DQabc123/');
     expect(find.text('Up to 720p'), findsOneWidget);
+    // 360 is Lite's alone.
+    expect(find.text('Up to 360p'), findsNothing);
   });
 
   testWidgets('sound alone offers no heights', (tester) async {

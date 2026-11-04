@@ -81,7 +81,7 @@ void main() {
     await tester.pumpWidget(
       host(
         PlayingTranscriptPeek(
-          transcripts: [both.first],
+          transcripts: [both.last],
           chosen: ValueNotifier(null),
           position: Stream.value(Duration.zero),
           onOpen: () {},
@@ -129,10 +129,25 @@ void main() {
       preferredTranscript(both, chosen: null, interface: 'en')!.language,
       'en',
     );
+    // English is every reader's second language (owner's decision
+    // 2026-11-04); it was the order kept before.
     expect(
       preferredTranscript(both, chosen: 'fr', interface: 'de')!.language,
-      'ar',
+      'en',
     );
     expect(nextLanguage(both, 'en'), 'ar');
+  });
+
+  test('**the guard**: another language alone is never shown unasked', () {
+    final spanish = [said('es', 'Así copiamos las instantáneas')];
+    expect(preferredTranscript(spanish, chosen: null, interface: 'en'), isNull);
+    expect(
+      preferredTranscript([both.first], chosen: null, interface: 'en'),
+      isNull,
+    );
+    expect(
+      preferredTranscript(spanish, chosen: 'es', interface: 'en')!.language,
+      'es',
+    );
   });
 }

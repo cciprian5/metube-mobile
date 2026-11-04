@@ -95,6 +95,10 @@ class DownloadFields extends ConsumerWidget {
                     label: l10n.quality480,
                   ),
                   DropdownMenuEntry(
+                    value: Quality.q360,
+                    label: l10n.quality360,
+                  ),
+                  DropdownMenuEntry(
                     value: Quality.audio,
                     label: l10n.audioOnly,
                   ),

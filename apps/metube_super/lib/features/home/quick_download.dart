@@ -13,6 +13,7 @@ String qualityLabel(MTLocalizations l10n, Quality quality) => switch (quality) {
   Quality.q1080 => l10n.quality1080,
   Quality.q720 => l10n.quality720,
   Quality.q480 => l10n.quality480,
+  Quality.q360 => l10n.quality360,
   Quality.audio => l10n.audioOnly,
 };
 

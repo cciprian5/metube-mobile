@@ -13,6 +13,16 @@ void main() {
 
     // The owner's decision of 2026-11-04: outside YouTube a height is sent as a
     // ceiling, and the engine falls back to best when the site has none.
+    test('360 is a height like the others, and none for sound alone', () {
+      expect(Quality.q360.isNumeric, isTrue);
+      expect(Quality.q360.applyRule(tiktok), Quality.q360);
+      expect(
+        Quality.q360.applyRule('https://soundcloud.com/a/b'),
+        Quality.best,
+      );
+      expect(Quality.fromWire('360'), Quality.q360);
+    });
+
     test('720 and 480 on TikTok are kept', () {
       expect(Quality.q720.applyRule(tiktok), Quality.q720);
       expect(Quality.q480.applyRule(tiktok), Quality.q480);

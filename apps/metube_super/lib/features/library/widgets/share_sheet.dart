@@ -52,12 +52,22 @@ Future<void> shareClip(
   }
   if (_sheetOpen || !navigator.mounted) return;
   _sheetOpen = true;
+  final l10n = navigator.context.mtl;
+  final box = ProviderScope.containerOf(navigator.context, listen: false);
   unawaited(
     showMTSheet<void>(
       context: navigator.context,
       useRootNavigator: true,
       builder: (_) => const ShareSheet(),
-    ).whenComplete(() => _sheetOpen = false),
+    ).whenComplete(() {
+      _sheetOpen = false;
+      // Closed by a tap outside while the copy goes on (field report
+      // 2026-11-04): nothing else on screen said it was still running.
+      if (box.read(shareFlowProvider)?.phase == SharePhase.pulling &&
+          navigator.mounted) {
+        showMTSnack(navigator.context, l10n.shareGoesOn);
+      }
+    }),
   );
 }
 

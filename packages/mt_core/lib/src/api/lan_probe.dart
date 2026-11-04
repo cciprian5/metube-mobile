@@ -39,7 +39,7 @@ class LanProbe {
     Future<LanHit?> Function(String url, Duration timeout)? identify,
     this.parallel = 32,
     this.timeout = const Duration(milliseconds: 600),
-  }) : _adapters = adapters ?? _systemAdapters,
+  }) : _adapters = adapters ?? systemAdapters,
        _connect = connect ?? _tcpConnect,
        _identify = identify ?? _identifyMeTube;
 
@@ -110,7 +110,9 @@ class LanProbe {
     yield* hits.stream;
   }
 
-  static Future<List<LanAdapter>> _systemAdapters() async => [
+  /// This machine's adapters, as the operating system lists them; a
+  /// caller may narrow them before handing them to [LanProbe.new].
+  static Future<List<LanAdapter>> systemAdapters() async => [
     for (final adapter in await NetworkInterface.list(
       type: InternetAddressType.IPv4,
     ))

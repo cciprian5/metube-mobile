@@ -124,6 +124,7 @@ class _Head extends ConsumerWidget {
         Quality.q1080 => l.quality1080,
         Quality.q720 => l.quality720,
         Quality.q480 => l.quality480,
+        Quality.q360 => l.quality360,
         Quality.audio => l.audioOnly,
         null => wire,
       },

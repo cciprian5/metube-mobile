@@ -9,6 +9,7 @@ import '../library/library_providers.dart';
 import '../library/widgets/item_details_sheet.dart';
 import '../player/playback_providers.dart';
 import '../transcripts/subtitles.dart';
+import '../transcripts/transcript_language.dart';
 import '../transcripts/transcript_openers.dart';
 import '../transcripts/transcript_peek.dart';
 import '../transcripts/transcripts_state.dart';
@@ -47,10 +48,18 @@ class AudioScreen extends ConsumerWidget {
       // transcript button above stands in for it everywhere else.
       peek: (item) {
         final all = transcripts?.transcriptsFor(item.canonicalUrl) ?? [];
-        if (!all.any((t) => !t.isEmpty)) return null;
+        final chosen = ref.read(subtitlePrefsProvider).language;
+        // Only another language kept: the transcript button offers it,
+        // the peek does not show it unasked.
+        final shown = preferredTranscript(
+          all,
+          chosen: chosen.value,
+          interface: Localizations.localeOf(context).languageCode,
+        );
+        if (shown == null) return null;
         return PlayingTranscriptPeek(
           transcripts: all,
-          chosen: ref.read(subtitlePrefsProvider).language,
+          chosen: chosen,
           position: handler.positionStream,
           onOpen: () => showPlayingTranscript(context, handler, item),
         );

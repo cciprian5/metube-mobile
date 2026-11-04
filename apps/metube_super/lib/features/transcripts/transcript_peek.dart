@@ -165,7 +165,8 @@ class PlayingTranscriptPeek extends StatelessWidget {
           transcripts,
           chosen: code,
           interface: interface,
-        )!;
+        );
+        if (shown == null) return const SizedBox.shrink();
         return TranscriptPeek(
           segments: shown.segments,
           position: position,

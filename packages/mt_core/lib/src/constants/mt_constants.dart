@@ -85,6 +85,7 @@ abstract final class MTConstants {
     '1080',
     '720',
     '480',
+    '360',
     'audio',
   ];
 

@@ -6,6 +6,10 @@ enum Quality {
   q1080('1080'),
   q720('720'),
   q480('480'),
+
+  /// Offered by Lite alone, to keep a family phone's storage small; the
+  /// other apps never list it.
+  q360('360'),
   audio('audio');
 
   const Quality(this.wire);
@@ -14,7 +18,10 @@ enum Quality {
   final String wire;
 
   bool get isNumeric =>
-      this == Quality.q1080 || this == Quality.q720 || this == Quality.q480;
+      this == Quality.q1080 ||
+      this == Quality.q720 ||
+      this == Quality.q480 ||
+      this == Quality.q360;
 
   /// **The platform rule:** a numeric quality is a height ceiling, sent to
   /// every video platform; an audio-only one gets `best`. Outside YouTube a

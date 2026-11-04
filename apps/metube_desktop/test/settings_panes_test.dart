@@ -154,7 +154,7 @@ void main() {
           initialDefaultQualityProvider.overrideWithValue(Quality.q1080),
         ],
       );
-      expect(find.text('1080p'), findsOneWidget);
+      expect(find.text('Up to 1080p'), findsOneWidget);
     });
   });
 

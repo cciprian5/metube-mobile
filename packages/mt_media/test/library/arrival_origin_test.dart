@@ -201,4 +201,23 @@ void main() {
       expect(await sends().all(), {'b'});
     });
   });
+
+  // An X or Reddit post now has a preview, with a title and no author. Read
+  // as an author, its blank name made a clip from a followed X account
+  // "not followed".
+  test(
+    '**the guard**: a preview naming no author is no author at all',
+    () async {
+      final lookup = clipAuthorFrom(
+        ClipPreviewResolver(
+          httpGet: (_) async =>
+              '<meta property="og:description" content="A clip"/>',
+        ),
+      );
+      expect(
+        await lookup('https://x.com/NASA/status/2039473910987534599'),
+        isNull,
+      );
+    },
+  );
 }

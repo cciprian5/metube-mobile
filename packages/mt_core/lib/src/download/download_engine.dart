@@ -310,9 +310,11 @@ class DownloadEngine {
     }
     // 2) Add, then poll until completion or an immediate error.
     final done = await _addAndPoll(taskId, task, resolved);
-    // The add may have retried at another quality; build on what it left.
+    // The add may have retried at another quality; only that is taken from
+    // it, so the rest of the update stays what it always was.
     task = _emit(
-      _tasks[taskId]!.copyWith(
+      task.copyWith(
+        quality: _tasks[taskId]!.quality,
         canonicalUrl: done.canonicalUrl,
         serverFilename: done.serverPath,
         title: done.title,

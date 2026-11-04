@@ -63,24 +63,27 @@ void main() {
         .timeout(const Duration(seconds: 5));
   }
 
-  test('**the guard**: 720 with no such format on TikTok arrives at best', () async {
-    final api = FakeApi(
-      historyScript: [
-        historyWith(),
-        historyWith(done: [failed(tiktok)]),
-        // The retry reads again before its add, the failure still there.
-        historyWith(done: [failed(tiktok)]),
-        // While the retry runs, the old failure stays in the done list:
-        // it must not fail the new attempt.
-        historyWith(done: [failed(tiktok)], queue: [running(tiktok)]),
-        historyWith(done: [finished(tiktok)]),
-      ],
-    );
-    final result = await run(api, tiktok, Quality.q720);
-    expect(result.phase, TaskPhase.completed);
-    expect(result.quality, Quality.best);
-    expect(api.adds, [(tiktok, Quality.q720), (tiktok, Quality.best)]);
-  });
+  test(
+    '**the guard**: 720 with no such format on TikTok arrives at best',
+    () async {
+      final api = FakeApi(
+        historyScript: [
+          historyWith(),
+          historyWith(done: [failed(tiktok)]),
+          // The retry reads again before its add, the failure still there.
+          historyWith(done: [failed(tiktok)]),
+          // While the retry runs, the old failure stays in the done list:
+          // it must not fail the new attempt.
+          historyWith(done: [failed(tiktok)], queue: [running(tiktok)]),
+          historyWith(done: [finished(tiktok)]),
+        ],
+      );
+      final result = await run(api, tiktok, Quality.q720);
+      expect(result.phase, TaskPhase.completed);
+      expect(result.quality, Quality.best);
+      expect(api.adds, [(tiktok, Quality.q720), (tiktok, Quality.best)]);
+    },
+  );
 
   test('YouTube keeps its refusal: no retry', () async {
     final api = FakeApi(

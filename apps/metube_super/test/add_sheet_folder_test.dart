@@ -144,6 +144,20 @@ void main() {
     expect(find.textContaining('jawed'), findsOneWidget);
   });
 
+  // The owner's decision of 2026-11-04: a height is a ceiling on every video
+  // site, and the engine falls back to best where the site has none.
+  testWidgets('**the guard**: another video site offers the heights', (
+    tester,
+  ) async {
+    await open(tester, 'https://www.instagram.com/reel/DQabc123/');
+    expect(find.text('Up to 720p'), findsOneWidget);
+  });
+
+  testWidgets('sound alone offers no heights', (tester) async {
+    await open(tester, 'https://soundcloud.com/artist/track');
+    expect(find.text('Up to 720p'), findsNothing);
+  });
+
   testWidgets('the sheet with its folder row holds on every device', (
     tester,
   ) async {

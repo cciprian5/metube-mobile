@@ -115,7 +115,8 @@ Future<SortedArrivals<T>> sortArrivals<T>(
 /// clip stays "unknown" rather than "not followed".
 ClipAuthorLookup clipAuthorFrom(ClipPreviewResolver resolver) => (url) async {
   final preview = await resolver.resolve(url);
-  return preview == null || (preview.author == null && preview.authorUrl == null)
+  return preview == null ||
+          (preview.author == null && preview.authorUrl == null)
       ? null
       : (name: preview.author, url: preview.authorUrl);
 };

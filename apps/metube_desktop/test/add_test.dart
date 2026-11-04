@@ -154,8 +154,8 @@ void main() {
     final h = await open(tester);
     await openDialog(tester, _yt);
     expect(find.text('Homelab Hour - Ep. 12'), findsOneWidget);
-    expect(find.text('1080p'), findsOneWidget);
-    await tester.tap(find.text('720p'));
+    expect(find.text('Up to 1080p'), findsOneWidget);
+    await tester.tap(find.text('Up to 720p'));
     await tester.pump();
     await tester.tap(find.widgetWithText(FilledButton, 'Start download'));
     await tester.pumpAndSettle();
@@ -167,12 +167,20 @@ void main() {
     expect(sent.isBatchMember, isFalse);
   });
 
-  testWidgets('another site offers no numbers, and audio is audio', (
+  // The owner's decision of 2026-11-04: a height is a ceiling on every video
+  // site, and the engine falls back to best where the site has none.
+  testWidgets('sound alone offers no heights', (tester) async {
+    await open(tester);
+    await openDialog(tester, 'https://soundcloud.com/artist/track');
+    expect(find.text('Up to 1080p'), findsNothing);
+  });
+
+  testWidgets('another video site offers the heights, and audio is audio', (
     tester,
   ) async {
     final h = await open(tester);
     await openDialog(tester, _insta);
-    expect(find.text('1080p'), findsNothing);
+    expect(find.text('Up to 1080p'), findsOneWidget);
     // The transcript is YouTube's alone.
     expect(find.text('Fetch its transcript first'), findsNothing);
     await tester.tap(find.text('Audio').last);

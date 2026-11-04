@@ -331,9 +331,7 @@ class _QualityRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Rule 2: no heights for sound alone (a SoundCloud set).
-    final options = heights
-        ? Quality.values
-        : [Quality.best, Quality.audio];
+    final options = heights ? Quality.values : [Quality.best, Quality.audio];
     return SizedBox(
       height: 46,
       child: ListView(

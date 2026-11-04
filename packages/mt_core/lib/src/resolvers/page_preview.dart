@@ -143,7 +143,9 @@ abstract final class PagePreview {
       'gt' => '>',
       'quot' => '"',
       'apos' || '#39' => "'",
-      final n when n.startsWith('#x') => _char(int.tryParse(n.substring(2), radix: 16)),
+      final n when n.startsWith('#x') => _char(
+        int.tryParse(n.substring(2), radix: 16),
+      ),
       final n => _char(int.tryParse(n.substring(1))),
     },
   );

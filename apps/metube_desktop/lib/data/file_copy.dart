@@ -20,6 +20,12 @@ final freeBytesProvider = Provider<int? Function(String folder)>(
       (_) => null,
 );
 
+/// The pulls made only to put a file on the clipboard. Their own notice
+/// says it is ready to paste, so the window's "saved" notice and opening
+/// the folder are left out for them: the user asked to paste, not to see
+/// Explorer.
+final pastePullsProvider = Provider<Set<String>>((ref) => <String>{});
+
 /// What copying a clip's file takes.
 sealed class FileCopyPlan {
   const FileCopyPlan();

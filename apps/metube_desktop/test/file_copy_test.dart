@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_desktop/data/file_copy.dart';
 import 'package:metube_desktop/data/folders_data.dart';
 import 'package:metube_desktop/data/local_copies.dart';
+import 'package:metube_desktop/data/notices.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 
@@ -33,6 +34,14 @@ class _Folders extends NoFolders {
 
   @override
   Future<String?> videos() async => downloadsPath;
+}
+
+/// Windows' notices, kept to be read.
+class _Notices implements NoticePort {
+  final shown = <EmberNotice>[];
+
+  @override
+  Future<void> show(EmberNotice notice) async => shown.add(notice);
 }
 
 /// **Copying a clip's file** (owner's request 2026-11-04): the computer's
@@ -148,6 +157,9 @@ void main() {
     setUp(() => root = Directory.systemTemp.createTempSync('ember_copy_'));
     tearDown(() => root.deleteSync(recursive: true));
 
+    final notices = _Notices();
+    setUp(notices.shown.clear);
+
     Future<({ShellHarness h, List<List<String>> pasted})> open(
       WidgetTester tester,
       LibraryItem item,
@@ -174,6 +186,9 @@ void main() {
           transferProvider.overrideWithValue(
             (api) => Transfer(api: api, retries: 1, backoff: const []),
           ),
+          // Away from the window, where a finished download is announced.
+          noticePortProvider.overrideWithValue(notices),
+          windowInFrontProvider.overrideWithValue(() async => false),
           filesToClipboardProvider.overrideWithValue((paths) {
             pasted.add(paths);
             return true;
@@ -217,6 +232,8 @@ void main() {
       ]);
       expect(File(pasted.single.single).readAsBytesSync(), [1, 2, 3]);
       expect(find.textContaining('Ready to paste: Night Drive.mp4'), findsOne);
+      // Its own notice says it all: no "saved" from Windows as well.
+      expect(notices.shown, isEmpty);
     });
 
     testWidgets('a copy on this computer goes on the clipboard at once', (

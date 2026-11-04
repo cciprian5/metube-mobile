@@ -10,6 +10,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../data/channels_data.dart';
 import '../../data/choices_data.dart';
 import '../../data/downloads_data.dart';
+import '../../data/file_copy.dart';
 import '../../data/folders_data.dart';
 import '../../data/library_data.dart';
 import '../../data/local_copies.dart';
@@ -85,7 +86,10 @@ class _NoticesWiringState extends ConsumerState<NoticesWiring> {
     _copyPhases
       ..clear()
       ..addAll({for (final copy in copies) copy.id: copy.phase});
+    final forPaste = ref.read(pastePullsProvider);
     for (final copy in ended) {
+      // Its own "ready to paste" says what happened.
+      if (forPaste.contains(copy.id)) continue;
       unawaited(_show(_forCopy(copy)));
       // A file the user downloaded, not an offline copy the app keeps.
       if (copy.phase == CopyPhase.done &&

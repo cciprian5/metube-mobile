@@ -10,6 +10,10 @@ void runLab(List<String> args) {
   runLabHover(labHoverFrom(args));
   runLabKeys(labKeysFrom(args));
   runLabTaps(labTapsFrom(args));
+  runLabTaps(
+    labTapsFrom(args, flag: '--lab-rtap='),
+    buttons: kSecondaryMouseButton,
+  );
   runLabScrolls(labScrollsFrom(args));
 }
 
@@ -20,12 +24,14 @@ typedef LabTap = (Offset, Duration);
 /// start: **debug builds only**, so a button with no key (theater) can be
 /// pressed in the real window without the user's own mouse. Empty outside
 /// a debug build.
-List<LabTap> labTapsFrom(List<String> args) {
+///
+/// `--lab-rtap=` is the same with the right button, for a context menu.
+List<LabTap> labTapsFrom(List<String> args, {String flag = '--lab-tap='}) {
   if (!kDebugMode) return const [];
   for (final a in args) {
-    if (!a.startsWith('--lab-tap=')) continue;
+    if (!a.startsWith(flag)) continue;
     return [
-      for (final tap in a.substring(10).split(';'))
+      for (final tap in a.substring(flag.length).split(';'))
         if (tap.split('@') case [final point, final at])
           if (point.split(',') case [final x, final y])
             if ((double.tryParse(x), double.tryParse(y), int.tryParse(at))
@@ -38,8 +44,8 @@ List<LabTap> labTapsFrom(List<String> args) {
 
 /// Clicks each of [taps] at its time with a pretend mouse of its own, so
 /// the real pointer stays where the user left it.
-void runLabTaps(List<LabTap> taps) {
-  const device = 9002;
+void runLabTaps(List<LabTap> taps, {int buttons = kPrimaryMouseButton}) {
+  final device = buttons == kPrimaryMouseButton ? 9002 : 9003;
   final binding = GestureBinding.instance;
   for (final (i, (point, at)) in taps.indexed) {
     Timer(at, () {
@@ -65,7 +71,7 @@ void runLabTaps(List<LabTap> taps) {
             kind: PointerDeviceKind.mouse,
             device: device,
             position: point,
-            buttons: kPrimaryMouseButton,
+            buttons: buttons,
           ),
         )
         ..handlePointerEvent(

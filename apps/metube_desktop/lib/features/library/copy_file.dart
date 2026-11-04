@@ -92,6 +92,7 @@ Future<void> copyFileOf(BuildContext context, LibraryItem item) async {
         into,
       )?.id;
       if (id == null) return;
+      container.read(pastePullsProvider).add(id);
       say(l.desktopCopyFilePreparing);
       late final ProviderSubscription<List<LocalCopy>> watch;
       watch = container.listen(localCopiesProvider, (_, next) {

@@ -106,5 +106,7 @@ base class ArtworkIndex extends UrlKeyedIndex<String> {
 /// the place of the official cover. A kept one may.
 final class KeptCoverIndex extends ArtworkIndex {
   KeptCoverIndex({required super.store, required super.mutex})
-    : super._under('kept_covers');
+    : super._under(keptKey);
+
+  static const keptKey = 'kept_covers';
 }

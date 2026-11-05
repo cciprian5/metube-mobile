@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../constants/mt_constants.dart';
 import '../download/pending_downloads.dart';
 import '../download/trashcan_probe.dart';
+import '../storage/artwork_index.dart';
 import '../storage/key_value_store.dart';
 import '../storage/secret_store.dart';
 import '../update/update_prefs.dart';
@@ -48,8 +49,11 @@ class BackupService {
   /// backup to a server it was never measured on. Which version's "what's
   /// new" this install has seen is about the installed app: a restore from
   /// an older backup would show a sheet already read, or show one on a
-  /// fresh install.
+  /// fresh install. The covers kept as files are paths on this device:
+  /// restored elsewhere they point at nothing, and the clips they stand
+  /// for show no cover at all instead of fetching theirs again.
   static const _deviceOnlyKeys = {
+    KeptCoverIndex.keptKey,
     PendingDownloadsStore.prefsKey,
     TrashcanProbe.prefsKey,
     UpdatePrefs.lastSeenVersionKey,

@@ -25,9 +25,9 @@ English, for phones, tablets and Windows, and free software under the GPL.
 <p align="center"><sub>MeTube Super — the merged library, a video streaming with its subtitles and up-next queue, the audio player at night, and playlists. Every title and cover here is invented.</sub></p>
 
 <p align="center">
-  <img src="docs/screenshots/desktop.jpg" alt="MeTube Ember on Windows: a video playing with its transcript following beside it, and the library in Arabic">
+  <img src="docs/screenshots/desktop.jpg" alt="MeTube Ember on Windows: a video playing with its transcript following beside it, and the library as a grid of covers">
 </p>
-<p align="center"><sub>MeTube Ember, new in 2.7.0 — the same library on Windows: the transcript follows the video and a click jumps to any line; on the right, the library in Arabic.</sub></p>
+<p align="center"><sub>MeTube Ember, new in 2.7.0 — the same library on Windows: the transcript follows the video and a click jumps to any line; on the right, the library as a grid.</sub></p>
 
 <p align="center">
   <img src="docs/screenshots/lite-share.gif" width="300" alt="MeTube Lite: a link is shared to the app, the server downloads it, the phone pulls the file and the server is cleaned up">

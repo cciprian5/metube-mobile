@@ -23,9 +23,9 @@
 <p align="center"><sub>MeTube Super — المكتبة الموحَّدة، وبثّ فيديو مع ترجمته وقائمة «التالي»، ومشغل الصوت ليلاً، وقوائم التشغيل. كل عنوان وغلاف هنا مخترَع.</sub></p>
 
 <p align="center">
-  <img src="docs/screenshots/desktop.jpg" alt="MeTube Ember على ويندوز: فيديو يُعرض والنص يتبعه بجانبه، والمكتبة بالعربية">
+  <img src="docs/screenshots/desktop.jpg" alt="MeTube Ember على ويندوز: فيديو يُعرض والنص يتبعه بجانبه، والمكتبة شبكةً من الأغلفة">
 </p>
-<p align="center"><sub>MeTube Ember، الجديد في 2.7.0 — المكتبة نفسها على ويندوز: النص يتبع الفيديو ونقرة تنقلك إلى أي سطر، وعلى اليمين المكتبة بالعربية.</sub></p>
+<p align="center"><sub>MeTube Ember، الجديد في 2.7.0 — المكتبة نفسها على ويندوز: النص يتبع الفيديو ونقرة تنقلك إلى أي سطر، وعلى اليمين المكتبة شبكةً من الأغلفة.</sub></p>
 
 <p align="center">
   <img src="docs/screenshots/lite-share.gif" width="300" alt="MeTube Lite: رابط يُشارَك إلى التطبيق، فينزّله السيرفر، ويسحبه الهاتف، ثم يُحذف من السيرفر">

@@ -151,7 +151,8 @@ MeTube Super:
   open it too.
 - **Sync with your phone**, optional and off until you choose a folder: tags,
   favourites, playlists, resume positions and transcripts travel between
-  Super and Ember through a folder a program of your choice keeps in sync.
+  Super and Ember through a folder a program of your choice keeps in sync
+  ([how to set it up](docs/SYNC-SETUP.md)).
 - Installs for your user only, with **no administrator rights**, finds your
   server on the home network when you set it up, sits by the clock when
   closed if you want it to, and updates itself.
@@ -213,7 +214,8 @@ MeTube Super:
 - Batch operations, including tagging many items at once.
 - **Sync with the computer** (optional): mirrors your tags, favourites,
   playlists, positions and transcripts with MeTube Ember through a folder you
-  choose, and says so when a device has gone quiet for days.
+  choose, and says so when a device has gone quiet for days
+  ([how to set it up](docs/SYNC-SETUP.md)).
 - **A local address and external ones**, tried again on every network change
   so the phone uses the fast path at home and the tunnel elsewhere, with a
   live status dot for each and a server card in settings.
@@ -379,6 +381,7 @@ Translations are very welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | The map of the repository: the packages, the rules that hold them together, where a feature belongs, how to run the tests. English first, with an Arabic version below it. |
 | [docs/SERVER-API.md](docs/SERVER-API.md) | The contract with the MeTube server: every request and response, the local storage schema, and the traps that each cost a debugging session. Read it before touching networking or storage code. |
 | [docs/SERVER-SETUP.md](docs/SERVER-SETUP.md) | How to configure the server, the four settings whose absence looks like an app defect, and how to reach it safely from outside. |
+| [docs/SYNC-SETUP.md](docs/SYNC-SETUP.md) | Sync between MeTube Super and MeTube Ember, step by step: at home with Syncthing, or through a cloud drive. |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | What a change has to satisfy before it lands. |
 | [CHANGELOG.md](CHANGELOG.md) | What changed, release by release. |
 | [SECURITY.md](SECURITY.md) | Reporting a vulnerability. |

@@ -1,9 +1,9 @@
 /// Shared MTF playback: the unified item, the golden source rule, the play
 /// queue, the background audio handler, the players and their widgets, and
-/// the position and state stores. Behaviour follows `01-PRD.md` and
-/// `02-TRD.md` §2.2.
+/// the position and state stores.
 library;
 
+export 'src/covers/cached_cover_fetcher.dart';
 export 'src/models/media_quality.dart';
 export 'src/models/play_mode.dart';
 export 'src/models/playback_source.dart';
@@ -12,6 +12,8 @@ export 'src/playback/audio_handler.dart';
 export 'src/playback/just_audio_port.dart';
 export 'src/playback/media_item_mapper.dart';
 export 'src/playback/media_player_port.dart';
+export 'src/playback/mt_player.dart';
+export 'src/playback/mt_session_player.dart';
 export 'src/playback/playback_queue.dart';
 export 'src/screens/mt_audio_screen.dart';
 export 'src/screens/mt_now_playing_panel.dart';
@@ -20,9 +22,11 @@ export 'src/screens/mt_video_screen.dart';
 export 'src/screens/video_info_sheet.dart';
 export 'src/video/mt_captions.dart';
 export 'src/video/mt_orientation.dart';
+export 'src/video/mt_picture_in_picture.dart';
 export 'src/video/mt_video_controls.dart';
 export 'src/video/mt_video_fullscreen.dart';
 export 'src/video/mt_video_session.dart';
+export 'src/video/video_center_controls.dart';
 export 'src/video/video_control_bars.dart';
 export 'src/video/video_side_panel.dart';
 export 'src/stores/audio_state_store.dart';
@@ -36,6 +40,9 @@ export 'src/video/shorts_lane.dart';
 export 'src/widgets/media_time.dart';
 export 'src/widgets/mt_audio_parts.dart';
 export 'src/widgets/mt_breathing_glow.dart';
+export 'src/widgets/mt_chapter_label.dart';
+export 'src/widgets/mt_chapter_track.dart';
+export 'src/widgets/mt_chapters.dart';
 export 'src/widgets/mt_drag_to_dismiss.dart';
 export 'src/widgets/mt_extra_button.dart';
 export 'src/widgets/mt_mini_player.dart';

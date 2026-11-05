@@ -5,7 +5,7 @@ import 'package:mt_ui/mt_ui.dart';
 /// The name of a new folder, nested when typed with a slash. It is made on
 /// the server by the first download saved into it.
 Future<String?> askNewFolder(BuildContext context, String parent) async {
-  final typed = await showDialog<String>(
+  final typed = await showMTDialog<String>(
     context: context,
     builder: (_) => NewFolderDialog(parent: parent),
   );
@@ -71,88 +71,17 @@ class FolderNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
-    return Container(
-      margin: const EdgeInsets.symmetric(
+    // Told by its words in the error colour alone, not a box and a bar as
+    // well.
+    return Padding(
+      padding: const EdgeInsets.symmetric(
         horizontal: MTSpace.pagePad,
         vertical: MTSpace.xs,
       ),
-      padding: const EdgeInsets.all(MTSpace.sm),
-      decoration: BoxDecoration(
-        color: p.cardAlt,
-        border: BorderDirectional(start: BorderSide(color: p.err, width: 3)),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: p.err),
       ),
-      child: Text(text, style: Theme.of(context).textTheme.bodySmall),
-    );
-  }
-}
-
-/// **Three pulses as the picker opens, then still**: enough to draw the eye
-/// to the help, not a light that keeps blinking at someone who has read it.
-/// Nothing moves when the system asks for less motion.
-class PulsingHelp extends StatefulWidget {
-  const PulsingHelp({super.key, required this.child});
-
-  static const pulses = 3;
-
-  final Widget child;
-
-  @override
-  State<PulsingHelp> createState() => _PulsingHelpState();
-}
-
-class _PulsingHelpState extends State<PulsingHelp>
-    with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(
-    vsync: this,
-    duration: MTMotion.slow,
-  );
-  var _left = PulsingHelp.pulses;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addStatusListener((status) {
-      if (status != AnimationStatus.completed || !mounted) return;
-      _left--;
-      if (_left > 0) _controller.forward(from: 0);
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_left == PulsingHelp.pulses &&
-        !_controller.isAnimating &&
-        !MediaQuery.disableAnimationsOf(context)) {
-      _controller.forward(from: 0);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final accent = MTThemeX.of(context).palette.accent;
-    return AnimatedBuilder(
-      animation: _controller,
-      child: widget.child,
-      builder: (context, child) {
-        // Up and back within each pulse, as a breath rather than a flash.
-        final t = Curves.easeInOut.transform(
-          1 - (2 * _controller.value - 1).abs(),
-        );
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: accent.withValues(alpha: 0.18 * t),
-          ),
-          child: Transform.scale(scale: 1 + 0.18 * t, child: child),
-        );
-      },
     );
   }
 }

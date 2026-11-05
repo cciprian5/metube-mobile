@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'features/batch/batch_offline_saver.dart';
 import 'features/home/handled_links.dart';
@@ -11,6 +12,7 @@ import 'features/settings/auto_backup.dart';
 import 'features/settings/settings_state.dart';
 import 'features/shared/error_report.dart';
 import 'features/shared/stores.dart';
+import 'features/sync/phone_sync.dart';
 import 'features/transcripts/transcripts_state.dart';
 
 /// Riverpod injection (TRD §3.1): a settings change rebuilds the client and
@@ -57,15 +59,33 @@ final tagsIndexProvider = Provider(
   (ref) => TagsIndex(
     store: ref.watch(keyValueStoreProvider),
     mutex: ref.watch(prefsMutexProvider),
+    // Stamped so that a later merge with another device knows which write
+    // is newer; Lite never syncs and passes no clock.
+    clock: DateTime.now,
     // **A single choke point for the automatic backup** (2026-09-04):
     // every tag write, from any screen, requests a backup, so no screen
     // can be forgotten.
-    onChanged: () => unawaited(ref.read(autoBackupProvider).requestBackup()),
+    onChanged: () {
+      unawaited(ref.read(autoBackupProvider).requestBackup());
+      // The sync folder too, when sync is on.
+      ref.read(phoneSyncProvider).nudge();
+    },
   ),
 );
 
 final artworkIndexProvider = Provider(
   (ref) => ArtworkIndex(
+    store: ref.watch(keyValueStoreProvider),
+    mutex: ref.watch(prefsMutexProvider),
+    // The covers the app draws are in filesDir/thumbs; nothing outside
+    // the app's files is deleted with an entry.
+    ownFolder: () async => (await getApplicationSupportDirectory()).path,
+  ),
+);
+
+/// Online covers kept as files on the phone (see CoverKeeper).
+final keptCoverIndexProvider = Provider(
+  (ref) => KeptCoverIndex(
     store: ref.watch(keyValueStoreProvider),
     mutex: ref.watch(prefsMutexProvider),
   ),
@@ -85,6 +105,7 @@ final playlistsStoreProvider = Provider(
   (ref) => PlaylistsStore(
     store: ref.watch(keyValueStoreProvider),
     mutex: ref.watch(prefsMutexProvider),
+    clock: DateTime.now,
     // **A counter that invalidates the playlists cache** when they are
     // written from outside their own screen. Without it, an automatically
     // collected playlist stayed invisible until the app restarted
@@ -92,7 +113,11 @@ final playlistsStoreProvider = Provider(
     // on the emulator 2026-09-03: the file on disk was correct and the
     // screen
     // was empty).
-    onChanged: () => unawaited(ref.read(autoBackupProvider).requestBackup()),
+    onChanged: () {
+      unawaited(ref.read(autoBackupProvider).requestBackup());
+      // The sync folder too, when sync is on.
+      ref.read(phoneSyncProvider).nudge();
+    },
   ),
 );
 
@@ -252,6 +277,7 @@ final playbackPositionsProvider = Provider(
   (ref) => PlaybackPositionStore(
     store: ref.watch(keyValueStoreProvider),
     mutex: ref.watch(prefsMutexProvider),
+    clock: DateTime.now,
   ),
 );
 

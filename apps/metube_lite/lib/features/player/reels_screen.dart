@@ -56,7 +56,6 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.bolt_rounded,
           title: l10n.shortsFilter,
           message: l10n.noPlayableSource,
         ),
@@ -76,7 +75,6 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.bolt_rounded,
           title: l10n.shortsFilter,
           message: l10n.noResultsMessage,
         ),
@@ -109,21 +107,21 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
         final match = _libraryItemOf(item);
         return [
           MTPlayerAction(
-            icon: Icons.info_outline_rounded,
+            icon: MTIcons.info,
             label: l10n.details,
             onTap: () {
               if (match != null) showItemDetailsSheet(context, match);
             },
           ),
           MTPlayerAction(
-            icon: Icons.playlist_add_rounded,
+            icon: MTIcons.queueAdd,
             label: l10n.addTo,
             onTap: () {
               if (match != null) showAddToSheet(context, ref, match);
             },
           ),
           MTPlayerAction(
-            icon: Icons.share_rounded,
+            icon: MTIcons.share,
             label: l10n.share,
             onTap: () => _share(item),
           ),

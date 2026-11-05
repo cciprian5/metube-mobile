@@ -21,9 +21,14 @@ class MainActivity : AudioServiceActivity() {
     private val channel = "com.yasir.metubesuper/permissions"
     private val requestCode = 4301
 
+    // The sync folder, reached through the system picker (see SyncTree).
+    private val syncTree by lazy { SyncTree(this) }
+
     override fun configureFlutterEngine(engine: FlutterEngine) {
         super.configureFlutterEngine(engine)
+        PictureInPicture.register(this, engine.dartExecutor.binaryMessenger)
         UpdateInstaller.register(this, engine)
+        syncTree.register(engine.dartExecutor.binaryMessenger)
         ShareInbox.register(engine.dartExecutor.binaryMessenger)
         MethodChannel(engine.dartExecutor.binaryMessenger, channel)
             .setMethodCallHandler { call, result ->
@@ -95,9 +100,26 @@ class MainActivity : AudioServiceActivity() {
                         result.success(pendingShortcut)
                         pendingShortcut = null
                     }
+                    // Room left where a copy is about to land, asked before a
+                    // pull so a full phone fails at once, not halfway through.
+                    "freeBytes" -> {
+                        val path = call.argument<String>("path")
+                        try {
+                            result.success(android.os.StatFs(path).availableBytes)
+                        } catch (e: IllegalArgumentException) {
+                            result.success(null)
+                        }
+                    }
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    @Deprecated("The activity-result API needs AndroidX's ComponentActivity.")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!syncTree.onResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     /** The pending shortcut name, from the intent action `<pkg>.SHORTCUT_<NAME>`. */
@@ -107,6 +129,22 @@ class MainActivity : AudioServiceActivity() {
         super.onCreate(savedInstanceState)
         captureShortcut(intent)
         ShareInbox.offer(intent, restored = savedInstanceState != null)
+    }
+
+    // Picture in picture (see PictureInPicture): before Android 12 the
+    // activity asks for it as the user leaves; the Dart side learns when the
+    // window moves into a corner or back.
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        PictureInPicture.onUserLeaveHint(this)
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: android.content.res.Configuration,
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        PictureInPicture.onModeChanged(isInPictureInPictureMode)
     }
 
     // With `launchMode="singleTask"` a running app is not recreated, so the

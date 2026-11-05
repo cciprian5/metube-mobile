@@ -31,7 +31,12 @@ class MTSectionHeader extends StatelessWidget {
         MTSpace.sm,
       ),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: x.palette.line)),
+        border: Border(
+          bottom: BorderSide(
+            color: x.palette.line,
+            width: MTThemeX.of(context).hairline,
+          ),
+        ),
       ),
       child: Row(
         // A button has no baseline to sit on, so a header with one centres
@@ -42,10 +47,21 @@ class MTSectionHeader extends StatelessWidget {
         textBaseline: TextBaseline.alphabetic,
         children: [
           Expanded(child: Text(title, style: text.titleMedium)),
+          // The note has half the line at most, so on a narrow phone it
+          // gives way to the title instead of pushing the row past the
+          // edge; within its half it keeps to the end, or it would float
+          // in the middle of a wide line.
           if (trailing != null)
-            Text(
-              trailing!,
-              style: text.bodySmall!.copyWith(color: x.palette.ink3),
+            Flexible(
+              child: Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: Text(
+                  trailing!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.bodySmall!.copyWith(color: x.palette.ink3),
+                ),
+              ),
             ),
           ?action,
         ],

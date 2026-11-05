@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
 import 'package:metube_super/features/library/artwork_view.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/library/library_providers.dart';
 import 'package:metube_super/features/library/widgets/library_chips.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
+
+import 'wahaj_finder.dart';
 
 /// **The fourth view mode and the platform filter** (requested 2026-09-08).
 ///
@@ -162,7 +164,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('YouTube'), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.close_rounded));
+      await tester.tap(byWahaj(MTIcons.close));
       await tester.pumpAndSettle();
       expect(container.read(libraryViewProvider).platform, isNull);
       expect(find.byType(InputChip), findsNothing);

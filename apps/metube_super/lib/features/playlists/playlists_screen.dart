@@ -3,19 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/artwork_view.dart';
 import '../library/library_providers.dart';
-import '../player/playback_providers.dart';
 import '../shared/error_report.dart';
 import '../tags/manage_tags_sheet.dart';
 import 'playlist_dialogs.dart';
 import 'playlists_providers.dart';
+import '../subscriptions/widgets/your_channels.dart';
 import 'widgets/playlist_cards.dart';
+import 'widgets/smart_list_rows.dart';
 
-/// The playlists tab: pinned smart playlists, then your playlists, then
-/// your tags.
+/// The playlists tab: the smart playlists, your playlists, your tags,
+/// then the channels you follow.
 class PlaylistsScreen extends ConsumerWidget {
   const PlaylistsScreen({super.key});
 
@@ -33,7 +35,7 @@ class PlaylistsScreen extends ConsumerWidget {
           IconButton(
             tooltip: l10n.createPlaylist,
             onPressed: () => showCreatePlaylistDialog(context, ref),
-            icon: const Icon(Icons.add_rounded),
+            icon: const MTIcon(MTIcons.plus),
           ),
         ],
       ),
@@ -48,20 +50,9 @@ class PlaylistsScreen extends ConsumerWidget {
           children: [
             MTSectionHeader(title: l10n.smartPlaylists),
             const SizedBox(height: MTSpace.sm),
-            Row(
-              children: [
-                for (final list in smart) ...[
-                  if (list != smart.first)
-                    const SizedBox(width: MTSpace.xs + 2),
-                  Expanded(
-                    child: SmartPlaylistCard(
-                      kind: list.kind,
-                      count: list.count,
-                      onTap: () => _playSmart(context, ref, list),
-                    ),
-                  ),
-                ],
-              ],
+            SmartListRows(
+              lists: smart,
+              onPlay: (list) => _playSmart(context, ref, list),
             ),
             const SizedBox(height: MTSpace.xl),
             MTSectionHeader(
@@ -70,9 +61,8 @@ class PlaylistsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: MTSpace.sm),
             playlists.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: MTSpinner()),
               error: (_, _) => MTEmptyState(
-                icon: Icons.error_outline_rounded,
                 title: l10n.errorGeneric(''),
                 message: l10n.tryAgain,
               ),
@@ -89,6 +79,7 @@ class PlaylistsScreen extends ConsumerWidget {
               error: (_, _) => const SizedBox.shrink(),
               data: (counts) => _TagChips(counts: counts),
             ),
+            const YourChannelsSection(),
           ],
         ),
       ),
@@ -226,7 +217,7 @@ class _NewPlaylistTile extends StatelessWidget {
                 color: p.accentSoft,
                 borderRadius: BorderRadius.circular(MTRadius.field - 1),
               ),
-              child: Icon(Icons.add_rounded, size: 17, color: p.accentInk),
+              child: MTIcon(MTIcons.plus, size: 17, color: p.accentInk),
             ),
             const SizedBox(height: MTSpace.xs),
             Text(
@@ -241,24 +232,37 @@ class _NewPlaylistTile extends StatelessWidget {
   }
 }
 
-/// "Your tags" chips with counts; a tap opens the library filtered.
-class _TagChips extends ConsumerWidget {
+/// "Your tags" chips with counts; a tap opens the library filtered. Past
+/// [folded] the rest wait behind a "more" chip, so a full set of tags does
+/// not push the channels off the bottom of the tab.
+class _TagChips extends ConsumerStatefulWidget {
   const _TagChips({required this.counts});
 
   final Map<String, int> counts;
 
+  static const folded = 12;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_TagChips> createState() => _TagChipsState();
+}
+
+class _TagChipsState extends ConsumerState<_TagChips> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.mtl;
+    final counts = widget.counts;
     if (counts.isEmpty) {
       return Text(l10n.noTagsYet, style: Theme.of(context).textTheme.bodySmall);
     }
     final names = counts.keys.toList()..sort();
+    final shown = _open ? names : names.take(_TagChips.folded).toList();
     return Wrap(
       spacing: MTSpace.xs + 1,
       runSpacing: MTSpace.xs + 1,
       children: [
-        for (final tag in names)
+        for (final tag in shown)
           _TagChip(
             label: '# $tag',
             count: counts[tag],
@@ -266,6 +270,12 @@ class _TagChips extends ConsumerWidget {
               ref.read(libraryViewProvider.notifier).setTag(tag);
               context.go('/');
             },
+          ),
+        if (shown.length < names.length)
+          _TagChip(
+            label: l10n.moreChips(names.length - shown.length),
+            manage: true,
+            onTap: () => setState(() => _open = true),
           ),
         _TagChip(
           label: l10n.manageTags,

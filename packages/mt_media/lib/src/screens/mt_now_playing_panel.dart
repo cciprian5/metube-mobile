@@ -75,17 +75,16 @@ class MTNowPlayingPanel extends StatelessWidget {
                         child: Text(
                           l10n.nowPlaying,
                           style: Theme.of(context).textTheme.labelSmall!
-                              .copyWith(color: p.ink3, letterSpacing: 1.6),
+                              .copyWith(
+                                color: p.ink3,
+                                letterSpacing: mtLabelTracking(context, 1.6),
+                              ),
                         ),
                       ),
                       IconButton(
                         onPressed: onCollapse,
                         tooltip: l10n.nowPlayingCollapse,
-                        icon: Icon(
-                          Icons.close_fullscreen_rounded,
-                          size: 20,
-                          color: p.ink2,
-                        ),
+                        icon: MTIcon(MTIcons.collapse, size: 20, color: p.ink2),
                       ),
                     ],
                   ),

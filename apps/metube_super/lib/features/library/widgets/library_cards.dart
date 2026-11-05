@@ -5,12 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart' show mtFormatDuration;
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../../di.dart';
-import '../../home/add_flow.dart';
 import '../artwork_view.dart';
 import '../library_actions.dart';
-import '../library_models.dart';
 import '../library_providers.dart';
 import 'item_actions_sheet.dart';
 
@@ -43,7 +42,6 @@ class LibraryItemCard extends ConsumerWidget {
     final l10n = context.mtl;
     final options = ref.watch(libraryViewProvider);
     final controller = ref.read(libraryViewProvider.notifier);
-    final actions = ref.read(libraryActionsProvider);
     // **Pull progress was being computed and nobody displayed it** (field
     // report 2026-09-02: "no counter appears, it looks unresponsive"),
     // whether from "save to device" or from a share, which pulls a
@@ -62,11 +60,13 @@ class LibraryItemCard extends ConsumerWidget {
             if (item.timestamp != null && columns?.added != true)
               mtTimeAgo(context, item.timestamp!),
           ]);
+    // **One mark, not a mark on every row** (log §4, 2026-10-31): in Super
+    // everything is on the server, so "on the server" said nothing; only a
+    // copy kept on this phone is worth naming.
     final locationLabel = switch (item.location) {
       MTMediaLocation.offline ||
       MTMediaLocation.both => l10n.availabilityOffline,
-      MTMediaLocation.onServer => l10n.filterServer,
-      MTMediaLocation.none => null,
+      MTMediaLocation.onServer || MTMediaLocation.none => null,
     };
     // **Decode at display size, not at original size**: a 1280x720
     // thumbnail
@@ -84,15 +84,6 @@ class LibraryItemCard extends ConsumerWidget {
       decodeWidth: mtDecodeWidth(context, thumbWidth, thumbHeight),
     );
     final platform = platformKindOf(MediaPlatform.detect(item.canonicalUrl));
-
-    Future<void> toggleFavorite() async {
-      final added = await actions.toggleFavorite(item.canonicalUrl);
-      if (!context.mounted) return;
-      showMTSnack(
-        context,
-        added ? l10n.addedToFavorites : l10n.removedFromFavorites,
-      );
-    }
 
     void onTap() => options.selecting
         ? controller.toggleSelected(item.canonicalUrl)
@@ -122,7 +113,6 @@ class LibraryItemCard extends ConsumerWidget {
         audio: item.isAudio,
         selected: options.selection.contains(item.canonicalUrl),
         highlighted: highlighted,
-        onFavoriteToggle: toggleFavorite,
         onTap: onTap,
         onLongPress: onLongPress,
         onMore: onMore,
@@ -142,7 +132,6 @@ class LibraryItemCard extends ConsumerWidget {
         audio: item.isAudio,
         selected: options.selection.contains(item.canonicalUrl),
         highlighted: highlighted,
-        onFavoriteToggle: toggleFavorite,
         onTap: onTap,
         onLongPress: onLongPress,
         onMore: onMore,
@@ -160,7 +149,6 @@ class LibraryItemCard extends ConsumerWidget {
       audio: item.isAudio,
       selected: options.selection.contains(item.canonicalUrl),
       highlighted: highlighted,
-      onFavoriteToggle: toggleFavorite,
       onTap: onTap,
       onLongPress: onLongPress,
       onMore: onMore,

@@ -7,7 +7,6 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../home/add_flow.dart' show platformKindOf;
 import '../artwork_view.dart';
-import '../library_actions.dart';
 import '../library_providers.dart';
 import '../local_item.dart';
 import 'item_actions_sheet.dart';
@@ -41,10 +40,8 @@ class LibraryItemCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.mtl;
     final options = ref.watch(libraryViewProvider);
     final controller = ref.read(libraryViewProvider.notifier);
-    final actions = ref.read(libraryActionsProvider);
     final highlighted = ref.watch(highlightedItemProvider) == item.key;
 
     // **Decode at display size, not at original size**: a 1280x720
@@ -63,15 +60,6 @@ class LibraryItemCard extends ConsumerWidget {
       mtTimeAgo(context, item.modified),
       mtFormatSize(item.sizeBytes),
     ].join(' · ');
-
-    Future<void> toggleFavorite() async {
-      final added = await actions.toggleFavorite(item.key);
-      if (!context.mounted) return;
-      showMTSnack(
-        context,
-        added ? l10n.addedToFavorites : l10n.removedFromFavorites,
-      );
-    }
 
     void onTap() {
       if (options.selecting) {
@@ -108,7 +96,6 @@ class LibraryItemCard extends ConsumerWidget {
         audio: item.isAudio,
         selected: options.selection.contains(item.key),
         highlighted: highlighted,
-        onFavoriteToggle: toggleFavorite,
         onTap: onTap,
         onLongPress: onLongPress,
         onMore: onMore,
@@ -126,7 +113,6 @@ class LibraryItemCard extends ConsumerWidget {
         audio: item.isAudio,
         selected: options.selection.contains(item.key),
         highlighted: highlighted,
-        onFavoriteToggle: toggleFavorite,
         onTap: onTap,
         onLongPress: onLongPress,
         onMore: onMore,
@@ -148,7 +134,6 @@ class LibraryItemCard extends ConsumerWidget {
       audio: item.isAudio,
       selected: options.selection.contains(item.key),
       highlighted: highlighted,
-      onFavoriteToggle: toggleFavorite,
       onTap: onTap,
       onLongPress: onLongPress,
       onMore: onMore,

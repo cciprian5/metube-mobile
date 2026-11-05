@@ -52,11 +52,7 @@ class LibraryServerBanner extends ConsumerWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: MTSpace.xs / 2),
-              child: Icon(
-                Icons.cloud_off_rounded,
-                size: 20,
-                color: p.offlineInk,
-              ),
+              child: MTIcon(MTIcons.cloudOff, size: 20, color: p.offlineInk),
             ),
             const SizedBox(width: MTSpace.sm),
             Expanded(

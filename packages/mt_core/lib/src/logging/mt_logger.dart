@@ -29,7 +29,12 @@ class MTLogger {
   Stream<void> get changes => _changes.stream;
 
   static final RegExp _authPattern = RegExp(
-    r'(?:Basic|Bearer)\s+[A-Za-z0-9+/=._-]{8,}',
+    r'(?:Basic|Bearer)\s+[A-Za-z0-9+/=._-]+',
+    caseSensitive: false,
+  );
+  // A cookie is a password by another name, the whole header with it.
+  static final RegExp _cookiePattern = RegExp(
+    r'((?:Set-)?Cookie\s*:\s*)[^\n]+|CF_Authorization=[^\s;]+',
     caseSensitive: false,
   );
   // The header name and separator are kept so the line still says which
@@ -39,10 +44,15 @@ class MTLogger {
     caseSensitive: false,
   );
   static final RegExp _urlPattern = RegExp(
-    r'https?://[^\s<>"]+',
+    r'(?:https?|content|file)://[^\s<>"]+',
     caseSensitive: false,
   );
-  static final RegExp _filePattern = RegExp(r'/storage/emulated/0/[^\s\]),]+');
+  // A file name has spaces in it, so a path runs to the end of the line or
+  // to a quote or bracket; stopping at the first space left the title.
+  // Android's storage and app folders, and Windows' drive paths.
+  static final RegExp _filePattern = RegExp(
+    r'''(?:/storage/|/data/|/sdcard/|\b[A-Za-z]:\\)[^\n'"\]|)]+''',
+  );
   // A host name has no scheme of its own here: the socket's own words.
   static final RegExp _hostLookupPattern = RegExp(
     r"(host lookup: ')[^']+'",
@@ -121,11 +131,11 @@ class MTLogger {
 
   /// Replaces credentials, URLs, paths and IP addresses with opaque
   /// markers. **Order matters**: authentication before URLs.
-  static String sanitizeForShare(String text) =>
-      _hideAccess(text)
-          .replaceAll(_authPattern, '[AUTH]')
-          .replaceAll(_urlPattern, '[URL]')
-          .replaceAll(_filePattern, '[FILE]')
-          .replaceAllMapped(_hostLookupPattern, (m) => "${m[1]}[HOST]'")
-          .replaceAll(_ipPattern, '[IP]');
+  static String sanitizeForShare(String text) => text
+      .replaceAll(_authPattern, '[AUTH]')
+      .replaceAllMapped(_cookiePattern, (m) => '${m[1] ?? ''}[COOKIE]')
+      .replaceAll(_urlPattern, '[URL]')
+      .replaceAll(_filePattern, '[FILE]')
+      .replaceAllMapped(_hostLookupPattern, (m) => "${m[1]}[HOST]'")
+      .replaceAll(_ipPattern, '[IP]');
 }

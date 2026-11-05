@@ -19,6 +19,8 @@ class TranscriptLines extends StatefulWidget {
     this.following = false,
     this.now,
     this.opening,
+    this.onQuote,
+    this.quote,
   });
 
   final List<TranscriptSegment> segments;
@@ -33,22 +35,15 @@ class TranscriptLines extends StatefulWidget {
   /// Brought into view when the list first shows.
   final int? opening;
 
+  /// A long press on line i starts a quote there; while [quote] is made, a
+  /// tap on a line takes it in instead of playing from it.
+  final void Function(int index, {required bool longPress})? onQuote;
+  final ({int first, int last})? quote;
+
   /// The line being said at [position]: the last one begun by then. Null
   /// before the first.
-  static int? lineAt(List<TranscriptSegment> segments, Duration position) {
-    int? found;
-    var low = 0, high = segments.length - 1;
-    while (low <= high) {
-      final middle = (low + high) >> 1;
-      if (segments[middle].start <= position) {
-        found = middle;
-        low = middle + 1;
-      } else {
-        high = middle - 1;
-      }
-    }
-    return found;
-  }
+  static int? lineAt(List<TranscriptSegment> segments, Duration position) =>
+      segmentAt(segments, position);
 
   @override
   State<TranscriptLines> createState() => TranscriptLinesState();
@@ -127,6 +122,8 @@ class TranscriptLinesState extends State<TranscriptLines> {
           itemCount: widget.segments.length,
           itemBuilder: (context, i) {
             final segment = widget.segments[i];
+            final quote = widget.quote;
+            final onQuote = widget.onQuote;
             return TranscriptMomentRow(
               key: i == _targetIndex ? _target : null,
               start: segment.start,
@@ -134,7 +131,13 @@ class TranscriptLinesState extends State<TranscriptLines> {
               query: widget.query,
               maxLines: null,
               current: widget.following ? i == widget.now : null,
-              onTap: () => widget.onMoment(segment.start),
+              quoted: quote != null && i >= quote.first && i <= quote.last,
+              onTap: quote != null && onQuote != null
+                  ? () => onQuote(i, longPress: false)
+                  : () => widget.onMoment(segment.start),
+              onLongPress: onQuote == null
+                  ? null
+                  : () => onQuote(i, longPress: true),
             );
           },
         ),

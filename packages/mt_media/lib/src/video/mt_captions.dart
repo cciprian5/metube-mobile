@@ -6,8 +6,10 @@ import 'package:mt_ui/mt_ui.dart';
 import 'package:video_player/video_player.dart';
 
 import 'mt_caption_blocks.dart';
+import 'mt_caption_clock.dart';
 
 export 'mt_caption_blocks.dart' show MTCaptionBlock;
+export 'mt_caption_clock.dart';
 
 part 'mt_caption_sentence.dart';
 
@@ -99,14 +101,18 @@ class MTCaptions {
 class MTCaptionsLayer extends StatefulWidget {
   const MTCaptionsLayer({
     super.key,
-    required this.controller,
+    this.controller,
+    this.clock,
     required this.captions,
     required this.lift,
     this.clearCenter = false,
     this.tapToSwitch = false,
   });
 
-  final VideoPlayerController controller;
+  /// The phones' player; or any [clock], as the Windows app's. One of
+  /// the two.
+  final VideoPlayerController? controller;
+  final MTCaptionClock? clock;
   final MTCaptions captions;
 
   /// The room kept free at the bottom, for the controls when they show.
@@ -129,6 +135,7 @@ class MTCaptionsLayer extends StatefulWidget {
 
 class _MTCaptionsLayerState extends State<MTCaptionsLayer>
     with SingleTickerProviderStateMixin {
+  late MTCaptionClock _time = _clockOf(widget);
   late List<MTCaptionBlock> _blocks = MTCaptionBlock.group(
     widget.captions.onScreen,
   );
@@ -150,7 +157,7 @@ class _MTCaptionsLayerState extends State<MTCaptionsLayer>
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(_onPlayer);
+    _time.addListener(_onPlayer);
     widget.captions.shown.addListener(_onPlayer);
     widget.captions.language?.addListener(_onLanguage);
     _onPlayer();
@@ -178,9 +185,10 @@ class _MTCaptionsLayerState extends State<MTCaptionsLayer>
       old.captions.language?.removeListener(_onLanguage);
       widget.captions.language?.addListener(_onLanguage);
     }
-    if (old.controller != widget.controller) {
-      old.controller.removeListener(_onPlayer);
-      widget.controller.addListener(_onPlayer);
+    final time = _clockOf(widget);
+    if (time != _time) {
+      _time.removeListener(_onPlayer);
+      _time = time..addListener(_onPlayer);
     }
     if (old.captions.shown != widget.captions.shown) {
       old.captions.shown.removeListener(_onPlayer);
@@ -191,29 +199,29 @@ class _MTCaptionsLayerState extends State<MTCaptionsLayer>
 
   @override
   void dispose() {
-    widget.controller.removeListener(_onPlayer);
+    _time.removeListener(_onPlayer);
     widget.captions.shown.removeListener(_onPlayer);
     widget.captions.language?.removeListener(_onLanguage);
     _ticker.dispose();
     super.dispose();
   }
 
+  static MTCaptionClock _clockOf(MTCaptionsLayer layer) =>
+      layer.clock ?? VideoCaptionClock(layer.controller!);
+
   void _onPlayer() {
-    final value = widget.controller.value;
-    _anchor = value.position;
+    _anchor = _time.position;
     _anchoredAt = _clock.elapsed;
-    final moving =
-        value.isPlaying && !value.isBuffering && widget.captions.shown.value;
+    final moving = _time.running && widget.captions.shown.value;
     if (moving && !_ticker.isActive) _ticker.start();
     if (!moving && _ticker.isActive) _ticker.stop();
     _update();
   }
 
   Duration get _now {
-    final value = widget.controller.value;
-    if (!value.isPlaying || value.isBuffering) return _anchor;
+    if (!_time.running) return _anchor;
     final since = _clock.elapsed - _anchoredAt;
-    final ahead = since * value.playbackSpeed;
+    final ahead = since * _time.speed;
     return _anchor + (ahead > _reach ? _reach : ahead);
   }
 

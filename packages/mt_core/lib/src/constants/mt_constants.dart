@@ -1,6 +1,5 @@
-/// Every fixed number and list the core uses. The source is
-/// `docs/plan/05-DATA-SCHEMA.md`; no network or download number is written
-/// anywhere else.
+/// Every fixed number and list the core uses; no network or download
+/// number is written anywhere else.
 abstract final class MTConstants {
   // Network timeouts (§1).
   static const Duration connectTimeout = Duration(seconds: 30);
@@ -75,12 +74,18 @@ abstract final class MTConstants {
   // The queue (§3).
   static const int maxConcurrentDownloads = 1;
 
+  /// The most links one paste or drop sends together. A page of text can
+  /// hold hundreds; past this the rest are left out, and the user is told
+  /// how many, rather than a queue no one meant to make.
+  static const int maxLinksPerAdd = 100;
+
   // Qualities (§2.2).
   static const List<String> qualityWireValues = [
     'best',
     '1080',
     '720',
     '480',
+    '360',
     'audio',
   ];
 
@@ -104,6 +109,16 @@ abstract final class MTConstants {
   /// Favourites are a hidden system tag inside TagsIndex: they enter the
   /// backup automatically and never appear among the user's own tags.
   static const String favoritesSystemTag = '__favorites__';
+
+  /// **A limit a person never meets and a screen can hold**: tags are a
+  /// handful of words for sorting, and without a ceiling a stress test of a
+  /// thousand tags made every row of chips a wall. Only the creating of a
+  /// new one stops at it; tags that arrive from a backup or a sync are all
+  /// kept.
+  static const int maxTags = 50;
+
+  /// A tag's name, in characters: a chip that long still fits a phone.
+  static const int maxTagLength = 24;
 
   // `owner/name` for the releases repository. **The single switching
   // point.**

@@ -9,20 +9,64 @@ import 'package:mt_ui/mt_ui.dart';
 /// but when it moves: only while playing, never for someone who turned
 /// animations off, and never asking for frames once it has settled.
 void main() {
-  Widget host(ValueNotifier<bool> playing, {bool reduceMotion = false}) =>
-      MaterialApp(
-        theme: mtTheme(MTVariant.superApp, Brightness.light),
-        home: MediaQuery(
-          data: MediaQueryData(disableAnimations: reduceMotion),
-          child: Center(
-            child: MTBreathingGlow(
-              playing: playing,
-              size: 200,
-              child: const SizedBox.square(dimension: 200),
-            ),
-          ),
-        ),
+  // The owner, 2026-11-05: by day the glow could hardly be seen, at night
+  // it was right. Measured as the strongest ember's contrast with the
+  // ground, on the real palettes, in both apps and on both kinds of screen.
+  group('**the guard**: as present by day as by night', () {
+    double contrast(Color a, Color b) {
+      final (hi, lo) = a.computeLuminance() > b.computeLuminance()
+          ? (a.computeLuminance(), b.computeLuminance())
+          : (b.computeLuminance(), a.computeLuminance());
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    double standing(MTPalette p, {required bool dark, required bool desktop}) {
+      final peak = MTBreathingGlow.peakFor(dark: dark, desktop: desktop);
+      final ember = desktop ? p.accentDeep : p.accent;
+      return contrast(
+        Color.alphaBlend(ember.withValues(alpha: peak), p.bg),
+        p.bg,
       );
+    }
+
+    for (final desktop in [false, true]) {
+      for (final (day, night) in [
+        (MTPalette.superDay, MTPalette.superNight),
+        (MTPalette.liteDay, MTPalette.liteNight),
+      ]) {
+        test('${desktop ? 'computer' : 'phone'}, '
+            '${day == MTPalette.superDay ? 'Super' : 'Lite'}', () {
+          final byNight = standing(night, dark: true, desktop: desktop);
+          final byDay = standing(day, dark: false, desktop: desktop);
+          expect(byDay, greaterThanOrEqualTo(1.5));
+          expect(byDay, greaterThan(byNight * 0.8));
+        });
+      }
+    }
+  });
+
+  // One theme for every pump: a new one each time would make the app's
+  // own theme animate between them, which is not the glow moving.
+  final theme = mtTheme(MTVariant.superApp, Brightness.light);
+
+  Widget host(
+    ValueNotifier<bool> playing, {
+    bool reduceMotion = false,
+    Object? clip,
+  }) => MaterialApp(
+    theme: theme,
+    home: MediaQuery(
+      data: MediaQueryData(disableAnimations: reduceMotion),
+      child: Center(
+        child: MTBreathingGlow(
+          playing: playing,
+          size: 200,
+          clip: clip,
+          child: const SizedBox.square(dimension: 200),
+        ),
+      ),
+    ),
+  );
 
   group('the embers (the owner\'s pick, 2026-09-24)', () {
     test('at rest both sit at the centre: the still halo of before', () {
@@ -124,5 +168,102 @@ void main() {
     expect(tapped, 1);
     playing.value = false;
     await tester.pump(MTBreathingGlow.settle * 2);
+  });
+
+  testWidgets('**the guard**: on a computer the embers are drawn from a '
+      'light made once, as a gradient for every pixel of every frame was '
+      'too slow there; a phone keeps the gradient', (tester) async {
+    final playing = ValueNotifier(false);
+    Finder embers() => find.descendant(
+      of: find.byType(MTBreathingGlow),
+      matching: find.byType(CustomPaint),
+    );
+    await tester.pumpWidget(host(playing));
+    expect(
+      embers(),
+      paints
+        ..circle()
+        ..circle(),
+    );
+    await tester.pumpWidget(MTDesktopApp(child: host(playing)));
+    expect(
+      embers(),
+      paints
+        ..drawImageRect()
+        ..drawImageRect(),
+    );
+  });
+
+  group('the deeper breath (2026-10-29)', () {
+    test('a deeper breath widens and strengthens both embers', () {
+      final (large, small) = MTBreathingGlow.embersAt(0, 1);
+      final (deepLarge, deepSmall) = MTBreathingGlow.embersAt(
+        0,
+        1,
+        deeper: 0.6,
+      );
+      expect(deepLarge.radius, greaterThan(large.radius));
+      expect(deepSmall.strength, greaterThan(small.strength));
+    });
+
+    testWidgets('a new clip while playing breathes once, then settles', (
+      tester,
+    ) async {
+      final playing = ValueNotifier(true);
+      await tester.pumpWidget(host(playing, clip: 'a'));
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpWidget(host(playing, clip: 'b'));
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(tester.hasRunningAnimations, isTrue);
+      playing.value = false;
+      await tester.pumpAndSettle();
+      expect(tester.hasRunningAnimations, isFalse);
+    });
+
+    testWidgets('**the guard**: the phone glow, given no clip, stays as it '
+        'was (no deeper breath)', (tester) async {
+      final playing = ValueNotifier(true);
+      await tester.pumpWidget(host(playing));
+      await tester.pump(const Duration(seconds: 3));
+      playing.value = false;
+      await tester.pumpAndSettle();
+      // A rebuild with no clip, as the phones' player does on every frame
+      // of its own, starts nothing.
+      await tester.pumpWidget(host(playing));
+      await tester.pump();
+      expect(tester.hasRunningAnimations, isFalse);
+    });
+  });
+
+  testWidgets('**the guard**: the cover shadow can be turned off', (
+    tester,
+  ) async {
+    BoxShadow? shadowOf(bool on) {
+      final box = tester.widget<Container>(
+        find
+            .descendant(
+              of: find.byType(MTTiltedArtwork),
+              matching: find.byWidgetPredicate(
+                (w) => w is Container && w.decoration is BoxDecoration,
+              ),
+            )
+            .first,
+      );
+      final list = (box.decoration! as BoxDecoration).boxShadow;
+      return list == null || list.isEmpty ? null : list.first;
+    }
+
+    const item = PlaylistItem(canonicalUrl: 'u', title: 't');
+    for (final on in [true, false]) {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: mtTheme(MTVariant.superApp, Brightness.light),
+          home: Center(
+            child: MTTiltedArtwork(item: item, size: 100, shadow: on),
+          ),
+        ),
+      );
+      expect(shadowOf(on) != null, on);
+    }
   });
 }

@@ -5,11 +5,12 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../../di.dart';
 import '../../home/add_flow.dart';
+import 'task_card_parts.dart';
 
 /// The "manage downloads" sheet: in progress, waiting, needs your
 /// attention, with cancel and retry.
 void showDownloadsSheet(BuildContext context) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -39,6 +40,11 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
   /// emptied (field report 2026-10-15).
   bool _framed = false;
 
+  /// Tasks that finished while the sheet was open: each stays a moment
+  /// with its check drawn, then folds away, rather than vanishing.
+  final Map<String, DownloadTask> _finishing = {};
+  Set<String> _wasRunning = const {};
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.mtl;
@@ -48,6 +54,13 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
     final running = tasks
         .where((t) => !t.isFinished && t.phase != TaskPhase.queued)
         .toList();
+    for (final task in tasks) {
+      if (task.phase == TaskPhase.completed && _wasRunning.contains(task.id)) {
+        _finishing.putIfAbsent(task.id, () => task);
+      }
+    }
+    _wasRunning = {for (final task in running) task.id};
+    final finishing = _finishing.values.toList();
     final queued = tasks.where((t) => t.phase == TaskPhase.queued).toList();
     final failed = tasks.where((t) => t.phase == TaskPhase.failed).toList();
 
@@ -62,42 +75,62 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
         children: [
           MTSectionHeader(title: title, trailing: '${sectionTasks.length}'),
           const SizedBox(height: MTSpace.sm),
-          for (final task in sectionTasks) ...[
-            MTDownloadProgressCard(
-              // A new task or a new phase starts its own count: the pull
-              // begins at 0 and must not run down from the server's 100%.
-              key: ValueKey('${task.id}-${task.phase.name}'),
-              title: task.effectiveUrl,
-              statusText: error
-                  ? taskErrorText(l10n, task)
-                  : switch (task.phase) {
-                      TaskPhase.queued => l10n.queuedSection,
-                      // The wait is the user's own decision, not a slow
-                      // network.
-                      TaskPhase.waitingForNetwork => l10n.waitingForWifi,
-                      TaskPhase.pulling => l10n.pullingToDevice,
-                      // The percentage is an independent element in the
-                      // card and is not repeated here.
-                      _ => l10n.onServerPhase,
-                    },
-              progress: task.hasKnownProgress ? task.progress : null,
-              isError: error,
-              // **A failed task is dismissed with the same close button**
-              // (field report 2026-09-03: "if a file fails to download you
-              // cannot remove it from the downloads list"). `onCancel` was
-              // null on an error, so the close mark disappeared and only
-              // "retry" was left, and the card sat in "needs your
-              // attention" until the app was killed. `forget` had been in
-              // the engine all along and nothing in the interface called
-              // it.
-              onCancel: () {
-                if (error) {
-                  engine?.forget(task.id);
-                } else {
-                  engine?.cancel(task.id);
-                }
-              },
-            ),
+          for (final (index, task) in sectionTasks.indexed) ...[
+            if (_finishing.containsKey(task.id))
+              MTFoldAway(
+                key: ValueKey('done-${task.id}'),
+                onGone: () => setState(() => _finishing.remove(task.id)),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: MTSpace.xs),
+                  child: MTDownloadProgressCard(
+                    title: task.title ?? task.effectiveUrl,
+                    thumbnail: taskThumbnail(task),
+                    statusText: l10n.completed,
+                    done: true,
+                  ),
+                ),
+              )
+            else
+              MTDownloadProgressCard(
+                // A new task or a new phase starts its own count: the pull
+                // begins at 0 and must not run down from the server's 100%.
+                key: ValueKey('${task.id}-${task.phase.name}'),
+                // The server's title once it has one, not the bare link.
+                title: task.title ?? task.effectiveUrl,
+                thumbnail: taskThumbnail(task),
+                detail: taskSpeed(task),
+                waiting: task.phase == TaskPhase.queued,
+                statusText: error
+                    ? taskErrorText(l10n, task)
+                    : switch (task.phase) {
+                        // Its place in the line, counted in this section.
+                        TaskPhase.queued => l10n.queuePosition(index + 1),
+                        // The wait is the user's own decision, not a slow
+                        // network.
+                        TaskPhase.waitingForNetwork => l10n.waitingForWifi,
+                        TaskPhase.pulling => l10n.pullingToDevice,
+                        // The percentage is an independent element in the
+                        // card and is not repeated here.
+                        _ => l10n.onServerPhase,
+                      },
+                progress: task.hasKnownProgress ? task.progress : null,
+                isError: error,
+                // **A failed task is dismissed with the same close button**
+                // (field report 2026-09-03: "if a file fails to download you
+                // cannot remove it from the downloads list"). `onCancel` was
+                // null on an error, so the close mark disappeared and only
+                // "retry" was left, and the card sat in "needs your
+                // attention" until the app was killed. `forget` had been in
+                // the engine all along and nothing in the interface called
+                // it.
+                onCancel: () {
+                  if (error) {
+                    engine?.forget(task.id);
+                  } else {
+                    engine?.cancel(task.id);
+                  }
+                },
+              ),
             if (error)
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -125,11 +158,11 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
       (t) => !t.isFinished || t.phase == TaskPhase.failed,
     );
     final empty = MTEmptyState(
-      icon: Icons.download_done_rounded,
       title: l10n.noDownloads,
       message: l10n.allDownloadsFinished,
     );
-    if (shown.isEmpty && !_framed) {
+    final nothing = shown.isEmpty && finishing.isEmpty;
+    if (nothing && !_framed) {
       return Padding(
         padding: EdgeInsets.fromLTRB(
           MTSpace.xl,
@@ -180,7 +213,7 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
               // The message scrolls rather than overflows when the sheet
               // is dragged low or the window is short (a tablet on its side),
               // and stays attached to the controller so the sheet still drags.
-              child: shown.isEmpty
+              child: nothing
                   ? LayoutBuilder(
                       builder: (context, box) => SingleChildScrollView(
                         controller: scrollController,
@@ -194,7 +227,7 @@ class _DownloadsSheetState extends ConsumerState<_DownloadsSheet> {
                       controller: scrollController,
                       padding: EdgeInsets.zero,
                       children: [
-                        section(l10n.activeNow, running),
+                        section(l10n.activeNow, [...running, ...finishing]),
                         section(l10n.queuedSection, queued),
                         section(l10n.needsAttention, failed, error: true),
                       ],

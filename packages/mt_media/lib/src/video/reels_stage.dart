@@ -38,7 +38,7 @@ class ReelsVideoLayer extends StatelessWidget {
             ),
           )
         : controller == null || !controller!.value.isInitialized
-        ? const Center(child: CircularProgressIndicator())
+        ? const Center(child: MTSpinner())
         // **`contain`, not `cover`** (field report 2026-09-02: "it
         // cuts part of the video off and shows it enlarged").
         // `cover` fills the screen by enlarging the clip until it

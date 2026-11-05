@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../models/play_mode.dart';
 import '../widgets/media_time.dart';
+import '../widgets/mt_chapter_label.dart';
+import '../widgets/mt_chapters.dart';
 import '../widgets/mt_extra_button.dart';
 import '../widgets/mt_player_controls_row.dart';
 import '../widgets/mt_progress_slider.dart';
@@ -9,6 +12,7 @@ import 'mt_video_session.dart';
 import 'video_buttons.dart';
 import 'caption_buttons.dart';
 import 'mt_captions.dart';
+import 'mt_picture_in_picture.dart';
 
 /// The top bar: back, the title and its position in the list, speed, lock,
 /// full screen.
@@ -58,9 +62,7 @@ class MTVideoTopBar extends StatelessWidget {
     return Row(
       children: [
         MTVideoIconButton(
-          icon: fullscreen
-              ? Icons.arrow_back_rounded
-              : Icons.keyboard_arrow_down_rounded,
+          icon: fullscreen ? MTIcons.back : MTIcons.chevronDown,
           onTap: onBack,
           tooltip: l10n.dismiss,
         ),
@@ -94,98 +96,41 @@ class MTVideoTopBar extends StatelessWidget {
           const SizedBox(width: MTSpace.xs),
           MTCaptionButtons(captions: captions),
         ],
+        // Only once the user has turned picture in picture on.
+        ValueListenableBuilder(
+          valueListenable: MTPictureInPicture.instance.enabled,
+          builder: (context, on, _) => on
+              ? Padding(
+                  padding: const EdgeInsetsDirectional.only(start: MTSpace.xs),
+                  child: MTVideoIconButton(
+                    icon: MTIcons.pip,
+                    onTap: () => MTPictureInPicture.instance.enter(
+                      aspect: mtPictureShape(session),
+                    ),
+                    tooltip: l10n.pictureInPicture,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
         const SizedBox(width: MTSpace.xs),
         MTVideoSpeedButton(session: session),
         const SizedBox(width: MTSpace.xs),
         if (onLock != null) ...[
           MTVideoIconButton(
-            icon: Icons.lock_outline_rounded,
+            icon: MTIcons.lock,
             onTap: onLock!,
             tooltip: l10n.lockTouch,
           ),
           const SizedBox(width: MTSpace.xs),
         ],
         MTVideoIconButton(
-          icon: fullscreen
-              ? Icons.fullscreen_exit_rounded
-              : Icons.fullscreen_rounded,
+          icon: fullscreen ? MTIcons.collapse : MTIcons.fullscreen,
           onTap: onToggleFullscreen,
           tooltip: fullscreen ? l10n.exitFullscreen : l10n.enterFullscreen,
         ),
       ],
     );
   }
-}
-
-/// Screen centre: ten seconds back and forward around a play button in the
-/// accent colour.
-class MTVideoCenterControls extends StatelessWidget {
-  const MTVideoCenterControls({super.key, required this.session});
-
-  final MTVideoSession session;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final l10n = context.mtl;
-    // **Pinned left to right, like the timeline under them.** Media time
-    // runs left to right in every language, so buttons that followed the
-    // interface direction would read as reversed (see MTProgressSlider).
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _Seek(
-            icon: Icons.replay_10_rounded,
-            label: l10n.seekBackward10,
-            onTap: () => session.seekBy(const Duration(seconds: -10)),
-          ),
-          const SizedBox(width: MTSpace.xxl),
-          Material(
-            color: p.accent.withValues(alpha: 0.94),
-            borderRadius: BorderRadius.circular(20),
-            child: InkWell(
-              onTap: session.playPause,
-              borderRadius: BorderRadius.circular(20),
-              child: SizedBox(
-                width: 58,
-                height: 58,
-                child: Icon(
-                  session.isPlaying
-                      ? Icons.pause_rounded
-                      : Icons.play_arrow_rounded,
-                  size: 26,
-                  color: p.onAccent,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: MTSpace.xxl),
-          _Seek(
-            icon: Icons.forward_10_rounded,
-            label: l10n.seekForward10,
-            onTap: () => session.seekBy(const Duration(seconds: 10)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Seek extends StatelessWidget {
-  const _Seek({required this.icon, required this.label, required this.onTap});
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => IconButton(
-    onPressed: onTap,
-    tooltip: label,
-    icon: Icon(icon, size: 28, color: MTPalette.serverCardInk),
-  );
 }
 
 /// The bottom bar: progress, times, play modes and the queue button.
@@ -196,6 +141,8 @@ class MTVideoBottomBar extends StatelessWidget {
     required this.onQueue,
     this.compactModes = false,
     this.extra,
+    this.chapters = const [],
+    this.onChapters,
   });
 
   final MTVideoSession session;
@@ -204,6 +151,11 @@ class MTVideoBottomBar extends StatelessWidget {
 
   /// A button the app adds before the queue button.
   final MTExtraAction? extra;
+
+  /// The clip's chapters: cuts in the track, and the one playing beside
+  /// the time, which opens the list through [onChapters].
+  final List<MTChapter> chapters;
+  final VoidCallback? onChapters;
 
   @override
   Widget build(BuildContext context) {
@@ -223,6 +175,7 @@ class MTVideoBottomBar extends StatelessWidget {
               : value.buffered.last.end,
           dark: true,
           showRemaining: false,
+          marks: [for (final chapter in chapters) chapter.start],
           onSeek: session.seek,
         ),
         Padding(
@@ -242,16 +195,28 @@ class MTVideoBottomBar extends StatelessWidget {
                 // (review 2026-09-02).
                 style: text.labelSmall!.copyWith(color: inkMuted).tabular,
               ),
-              const Spacer(),
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: chapters.isEmpty || onChapters == null
+                      ? null
+                      : MTChapterLabel(
+                          chapters: chapters,
+                          position: session.position,
+                          onTap: onChapters!,
+                        ),
+                ),
+              ),
               MTVideoIconButton(
                 icon: mtPlayModeIcon(session.playMode),
                 onTap: () => session.setPlayMode(session.playMode.next),
                 tooltip: mtPlayModeLabel(context, session.playMode),
                 size: 32,
+                active: session.playMode != PlayMode.autoNext,
               ),
               const SizedBox(width: MTSpace.xxs + 2),
               MTVideoIconButton(
-                icon: Icons.shuffle_rounded,
+                icon: MTIcons.shuffle,
                 onTap: () => session.setShuffle(!session.shuffleEnabled),
                 tooltip: l10n.shuffle,
                 size: 32,
@@ -271,7 +236,7 @@ class MTVideoBottomBar extends StatelessWidget {
               ],
               const SizedBox(width: MTSpace.xxs + 2),
               MTVideoIconButton(
-                icon: Icons.queue_music_rounded,
+                icon: MTIcons.queue,
                 onTap: onQueue,
                 tooltip: l10n.queueLabel,
                 size: 32,

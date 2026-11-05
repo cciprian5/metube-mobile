@@ -5,6 +5,10 @@ import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import 'mt_markdown_text.dart';
 import 'mt_system_bars.dart';
+import 'mt_route_motion.dart';
+
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
 
 /// "What's new", shown once after an update. [notes] is already in the
 /// reader's language; when empty, the sheet says the notes are on the
@@ -15,7 +19,7 @@ void showMTWhatsNewSheet(
   required String notes,
   required VoidCallback onOpenPage,
 }) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -68,7 +72,7 @@ class MTWhatsNewSheet extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.auto_awesome_rounded, color: p.accent),
+                        MTIcon(MTIcons.sparkle, color: p.ink2),
                         const SizedBox(width: MTSpace.sm),
                         Expanded(
                           child: Text(

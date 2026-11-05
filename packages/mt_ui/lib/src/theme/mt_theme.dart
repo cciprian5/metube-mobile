@@ -1,37 +1,28 @@
 import 'package:flutter/material.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
 import '../tokens/tokens.dart';
-import '../widgets/mt_motion.dart';
+import '../widgets/mt_page_motion.dart';
+import 'mt_theme_controls.dart';
+import 'mt_theme_x.dart';
 
-/// Theme extension: carries the Wahaj palette to every widget through
-/// `MTThemeX.of(context)` instead of any literal colour (rule 5).
-class MTThemeX extends ThemeExtension<MTThemeX> {
-  const MTThemeX({required this.palette, required this.variant});
-
-  final MTPalette palette;
-  final MTVariant variant;
-
-  static MTThemeX of(BuildContext context) =>
-      Theme.of(context).extension<MTThemeX>()!;
-
-  @override
-  MTThemeX copyWith({MTPalette? palette, MTVariant? variant}) => MTThemeX(
-    palette: palette ?? this.palette,
-    variant: variant ?? this.variant,
-  );
-
-  @override
-  MTThemeX lerp(MTThemeX? other, double t) => t < 0.5 ? this : other ?? this;
-}
+export 'mt_theme_x.dart';
 
 /// The Wahaj theme. **A documented lesson**: the five surfaceContainer*
 /// roles must be set explicitly, or Material 3 imposes its own greys over
-/// the cream ground.
-ThemeData mtTheme(MTVariant variant, Brightness brightness) {
+/// the stone ground.
+ThemeData mtTheme(
+  MTVariant variant,
+  Brightness brightness, {
+  MTTypeScale type = MTTypeScale.mobile,
+  MTCorners corners = MTCorners.mobile,
+  double hairline = 1,
+}) {
   final p = MTPalette.of(variant, brightness);
   final isDark = brightness == Brightness.dark;
 
-  // The warm surface ladder, derived from bg to card to cardAlt at the
+  // The surface ladder, derived from bg to card to cardAlt at the
   // palette's own hue.
   final (lowest, low, container, high, highest) = isDark
       ? variant == MTVariant.lite
@@ -43,18 +34,18 @@ ThemeData mtTheme(MTVariant variant, Brightness brightness) {
                 const Color(0xFF2C3839),
               )
             : (
-                const Color(0xFF16100C),
-                const Color(0xFF1F1712),
-                const Color(0xFF241B15),
-                const Color(0xFF2B211A),
-                const Color(0xFF332720),
+                const Color(0xFF121110),
+                const Color(0xFF1B1917),
+                const Color(0xFF211E1B),
+                const Color(0xFF2A2622),
+                const Color(0xFF322E2A),
               )
       : (
-          const Color(0xFFFFFDF9),
-          const Color(0xFFFAF3E7),
-          const Color(0xFFF6EFE2),
-          const Color(0xFFF1E8D8),
-          const Color(0xFFECE1CE),
+          const Color(0xFFFFFFFF),
+          const Color(0xFFF8F6F3),
+          const Color(0xFFEFECE7),
+          const Color(0xFFEAE7E1),
+          const Color(0xFFE3DFD8),
         );
 
   final scheme = ColorScheme(
@@ -111,21 +102,35 @@ ThemeData mtTheme(MTVariant variant, Brightness brightness) {
     colorScheme: scheme,
     scaffoldBackgroundColor: p.bg,
     fontFamily: 'packages/${MTType.package}/${MTType.body}',
-    splashFactory: InkSparkle.splashFactory,
+    // "Warmth" instead of the sparkle: a press fills with the soft accent
+    // and fades, with no ripple of particles across the control.
+    splashFactory: NoSplash.splashFactory,
+    highlightColor: p.accentSoft,
     // Screen transitions slide horizontally and respect the text direction,
     // instead of the default vertical rise that says nothing about how the
     // two screens relate.
     pageTransitionsTheme: mtPageTransitionsTheme,
-    dividerTheme: DividerThemeData(color: p.line, thickness: 1, space: 1),
+    // The back and close buttons Flutter draws by itself (an app bar's
+    // leading arrow) take the Wahaj glyphs, like every other icon.
+    actionIconTheme: ActionIconThemeData(
+      backButtonIconBuilder: (_) =>
+          const MTIcon(MTIcons.back, matchTextDirection: true),
+      closeButtonIconBuilder: (_) => const MTIcon(MTIcons.close),
+    ),
+    dividerTheme: DividerThemeData(
+      color: p.line,
+      thickness: hairline,
+      space: 1,
+    ),
     textTheme: TextTheme(
-      headlineLarge: display(24, FontWeight.w700),
+      headlineLarge: display(type.headline, FontWeight.w700),
       headlineMedium: display(20, FontWeight.w700),
       titleLarge: display(17, FontWeight.w700),
       titleMedium: display(14, FontWeight.w700),
       titleSmall: display(12.5, FontWeight.w500),
-      bodyLarge: body(15, FontWeight.w400),
+      bodyLarge: body(type.body, FontWeight.w400),
       bodyMedium: body(13.5, FontWeight.w400),
-      bodySmall: body(11.5, FontWeight.w400, color: p.ink3),
+      bodySmall: body(type.secondary, FontWeight.w400, color: p.ink3),
       labelLarge: body(13.5, FontWeight.w700),
       labelMedium: body(12.5, FontWeight.w500),
       labelSmall: body(10.5, FontWeight.w500, color: p.ink3),
@@ -136,21 +141,21 @@ ThemeData mtTheme(MTVariant variant, Brightness brightness) {
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
-      titleTextStyle: display(24, FontWeight.w700),
+      titleTextStyle: display(type.headline, FontWeight.w700),
     ),
     cardTheme: CardThemeData(
       color: p.card,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTRadius.card),
-        side: BorderSide(color: p.line),
+        borderRadius: BorderRadius.circular(corners.card),
+        side: BorderSide(color: p.line, width: hairline),
       ),
       margin: EdgeInsets.zero,
     ),
     chipTheme: ChipThemeData(
       backgroundColor: Colors.transparent,
       selectedColor: p.ink,
-      side: BorderSide(color: p.line2),
+      side: BorderSide(color: p.line2, width: hairline),
       // **Label colour follows the state** (full review 2026-09-02): a
       // selected chip is painted with `p.ink` as its background and its
       // label was `p.ink2`, dark ink on dark ink, so **a selected tag could
@@ -164,7 +169,7 @@ ThemeData mtTheme(MTVariant variant, Brightness brightness) {
       ),
       checkmarkColor: p.bg,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTRadius.chip),
+        borderRadius: BorderRadius.circular(corners.chip),
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: MTSpace.md,
@@ -180,73 +185,88 @@ ThemeData mtTheme(MTVariant variant, Brightness brightness) {
         vertical: MTSpace.md,
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(MTRadius.field),
-        borderSide: BorderSide(color: p.line2),
+        borderRadius: BorderRadius.circular(corners.field),
+        borderSide: BorderSide(color: p.line2, width: hairline),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(MTRadius.field),
-        borderSide: BorderSide(color: p.line2),
+        borderRadius: BorderRadius.circular(corners.field),
+        borderSide: BorderSide(color: p.line2, width: hairline),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(MTRadius.field),
-        borderSide: BorderSide(color: p.accent, width: 1.4),
+        borderRadius: BorderRadius.circular(corners.field),
+        borderSide: BorderSide(color: p.ink, width: 1.4 * hairline),
+      ),
+    ),
+    // **One coloured action per screen** (log §4, 2026-10-31): the filled
+    // button. A text button beside it (Cancel, Done) is in the ink; in the
+    // accent it took the colour from the action it sits next to.
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: p.ink,
+        textStyle: body(13.5, FontWeight.w700),
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        backgroundColor: p.accent,
-        foregroundColor: p.onAccent,
-        textStyle: body(13.5, FontWeight.w700),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(MTRadius.fab),
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: MTSpace.xl,
-          vertical: MTSpace.md,
-        ),
-      ),
+      style:
+          FilledButton.styleFrom(
+            textStyle: body(13.5, FontWeight.w700),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(corners.button),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: MTSpace.xl,
+              vertical: MTSpace.md,
+            ),
+          ).copyWith(
+            // Not yet possible, it stays the ember, pale, so it still reads as
+            // the one action; its label in the accent's own dark ink stays
+            // legible by day and by night.
+            backgroundColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.disabled)
+                  ? p.accent.withValues(alpha: mtDisabledAccent)
+                  : p.accent,
+            ),
+            foregroundColor: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.disabled)
+                  ? p.accentInk
+                  : p.onAccent,
+            ),
+          ),
     ),
+    dialogTheme: mtDialogTheme(
+      p,
+      corners,
+      hairline: hairline,
+      title: display(18, FontWeight.w700),
+    ),
+    switchTheme: mtSwitchTheme(p),
+    radioTheme: mtRadioTheme(p),
+    checkboxTheme: mtCheckboxTheme(p, corners, hairline: hairline),
+    tooltipTheme: mtTooltipTheme(p, corners),
     // Material 3 tints the selected state with secondaryContainer, which is
-    // the olive that means "offline" in this design language (log §4).
-    // Corrected to the accent colour.
+    // the olive that means "offline" in this design language (log §4). The
+    // chosen segment is the ink, as a chosen chip is: the accent is kept for
+    // the action, not for a choice (log §4, 2026-10-31).
     segmentedButtonTheme: SegmentedButtonThemeData(
+      // The chosen segment's tick is the Wahaj one, not Material's glyph.
+      selectedIcon: const MTIcon(MTIcons.check),
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? p.accentSoft
+              ? p.ink
               : Colors.transparent,
         ),
         foregroundColor: WidgetStateProperty.resolveWith(
-          (states) =>
-              states.contains(WidgetState.selected) ? p.accentInk : p.ink2,
+          (states) => states.contains(WidgetState.selected) ? p.bg : p.ink2,
         ),
-        side: WidgetStatePropertyAll(BorderSide(color: p.line2)),
+        side: WidgetStatePropertyAll(
+          BorderSide(color: p.line2, width: hairline),
+        ),
         textStyle: WidgetStatePropertyAll(body(13, FontWeight.w500)),
       ),
     ),
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: p.bg,
-      indicatorColor: Colors.transparent,
-      height: 68,
-      labelTextStyle: WidgetStatePropertyAll(
-        body(11.5, FontWeight.w500, color: p.ink2),
-      ),
-      iconTheme: WidgetStateProperty.resolveWith(
-        (states) => IconThemeData(
-          color: states.contains(WidgetState.selected) ? p.accent : p.ink3,
-        ),
-      ),
-    ),
-    // The rail is the bottom bar turned on its side for wide windows, so it
-    // takes the bar's colours and type rather than Material's defaults.
-    navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: p.bg,
-      indicatorColor: Colors.transparent,
-      selectedIconTheme: IconThemeData(color: p.accent),
-      unselectedIconTheme: IconThemeData(color: p.ink3),
-      selectedLabelTextStyle: body(11.5, FontWeight.w500, color: p.ink2),
-      unselectedLabelTextStyle: body(11.5, FontWeight.w500, color: p.ink2),
-    ),
+    navigationBarTheme: mtNavigationBarTheme(p, body(11.5, FontWeight.w500)),
+    navigationRailTheme: mtNavigationRailTheme(p, body(11.5, FontWeight.w500)),
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: p.card,
       surfaceTintColor: Colors.transparent,
@@ -258,9 +278,9 @@ ThemeData mtTheme(MTVariant variant, Brightness brightness) {
       showDragHandle: true,
       dragHandleColor: p.line2,
       dragHandleSize: const Size(38, 4),
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(MTRadius.sheet),
+          top: Radius.circular(corners.sheet),
         ),
       ),
     ),
@@ -269,9 +289,9 @@ ThemeData mtTheme(MTVariant variant, Brightness brightness) {
       contentTextStyle: body(13.5, FontWeight.w500, color: p.miniInk),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTRadius.card),
+        borderRadius: BorderRadius.circular(corners.card),
       ),
     ),
-    extensions: [MTThemeX(palette: p, variant: variant)],
+    extensions: [MTThemeX(palette: p, variant: variant, hairline: hairline)],
   );
 }

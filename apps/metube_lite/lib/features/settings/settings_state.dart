@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/mt_media.dart' show MTPictureInPicture;
 
 import '../../di.dart';
 
 /// Lite's settings state: **one** server URL, with no automatic switching,
-/// which is a Super feature. Storage key names follow `05-DATA-SCHEMA.md`
-/// §5.1 exactly, and they are the same names the old Lite used, so its
+/// which is a Super feature. Storage key names are fixed, and they are the same names the old Lite used, so its
 /// backup restores as it is.
 class LiteSettings {
   const LiteSettings({
@@ -20,6 +20,7 @@ class LiteSettings {
     this.wifiOnly = false,
     this.autoRetry = true,
     this.compatiblePlayback = true,
+    this.pictureInPicture = false,
     this.themeMode = ThemeMode.system,
     this.localeCode,
   });
@@ -52,6 +53,10 @@ class LiteSettings {
   /// most phones, so the picture appears torn. On by default; turning it
   /// off allows the highest resolution at the cost of compatibility.
   final bool compatiblePlayback;
+
+  /// Leaving the app while a video plays moves it to a corner of the
+  /// screen, and the player has a button for it. Off unless turned on.
+  final bool pictureInPicture;
   final ThemeMode themeMode;
 
   /// null means the system language (detected on first run).
@@ -79,6 +84,7 @@ class LiteSettings {
     bool? wifiOnly,
     bool? autoRetry,
     bool? compatiblePlayback,
+    bool? pictureInPicture,
     ThemeMode? themeMode,
     String? localeCode,
 
@@ -97,6 +103,7 @@ class LiteSettings {
     wifiOnly: wifiOnly ?? this.wifiOnly,
     autoRetry: autoRetry ?? this.autoRetry,
     compatiblePlayback: compatiblePlayback ?? this.compatiblePlayback,
+    pictureInPicture: pictureInPicture ?? this.pictureInPicture,
     themeMode: themeMode ?? this.themeMode,
     localeCode: clearLocale ? null : (localeCode ?? this.localeCode),
   );
@@ -117,6 +124,7 @@ class LiteSettings {
       wifiOnly: await store.getBool('wifi_only_downloads') ?? false,
       autoRetry: await store.getBool('auto_retry_downloads') ?? true,
       compatiblePlayback: await store.getBool('compatible_playback') ?? true,
+      pictureInPicture: await store.getBool('picture_in_picture') ?? false,
       themeMode: ThemeMode.values.firstWhere(
         (m) => m.name == themeName,
         orElse: () => ThemeMode.system,
@@ -137,7 +145,11 @@ class LiteSettings {
 
 class SettingsNotifier extends Notifier<LiteSettings> {
   @override
-  LiteSettings build() => ref.read(initialSettingsProvider);
+  LiteSettings build() {
+    final settings = ref.read(initialSettingsProvider);
+    MTPictureInPicture.instance.enabled.value = settings.pictureInPicture;
+    return settings;
+  }
 
   KeyValueStore get _store => ref.read(keyValueStoreProvider);
   SecretStore get _secrets => ref.read(secretStoreProvider);
@@ -219,6 +231,12 @@ class SettingsNotifier extends Notifier<LiteSettings> {
   Future<void> setCompatiblePlayback(bool enabled) async {
     await _mutex.run(() => _store.setBool('compatible_playback', enabled));
     state = state.copyWith(compatiblePlayback: enabled);
+  }
+
+  Future<void> setPictureInPicture(bool enabled) async {
+    await _mutex.run(() => _store.setBool('picture_in_picture', enabled));
+    MTPictureInPicture.instance.enabled.value = enabled;
+    state = state.copyWith(pictureInPicture: enabled);
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {

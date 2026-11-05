@@ -23,19 +23,28 @@ String release({
       [
         {
           'name': 'MeTube-Lite-$tag.apk',
-          'browser_download_url': 'https://x/lite.apk',
+          'browser_download_url':
+              'https://github.com/x/y/releases/download/v1/lite.apk',
           'size': 21000000,
         },
         {
           'name': 'MeTube-Super-$tag.apk',
-          'browser_download_url': 'https://x/super.apk',
+          'browser_download_url':
+              'https://github.com/x/y/releases/download/v1/super.apk',
           'size': 24000000,
         },
       ],
 });
 
-UpdateChecker checkerOf(String body, {String marker = 'super'}) =>
-    UpdateChecker(fetch: (_) async => body, assetMarker: marker);
+UpdateChecker checkerOf(
+  String body, {
+  String marker = 'super',
+  String extension = '.apk',
+}) => UpdateChecker(
+  fetch: (_) async => body,
+  assetMarker: marker,
+  assetExtension: extension,
+);
 
 void main() {
   group('choosing the asset', () {
@@ -46,14 +55,20 @@ void main() {
         // Lite user installs Super, the first asset in the list.
         final superRelease = await checkerOf(release())
             .check(currentVersion: '2.0.0');
-        expect(superRelease!.apkUrl, 'https://x/super.apk');
+        expect(
+          superRelease!.apkUrl,
+          'https://github.com/x/y/releases/download/v1/super.apk',
+        );
         expect(superRelease.apkSize, 24000000);
 
         final liteRelease = await checkerOf(
           release(),
           marker: 'lite',
         ).check(currentVersion: '2.0.0');
-        expect(liteRelease!.apkUrl, 'https://x/lite.apk');
+        expect(
+          liteRelease!.apkUrl,
+          'https://github.com/x/y/releases/download/v1/lite.apk',
+        );
       },
     );
 
@@ -62,7 +77,8 @@ void main() {
         assets: [
           {
             'name': 'MeTube-Lite-v2.1.0.apk',
-            'browser_download_url': 'https://x/lite.apk',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/lite.apk',
             'size': 1,
           },
         ],
@@ -75,18 +91,172 @@ void main() {
         assets: [
           {
             'name': 'metube-super-sources.zip',
-            'browser_download_url': 'https://x/src.zip',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/src.zip',
             'size': 5,
           },
           {
             'name': 'MeTube-Super-v2.1.0.apk',
-            'browser_download_url': 'https://x/super.apk',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/super.apk',
             'size': 7,
           },
         ],
       );
       final r = await checkerOf(body).check(currentVersion: '2.0.0');
-      expect(r!.apkUrl, 'https://x/super.apk');
+      expect(
+        r!.apkUrl,
+        'https://github.com/x/y/releases/download/v1/super.apk',
+      );
+    });
+
+    test(
+      '**the guard**: a phone is never handed the Windows installer',
+      () async {
+        // Listed first and carrying the marker in its name: only the
+        // extension stands between a phone and an .exe it cannot install.
+        final body = release(
+          assets: [
+            {
+              'name': 'MeTube-Super-v2.7.0-windows-x64-setup.exe',
+              'browser_download_url':
+                  'https://github.com/x/y/releases/download/v1/setup.exe',
+              'size': 90000000,
+            },
+            {
+              'name': 'MeTube-Super-v2.7.0.apk',
+              'browser_download_url':
+                  'https://github.com/x/y/releases/download/v1/super.apk',
+              'size': 24000000,
+            },
+          ],
+        );
+        final r = await checkerOf(body).check(currentVersion: '2.0.0');
+        expect(
+          r!.apkUrl,
+          'https://github.com/x/y/releases/download/v1/super.apk',
+        );
+      },
+    );
+
+    test('a release of all three apps gives each phone its own APK', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Ember-v2.7.0-windows-x64-setup.exe',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/setup.exe',
+            'size': 90000000,
+          },
+          {
+            'name': 'MeTube-Lite-v2.7.0.apk',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/lite.apk',
+            'size': 21000000,
+          },
+          {
+            'name': 'MeTube-Super-v2.7.0.apk',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/super.apk',
+            'size': 24000000,
+          },
+        ],
+      );
+      for (final (marker, url) in [
+        ('lite', 'https://github.com/x/y/releases/download/v1/lite.apk'),
+        ('super', 'https://github.com/x/y/releases/download/v1/super.apk'),
+      ]) {
+        final r = await checkerOf(
+          body,
+          marker: marker,
+        ).check(currentVersion: '2.0.0');
+        expect(r!.apkUrl, url, reason: marker);
+      }
+    });
+
+    test('a Windows-only release is no update for either phone', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Ember-v2.7.0-windows-x64-setup.exe',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/setup.exe',
+            'size': 90000000,
+          },
+        ],
+      );
+      for (final marker in ['lite', 'super']) {
+        expect(
+          await checkerOf(body, marker: marker).check(currentVersion: '2.0.0'),
+          isNull,
+          reason: marker,
+        );
+      }
+    });
+  });
+
+  group('Ember, the Windows app', () {
+    UpdateChecker ember(String body) =>
+        checkerOf(body, marker: 'ember', extension: '.exe');
+
+    test('**the guard**: Windows takes its installer from a release of all '
+        'three', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Lite-v2.7.0.apk',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/lite.apk',
+            'size': 21000000,
+          },
+          {
+            'name': 'MeTube-Ember-2.7.0-windows-x64-setup.exe',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/setup.exe',
+            'size': 28000000,
+          },
+          {
+            'name': 'MeTube-Super-v2.7.0.apk',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/super.apk',
+            'size': 24000000,
+          },
+        ],
+      );
+      final r = await ember(body).check(currentVersion: '2.0.0');
+      expect(
+        r!.apkUrl,
+        'https://github.com/x/y/releases/download/v1/setup.exe',
+      );
+      expect(r.apkSize, 28000000);
+    });
+
+    test('an APK named for Ember is never taken for the installer', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Ember-v2.7.0.apk',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/ember.apk',
+            'size': 1,
+          },
+        ],
+      );
+      expect(await ember(body).check(currentVersion: '2.0.0'), isNull);
+    });
+
+    test('a phones-only release is no update for Windows', () async {
+      final body = release(
+        assets: [
+          {
+            'name': 'MeTube-Super-v2.7.0.apk',
+            'browser_download_url':
+                'https://github.com/x/y/releases/download/v1/super.apk',
+            'size': 24000000,
+          },
+        ],
+      );
+      expect(await ember(body).check(currentVersion: '2.0.0'), isNull);
     });
   });
 

@@ -6,9 +6,13 @@ import 'package:mt_ui/mt_ui.dart';
 /// and a wide window trades the bottom bar for a side rail.
 void main() {
   const items = [
-    MTNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home, label: 'أ'),
-    MTNavItem(icon: Icons.list_outlined, selectedIcon: Icons.list, label: 'ب'),
-    MTNavItem(icon: Icons.settings, selectedIcon: Icons.settings, label: 'ج'),
+    MTNavItem(icon: MTIcons.library, selectedIcon: MTIcons.library, label: 'أ'),
+    MTNavItem(icon: MTIcons.list, selectedIcon: MTIcons.list, label: 'ب'),
+    MTNavItem(
+      icon: MTIcons.settings,
+      selectedIcon: MTIcons.settings,
+      label: 'ج',
+    ),
   ];
 
   Future<void> pump(
@@ -48,12 +52,68 @@ void main() {
       expect(MTBreakpoint.classOf(839), MTWindowClass.medium);
       expect(MTBreakpoint.classOf(840), MTWindowClass.expanded);
     });
+
+    test('desktop needs both the width and the Windows app', () {
+      expect(MTBreakpoint.classOf(3840), MTWindowClass.expanded);
+      expect(
+        MTBreakpoint.classOf(959, desktopApp: true),
+        MTWindowClass.expanded,
+      );
+      expect(
+        MTBreakpoint.classOf(960, desktopApp: true),
+        MTWindowClass.desktop,
+      );
+    });
+
+    Future<MTWindowClass> classIn(
+      WidgetTester tester,
+      double width, {
+      required bool desktopApp,
+    }) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = Size(width, 900);
+      addTearDown(tester.view.reset);
+      late MTWindowClass seen;
+      final probe = Builder(
+        builder: (context) {
+          seen = context.windowClass;
+          return const SizedBox();
+        },
+      );
+      await tester.pumpWidget(
+        MaterialApp(home: desktopApp ? MTDesktopApp(child: probe) : probe),
+      );
+      return seen;
+    }
+
+    testWidgets('**the guard**: a phone app never sees desktop, at any width', (
+      tester,
+    ) async {
+      for (var width = 320.0; width <= 3840; width += 160) {
+        expect(
+          await classIn(tester, width, desktopApp: false),
+          isNot(MTWindowClass.desktop),
+          reason: '$width',
+        );
+      }
+    });
+
+    testWidgets('the Windows app sees desktop from 960', (tester) async {
+      expect(
+        await classIn(tester, 1280, desktopApp: true),
+        MTWindowClass.desktop,
+      );
+      expect(
+        await classIn(tester, 900, desktopApp: true),
+        MTWindowClass.expanded,
+      );
+    });
   });
 
   group('the shell frame', () {
     testWidgets('a phone keeps the bottom bar and has no rail', (tester) async {
       await pump(tester, const Size(411, 914));
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(MTBottomBar), findsOneWidget);
       expect(find.byType(NavigationRail), findsNothing);
     });
 
@@ -61,7 +121,7 @@ void main() {
       tester,
     ) async {
       await pump(tester, const Size(599, 360));
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(MTBottomBar), findsOneWidget);
     });
 
     // The owner's 8-inch tablet (2026-10-10): 800x1280 pixels at 216 dpi,
@@ -72,7 +132,7 @@ void main() {
       await pump(tester, const Size(948, 544));
       expect(find.byType(NavigationRail), findsOneWidget);
       await pump(tester, const Size(593, 900));
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(MTBottomBar), findsOneWidget);
     });
 
     testWidgets('the largest phones on their side keep the bar', (
@@ -80,7 +140,7 @@ void main() {
     ) async {
       for (final size in const [Size(1000, 480), Size(932, 430)]) {
         await pump(tester, size);
-        expect(find.byType(NavigationBar), findsOneWidget, reason: '$size');
+        expect(find.byType(MTBottomBar), findsOneWidget, reason: '$size');
       }
     });
 
@@ -89,7 +149,7 @@ void main() {
     ) async {
       await pump(tester, const Size(600, 960));
       expect(find.byType(NavigationRail), findsOneWidget);
-      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byType(MTBottomBar), findsNothing);
     });
 
     testWidgets('in Arabic the rail sits on the right, beside the content', (
@@ -115,7 +175,7 @@ void main() {
       final onPhone = tester.getRect(find.byKey(const Key('mini')));
       expect(
         onPhone.top,
-        lessThan(tester.getRect(find.byType(NavigationBar)).top),
+        lessThan(tester.getRect(find.byType(MTBottomBar)).top),
       );
 
       // The approved mock-up (2026-10-10): the mini player spans the
@@ -182,7 +242,7 @@ void main() {
       // Wider than 840, as inside the video player: the shell beneath must
       // not change shape.
       await pump(tester, const Size(914, 411), endPane: pane);
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(MTBottomBar), findsOneWidget);
       expect(find.byType(NavigationRail), findsNothing);
       expect(find.byKey(const Key('pane')), findsNothing);
     });

@@ -27,6 +27,9 @@ next to the white glyphs of every other app.
 
 Run: python tool/make_icons.py   then  dart run flutter_launcher_icons
      python tool/make_icons.py --status   writes the status-bar vectors only
+     python tool/make_icons.py --windows  MeTube Ember's icon, tray icons,
+                                          installer images and brand files
+                                          (tool/icons/ember_kit.py)
 """
 import sys
 
@@ -184,7 +187,11 @@ def main():
 
 
 if __name__ == '__main__':
-    if '--status' in sys.argv:
+    if '--windows' in sys.argv:
+        sys.path.insert(0, 'tool/icons')
+        from ember_kit import build
+        build()
+    elif '--status' in sys.argv:
         write_status_icons()
     else:
         main()

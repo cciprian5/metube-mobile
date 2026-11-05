@@ -1,6 +1,5 @@
 /// Classified error types thrown by the core. The app turns them into
-/// translated text at display time (`02-TRD.md` §3.3: no interface strings
-/// in the core).
+/// translated text at display time: the core holds no interface strings.
 sealed class MTApiException implements Exception {
   const MTApiException([this.detail]);
 

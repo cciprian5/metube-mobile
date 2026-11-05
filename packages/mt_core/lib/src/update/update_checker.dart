@@ -19,14 +19,23 @@ class UpdateChecker {
   UpdateChecker({
     required this.fetch,
     required this.assetMarker,
+    this.assetExtension = '.apk',
     this.repo = MTConstants.updateRepo,
+    this.trustedAsset = UpdateRelease.fromGitHub,
   });
+
+  /// Where this app's file may be downloaded from: GitHub over https.
+  /// Tests serve a file of their own.
+  final bool Function(Uri link) trustedAsset;
 
   final HttpGetString fetch;
 
-  /// The part of an APK filename that identifies this app: `super` or
-  /// `lite`.
+  /// The part of a filename that identifies this app: `super`, `lite` or
+  /// `ember`.
   final String assetMarker;
+
+  /// How this app's file ends: `.apk` on the phones, `.exe` for Ember.
+  final String assetExtension;
 
   /// `owner/name`. The single switching point if releases ever move to a
   /// public repository separate from the code.
@@ -93,7 +102,12 @@ class UpdateChecker {
     if (current == null) return null;
 
     final body = await fetch(latestUri);
-    final release = UpdateRelease.tryParse(body, assetMarker: assetMarker);
+    final release = UpdateRelease.tryParse(
+      body,
+      assetMarker: assetMarker,
+      extension: assetExtension,
+      trusted: trustedAsset,
+    );
     if (release == null) return null;
     if (release.version <= current) return null;
 

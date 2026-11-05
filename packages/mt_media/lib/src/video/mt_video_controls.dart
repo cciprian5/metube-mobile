@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../widgets/mt_extra_button.dart';
+import '../widgets/mt_chapters.dart';
 import 'mt_captions.dart';
+import 'mt_picture_in_picture.dart';
 import 'mt_video_session.dart';
 import 'video_buttons.dart';
+import 'video_center_controls.dart';
 import 'video_control_bars.dart';
 
 /// The video chrome over the clip (Wahaj reference C): a touch shows it
@@ -24,6 +27,7 @@ class MTVideoControls extends StatefulWidget {
     this.membershipLine,
     this.extra,
     this.captions,
+    this.chapters = const [],
   });
 
   final MTVideoSession session;
@@ -41,6 +45,9 @@ class MTVideoControls extends StatefulWidget {
   final String? playlistName;
   final String? membershipLine;
 
+  /// The clip's chapters, on the progress bar and beside the time.
+  final List<MTChapter> chapters;
+
   @override
   State<MTVideoControls> createState() => _MTVideoControlsState();
 }
@@ -52,17 +59,43 @@ class _MTVideoControlsState extends State<MTVideoControls> {
   bool _locked = false;
   Timer? _hideTimer;
 
+  MTPictureInPicture get _pip => MTPictureInPicture.instance;
+
   @override
   void initState() {
     super.initState();
     _restartTimer();
+    widget.session.addListener(_reportPlaying);
+  }
+
+  /// Here rather than in [initState]: the window's button takes its names
+  /// from the user's language, which may change while the player is open.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _reportPlaying();
   }
 
   @override
   void dispose() {
     _hideTimer?.cancel();
+    widget.session.removeListener(_reportPlaying);
+    _pip.detach(this);
     super.dispose();
   }
+
+  /// While a video plays on screen, leaving the app may move it to a
+  /// corner (when the user has turned that on).
+  void _reportPlaying() => _pip.attach(
+    this,
+    playing: widget.session.isPlaying,
+    aspect: mtPictureShape(widget.session),
+    button: (
+      toggle: widget.session.playPause,
+      play: context.mtl.play,
+      pause: context.mtl.pause,
+    ),
+  );
 
   void _restartTimer() {
     _hideTimer?.cancel();
@@ -86,13 +119,21 @@ class _MTVideoControlsState extends State<MTVideoControls> {
   }
 
   /// Clear of the bottom bar while it shows, near the edge when it hides:
-  /// above the cream sheet, which overlaps the small player by 14px.
+  /// above the light sheet, which overlaps the small player by 14px.
   double get _captionLift => _visible && !_locked
       ? (widget.fullscreen ? MTSpace.xs : MTSpace.xl) + 76
       : (widget.fullscreen ? MTSpace.lg : MTSpace.xxl);
 
+  /// In a corner of the screen the picture shows alone: no control fits
+  /// there, and the system draws its own.
   @override
-  Widget build(BuildContext context) => Stack(
+  Widget build(BuildContext context) => ValueListenableBuilder(
+    valueListenable: _pip.active,
+    builder: (context, inCorner, _) =>
+        inCorner ? const SizedBox.shrink() : _layers(),
+  );
+
+  Widget _layers() => Stack(
     fit: StackFit.expand,
     children: [
       if ((widget.captions, widget.session.controller) case (
@@ -129,7 +170,7 @@ class _MTVideoControlsState extends State<MTVideoControls> {
 
   Widget _lockedLayer() => Center(
     child: MTVideoIconButton(
-      icon: Icons.lock_open_rounded,
+      icon: MTIcons.unlock,
       tooltip: context.mtl.unlockTouch,
       onTap: () {
         setState(() => _locked = false);
@@ -165,7 +206,7 @@ class _MTVideoControlsState extends State<MTVideoControls> {
         child: Center(child: MTVideoCenterControls(session: widget.session)),
       ),
       PositionedDirectional(
-        // Above the rounded edge of the cream sheet, which overlaps the
+        // Above the rounded edge of the light sheet, which overlaps the
         // video by 14px.
         bottom: widget.fullscreen ? MTSpace.xs : MTSpace.xl,
         start: MTSpace.md,
@@ -174,6 +215,14 @@ class _MTVideoControlsState extends State<MTVideoControls> {
           session: widget.session,
           onQueue: widget.onQueue,
           extra: widget.extra,
+          chapters: widget.chapters,
+          onChapters: () => showMTChapterSheet(
+            context,
+            chapters: widget.chapters,
+            ticks: widget.session,
+            position: () => widget.session.position,
+            onSeek: widget.session.seek,
+          ),
         ),
       ),
     ],

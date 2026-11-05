@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../tokens/tokens.dart';
+import 'mt_polish.dart';
 
 /// **How many routes are stacked above the shell** (field report
 /// 2026-09-02).
@@ -96,7 +97,7 @@ class MTHiddenUnderRoutes extends StatelessWidget {
         ignoring: !shown,
         child: AnimatedOpacity(
           opacity: shown ? 1 : 0,
-          duration: MTMotion.reveal,
+          duration: mtMotionDuration(context, MTMotion.reveal),
           curve: MTMotion.ease,
           child: child,
         ),

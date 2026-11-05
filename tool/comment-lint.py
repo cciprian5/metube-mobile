@@ -8,6 +8,10 @@ This fails (exit 1) when a comment in apps/ or packages/:
     translations (.arb) and in test data, never in an explanation.
     Private plan references ("م-73", "ع-1") are caught by this too: the
     plan lives in docs/plan, which is not published.
+  * points into the unpublished plan: "07 §3-b", "brief §4",
+    "02-TRD.md", "docs/plan". A visitor has none of those files; the
+    comment should say the reason itself. The published docs
+    (SERVER-API.md and the rest of docs/) may be cited.
   * says TODO / FIXME / XXX / HACK without an issue number (#123) or a
     link, so a note-to-self cannot outlive the person who wrote it.
   * is code that was switched off rather than deleted. Git keeps history;
@@ -27,6 +31,12 @@ import sys
 ARABIC = re.compile(r"[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]")
 MARKER = re.compile(r"\b(TODO|FIXME|XXX|HACK)\b")
 TRACKED = re.compile(r"#\d+|https?://")
+PRIVATE = re.compile(
+    r"(?<![\w-])0\d(?:-[A-Za-z][\w-]*(?:\.md)?)?`?\s*§"
+    r"|\bbrief\s*§"
+    r"|(?<![\w-])0\d-[A-Z][A-Z-]+\.md"
+    r"|docs/plan"
+)
 # A line of Dart that was switched off: a statement, a declaration, or a
 # lone brace -- not a sentence that happens to end in a colon.
 CODE = re.compile(
@@ -129,6 +139,8 @@ def check(path, source):
             body = re.sub(r"^\s*(?:/{2,3}|/\*+|\*+/?)", "", row).strip()
             if ARABIC.search(row):
                 found.append(f"{at}: Arabic in a comment: {body[:90]}")
+            if PRIVATE.search(row):
+                found.append(f"{at}: private plan reference: {body[:90]}")
             if MARKER.search(row) and not TRACKED.search(row):
                 found.append(f"{at}: untracked marker: {body[:90]}")
             if not is_doc and text.startswith("//") and CODE.match(body):
@@ -137,6 +149,9 @@ def check(path, source):
 
 
 def main():
+    # A Windows console with an Arabic code page cannot print every
+    # character a problem may quote; UTF-8 always can.
+    sys.stdout.reconfigure(encoding="utf-8")
     files = subprocess.run(
         ["git", "ls-files", "apps/*.dart", "packages/*.dart"],
         capture_output=True, text=True, encoding="utf-8", check=True,

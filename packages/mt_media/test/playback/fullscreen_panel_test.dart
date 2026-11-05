@@ -88,7 +88,7 @@ void main() {
     final session = await show(
       tester,
       (item) => MTVideoPanel(
-        icon: Icons.subject_rounded,
+        icon: MTIcons.transcript,
         label: 'Transcript',
         builder: (context, onClose) {
           close = onClose;
@@ -118,7 +118,7 @@ void main() {
     final session = await show(
       tester,
       (item) => MTVideoPanel(
-        icon: Icons.subject_rounded,
+        icon: MTIcons.transcript,
         label: 'Transcript',
         builder: (context, onClose) => Text('panel for ${item.title}'),
       ),

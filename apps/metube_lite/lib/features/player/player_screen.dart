@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../di.dart';
 import '../downloads_library/library_actions.dart';
@@ -13,6 +12,7 @@ import '../downloads_library/library_providers.dart';
 import '../downloads_library/local_item.dart';
 import '../shared/membership.dart';
 import 'playback_providers.dart';
+import '../shared/open_web_link.dart';
 
 /// Lite's video player (rule 4): every source is local, so the actions are
 /// continue as audio, share and open the original link. There is no
@@ -58,7 +58,6 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.play_disabled_rounded,
           title: l10n.videoPlayer,
           message: l10n.noPlayableSource,
         ),
@@ -105,25 +104,37 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
     final l10n = context.mtl;
     final item = session.current;
     if (item == null) return const [];
+    final favorite =
+        ref
+            .watch(localMediaProvider)
+            .valueOrNull
+            ?.any((c) => c.key == item.canonicalUrl && c.favorite) ??
+        false;
     return [
+      // The one-tap heart: the library cards show it on favourites alone.
       MTPlayerAction(
-        icon: Icons.headphones_rounded,
+        icon: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
+        label: favorite ? l10n.removeFromFavorites : l10n.addToFavorites,
+        onTap: () =>
+            ref.read(libraryActionsProvider).toggleFavorite(item.canonicalUrl),
+      ),
+      MTPlayerAction(
+        icon: MTIcons.headphones,
         label: l10n.continueAsAudio,
         onTap: () => _continueAsAudio(item, session.position, pop: true),
       ),
       MTPlayerAction(
-        icon: Icons.share_rounded,
+        icon: MTIcons.share,
         label: l10n.share,
         onTap: () => _share(item),
+        inMenu: true,
       ),
       if (item.canonicalUrl.startsWith('http'))
         MTPlayerAction(
-          icon: Icons.open_in_new_rounded,
+          icon: MTIcons.external,
           label: l10n.openOriginalLink,
-          onTap: () => launchUrl(
-            Uri.parse(item.canonicalUrl),
-            mode: LaunchMode.externalApplication,
-          ),
+          inMenu: true,
+          onTap: () => openWebLink(item.canonicalUrl),
         ),
     ];
   }

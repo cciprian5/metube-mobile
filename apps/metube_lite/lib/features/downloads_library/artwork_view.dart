@@ -3,7 +3,8 @@ import 'dart:math' show max;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mt_core/mt_core.dart' show UrlKit;
+import 'package:mt_core/mt_core.dart' show youtubeWideCover;
+import 'package:mt_ui/mt_ui.dart';
 
 /// In Lite an artwork index value may be a **generated local file path**, a
 /// frame capture or an embedded audio cover (see `MediaProbe.kt`), or a
@@ -27,6 +28,10 @@ Widget? artworkFor(
   if (value == null || value.isEmpty) return null;
   if (value.startsWith('http')) {
     return CachedNetworkImage(
+      // At the app's pace, not the package's half second in and a whole
+      // one out; and at once when the system asks for no motion.
+      fadeInDuration: MTMotion.page,
+      fadeOutDuration: MTMotion.fast,
       imageUrl: value,
       fit: fit,
       memCacheWidth: decodeWidth,
@@ -37,6 +42,17 @@ Widget? artworkFor(
     File(value),
     fit: fit,
     cacheWidth: decodeWidth,
+    // A cover read from the device fades in as one from the network does,
+    // rather than appearing in a single frame once decoded.
+    frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
+        wasSynchronouslyLoaded
+        ? child
+        : AnimatedOpacity(
+            opacity: frame == null ? 0 : 1,
+            duration: mtMotionDuration(context, MTMotion.page),
+            curve: MTMotion.entrance,
+            child: child,
+          ),
     // The cache was cleared or the file deleted, so the card shows no cover
     // rather than a red error box.
     errorBuilder: (_, _, _) => const SizedBox.shrink(),
@@ -50,9 +66,10 @@ Widget? artworkFor(
 /// player asks for the wide thumbnail, which has none. Where an upload has
 /// no wide one, the 4:3 picture is enlarged by 4/3 so the bands fall
 /// outside the square. Anything that is not a YouTube thumbnail is drawn
-/// as [artworkFor] draws it.
-Widget? coverArtworkFor(String? value) {
-  final wide = UrlKit.youtubeWideThumbnail(value);
+/// as [artworkFor] draws it. A cover kept on this device takes the wide
+/// one from [canonicalUrl] (see `youtubeWideCover`).
+Widget? coverArtworkFor(String? value, {String? canonicalUrl}) {
+  final wide = youtubeWideCover(value, canonicalUrl);
   if (wide == null) return artworkFor(value);
   return CachedNetworkImage(
     imageUrl: wide,

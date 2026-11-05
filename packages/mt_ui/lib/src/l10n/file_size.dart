@@ -17,3 +17,14 @@ String mtFormatSize(int bytes) {
       : '${(bytes / megabyte).toStringAsFixed(1)} MB';
   return mtLtrRun(text);
 }
+
+/// **A download speed**, in the same units and isolation as
+/// [mtFormatSize]: kilobytes under one megabyte a second, then megabytes.
+String mtFormatTransferRate(double bytesPerSecond) {
+  const kilobyte = 1024;
+  const megabyte = 1024 * kilobyte;
+  final text = bytesPerSecond >= megabyte
+      ? '${(bytesPerSecond / megabyte).toStringAsFixed(1)} MB/s'
+      : '${(bytesPerSecond / kilobyte).round()} KB/s';
+  return mtLtrRun(text);
+}

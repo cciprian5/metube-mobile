@@ -136,11 +136,6 @@ final subscriptionsControllerProvider = Provider<SubscriptionsController>(
   SubscriptionsController.new,
 );
 
-/// **A folder named after a channel**: the name is one folder, so a slash
-/// in it ("AC/DC") is not read as nesting.
-String channelFolderName(String name) =>
-    ServerPath.cleanFolder(name.replaceAll(RegExp(r'[/\\]'), '-'));
-
 /// The intervals the sheet offers, in minutes. **Nothing under half an
 /// hour**: the server clamps its own loop to a minute, but a channel
 /// checked every minute is a channel whose feed is fetched 1,440 times a

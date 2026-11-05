@@ -5,9 +5,23 @@ import 'url_keyed_index.dart';
 /// The artwork index: canonicalUrl to the cover URL captured at add time.
 /// The only fallback allowed for non-YouTube sources, since ytimg URLs are
 /// never invented (trap §6.3). Prefs key: `artwork_index` (§5.1).
-final class ArtworkIndex extends UrlKeyedIndex<String> {
-  ArtworkIndex({required super.store, required super.mutex})
+base class ArtworkIndex extends UrlKeyedIndex<String> {
+  ArtworkIndex({required super.store, required super.mutex, this.ownFolder})
     : super(prefsKey: 'artwork_index');
+
+  /// The app's own files folder, where the covers it draws itself are
+  /// kept. When given, a cover is deleted with its entry only from inside
+  /// it: an entry's value can come from elsewhere (the server's history,
+  /// a restored backup), and a path there must never decide what is
+  /// deleted on this device.
+  final Future<String> Function()? ownFolder;
+
+  ArtworkIndex._under(
+    String prefsKey, {
+    required super.store,
+    required super.mutex,
+  }) : ownFolder = null,
+       super(prefsKey: prefsKey);
 
   @override
   String? decodeValue(dynamic raw) {
@@ -42,10 +56,20 @@ final class ArtworkIndex extends UrlKeyedIndex<String> {
       for (final entry in all.entries)
         if (!doomed.contains(entry.key)) entry.value,
     };
+    final String? own;
+    try {
+      own = await ownFolder?.call();
+    } on Object {
+      // Where the app's files are cannot be told: no file is deleted, and
+      // the entries still go.
+      await mutate((map) => map.removeWhere((k, _) => doomed.contains(k)));
+      return;
+    }
     for (final key in doomed) {
       final path = all[key];
       if (path == null || path.startsWith('http')) continue;
       if (stillUsed.contains(path)) continue;
+      if (own != null && !isInside(path, own)) continue;
       try {
         final file = File(path);
         if (await file.exists()) await file.delete();
@@ -56,4 +80,33 @@ final class ArtworkIndex extends UrlKeyedIndex<String> {
     }
     await mutate((map) => map.removeWhere((k, _) => doomed.contains(k)));
   }
+
+  /// Whether [path] is a file below [folder], by its parts: no part of it
+  /// climbs (`..`), so `folder/../elsewhere` is not inside.
+  static bool isInside(String path, String folder) {
+    List<String> parts(String p) =>
+        p.split(RegExp(r'[/\\]')).where((s) => s.isNotEmpty).toList();
+    final file = parts(path);
+    final root = parts(folder);
+    if (file.length <= root.length || file.contains('..')) return false;
+    for (var i = 0; i < root.length; i++) {
+      if (file[i].toLowerCase() != root[i].toLowerCase()) return false;
+    }
+    return true;
+  }
+}
+
+/// **Online covers kept as files on this device**: the clip's own cover
+/// (YouTube's, which YouTube deletes with the video), or, when that was
+/// already gone, a picture of the clip's file standing in for it. Prefs
+/// key: `kept_covers`.
+///
+/// Apart from [ArtworkIndex] on purpose: that one also holds frames the
+/// phone takes of every clip, YouTube's included, which must never take
+/// the place of the official cover. A kept one may.
+final class KeptCoverIndex extends ArtworkIndex {
+  KeptCoverIndex({required super.store, required super.mutex})
+    : super._under(keptKey);
+
+  static const keptKey = 'kept_covers';
 }

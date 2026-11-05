@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../di.dart';
@@ -9,7 +10,7 @@ import '../playlists/playlists_providers.dart';
 /// "Manage tags": renaming and deleting a tag only. **Deleting a tag never
 /// deletes media.**
 void showManageTagsSheet(BuildContext context, WidgetRef ref) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -44,8 +45,7 @@ class _ManageTagsSheet extends ConsumerWidget {
               const SizedBox(height: MTSpace.sm),
               Flexible(
                 child: counts.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const Center(child: MTSpinner()),
                   error: (_, _) => Text(l10n.tryAgain),
                   data: (map) => map.isEmpty
                       ? Padding(
@@ -97,16 +97,12 @@ class _TagRow extends ConsumerWidget {
           IconButton(
             tooltip: l10n.renameTag,
             onPressed: () => _rename(context, ref),
-            icon: Icon(Icons.edit_rounded, size: 19, color: palette.ink2),
+            icon: MTIcon(MTIcons.edit, size: 19, color: palette.ink2),
           ),
           IconButton(
             tooltip: l10n.deleteTag,
             onPressed: () => _delete(context, ref),
-            icon: Icon(
-              Icons.delete_outline_rounded,
-              size: 19,
-              color: palette.err,
-            ),
+            icon: MTIcon(MTIcons.trash, size: 19, color: palette.err),
           ),
         ],
       ),
@@ -123,6 +119,7 @@ class _TagRow extends ConsumerWidget {
       confirmLabel: l10n.rename,
       initialValue: tag,
       hintText: l10n.newTagHint,
+      maxLength: MTConstants.maxTagLength,
     );
     if (name == null || name.isEmpty || name == tag) return;
     await ref.read(tagsIndexProvider).renameTag(tag, name);
@@ -131,7 +128,7 @@ class _TagRow extends ConsumerWidget {
 
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
     final l10n = context.mtl;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         content: Text(l10n.deleteTagConfirm(mtName(tag))),

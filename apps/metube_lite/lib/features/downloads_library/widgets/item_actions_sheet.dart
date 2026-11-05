@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../playlists/add_to_playlist_sheet.dart';
 import '../../shared/error_report.dart';
 import '../../shared/external_player.dart';
+import '../artwork_view.dart';
 import '../library_actions.dart';
 import '../library_providers.dart';
 import '../local_item.dart';
 import 'item_details_sheet.dart';
+import '../../shared/open_web_link.dart';
 
 /// The item actions sheet (rule 5, Lite's version where everything is
 /// local). Delete comes last, isolated by a divider and in the error
 /// colour, which is a general navigation rule.
 void showItemActionsSheet(BuildContext context, WidgetRef ref, LocalItem item) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // As tall as its rows, not the default nine sixteenths of the screen,
@@ -64,12 +65,12 @@ class _ItemActionsSheet extends ConsumerWidget {
     }
 
     ListTile tile(
-      IconData icon,
+      MTIconData icon,
       String label,
       VoidCallback onTap, {
       Color? color,
     }) => ListTile(
-      leading: Icon(icon, color: color ?? p.ink2),
+      leading: MTIcon(icon, color: color ?? p.ink2),
       title: Text(
         label,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color),
@@ -99,19 +100,35 @@ class _ItemActionsSheet extends ConsumerWidget {
               ),
             ),
             const Divider(),
-            tile(Icons.info_outline_rounded, l10n.details, () {
+            // **Favourites from the menu, not an empty heart on every card**
+            // (owner's decision 2026-11-01): the card shows a small heart on
+            // favourites alone, and the players keep the one-tap heart.
+            MTFavoriteTile(
+              favorite: item.favorite,
+              onTap: () async {
+                Navigator.pop(context);
+                final added = await actions.toggleFavorite(item.key);
+                if (host.mounted) {
+                  showMTSnack(
+                    host,
+                    added ? l10n.addedToFavorites : l10n.removedFromFavorites,
+                  );
+                }
+              },
+            ),
+            tile(MTIcons.info, l10n.details, () {
               Navigator.pop(context);
               showItemDetailsSheet(host, item);
             }),
             tile(
-              Icons.share_rounded,
+              MTIcons.share,
               l10n.share,
               () => run(() => actions.share([item])),
             ),
             // An external player gets a file path: Lite has only local
             // files, so no server URL ever leaves the app.
             tile(
-              Icons.open_with_rounded,
+              MTIcons.playback,
               l10n.openInExternalPlayer,
               () => run(() async {
                 final opened = await const ExternalPlayer().open(
@@ -127,27 +144,29 @@ class _ItemActionsSheet extends ConsumerWidget {
                 }
               }),
             ),
-            tile(Icons.playlist_add_rounded, l10n.addToPlaylist, () {
+            tile(MTIcons.queueAdd, l10n.addToPlaylist, () {
               Navigator.pop(context);
               showAddToPlaylistSheet(host, ref, [item]);
             }),
             // The original link is offered only where we know it; it is never
             // rebuilt from a guess.
             if (item.canonicalUrl != null)
-              tile(Icons.open_in_new_rounded, l10n.openOriginalLink, () {
+              tile(MTIcons.external, l10n.openOriginalLink, () {
                 Navigator.pop(context);
-                launchUrl(
-                  Uri.parse(item.canonicalUrl!),
-                  mode: LaunchMode.externalApplication,
-                );
+                openWebLink(item.canonicalUrl);
               }),
             const Divider(),
             tile(
-              Icons.delete_outline_rounded,
+              MTIcons.trash,
               l10n.deleteVideo,
               () => _confirm(
                 context,
+                l10n.deleteVideo,
                 l10n.deleteVideoConfirm(mtName(item.title)),
+                MTDialogClip(
+                  title: mtName(item.title),
+                  thumbnail: artworkFor(item.thumbnail, decodeWidth: 120),
+                ),
                 () {
                   run(
                     () => actions.deleteFiles([item]),
@@ -164,27 +183,27 @@ class _ItemActionsSheet extends ConsumerWidget {
     );
   }
 
-  void _confirm(BuildContext context, String message, VoidCallback onYes) {
+  /// **The clip itself is shown before anything is deleted** (the Wahaj
+  /// confirmation, as on the computer), so nobody removes the wrong one of
+  /// two look-alike titles.
+  Future<void> _confirm(
+    BuildContext context,
+    String title,
+    String message,
+    Widget clip,
+    VoidCallback onYes,
+  ) async {
     final l10n = context.mtl;
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              onYes();
-            },
-            child: Text(l10n.delete),
-          ),
-        ],
-      ),
+    final sure = await showMTConfirm(
+      context,
+      title: title,
+      message: message,
+      confirmLabel: l10n.delete,
+      cancelLabel: l10n.cancel,
+      destructive: true,
+      preview: clip,
     );
+    if (sure) onYes();
   }
 }
 
@@ -195,7 +214,7 @@ void confirmBulkDelete(
   Set<String> selection,
 ) {
   final l10n = context.mtl;
-  showDialog<void>(
+  showMTDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
       content: Text(l10n.deleteMultipleConfirm(selection.length)),

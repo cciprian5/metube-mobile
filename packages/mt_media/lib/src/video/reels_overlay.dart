@@ -29,7 +29,7 @@ class MTReelsTopBar extends StatelessWidget {
         IconButton(
           onPressed: onBack,
           tooltip: l10n.dismiss,
-          icon: Icon(Icons.keyboard_arrow_down_rounded, color: ink),
+          icon: MTIcon(MTIcons.chevronDown, color: ink),
         ),
         Expanded(
           child: Center(
@@ -56,7 +56,7 @@ class MTReelsTopBar extends StatelessWidget {
           IconButton(
             onPressed: onMore,
             tooltip: l10n.details,
-            icon: Icon(Icons.more_vert_rounded, color: ink),
+            icon: MTIcon(MTIcons.moreVert, color: ink),
           )
         else
           const SizedBox(width: 48),
@@ -93,9 +93,7 @@ class MTReelsRail extends StatelessWidget {
       children: [
         if (onToggleFavorite != null)
           _RailButton(
-            icon: favorite
-                ? Icons.favorite_rounded
-                : Icons.favorite_border_rounded,
+            icon: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
             label: l10n.favorites,
             onTap: onToggleFavorite!,
             background: favorite ? p.favorite : null,
@@ -123,7 +121,7 @@ class _RailButton extends StatelessWidget {
     this.background,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String label;
   final VoidCallback onTap;
   final Color? background;
@@ -250,7 +248,7 @@ class MTReelsEndCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.bolt_rounded, size: 34, color: p.accent),
+            MTIcon(MTIcons.bolt, size: 34, color: p.accent),
             const SizedBox(height: MTSpace.sm),
             Text(
               l10n.reelsEndTitle,

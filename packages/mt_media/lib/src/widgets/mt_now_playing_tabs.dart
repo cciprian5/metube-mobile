@@ -57,14 +57,14 @@ class _MTNowPlayingTabsState extends State<MTNowPlayingTabs> {
             runSpacing: MTSpace.xs,
             children: [
               if (pane != null)
-                _Tab(
+                MTPanelTab(
                   icon: pane.icon,
                   label: pane.label,
                   selected: !showQueue,
                   onTap: () => setState(() => _queue = false),
                 ),
-              _Tab(
-                icon: Icons.queue_music_rounded,
+              MTPanelTab(
+                icon: MTIcons.queue,
                 label: '${context.mtl.upNext} · ${_handler.items.length}',
                 selected: showQueue,
                 onTap: () => setState(() => _queue = true),
@@ -109,15 +109,18 @@ class _MTNowPlayingTabsState extends State<MTNowPlayingTabs> {
 }
 
 /// A tab drawn like the library's filter chips: the chosen one inverted.
-class _Tab extends StatelessWidget {
-  const _Tab({
+/// One tab of a panel beside the player: an icon and a label, filled with
+/// the ink when chosen.
+class MTPanelTab extends StatelessWidget {
+  const MTPanelTab({
+    super.key,
     required this.icon,
     required this.label,
     required this.selected,
     required this.onTap,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -148,7 +151,7 @@ class _Tab extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 15, color: fg),
+                MTIcon(icon, size: 15, color: fg),
                 const SizedBox(width: MTSpace.xxs),
                 Text(
                   label,

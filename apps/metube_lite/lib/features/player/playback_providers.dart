@@ -87,7 +87,8 @@ MTArtworkBuilder artworkBuilderFor(WidgetRef ref) =>
 
 /// The audio player's square cover; see [coverArtworkFor].
 MTArtworkBuilder coverBuilderFor(WidgetRef ref) =>
-    (context, item) => coverArtworkFor(item.artworkUrl);
+    (context, item) =>
+        coverArtworkFor(item.artworkUrl, canonicalUrl: item.canonicalUrl);
 
 /// The platform shown for a playback item, whose key may be a path rather
 /// than a URL.

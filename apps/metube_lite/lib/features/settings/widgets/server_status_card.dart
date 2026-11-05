@@ -32,7 +32,7 @@ final serverStatusProvider = FutureProvider<MTEndpointStatus?>((ref) async {
   }
 });
 
-/// The server status card, always espresso-dark (log §4).
+/// The server status card, always charcoal-dark (log §4).
 class ServerStatusCard extends ConsumerWidget {
   const ServerStatusCard({super.key});
 
@@ -45,7 +45,7 @@ class ServerStatusCard extends ConsumerWidget {
 
     final (icon, tint, label) = switch (status) {
       AsyncData(value: MTEndpointStatus.ok) => (
-        Icons.cloud_done_rounded,
+        MTIcons.cloudCheck,
         p.ok,
         l10n.serverStatusConnected,
       ),
@@ -53,7 +53,7 @@ class ServerStatusCard extends ConsumerWidget {
       // not legible on it, so the distinction is made with the icon and the
       // text rather than with colour.
       AsyncData(value: MTEndpointStatus.unauthorized) => (
-        Icons.lock_outline_rounded,
+        MTIcons.lock,
         MTPalette.serverCardInk,
         l10n.signInRequired,
       ),
@@ -61,22 +61,22 @@ class ServerStatusCard extends ConsumerWidget {
       // and the cure is correcting the address rather than waiting for the
       // network.
       AsyncData(value: MTEndpointStatus.notMeTube) => (
-        Icons.link_off_rounded,
+        MTIcons.linkOff,
         MTPalette.serverCardInk,
         l10n.errNotMeTube,
       ),
       AsyncData(value: MTEndpointStatus.unreachable) => (
-        Icons.cloud_off_rounded,
+        MTIcons.cloudOff,
         p.err,
         l10n.serverStatusOffline,
       ),
       AsyncData(value: null) => (
-        Icons.cloud_outlined,
+        MTIcons.cloud,
         MTPalette.serverCardInk,
         l10n.serverStatusUnconfigured,
       ),
       _ => (
-        Icons.cloud_sync_rounded,
+        MTIcons.cloudWait,
         MTPalette.serverCardInk,
         l10n.serverStatusChecking,
       ),
@@ -125,8 +125,8 @@ class ServerStatusCard extends ConsumerWidget {
           IconButton(
             tooltip: l10n.refresh,
             onPressed: () => ref.invalidate(serverStatusProvider),
-            icon: Icon(
-              Icons.refresh_rounded,
+            icon: MTIcon(
+              MTIcons.refresh,
               color: MTPalette.serverCardInk.withValues(alpha: 0.8),
             ),
           ),

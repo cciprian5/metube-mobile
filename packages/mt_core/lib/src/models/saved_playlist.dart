@@ -13,6 +13,7 @@ class PlaylistEntry {
     this.cachedTitle,
     this.cachedThumb,
     this.legacyPath,
+    this.addedAt,
   });
 
   final String canonicalUrl;
@@ -20,6 +21,10 @@ class PlaylistEntry {
   final String? cachedTitle;
   final String? cachedThumb;
   final String? legacyPath;
+
+  /// When this item joined the playlist, or null for one added before
+  /// stamping existed or by an app that does not stamp.
+  final DateTime? addedAt;
 
   bool get isLegacy => canonicalUrl.isEmpty && legacyPath != null;
 
@@ -29,7 +34,17 @@ class PlaylistEntry {
     if (cachedTitle != null) 'cachedTitle': cachedTitle,
     if (cachedThumb != null) 'cachedThumb': cachedThumb,
     if (legacyPath != null) 'legacyPath': legacyPath,
+    if (addedAt != null) 'addedAt': addedAt!.toIso8601String(),
   };
+
+  PlaylistEntry withAddedAt(DateTime at) => PlaylistEntry(
+    canonicalUrl: canonicalUrl,
+    serverFilename: serverFilename,
+    cachedTitle: cachedTitle,
+    cachedThumb: cachedThumb,
+    legacyPath: legacyPath,
+    addedAt: at,
+  );
 
   factory PlaylistEntry.fromJson(Map<String, dynamic> json) => PlaylistEntry(
     canonicalUrl: json['canonicalUrl']?.toString() ?? '',
@@ -37,6 +52,7 @@ class PlaylistEntry {
     cachedTitle: json['cachedTitle']?.toString(),
     cachedThumb: json['cachedThumb']?.toString(),
     legacyPath: json['legacyPath']?.toString(),
+    addedAt: DateTime.tryParse(json['addedAt']?.toString() ?? ''),
   );
 }
 
@@ -49,6 +65,7 @@ class SavedPlaylist {
     this.pinned = false,
     DateTime? createdAt,
     this.lastPlayedAt,
+    this.updatedAt,
   }) : id = id ?? _uuid.v4(),
        items = items ?? [],
        createdAt = createdAt ?? DateTime.now();
@@ -60,12 +77,17 @@ class SavedPlaylist {
   final DateTime createdAt;
   DateTime? lastPlayedAt;
 
+  /// When anything in this playlist last changed (name, pin, order,
+  /// members), or null before stamping existed.
+  DateTime? updatedAt;
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
     'createdAt': createdAt.toIso8601String(),
     'pinned': pinned,
     if (lastPlayedAt != null) 'lastPlayedAt': lastPlayedAt!.toIso8601String(),
+    if (updatedAt != null) 'updatedAt': updatedAt!.toIso8601String(),
     'items': items.map((e) => e.toJson()).toList(),
   };
 
@@ -85,6 +107,7 @@ class SavedPlaylist {
       pinned: json['pinned'] == true,
       createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
       lastPlayedAt: DateTime.tryParse(json['lastPlayedAt']?.toString() ?? ''),
+      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? ''),
       items: [
         for (final item in rawItems ?? const [])
           if (item is Map)

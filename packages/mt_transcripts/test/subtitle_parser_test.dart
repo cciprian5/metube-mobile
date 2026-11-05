@@ -19,6 +19,24 @@ void main() {
     expect(segments[2].text, 'really really long trunks');
   });
 
+  test('**the guard**: a caption line of unclosed "<" reads in moments, '
+      'not minutes', () {
+    // A side file anyone with write access to the downloads folder can
+    // leave beside a clip; the old tag pattern was quadratic on it.
+    final vtt = 'WEBVTT\n\n00:01.000 --> 00:02.000\n${'<' * 200000}\n';
+    final watch = Stopwatch()..start();
+    final segments = SubtitleParser.parse(vtt);
+    expect(watch.elapsedMilliseconds, lessThan(2000));
+    expect(segments, hasLength(1));
+  });
+
+  test('tags are still taken out around stray brackets', () {
+    const vtt =
+        'WEBVTT\n\n00:01.000 --> 00:02.000\n'
+        '<i>three</i> < four {\\an8}five\n';
+    expect(SubtitleParser.parse(vtt).single.text, 'three < four five');
+  });
+
   test('WebVTT: the header, notes and styling are dropped', () {
     const vtt =
         'WEBVTT\nKind: captions\nLanguage: en\n\n'

@@ -1,6 +1,7 @@
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../library/device_pulls.dart' show NotEnoughSpaceException;
 import '../library/library_actions.dart' show wifiOnlyRejection;
 
 /// Turns the core's classified exceptions into translated text (TRD §3.3).
@@ -36,5 +37,11 @@ String errorText(MTLocalizations l10n, Object error) => switch (error) {
     detail == null ? '؟' : mtName(serverReason(detail)),
   ),
   CancelledException() => l10n.cancel,
+  // Super alone: Lite's copy of this file has no copies that check the
+  // room first.
+  NotEnoughSpaceException(:final needed, :final free) => l10n.notEnoughSpace(
+    mtFormatSize(needed),
+    mtFormatSize(free),
+  ),
   _ => l10n.errorGeneric(error.toString()),
 };

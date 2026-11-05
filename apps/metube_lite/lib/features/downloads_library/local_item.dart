@@ -69,6 +69,16 @@ class LocalItem {
       aspectRatio != null &&
       aspectRatio! < 1;
 
+  /// A file's cover: **one kept on the phone first**, since the online one
+  /// it was kept from may be gone (YouTube deletes it with the video);
+  /// then the artwork index's, under the item key or the bare path.
+  static String? coverOf(
+    String key,
+    String path, {
+    required Map<String, String> kept,
+    required Map<String, String> artwork,
+  }) => kept[key] ?? artwork[key] ?? artwork[path];
+
   /// The default title when the title index has none: the filename without
   /// its extension and without the `_HHmmss` time stamp the name builder
   /// adds (§2.4).
@@ -127,7 +137,10 @@ List<LocalItem> buildLocalLibraryView(
     final typeOk = switch (type) {
       MediaTypeFilter.all => true,
       MediaTypeFilter.audio => item.isAudio,
-      MediaTypeFilter.video => !item.isAudio,
+      // Video leaves the shorts to their own chip, so every clip is under
+      // one type and video without the shorts can be had (owner's
+      // choice, 2026-11-05). A clip of unknown shape stays a video.
+      MediaTypeFilter.video => !item.isAudio && !item.isShortForm,
       // Shorts: portrait, short, and only where the dimensions are known.
       MediaTypeFilter.shorts => item.isShortForm,
     };
@@ -153,19 +166,8 @@ List<LocalItem> buildLocalLibraryView(
   return filtered;
 }
 
-/// Live platform counters for the filter chips, most first. The unknown
-/// platform (`other`) is placed last so it never leads the list.
-List<MapEntry<MediaPlatform, int>> platformCounts(List<LocalItem> items) {
-  final counts = <MediaPlatform, int>{};
-  for (final item in items) {
-    counts[item.platform] = (counts[item.platform] ?? 0) + 1;
-  }
-  final entries = counts.entries.toList()
-    ..sort((a, b) {
-      if ((a.key == MediaPlatform.other) != (b.key == MediaPlatform.other)) {
-        return a.key == MediaPlatform.other ? 1 : -1;
-      }
-      return b.value.compareTo(a.value);
-    });
-  return entries;
-}
+/// Live platform counters for the filter chips, most first, with the
+/// unknown platform last: the one rule every library counts with
+/// ([countPlatforms]).
+List<MapEntry<MediaPlatform, int>> platformCounts(List<LocalItem> items) =>
+    countPlatforms(items, (item) => item.platform);

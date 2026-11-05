@@ -3,17 +3,17 @@ import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:mt_media/library.dart';
 
 import '../../shared/external_player.dart';
 import '../../shared/membership.dart';
-import '../library_models.dart';
 import '../quality_cache.dart';
+import '../../shared/open_web_link.dart';
 
 /// Item details, opened from the actions sheet and from the reels player
 /// alike.
 void showItemDetailsSheet(BuildContext context, LibraryItem item) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     builder: (_) => _DetailsSheet(item: item),
@@ -119,11 +119,8 @@ class _DetailsSheet extends ConsumerWidget {
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () => launchUrl(
-                      Uri.parse(item.canonicalUrl),
-                      mode: LaunchMode.externalApplication,
-                    ),
-                    icon: const Icon(Icons.open_in_new_rounded, size: 16),
+                    onPressed: () => openWebLink(item.canonicalUrl),
+                    icon: const MTIcon(MTIcons.external, size: 16),
                     label: Text(
                       l10n.openOriginalLink,
                       maxLines: 1,
@@ -148,7 +145,7 @@ class _DetailsSheet extends ConsumerWidget {
                           );
                         }
                       },
-                      icon: const Icon(Icons.open_with_rounded, size: 16),
+                      icon: const MTIcon(MTIcons.playback, size: 16),
                       label: Text(
                         l10n.externalPlayerShort,
                         maxLines: 1,
@@ -167,7 +164,7 @@ class _DetailsSheet extends ConsumerWidget {
                   showMTSnack(context, l10n.settingsSaved);
                 }
               },
-              icon: const Icon(Icons.copy_rounded, size: 16),
+              icon: const MTIcon(MTIcons.copy, size: 16),
               label: Text(
                 item.canonicalUrl,
                 maxLines: 1,

@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
+import 'mt_desktop_app.dart';
+import 'mt_bottom_bar.dart';
+
+import '../icons/mt_icon.dart';
+import '../icons/mt_icon_data.dart';
 
 /// Window size classes, after Material 3's own breakpoints.
 ///
@@ -17,11 +22,20 @@ enum MTWindowClass {
 
   /// 840 and wider: a tablet on its side, a large tablet.
   expanded,
+
+  /// 960 and wider **in the Windows app only** (see [MTDesktopApp]). A
+  /// phone app never reaches it however wide its window, so nothing built
+  /// for this class can leak into Lite or Super.
+  desktop,
 }
 
 abstract final class MTBreakpoint {
   static const double medium = 600;
   static const double expanded = 840;
+
+  /// The narrowest the Windows app lays out for; its window cannot be made
+  /// smaller (measured after the interface zoom).
+  static const double desktop = 960;
 
   /// The shorter side from which a window is a tablet's rather than a
   /// phone's. Well below Android's 600 on purpose: a common 8-inch tablet
@@ -55,7 +69,10 @@ abstract final class MTBreakpoint {
   /// The same for compact rows, which need a little more room for a title.
   static const double compactColumn = 320;
 
-  static MTWindowClass classOf(double width) => width >= expanded
+  static MTWindowClass classOf(double width, {bool desktopApp = false}) =>
+      desktopApp && width >= desktop
+      ? MTWindowClass.desktop
+      : width >= expanded
       ? MTWindowClass.expanded
       : width >= medium
       ? MTWindowClass.medium
@@ -63,8 +80,10 @@ abstract final class MTBreakpoint {
 }
 
 extension MTWindowClassOf on BuildContext {
-  MTWindowClass get windowClass =>
-      MTBreakpoint.classOf(MediaQuery.sizeOf(this).width);
+  MTWindowClass get windowClass => MTBreakpoint.classOf(
+    MediaQuery.sizeOf(this).width,
+    desktopApp: MTDesktopApp.isDesktop(this),
+  );
 }
 
 /// Centres [child] in at most [maxWidth] points.
@@ -103,8 +122,8 @@ class MTNavItem {
     required this.label,
   });
 
-  final IconData icon;
-  final IconData selectedIcon;
+  final MTIconData icon;
+  final MTIconData selectedIcon;
   final String label;
 }
 
@@ -221,17 +240,10 @@ class MTAdaptiveScaffold extends StatelessWidget {
     );
   }
 
-  NavigationBar _bar() => NavigationBar(
+  Widget _bar() => MTBottomBar(
+    items: items,
     selectedIndex: selectedIndex,
-    onDestinationSelected: onSelected,
-    destinations: [
-      for (final item in items)
-        NavigationDestination(
-          icon: Icon(item.icon),
-          selectedIcon: Icon(item.selectedIcon),
-          label: item.label,
-        ),
-    ],
+    onSelected: onSelected,
   );
 
   NavigationRail _rail() => NavigationRail(
@@ -243,8 +255,8 @@ class MTAdaptiveScaffold extends StatelessWidget {
     destinations: [
       for (final item in items)
         NavigationRailDestination(
-          icon: Icon(item.icon),
-          selectedIcon: Icon(item.selectedIcon),
+          icon: MTIcon(item.icon),
+          selectedIcon: MTIcon(item.selectedIcon),
           label: Text(item.label),
           padding: const EdgeInsets.symmetric(vertical: MTSpace.xs),
         ),

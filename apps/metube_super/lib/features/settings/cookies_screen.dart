@@ -131,10 +131,8 @@ class _CookiesScreenState extends ConsumerState<CookiesScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    has == true
-                        ? Icons.verified_user_rounded
-                        : Icons.cookie_outlined,
+                  MTIcon(
+                    has == true ? MTIcons.shield : MTIcons.cookie,
                     color: has == true ? p.ok : p.ink3,
                   ),
                   const SizedBox(width: MTSpace.md),
@@ -157,12 +155,8 @@ class _CookiesScreenState extends ConsumerState<CookiesScreen> {
               child: FilledButton.icon(
                 onPressed: _busy || api == null ? null : _pickAndUpload,
                 icon: _busy
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.upload_file_rounded),
+                    ? const MTSpinner(size: 16)
+                    : const MTIcon(MTIcons.upload),
                 label: Text(
                   has == true ? l10n.cookiesReplace : l10n.cookiesUpload,
                 ),
@@ -183,7 +177,7 @@ class _CookiesScreenState extends ConsumerState<CookiesScreen> {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: _busy || api == null ? null : _confirmDelete,
-                  icon: const Icon(Icons.delete_outline_rounded),
+                  icon: const MTIcon(MTIcons.trash),
                   label: Text(l10n.cookiesDelete),
                   style: OutlinedButton.styleFrom(foregroundColor: p.err),
                 ),
@@ -193,7 +187,7 @@ class _CookiesScreenState extends ConsumerState<CookiesScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.privacy_tip_outlined, size: 16, color: p.ink3),
+                MTIcon(MTIcons.shield, size: 16, color: p.ink3),
                 const SizedBox(width: MTSpace.xs),
                 Expanded(
                   child: Text(
@@ -214,7 +208,7 @@ class _CookiesScreenState extends ConsumerState<CookiesScreen> {
     final l10n = context.mtl;
     final api = ref.read(apiClientProvider);
     if (api == null) return;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.cookiesDelete),

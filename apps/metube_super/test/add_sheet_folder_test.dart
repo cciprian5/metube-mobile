@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:metube_super/di.dart';
 import 'package:metube_super/features/folders/folders_providers.dart';
 import 'package:metube_super/features/home/add_flow.dart';
+import 'package:metube_super/features/home/link_preview_view.dart';
+import 'package:metube_super/features/settings/widgets/help_button.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -17,6 +19,11 @@ import 'device_matrix.dart';
 /// with the link, and absent for a playlist, which the batch screen saves
 /// at the top.
 void main() {
+  /// The add sheet's preview, answered here rather than from YouTube.
+  final preview = ClipPreviewResolver(
+    httpGet: (_) async => '{"title":"Me at the zoo","author_name":"jawed"}',
+  );
+
   late _Engine engine;
 
   Widget host(String url, {Locale locale = const Locale('en')}) {
@@ -47,6 +54,7 @@ void main() {
           MTLogger(filePath: '${Directory.systemTemp.path}/mtf_test.log'),
         ),
         downloadEngineProvider.overrideWithValue(engine),
+        linkPreviewResolverProvider.overrideWithValue(preview),
         serverFoldersProvider.overrideWith(
           (ref) async =>
               const ServerFolders(video: ['Ai', 'Ai/Lessons', 'Quran']),
@@ -64,6 +72,9 @@ void main() {
     );
   }
 
+  /// The folder row as it starts: no folder, and where that puts the file.
+  const top = 'No folder · At the top of the downloads';
+
   Future<void> open(WidgetTester tester, String url) async {
     tester.view.physicalSize = const Size(411, 914);
     tester.view.devicePixelRatio = 1;
@@ -75,9 +86,9 @@ void main() {
 
   testWidgets('a picked folder goes with the download', (tester) async {
     await open(tester, 'https://www.youtube.com/watch?v=jNQXAC9IVRw');
-    expect(find.text('No folder'), findsOneWidget);
+    expect(find.text(top), findsOneWidget);
 
-    await tester.tap(find.text('No folder'));
+    await tester.tap(find.text(top));
     await tester.pumpAndSettle();
     await tester.tap(find.text(mtName('Lessons')));
     await tester.pumpAndSettle();
@@ -100,7 +111,53 @@ void main() {
       tester,
       'https://www.youtube.com/playlist?list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG',
     );
-    expect(find.text('No folder'), findsNothing);
+    expect(find.text(top), findsNothing);
+  });
+
+  /// **The guard**: the help in the picker used to pulse three times on
+  /// every opening, a light asking for attention long after it was read
+  /// (audit 2026-10-30).
+  testWidgets("the picker's help stays still as it opens", (tester) async {
+    await open(tester, 'https://www.youtube.com/watch?v=jNQXAC9IVRw');
+    await tester.tap(find.text(top));
+    await tester.pump();
+    await tester.pump(MTMotion.slow ~/ 2);
+    expect(find.byType(HelpButton), findsOneWidget);
+    expect(
+      find.ancestor(
+        of: find.byType(HelpButton),
+        matching: find.byWidgetPredicate(
+          (w) => w is Transform && w.transform.getMaxScaleOnAxis() != 1,
+        ),
+      ),
+      findsNothing,
+    );
+    await tester.pumpAndSettle();
+  });
+
+  /// **The guard**: the sheet says what the link is before anything is
+  /// downloaded, from the platform's public oEmbed.
+  testWidgets('the sheet previews the clip under the link', (tester) async {
+    await open(tester, 'https://www.youtube.com/watch?v=jNQXAC9IVRw');
+    expect(find.byType(MTLinkPreview), findsOneWidget);
+    expect(find.text('Me at the zoo'), findsOneWidget);
+    expect(find.textContaining('jawed'), findsOneWidget);
+  });
+
+  // The owner's decision of 2026-11-04: a height is a ceiling on every video
+  // site, and the engine falls back to best where the site has none.
+  testWidgets('**the guard**: another video site offers the heights', (
+    tester,
+  ) async {
+    await open(tester, 'https://www.instagram.com/reel/DQabc123/');
+    expect(find.text('Up to 720p'), findsOneWidget);
+    // 360 is Lite's alone.
+    expect(find.text('Up to 360p'), findsNothing);
+  });
+
+  testWidgets('sound alone offers no heights', (tester) async {
+    await open(tester, 'https://soundcloud.com/artist/track');
+    expect(find.text('Up to 720p'), findsNothing);
   });
 
   testWidgets('the sheet with its folder row holds on every device', (
@@ -125,6 +182,9 @@ class _Opened extends StatelessWidget {
         MTLogger(filePath: '${Directory.systemTemp.path}/mtf_test.log'),
       ),
       downloadEngineProvider.overrideWithValue(null),
+      linkPreviewResolverProvider.overrideWithValue(
+        ClipPreviewResolver(httpGet: (_) async => '{}'),
+      ),
     ],
     child: MaterialApp.router(
       theme: mtTheme(MTVariant.superApp, Brightness.light),

@@ -162,14 +162,14 @@ void main() {
       await pump(tester, MTLibraryLayout.list, library: 754);
       final c = columns(tester);
       expect((c.size, c.added, c.location), (true, false, true));
-      expect(find.text('#homelab'), findsNothing);
+      expect(find.text(mtName('#homelab')), findsNothing);
     });
 
     testWidgets('the full width adds the date and the tags', (tester) async {
       await pump(tester, MTLibraryLayout.list, library: 1155);
       final c = columns(tester);
       expect((c.size, c.added, c.location), (true, true, true));
-      expect(find.text('#homelab'), findsWidgets);
+      expect(find.text(mtName('#homelab')), findsWidgets);
     });
 
     testWidgets('upright drops the size first', (tester) async {

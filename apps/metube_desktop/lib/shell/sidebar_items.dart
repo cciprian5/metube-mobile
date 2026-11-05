@@ -1,0 +1,262 @@
+import 'package:flutter/material.dart';
+import 'package:mt_ui/mt_ui.dart';
+
+import 'context_menu.dart';
+
+/// The sidebar's add button: the ember, with the label when wide.
+class SidebarAddButton extends StatelessWidget {
+  const SidebarAddButton({
+    super.key,
+    required this.narrow,
+    required this.label,
+    required this.onTap,
+  });
+
+  final bool narrow;
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    final ink = onTap == null ? p.ink3 : p.onAccent;
+    final plus = MTIcon(MTIcons.plus, size: MTDensity.desktop.icon, color: ink);
+    return MTShortcutTooltip(
+      message: label,
+      shortcut: 'Ctrl+V',
+      // Its own name when narrow, where only the plus shows: the tooltip
+      // says nothing to a screen reader.
+      child: Semantics(
+        button: true,
+        enabled: onTap != null,
+        label: narrow ? label : null,
+        child: _face(context, ink, plus),
+      ),
+    );
+  }
+
+  Widget _face(BuildContext context, Color ink, Widget plus) {
+    final p = MTThemeX.of(context).palette;
+    final corners = MTCorners.desktop;
+    return Material(
+      color: onTap == null ? p.cardAlt : p.accent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(corners.field),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        // Not the theme's opaque hover fill, which would hide the ember.
+        hoverColor: p.onAccent.withValues(alpha: 0.12),
+        child: SizedBox(
+          height: MTDensity.desktop.row + MTSpace.xxs,
+          child: narrow
+              ? Center(child: plus)
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    plus,
+                    const SizedBox(width: MTSpace.xs),
+                    Flexible(
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelLarge
+                            ?.copyWith(color: ink),
+                      ),
+                    ),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One place in the sidebar: its icon, and its label when wide (in a
+/// tooltip when narrow).
+class SidebarItem extends StatelessWidget {
+  const SidebarItem({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.narrow,
+    required this.selected,
+    required this.onTap,
+    this.indent = false,
+    this.depth = 0,
+    this.trailing,
+    this.onMenu,
+  });
+
+  /// A right click, at where it landed; null when the place has no menu.
+  final ValueChanged<Offset>? onMenu;
+
+  /// A pinned list, set in under "Playlists".
+  final bool indent;
+
+  /// A folder's level in the tree, each one set in further.
+  final int depth;
+
+  /// A count at the line's end.
+  final String? trailing;
+
+  final MTIconData icon;
+  final String label;
+  final bool narrow;
+  final bool selected;
+  final VoidCallback onTap;
+
+  /// The least width the full line (icon, label, count) is laid out in.
+  static const double _fullLine = MTSpace.xxl * 5;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    final ink = selected ? p.ink : p.ink2;
+    final glyph = MTIcon(icon, size: MTDensity.desktop.icon, color: ink);
+    final row = AnimatedContainer(
+      // The fill eases from one choice to the next, as the border does.
+      duration: mtMotionDuration(context, MTMotion.fast),
+      decoration: ShapeDecoration(
+        color: selected ? mtSelectedFill(p) : p.ink.withValues(alpha: 0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+        ),
+      ),
+      child: Material(
+        type: MaterialType.transparency,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          onSecondaryTapUp: onMenu == null
+              ? null
+              : (d) => onMenu!(d.globalPosition),
+          child: SizedBox(
+            height: MTDensity.desktop.row,
+            // The icon alone too while the sidebar widens or narrows: its
+            // width passes through sizes the full line does not fit in,
+            // which overflowed for a few frames each time (logged).
+            child: LayoutBuilder(
+              builder: (context, box) => narrow || box.maxWidth < _fullLine
+                  ? Center(child: glyph)
+                  : Row(
+                      children: [
+                        SizedBox(
+                          width: indent
+                              ? MTSpace.xl
+                              : MTSpace.sm + MTSpace.md * depth,
+                        ),
+                        glyph,
+                        const SizedBox(width: MTSpace.sm),
+                        Expanded(
+                          // The label fades in as the sidebar widens past it,
+                          // rather than popping in at the width it first fits.
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: 1),
+                            duration: mtMotionDuration(context, MTMotion.fast),
+                            builder: (context, shown, child) =>
+                                Opacity(opacity: shown, child: child),
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: p.ink,
+                                    fontWeight: selected
+                                        ? FontWeight.w700
+                                        : null,
+                                  ),
+                            ),
+                          ),
+                        ),
+                        if (trailing case final count?)
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                              start: MTSpace.xs,
+                              end: MTSpace.sm,
+                            ),
+                            child: Text(
+                              count,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.tabular
+                                  .copyWith(color: p.ink3),
+                            ),
+                          ),
+                      ],
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+    return Semantics(
+      selected: selected,
+      button: true,
+      label: narrow ? label : null,
+      child: MenuKey(
+        onMenu: onMenu,
+        // A hair of space above and below: the chosen place and the one
+        // under the mouse are two marks, not one block.
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: MTSpace.xxs / 2),
+          child: narrow ? MTShortcutTooltip(message: label, child: row) : row,
+        ),
+      ),
+    );
+  }
+}
+
+/// Narrows or widens the sidebar, from the title bar above it: a panel
+/// with an arrow, pointing the way the sidebar will go, toward its edge in
+/// either language.
+class SidebarToggle extends StatelessWidget {
+  const SidebarToggle({super.key, required this.narrow, required this.onTap});
+
+  final bool narrow;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    final l = context.mtl;
+    final label = narrow ? l.desktopWidenSidebar : l.desktopNarrowSidebar;
+    final glyph = Transform.flip(
+      flipX: Directionality.of(context) == TextDirection.rtl,
+      child: MTIcon(
+        narrow ? MTIcons.sidebarOpen : MTIcons.sidebarClose,
+        size: MTDensity.desktop.icon,
+        color: p.ink2,
+      ),
+    );
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: MTShortcutTooltip(
+        message: label,
+        child: Material(
+          color: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(MTCorners.desktop.chip),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: SizedBox.square(
+              dimension: MTDensity.desktop.row,
+              child: Center(child: glyph),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

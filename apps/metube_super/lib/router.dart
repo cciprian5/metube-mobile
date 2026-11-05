@@ -13,18 +13,21 @@ import 'features/settings/settings_page.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/settings/settings_sections.dart';
 import 'features/shell/shell_screen.dart';
+import 'features/subscriptions/channel_page.dart';
 
-/// The single route table (`03-APP-FLOW.md` §1). No direct
-/// Navigator.push.
+/// The single route table. No direct Navigator.push.
 final router = GoRouter(
   // Tells the shell what has opened above it so it can hide the floating
   // add button, which used to be drawn over every bottom sheet and dialog,
   // covering their content (field report).
   observers: [MTRouteDepth.instance],
   routes: [
-    StatefulShellRoute.indexedStack(
+    StatefulShellRoute(
       builder: (context, state, navigationShell) =>
           ShellScreen(navigationShell: navigationShell),
+      // The sections fade into one another rather than cut.
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          MTTabStack(index: navigationShell.currentIndex, children: children),
       branches: [
         StatefulShellBranch(
           routes: [
@@ -37,6 +40,12 @@ final router = GoRouter(
               path: '/playlists',
               builder: (_, _) => const PlaylistsScreen(),
               routes: [
+                // Before ":id", which would take "channel" for a playlist.
+                GoRoute(
+                  path: 'channel/:id',
+                  builder: (_, state) =>
+                      ChannelPage(id: state.pathParameters['id']!),
+                ),
                 GoRoute(
                   path: ':id',
                   builder: (_, state) => PlaylistDetailsScreen(
@@ -61,6 +70,14 @@ final router = GoRouter(
                   GoRoute(
                     path: pane.name,
                     builder: (_, _) => SettingsPage(pane),
+                    routes: [
+                      if (pane == SettingsPane.subscriptions)
+                        GoRoute(
+                          path: 'channel/:id',
+                          builder: (_, state) =>
+                              ChannelPage(id: state.pathParameters['id']!),
+                        ),
+                    ],
                   ),
                 GoRoute(
                   path: 'language',
@@ -95,7 +112,7 @@ final router = GoRouter(
         // background (reported with a screenshot 2026-09-04).
         opaque: false,
         transitionDuration: MTMotion.sheetPage,
-        reverseTransitionDuration: MTMotion.page,
+        reverseTransitionDuration: MTMotion.leave,
         transitionsBuilder: mtSheetPageTransition,
       ),
     ),

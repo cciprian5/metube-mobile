@@ -6,6 +6,27 @@ class TranscriptWord {
   final String text;
 }
 
+/// The line being said at [position]: the last one begun by then, found
+/// by halving. Null before the first line. [segments] are in time order,
+/// as every reader writes them.
+///
+/// Shared by every view that follows playback, so the phone's transcript
+/// sheet and the Windows side panel light the same line.
+int? segmentAt(List<TranscriptSegment> segments, Duration position) {
+  int? found;
+  var low = 0, high = segments.length - 1;
+  while (low <= high) {
+    final middle = (low + high) >> 1;
+    if (segments[middle].start <= position) {
+      found = middle;
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
+  }
+  return found;
+}
+
 /// One timed line of speech.
 class TranscriptSegment {
   const TranscriptSegment({

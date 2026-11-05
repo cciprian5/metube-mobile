@@ -41,10 +41,10 @@ class NetworkScreen extends ConsumerWidget {
     Widget statusDot(String url) {
       final status = statusOf(url);
       if (status == MTEndpointStatus.unauthorized) {
-        return Icon(Icons.lock_outline_rounded, size: 14, color: p.accent);
+        return MTIcon(MTIcons.lock, size: 14, color: p.accent);
       }
       if (status == MTEndpointStatus.notMeTube) {
-        return Icon(Icons.link_off_rounded, size: 14, color: p.accent);
+        return MTIcon(MTIcons.linkOff, size: 14, color: p.accent);
       }
       final color = switch (status) {
         MTEndpointStatus.ok => p.ok,
@@ -97,7 +97,7 @@ class NetworkScreen extends ConsumerWidget {
           IconButton(
             tooltip: l10n.refresh,
             onPressed: () => ref.invalidate(endpointsStatusProvider),
-            icon: const Icon(Icons.refresh_rounded),
+            icon: const MTIcon(MTIcons.refresh),
           ),
         ],
       ),
@@ -189,7 +189,7 @@ class NetworkScreen extends ConsumerWidget {
                     if (index > 0)
                       IconButton(
                         visualDensity: VisualDensity.compact,
-                        icon: const Icon(Icons.arrow_upward_rounded, size: 18),
+                        icon: const MTIcon(MTIcons.chevronUp, size: 18),
                         onPressed: () async {
                           await notifier.reorderExternalUrl(index, index - 1);
                           ref.invalidate(endpointsStatusProvider);
@@ -197,11 +197,7 @@ class NetworkScreen extends ConsumerWidget {
                       ),
                     IconButton(
                       visualDensity: VisualDensity.compact,
-                      icon: Icon(
-                        Icons.delete_outline_rounded,
-                        size: 18,
-                        color: p.err,
-                      ),
+                      icon: MTIcon(MTIcons.trash, size: 18, color: p.err),
                       onPressed: () async {
                         await notifier.removeExternalUrl(url);
                         ref.invalidate(endpointsStatusProvider);
@@ -216,7 +212,7 @@ class NetworkScreen extends ConsumerWidget {
             const SizedBox(height: MTSpace.sm),
             OutlinedButton.icon(
               onPressed: () => _addExternalDialog(context, ref),
-              icon: const Icon(Icons.add_rounded, size: 18),
+              icon: const MTIcon(MTIcons.plus, size: 18),
               label: Text(l10n.addEndpoint),
             ),
             const SizedBox(height: MTSpace.xl),

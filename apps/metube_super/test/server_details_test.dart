@@ -11,6 +11,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'device_matrix.dart';
 
+import 'wahaj_finder.dart';
+
 /// **Asked 2026-09-19:** "the server's state, how many files are on it, and
 /// whether a newer version of the server is out".
 ///
@@ -173,7 +175,7 @@ void main() {
 
       // The state line above already says it; a placeholder underneath
       // would only repeat it.
-      expect(find.textContaining('على الخادم'), findsNothing);
+      expect(find.textContaining('على السيرفر'), findsNothing);
     });
   });
 
@@ -205,17 +207,23 @@ void main() {
     await tester.pumpWidget(host(c));
     answers.last.complete(MTEndpointStatus.ok);
     await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.cloud_done_rounded), findsOneWidget);
+    expect(byWahaj(MTIcons.cloudCheck), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.refresh_rounded));
+    // The refresh button and the arrows turning in the cloud share a glyph.
+    Finder turning() => find.descendant(
+      of: find.byType(MTConnectionIcon),
+      matching: byWahaj(MTIcons.refresh),
+    );
+    expect(turning(), findsNothing);
+    await tester.tap(byWahaj(MTIcons.refresh));
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byIcon(Icons.sync_rounded), findsOneWidget);
+    expect(turning(), findsOneWidget);
 
     answers.last.complete(MTEndpointStatus.ok);
     await tester.pump(MTConnectionIcon.shortestTurn);
     await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.sync_rounded), findsNothing);
-    expect(find.byIcon(Icons.cloud_done_rounded), findsOneWidget);
+    expect(turning(), findsNothing);
+    expect(byWahaj(MTIcons.cloudCheck), findsOneWidget);
   });
 
   testWidgets('**device matrix**: the added lines overflow nothing', (

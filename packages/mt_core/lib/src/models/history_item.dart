@@ -9,8 +9,8 @@ const _uuid = Uuid();
 /// normalised.
 enum ItemStatus { inProgress, completed, failed, unknown }
 
-/// One item from `GET /history`, parsed **tolerantly** per the table in
-/// `05-DATA-SCHEMA.md` §2.3. The hard rules:
+/// One item from `GET /history` (`docs/SERVER-API.md`), parsed
+/// **tolerantly**. The hard rules:
 /// - [canonicalUrl] is the primary key for all app data.
 /// - A missing [filename] stays null; it is **never invented from the
 ///   title** (trap §6.3).
@@ -26,6 +26,7 @@ class HistoryItem {
     this.uploader,
     this.thumbnail,
     this.progress,
+    this.speed,
     this.status = ItemStatus.unknown,
     this.rawStatus,
     this.error,
@@ -49,6 +50,10 @@ class HistoryItem {
 
   /// 0 to 1, or null when absent.
   final double? progress;
+
+  /// Bytes per second while yt-dlp downloads, or null between streams and
+  /// once done (MeTube sends `speed: null` then).
+  final double? speed;
   final ItemStatus status;
   final String? rawStatus;
   final String? error;
@@ -107,6 +112,9 @@ class HistoryItem {
       uploader: _parseUploader(json),
       thumbnail: _parseThumbnail(json, url),
       progress: _parseProgress(json),
+      speed: json['speed'] is num && (json['speed'] as num) > 0
+          ? (json['speed'] as num).toDouble()
+          : null,
       status: _mapStatus(rawStatus, error),
       rawStatus: rawStatus,
       error: error,
@@ -157,7 +165,9 @@ class HistoryItem {
         }
       }
     }
-    if (thumb != null) return thumb;
+    // A cover is a web address; anything else (a path on this device)
+    // would be read and later deleted as the app's own file.
+    if (thumb != null && UrlKit.webUri(thumb) != null) return thumb;
 
     final videoId = UrlKit.youtubeVideoId(url);
     if (videoId != null) {

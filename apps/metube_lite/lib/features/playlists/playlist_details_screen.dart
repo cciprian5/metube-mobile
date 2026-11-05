@@ -31,7 +31,6 @@ class PlaylistDetailsScreen extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.queue_music_rounded,
           title: l10n.playlistDetails,
           message: l10n.noPlaylistsMessage,
         ),
@@ -45,7 +44,7 @@ class PlaylistDetailsScreen extends ConsumerWidget {
           IconButton(
             tooltip: l10n.rename,
             onPressed: () => showPlaylistActionsSheet(context, ref, playlist),
-            icon: const Icon(Icons.more_vert_rounded),
+            icon: const MTIcon(MTIcons.moreVert),
           ),
         ],
       ),
@@ -58,15 +57,13 @@ class PlaylistDetailsScreen extends ConsumerWidget {
           // once; without this the reload swapped the list
           // for a spinner and rebuilt it from the top.
           skipLoadingOnReload: true,
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: MTSpinner()),
           error: (_, _) => MTEmptyState(
-            icon: Icons.error_outline_rounded,
             title: l10n.tryAgain,
             message: l10n.emptyPlaylistMessage,
           ),
           data: (view) => view.items.isEmpty
               ? MTEmptyState(
-                  icon: Icons.queue_music_outlined,
                   title: l10n.emptyPlaylist,
                   message: l10n.emptyPlaylistMessage,
                 )
@@ -121,28 +118,45 @@ class _Actions extends ConsumerWidget {
         MTSpace.pagePad,
         MTSpace.md,
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: FilledButton.icon(
-              onPressed: start,
-              icon: const Icon(Icons.play_arrow_rounded, size: 18),
-              label: Text(l10n.playAll),
-            ),
+          // How long the list is and when it last played, under its name.
+          Text(
+            [
+              l10n.queueItemsCount(view.items.length),
+              if (playlist.lastPlayedAt != null)
+                mtTimeAgo(context, playlist.lastPlayedAt!),
+            ].join(' · '),
+            style: Theme.of(context).textTheme.bodySmall!
+                .copyWith(color: p.ink3),
           ),
-          const SizedBox(width: MTSpace.xs),
-          IconButton.outlined(
-            tooltip: l10n.shuffle,
-            onPressed: () => start(shuffle: true),
-            icon: const Icon(Icons.shuffle_rounded, size: 19),
-          ),
-          const SizedBox(width: MTSpace.xs),
-          // The headphones button: the whole playlist as background audio
-          // even when it contains video.
-          IconButton.outlined(
-            tooltip: l10n.listenInBackground,
-            onPressed: () => start(audioOnly: true),
-            icon: Icon(Icons.headphones_rounded, size: 19, color: p.accent),
+          const SizedBox(height: MTSpace.sm),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: start,
+                  icon: const MTIcon(MTIcons.playFill, size: 18),
+                  label: Text(l10n.playAll),
+                ),
+              ),
+              const SizedBox(width: MTSpace.xs),
+              IconButton.outlined(
+                tooltip: l10n.shuffle,
+                onPressed: () => start(shuffle: true),
+                icon: const MTIcon(MTIcons.shuffle, size: 19),
+              ),
+              const SizedBox(width: MTSpace.xs),
+              // The headphones button: the whole playlist as background audio
+              // even when it contains video.
+              IconButton.outlined(
+                tooltip: l10n.listenInBackground,
+                onPressed: () => start(audioOnly: true),
+                // In ink: the filled button beside it is the one action in colour.
+                icon: const MTIcon(MTIcons.headphones, size: 19),
+              ),
+            ],
           ),
         ],
       ),
@@ -211,29 +225,42 @@ class _ReorderableItems extends ConsumerWidget {
           direction: DismissDirection.endToStart,
           onDismissed: (_) => _removeWithUndo(context, ref, item, index),
           background: _DismissBackground(),
-          child: MTMediaCard(
-            key: ValueKey('card-${item.canonicalUrl}'),
-            title: item.title,
-            // A missing item says so itself rather than looking valid and
-            // then failing.
-            subtitle: missing ? context.mtl.itemUnavailable : item.uploader,
-            playing: !missing && item.canonicalUrl == playingKey,
-            paused: !isPlaying,
-            thumbnail: item.artworkUrl == null
-                ? null
-                : artworkFor(item.artworkUrl),
-            platform: platformKindOf(platformOfKey(item.canonicalUrl)),
-            compact: true,
-            onTap: () => missing
-                ? showMTSnack(
-                    context,
-                    context.mtl.itemUnavailable,
-                    type: MTSnackType.error,
-                  )
-                : _playFrom(context, ref, item),
+          // A clip no longer available is faded as well as named, so the
+          // list reads what will play at a glance.
+          child: Opacity(
+            opacity: missing ? 0.5 : 1,
+            child: MTMediaCard(
+              key: ValueKey('card-${item.canonicalUrl}'),
+              title: item.title,
+              // A missing item says so itself rather than looking valid and
+              // then failing.
+              subtitle: missing ? context.mtl.itemUnavailable : item.uploader,
+              playing: !missing && item.canonicalUrl == playingKey,
+              paused: !isPlaying,
+              thumbnail: item.artworkUrl == null
+                  ? null
+                  : artworkFor(item.artworkUrl),
+              platform: platformKindOf(platformOfKey(item.canonicalUrl)),
+              compact: true,
+              onTap: () => missing
+                  ? showMTSnack(
+                      context,
+                      context.mtl.itemUnavailable,
+                      type: MTSnackType.error,
+                    )
+                  : _playFrom(context, ref, item),
+            ),
           ),
         );
       },
+      footer: Padding(
+        padding: const EdgeInsets.only(top: MTSpace.md),
+        child: Text(
+          context.mtl.playlistEditHint,
+          style: Theme.of(context).textTheme.bodySmall!
+              .copyWith(color: MTThemeX.of(context).palette.ink3),
+        ),
+      ),
     );
   }
 
@@ -312,7 +339,7 @@ class _DismissBackground extends StatelessWidget {
       alignment: AlignmentDirectional.centerEnd,
       padding: const EdgeInsets.symmetric(horizontal: MTSpace.xl),
       color: p.err.withValues(alpha: 0.12),
-      child: Icon(Icons.delete_outline_rounded, color: p.err),
+      child: MTIcon(MTIcons.trash, color: p.err),
     );
   }
 }

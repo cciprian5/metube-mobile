@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/library/library_providers.dart';
 import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:metube_super/features/transcripts/sidecar_backfill.dart';
 import 'package:metube_super/features/transcripts/transcripts_state.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_transcripts/mt_transcripts.dart';
+import 'package:mt_media/library.dart';
 
 /// **What a subscription brings gets its transcript too** (2026-10-02):
 /// the subtitle file a server writes beside each clip is read in the

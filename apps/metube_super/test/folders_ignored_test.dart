@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
 import 'package:metube_super/features/folders/folders_providers.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/library/library_providers.dart';
 import 'package:metube_super/features/library/widgets/sort_sheet.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import 'device_matrix.dart';
 
@@ -97,18 +97,26 @@ void main() {
       ),
     );
 
-    testWidgets('folds after eight, and "more" shows the rest', (tester) async {
+    testWidgets('**the guard**: the folders sit on one row that scrolls, '
+        'none behind a "more" chip, so the sheet stays short', (tester) async {
+      // Owner's report 2026-11-02: platforms, folders and tags wrapped into
+      // a sheet longer than the screen.
       tester.view.physicalSize = const Size(384, 823);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       await tester.pumpWidget(host(many));
       await tester.pumpAndSettle();
-      expect(find.text('More · 16'), findsOneWidget);
-      await tester.ensureVisible(find.text('More · 16'));
-      await tester.tap(find.text('More · 16'));
-      await tester.pumpAndSettle();
       expect(find.textContaining('More ·'), findsNothing);
-      expect(find.textContaining('Folder 0'), findsOneWidget);
+      final row = find.ancestor(
+        of: find.textContaining('Folder 0'),
+        matching: find.byType(MTChipRow),
+      );
+      expect(row, findsOneWidget);
+      // Every folder is on that one row, reached by scrolling it.
+      expect(
+        find.descendant(of: row, matching: find.byType(ChoiceChip)),
+        findsNWidgets(24 + 1),
+      );
     });
 
     testWidgets('holds on every device and text scale, in both languages', (

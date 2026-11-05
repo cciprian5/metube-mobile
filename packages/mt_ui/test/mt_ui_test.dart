@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 void main() {
   group('mtTheme: the surfaceContainer* lesson', () {
     for (final variant in MTVariant.values) {
@@ -130,7 +132,7 @@ void main() {
           ),
         ),
       );
-      await tester.tap(find.byIcon(Icons.favorite_rounded));
+      await tester.tap(byWahaj(MTIcons.favoriteOn));
       expect(toggled, isTrue);
     });
   });

@@ -43,11 +43,11 @@ void main() {
       actionsBuilder: withActions
           ? (_) => [
               for (final (icon, label) in const [
-                (Icons.subject_rounded, 'Transcript'),
-                (Icons.info_outline_rounded, 'Details'),
-                (Icons.playlist_add_rounded, 'Add to…'),
-                (Icons.download_rounded, 'Save to device'),
-                (Icons.share_rounded, 'Share'),
+                (MTIcons.transcript, 'Transcript'),
+                (MTIcons.info, 'Details'),
+                (MTIcons.queueAdd, 'Add to…'),
+                (MTIcons.download, 'Save to device'),
+                (MTIcons.share, 'Share'),
               ])
                 MTPlayerAction(icon: icon, label: label, onTap: () {}),
             ]

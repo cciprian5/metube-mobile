@@ -218,10 +218,8 @@ class _UpNextRow extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   Center(
-                    child: Icon(
-                      item.isAudio
-                          ? Icons.music_note_rounded
-                          : Icons.movie_rounded,
+                    child: MTIcon(
+                      item.isAudio ? MTIcons.music : MTIcons.video,
                       size: 16,
                       color: muted,
                     ),

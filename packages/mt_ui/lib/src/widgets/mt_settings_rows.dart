@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
+import '../theme/mt_theme_controls.dart';
 import '../tokens/tokens.dart';
 import 'mt_adaptive.dart';
 
-/// One group of the settings home: a small heading over its rows. The phone
-/// draws a hairline between rows; the tablet's narrow list leaves them out,
-/// since the lit row already marks its place.
+import '../icons/mt_icon.dart';
+import '../icons/mt_icon_data.dart';
+import '../icons/mt_icons.dart';
+
+/// One group of the settings home: **a card**, its small heading inside
+/// on top, then its rows (owner's choice, 2026-11-01, as drawn in the
+/// mobile mock-ups). The phone draws a hairline between rows; the tablet's
+/// narrow list leaves them out, since the lit row already marks its place.
 class MTSettingsGroup extends StatelessWidget {
   const MTSettingsGroup({
     super.key,
@@ -21,36 +27,55 @@ class MTSettingsGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            MTSpace.md,
-            MTSpace.lg,
-            MTSpace.md,
-            MTSpace.xs,
-          ),
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.labelSmall!
-                .copyWith(color: p.ink3, letterSpacing: 0.8),
+    final x = MTThemeX.of(context);
+    final p = x.palette;
+    final radius = BorderRadius.circular(MTRadius.card);
+    return Padding(
+      padding: const EdgeInsets.only(top: MTSpace.md),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: p.card,
+          borderRadius: radius,
+          border: Border.all(color: p.line, width: x.hairline),
+        ),
+        // The lit row fills the card's width, so its corners are the card's.
+        child: ClipRRect(
+          borderRadius: radius,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  MTSpace.md,
+                  MTSpace.md,
+                  MTSpace.md,
+                  MTSpace.xxs,
+                ),
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.labelSmall!
+                      .copyWith(color: p.ink3),
+                ),
+              ),
+              for (var i = 0; i < rows.length; i++) ...[
+                if (divided && i > 0)
+                  Divider(height: 1, indent: MTSpace.md, color: p.line),
+                rows[i],
+              ],
+            ],
           ),
         ),
-        for (var i = 0; i < rows.length; i++) ...[
-          if (divided && i > 0) Divider(height: 1, color: p.line),
-          rows[i],
-        ],
-      ],
+      ),
     );
   }
 }
 
 /// One section of the settings: its icon, its name, and **the setting as it
 /// stands** beneath, so the home page answers "how is this set?" without
-/// opening anything. On the tablet's list the open section is lit in the
-/// accent and there is no chevron, since nothing is pushed.
+/// opening anything. On the tablet's list the open section is filled with
+/// the ink's veil and there is no chevron, since nothing is pushed. The icon
+/// stands bare, in the ink: a tinted square behind each of twelve icons
+/// was the loudest mark of a generated screen (log §4, 2026-10-31).
 class MTSettingsRow extends StatelessWidget {
   const MTSettingsRow({
     super.key,
@@ -62,14 +87,12 @@ class MTSettingsRow extends StatelessWidget {
     this.chevron = true,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String title;
   final String value;
   final VoidCallback onTap;
   final bool selected;
   final bool chevron;
-
-  static const _side = 36.0;
 
   @override
   Widget build(BuildContext context) {
@@ -83,24 +106,12 @@ class MTSettingsRow extends StatelessWidget {
   Widget _tile(BuildContext context, MTPalette p) {
     return ListTile(
       selected: selected,
-      selectedTileColor: p.accentSoft,
-      selectedColor: p.accentInk,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(MTRadius.card),
-      ),
+      selectedTileColor: mtSelectedFill(p),
+      selectedColor: p.ink,
       contentPadding: const EdgeInsetsDirectional.symmetric(
-        horizontal: MTSpace.sm,
+        horizontal: MTSpace.md,
       ),
-      leading: Container(
-        width: _side,
-        height: _side,
-        decoration: BoxDecoration(
-          // On the lit row the tile would vanish into the same tint.
-          color: selected ? p.bg : p.accentSoft,
-          borderRadius: BorderRadius.circular(MTRadius.thumb),
-        ),
-        child: Icon(icon, size: 20, color: p.accentInk),
-      ),
+      leading: MTIcon(icon, size: 20, color: selected ? p.ink : p.ink2),
       title: Text(
         title,
         style: selected ? const TextStyle(fontWeight: FontWeight.w700) : null,
@@ -112,7 +123,7 @@ class MTSettingsRow extends StatelessWidget {
         style: Theme.of(context).textTheme.bodySmall!.copyWith(color: p.ink3),
       ),
       trailing: chevron
-          ? Icon(Icons.chevron_right_rounded, color: p.ink3)
+          ? MTIcon(MTIcons.forward, matchTextDirection: true, color: p.ink3)
           : null,
       onTap: onTap,
     );

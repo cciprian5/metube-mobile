@@ -5,23 +5,29 @@
 [![CI](https://github.com/sagheerys/metube-mobile/actions/workflows/ci.yml/badge.svg)](https://github.com/sagheerys/metube-mobile/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/sagheerys/metube-mobile?color=C25E2E&label=release)](https://github.com/sagheerys/metube-mobile/releases/latest)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Android-3DDC84.svg)](#requirements)
+[![Platform](https://img.shields.io/badge/platform-Android%20%C2%B7%20Windows-3DDC84.svg)](#requirements)
 [![Flutter](https://img.shields.io/badge/Flutter-3.47.2-02569B.svg)](https://flutter.dev)
 
-**Two Android apps for a self-hosted [MeTube](https://github.com/alexta69/metube)
-server** — the yt-dlp web downloader you already run on your NAS or homelab.
-Queue a link from your phone, watch the download happen, then keep the file on
-the server and stream it, or pull it to the device and let the server clean
-itself up. MeTube Super can also **follow a channel**: your server downloads
-each new video by itself, and the app tells you when it arrives. It can also
-**search inside your clips**, finding what was said in them and not only their
-titles. Written in Flutter as one monorepo, in Arabic and English, for phones
-and tablets alike, and free software under the GPL.
+**Two Android apps and a Windows app for a self-hosted
+[MeTube](https://github.com/alexta69/metube) server** — the yt-dlp web
+downloader you already run on your NAS or homelab. Queue a link from your
+phone or your computer, watch the download happen, then keep the file on the
+server and stream it, or pull it to the device and let the server clean itself
+up. MeTube Super and MeTube Ember can also **follow a channel**: your server
+downloads each new video by itself, and the app tells you when it arrives.
+They can also **search inside your clips**, finding what was said in them and
+not only their titles. Written in Flutter as one monorepo, in Arabic and
+English, for phones, tablets and Windows, and free software under the GPL.
 
 <p align="center">
   <img src="docs/screenshots/hero.jpg" alt="MeTube Super: the library, a video playing with its subtitles and queue, the audio player at night, and playlists">
 </p>
 <p align="center"><sub>MeTube Super — the merged library, a video streaming with its subtitles and up-next queue, the audio player at night, and playlists. Every title and cover here is invented.</sub></p>
+
+<p align="center">
+  <img src="docs/screenshots/desktop.jpg" alt="MeTube Ember on Windows: a video playing with its transcript following beside it, and the library as a grid of covers">
+</p>
+<p align="center"><sub>MeTube Ember, new in 2.7.0 — the same library on Windows: the transcript follows the video and a click jumps to any line; on the right, the library as a grid.</sub></p>
 
 <p align="center">
   <img src="docs/screenshots/lite-share.gif" width="300" alt="MeTube Lite: a link is shared to the app, the server downloads it, the phone pulls the file and the server is cleaned up">
@@ -33,20 +39,22 @@ and tablets alike, and free software under the GPL.
 > client that talks to a MeTube server over its HTTP API. The name "MeTube" is
 > used only to say what these apps connect to.
 
-| | **MeTube Lite** | **MeTube Super** |
-|---|---|---|
-| Made for | family and friends who just want the file | the person who runs the server |
-| After a download completes | pulls it to the device, then **deletes it from the server** | **keeps it on the server** |
-| Library | a scan of the local folder | `/history` + the local index, merged into one list |
-| Playback | local files | streaming from the server **and** local files |
-| Exclusive | an optional Wi-Fi-only rule, server cleanup | channel subscriptions, search inside clips, subtitles over the video, tags, batch downloads, "make available offline", server switching |
+| | **MeTube Lite** | **MeTube Super** | **MeTube Ember** |
+|---|---|---|---|
+| Runs on | Android | Android | Windows 10 and 11 (x64) |
+| Made for | family and friends who just want the file | the person who runs the server | the same person, at a computer |
+| After a download completes | pulls it to the device, then **deletes it from the server** | **keeps it on the server** | **keeps it on the server**; a copy to this computer when you ask |
+| Library | a scan of the local folder | `/history` + the local index, merged into one list | the same merged library, as a grid, a table or a compact list |
+| Playback | local files | streaming from the server **and** local files | streaming and local files, in the window or a mini window |
+| Exclusive | an optional Wi-Fi-only rule, server cleanup | channel subscriptions, search inside clips, subtitles over the video, tags, batch downloads, "make available offline", server switching | everything in Super's column, plus Ctrl+K, a reading room, drag a clip out to Explorer, and the keyboard |
 
-Both apps share the same core, media and design packages, and both ship in
+The three apps share the same core, media and design packages, and all ship in
 **Arabic and English** with a right-to-left-first layout.
 
 ## Features
 
-### In both apps
+<details>
+<summary><strong>In both phone apps</strong> — links, downloads, the library, playing, shorts, tablets, playlists, settings, updates</summary>
 
 **Getting a link in.** Paste, or let the add button notice a link already on
 the clipboard; share to the app from YouTube, TikTok or anything else — it
@@ -63,6 +71,9 @@ cancellation that removes the partial file and tidies the server, three
 retries with backoff for a dropped connection, and errors named rather than
 swallowed (a platform asking for a login says so). Progress, completion and
 failure each get a notification.
+
+**Video, shorts, audio.** The library's chips sort every clip into exactly
+one of them, so videos can be seen without the shorts.
 
 **Batch downloads.** A playlist arrives as a screen: every item with its
 duration, select some or all, the total of what you picked, video or audio,
@@ -114,7 +125,42 @@ installs without your confirmation, and a version can be skipped. The first
 launch after an update shows what is new in it, and Settings → Updates opens
 that again at any time.
 
-### MeTube Lite only
+</details>
+
+<details>
+<summary><strong>MeTube Ember (Windows)</strong> — the library in a window, Ctrl+K, a reading room, channels, copies to this computer, sync</summary>
+
+The owner's app on a computer, new in 2.7.0, reading the same server as
+MeTube Super:
+
+- **The library in a window**: a grid, a table or a compact list, with the
+  player beside it, a mini window that stays on top, and the transcript
+  following the video in a side panel.
+- **Ctrl+K** searches the titles and what was said in them, and runs any
+  command; `?` lists every key, and the media keys and Windows' media flyout
+  work as they should.
+- **A reading room** for long talks, chapters, quotes copied with their
+  second, and library statistics that suggest and never delete.
+- **Channels and arrivals**, as in Super, with a Windows notification when
+  a followed channel brings something.
+- **To this computer**: download a clip, keep an offline copy, or drag a clip
+  out to Explorer or the desktop; Ctrl+C copies its link and Ctrl+Shift+C
+  the file itself.
+- **A "To Ember" button for your browser**: one click on a video's page opens
+  the add dialog with that link; links from the MeTube browser extensions
+  open it too.
+- **Sync with your phone**, optional and off until you choose a folder: tags,
+  favourites, playlists, resume positions and transcripts travel between
+  Super and Ember through a folder a program of your choice keeps in sync
+  ([how to set it up](docs/SYNC-SETUP.md)).
+- Installs for your user only, with **no administrator rights**, finds your
+  server on the home network when you set it up, sits by the clock when
+  closed if you want it to, and updates itself.
+
+</details>
+
+<details>
+<summary><strong>MeTube Lite only</strong> — pulls the file to the phone and clears the server, Wi-Fi only</summary>
 
 - **Pulls the file to the phone and then deletes it from the server**, so a
   server shared with family and friends does not fill up.
@@ -125,14 +171,18 @@ that again at any time.
 - Finished files are registered with Android so they appear in the phone's
   gallery.
 
-### MeTube Super only
+</details>
+
+<details>
+<summary><strong>MeTube Super only</strong> — subscriptions, search inside clips, read along, subtitles, tags, offline, sync</summary>
 
 - **Subscriptions**: follow a channel or playlist, and your MeTube server
   checks it on a schedule and downloads each new video into the same
   library — only what appears from then on, not the channel's archive.
   Pause, rename, check now, or keep only titles containing a word. One
-  notice for each batch that arrives, shown when the app next reaches the
-  server. Needs a MeTube recent enough to have subscriptions; an older one
+  notice for each batch a subscription brings, shown when the app next
+  reaches the server; what you download yourself, from any device, is never
+  announced as an arrival. Needs a MeTube recent enough to have subscriptions; an older one
   says so.
 - **Search inside your clips** (off until you turn it on, in Settings →
   Transcripts): each YouTube clip you add has its subtitles fetched from your
@@ -162,44 +212,50 @@ that again at any time.
   the server; remove just the local copy; share the local file if there is one
   and download-then-share if there is not.
 - Batch operations, including tagging many items at once.
+- **Sync with the computer** (optional): mirrors your tags, favourites,
+  playlists, positions and transcripts with MeTube Ember through a folder you
+  choose, and says so when a device has gone quiet for days
+  ([how to set it up](docs/SYNC-SETUP.md)).
 - **A local address and external ones**, tried again on every network change
   so the phone uses the fast path at home and the tunnel elsewhere, with a
   live status dot for each and a server card in settings.
 
+</details>
+
 ## Screenshots
+
+**Search inside clips** (Super and Ember): a word found inside two clips, the
+transcript following playback, and the reading mode:
+
+![A search for "backup" found inside two clips, the transcript following playback, and the reading mode](docs/screenshots/search.jpg)
+
+<details>
+<summary><strong>More screens</strong> — Ember at night, subscriptions, tablets, the players, MeTube Lite</summary>
+<br>
+
+**MeTube Ember at night, and its channels** — the transcript beside a video,
+and the channels your server follows with what each has brought:
+
+![MeTube Ember at night with the transcript beside the video, and the channels page](docs/screenshots/desktop-more.jpg)
+
+**Subscriptions** — your channels in the playlists tab, one channel's page,
+and the notice when a subscription brings new videos:
+
+![The channels in the playlists tab, a channel's page, and the arrivals notice](docs/screenshots/subscriptions.jpg)
 
 **On a tablet** — held sideways, the library with the "Now playing" panel
 beside it; upright, the library in two columns:
 
 ![MeTube Super on a tablet: the library beside the Now playing panel, and the library upright in two columns](docs/screenshots/tablet.jpg)
 
-**Search inside clips** (MeTube Super): a word found inside three clips, the
-transcript following playback, and the same search at night:
+**The players** — the audio player, the up-next queue at night, and a search
+at night:
 
-![A search for "backup" found inside three clips, the transcript following playback, and the results at night](docs/screenshots/search.jpg)
+![The audio player by day, the queue at night, and a search at night](docs/screenshots/players.jpg)
 
-**Subscriptions** — the channels your server follows, following a new one,
-and the notice when their videos arrive:
+**MeTube Lite** — its downloads by day and by night, and its playlists:
 
-![The subscriptions list, the follow sheet, and the arrivals notice](docs/screenshots/subscriptions.jpg)
-
-<details>
-<summary><strong>More screens</strong> — the players, the libraries, playlists, batch selection</summary>
-<br>
-
-**The players** — the audio player, the up-next queue at night, and the
-lane for portrait clips:
-
-![The audio player by day, the queue at night, and the shorts player](docs/screenshots/players.jpg)
-
-**The libraries** — MeTube Lite by day and by night, and MeTube Super at night
-with the mini player:
-
-![MeTube Lite by day and night, MeTube Super at night](docs/screenshots/libraries.jpg)
-
-| Playlists | A playlist | Batch selection |
-|---|---|---|
-| ![Playlists, with smart lists above your own](docs/screenshots/super-playlists-day.png) | ![One playlist, with play-all, shuffle and audio-only](docs/screenshots/super-playlist.png) | ![Several items selected for a playlist, a tag or deletion](docs/screenshots/super-select.png) |
+![MeTube Lite by day and by night, and its playlists](docs/screenshots/libraries.jpg)
 
 </details>
 
@@ -210,21 +266,28 @@ them. Every screen, one by one, is on the
 
 ## Download
 
-Signed APKs are published on the
-[releases page](https://github.com/sagheerys/metube-mobile/releases), one per
-app. Android will ask you to allow installing from this source the first time;
-that permission is per application, and you can withdraw it afterwards.
-
-Every release carries one file per app —
+Every release carries one file per app on the
+[releases page](https://github.com/sagheerys/metube-mobile/releases) —
 [the newest is here](https://github.com/sagheerys/metube-mobile/releases/latest),
-and the badge above names its version. `MeTube-Lite-<version>.apk` is for
-family and friends, `MeTube-Super-<version>.apk` for the server owner's. They
-are separate apps and install side by side, and since 2.0.0 each one checks
-for its own successor and can install it for you.
+and the badge above names its version:
 
-Both apps can update themselves: **Settings → Updates → Check for updates**
-fetches the newest release and hands the APK to the system installer. Nothing
-is installed without you confirming it.
+| File | App |
+|---|---|
+| `MeTube-Lite-<version>.apk` | MeTube Lite, for family and friends |
+| `MeTube-Super-<version>.apk` | MeTube Super, for the server owner |
+| `MeTube-Ember-<version>-windows-x64-setup.exe` | MeTube Ember, for Windows |
+
+The APKs are signed. Android will ask you to allow installing from this source
+the first time; that permission is per application, and you can withdraw it
+afterwards. The two phone apps are separate and install side by side.
+
+The Windows installer is not signed with a certificate yet, so Windows
+SmartScreen may say it "protected your PC": choose **More info → Run anyway**.
+It installs for your user only and asks for no administrator rights.
+
+All three update themselves: **Settings → Updates → Check for updates** fetches
+the newest release and hands it to the installer. Nothing is installed without
+you confirming it.
 
 Or build from source, below.
 
@@ -236,7 +299,8 @@ Or build from source, below.
 - Using both apps? A server each is recommended — Lite clears the server and
   Super keeps it, and one instance cannot do both. The guide says why, and one
   server is still fine if you are its only user.
-- Android. `compileSdk 37`; the minimum SDK follows the Flutter toolchain default.
+- Android for Lite and Super (`compileSdk 37`; the minimum SDK follows the
+  Flutter toolchain default), or Windows 10 or 11 on x64 for Ember.
 - Flutter **3.47.2** (Dart SDK `^3.13.0`) to build from source.
 
 ## Getting started
@@ -248,9 +312,11 @@ flutter pub get
 
 # debug
 cd apps/metube_super && flutter run        # or apps/metube_lite
+cd apps/metube_desktop && flutter run -d windows
 
 # release
 cd apps/metube_super && flutter build apk --release
+cd apps/metube_desktop && flutter build windows --release
 ```
 
 Release builds are signed from `apps/<app>/android/key.properties`, which is
@@ -268,25 +334,30 @@ packages/mt_media    playback: audio_service handler, playback sources, position
                      and state stores, mini player
 packages/mt_ui       the "Wahaj" design system: tokens, themes, shared widgets,
                      localization (ar/en)
+packages/mt_transcripts  pure Dart: transcripts, their search and reading
 apps/metube_lite     the edition for family and friends
 apps/metube_super    the server-owner edition
+apps/metube_desktop  MeTube Ember, the server-owner edition for Windows
 docs/                the repository map, the server contract and the server setup
 ```
 
 Dependency direction is one-way: `apps → mt_media → mt_core`. `mt_ui` knows
-nothing about the server, and `mt_core` contains no Flutter code.
+nothing about the server, `mt_core` and `mt_transcripts` contain no Flutter
+code, and Lite does not use `mt_transcripts`.
 
 ## Tests
 
 ```bash
-cd packages/mt_core  && dart test              # 362
-cd packages/mt_media && flutter test           # 115
-cd packages/mt_ui    && flutter test           #  44
-cd apps/metube_lite  && flutter test           #  69
-cd apps/metube_super && flutter test           # 121
+cd packages/mt_core        && dart test        # 701
+cd packages/mt_transcripts && dart test        # 116
+cd packages/mt_media       && flutter test     # 415
+cd packages/mt_ui          && flutter test     # 274
+cd apps/metube_lite        && flutter test     # 173
+cd apps/metube_super       && flutter test     # 495
+cd apps/metube_desktop     && flutter test     # 741
 ```
 
-**712 tests** at the time of writing, and `flutter analyze` is expected to be
+**2,915 tests** at the time of writing, and `flutter analyze` is expected to be
 clean. Fixtures come from real server JSON, and every fixed defect leaves behind
 a test that fails on the old code.
 
@@ -310,6 +381,7 @@ Translations are very welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | The map of the repository: the packages, the rules that hold them together, where a feature belongs, how to run the tests. English first, with an Arabic version below it. |
 | [docs/SERVER-API.md](docs/SERVER-API.md) | The contract with the MeTube server: every request and response, the local storage schema, and the traps that each cost a debugging session. Read it before touching networking or storage code. |
 | [docs/SERVER-SETUP.md](docs/SERVER-SETUP.md) | How to configure the server, the four settings whose absence looks like an app defect, and how to reach it safely from outside. |
+| [docs/SYNC-SETUP.md](docs/SYNC-SETUP.md) | Sync between MeTube Super and MeTube Ember, step by step: at home with Syncthing, or through a cloud drive. |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | What a change has to satisfy before it lands. |
 | [CHANGELOG.md](CHANGELOG.md) | What changed, release by release. |
 | [SECURITY.md](SECURITY.md) | Reporting a vulnerability. |
@@ -321,6 +393,8 @@ and issues and pull requests are welcome in either language.
 
 - [MeTube](https://github.com/alexta69/metube) by alexta69 — the server these
   apps are clients for (AGPL-3.0).
+- [mpv](https://mpv.io) through [media_kit](https://github.com/media-kit/media-kit)
+  — the player in MeTube Ember.
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) — what MeTube uses to do the actual
   downloading (Unlicense).
 - The Flutter and Dart teams, and the authors of the packages listed in each

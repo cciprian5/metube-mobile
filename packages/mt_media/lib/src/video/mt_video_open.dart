@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mt_ui/mt_ui.dart';
 import 'package:video_player/video_player.dart';
 
 import '../models/playback_source.dart';
@@ -100,18 +101,86 @@ abstract final class MTVideoOpen {
 /// showed the player beneath with no picture for the length of the fade,
 /// then the picture popping in: an odd dimming on every AV1 clip, which is
 /// most of YouTube. Without the fade, the gap is the moment a new surface
-/// takes. The texture shows the picture on both pages at once, so it keeps
-/// the usual transition.
+/// takes.
+///
+/// The texture shows the picture on both pages at once, so there full
+/// screen **opens out of the player's own place** ([from], in the screen's
+/// coordinates) and folds back into it, rather than a page sliding over.
+/// Without [from] (a tilt, where the old place is in the other orientation)
+/// it fades.
 Route<void> mtFullscreenRoute(
   VideoPlayerController? controller,
-  WidgetBuilder builder,
-) => controller?.viewType == VideoViewType.platformView
+  WidgetBuilder builder, {
+  Rect? from,
+}) => controller?.viewType == VideoViewType.platformView
     ? PageRouteBuilder<void>(
         pageBuilder: (context, _, _) => builder(context),
         transitionDuration: Duration.zero,
         reverseTransitionDuration: Duration.zero,
       )
-    : MaterialPageRoute<void>(builder: builder);
+    : PageRouteBuilder<void>(
+        pageBuilder: (context, _, _) => builder(context),
+        transitionDuration: MTMotion.medium,
+        reverseTransitionDuration: MTMotion.leave,
+        transitionsBuilder: (context, animation, _, child) {
+          if (MediaQuery.disableAnimationsOf(context)) return child;
+          if (from == null) {
+            return FadeTransition(opacity: animation, child: child);
+          }
+          return AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) {
+              final k =
+                  (animation.status == AnimationStatus.reverse
+                          ? MTMotion.exit.flipped
+                          : MTMotion.entrance)
+                      .transform(animation.value);
+              final screen = Offset.zero & MediaQuery.sizeOf(context);
+              final rect = Rect.lerp(from, screen, k)!;
+              // The page at full size, shrunk about the window's centre so
+              // the picture sits where the player was, and cut to it.
+              final start = (from.width / screen.width).clamp(0.0, 1.0);
+              return ClipRect(
+                clipper: _Window(rect),
+                child: Transform.translate(
+                  offset: rect.center - screen.center,
+                  child: Transform.scale(
+                    scale: start + (1 - start) * k,
+                    child: child,
+                  ),
+                ),
+              );
+            },
+            child: child,
+          );
+        },
+      );
+
+/// Where the player stands on a phone held upright: the top of the
+/// screen, under the status bar, [share] of its height. Null on its side,
+/// where the page is laid out otherwise.
+Rect? mtUprightPlayerPlace(BuildContext context, double share) {
+  final size = MediaQuery.sizeOf(context);
+  if (size.width > size.height) return null;
+  return Rect.fromLTWH(
+    0,
+    MediaQuery.paddingOf(context).top,
+    size.width,
+    size.height * share,
+  );
+}
+
+class _Window extends CustomClipper<Rect> {
+  const _Window(this.rect);
+
+  final Rect rect;
+
+  @override
+  Rect getClip(Size size) => rect;
+
+  @override
+  bool shouldReclip(_Window old) => old.rect != rect;
+}
 
 /// [VideoPlayer], with one repair for the platform view.
 ///

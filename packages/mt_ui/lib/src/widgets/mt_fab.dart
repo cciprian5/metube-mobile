@@ -5,6 +5,9 @@ import '../tokens/tokens.dart';
 import 'mt_motion.dart';
 import 'mt_polish.dart';
 
+import '../icons/mt_icon_data.dart';
+import '../icons/mt_icons.dart';
+
 /// The approved "add link" button: a rounded rectangular FAB in the accent
 /// colour with a translucent icon box. Its label and icon change when a
 /// link is waiting in the clipboard.
@@ -13,13 +16,13 @@ class MTFab extends StatelessWidget {
     super.key,
     required this.label,
     required this.onPressed,
-    this.icon = Icons.add_rounded,
+    this.icon = MTIcons.plus,
     this.highlighted = false,
   });
 
   final String label;
   final VoidCallback onPressed;
-  final IconData icon;
+  final MTIconData icon;
 
   /// The "link ready to paste" state: a paste icon and a colour pulse.
   final bool highlighted;
@@ -55,7 +58,7 @@ class MTFab extends StatelessWidget {
         decoration: BoxDecoration(
           color: highlighted ? p.accentDeep : p.accent,
           borderRadius: BorderRadius.circular(MTRadius.fab),
-          boxShadow: MTShadow.fab(p),
+          boxShadow: MTShadow.float,
         ),
         child: Material(
           color: Colors.transparent,
@@ -79,26 +82,16 @@ class MTFab extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        width: 26,
-                        height: 26,
-                        decoration: BoxDecoration(
-                          color: p.onAccent.withValues(alpha: 0.22),
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                        child: Center(
-                          child: MTIconSwap(
-                            icon: highlighted
-                                ? Icons.content_paste_go_rounded
-                                : icon,
-                            size: 17,
-                            color: p.onAccent,
-                          ),
-                        ),
+                      // The glyph alone: a tinted square inside the button
+                      // was a box within a box (log §4, 2026-10-31).
+                      MTIconSwap(
+                        icon: highlighted ? MTIcons.paste : icon,
+                        size: 20,
+                        color: p.onAccent,
                       ),
                       const SizedBox(width: MTSpace.sm),
                       // **Flexible, so the label yields before the row
-                      // does.** The icon box keeps its size; only the words
+                      // does.** The icon keeps its size; only the words
                       // are shortened, and only on the screens where they
                       // would not have fitted at all.
                       Flexible(

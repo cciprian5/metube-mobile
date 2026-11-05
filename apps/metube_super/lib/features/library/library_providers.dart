@@ -4,10 +4,10 @@ import 'package:mt_media/mt_media.dart' show MediaShape;
 
 import '../../di.dart';
 import '../shared/async_view.dart';
-import 'library_models.dart';
-import 'library_view_options.dart';
 
-export 'library_view_options.dart';
+import 'package:mt_media/library.dart';
+
+export 'package:mt_media/library.dart' show LibraryViewOptions;
 
 /// The unified library items: the server's done list plus the local index,
 /// merged on canonicalUrl with fuzzy matching.
@@ -38,82 +38,14 @@ final libraryItemsProvider = FutureProvider<List<LibraryItem>>((ref) async {
       .watch(mediaShapeIndexProvider)
       .readAll();
 
-  List<String> userTags(String url) => [
-    for (final t in tags[url] ?? const <String>[])
-      if (t != MTConstants.favoritesSystemTag) t,
-  ];
-  bool isFavorite(String url) =>
-      (tags[url] ?? const []).contains(MTConstants.favoritesSystemTag);
-
-  final items = <LibraryItem>[];
-  final matchedLocal = <String>{};
-
-  final done = [
-    for (final entry in history?.done ?? const <HistoryItem>[])
-      if (entry.isCompleted) entry,
-  ];
-
-  // **Two passes rather than one** (defect found 2026-09-08): exact
-  // matching first for **all** items, then fuzzy matching over what
-  // remains. With a single pass, an earlier item takes by a fuzzy match a
-  // key a later item owns exactly.
-  final localOf = <String, String>{};
-  for (final entry in done) {
-    final exact = offline[entry.canonicalUrl];
-    if (exact == null) continue;
-    localOf[entry.canonicalUrl] = exact;
-    matchedLocal.add(entry.canonicalUrl);
-  }
-  for (final entry in done) {
-    if (localOf.containsKey(entry.canonicalUrl)) continue;
-    for (final MapEntry(:key, :value) in offline.entries) {
-      // **One file is never given to two items**: Facebook URLs all matched
-      // each other (fixed in `UrlKit`), so the offline item's file appeared
-      // under every Facebook item and opened in the external player in
-      // their place. This bound makes the symptom impossible even if
-      // another matching rule collides tomorrow.
-      if (matchedLocal.contains(key)) continue;
-      if (UrlKit.urlsMatch(key, entry.canonicalUrl)) {
-        localOf[entry.canonicalUrl] = value;
-        matchedLocal.add(key);
-        break;
-      }
-    }
-  }
-
-  for (final entry in done) {
-    final localPath = localOf[entry.canonicalUrl];
-    final shape = shapes[entry.canonicalUrl];
-    items.add(
-      LibraryItem.fromHistory(
-        entry,
-        localPath: localPath,
-        favorite: isFavorite(entry.canonicalUrl),
-        tags: userTags(entry.canonicalUrl),
-        duration: shape?.duration,
-        aspectRatio: shape?.aspectRatio,
-        cachedThumb: artwork[entry.canonicalUrl],
-      ),
-    );
-  }
-
-  // Local and no longer on the server, deleted there, but still in the
-  // unified library.
-  for (final MapEntry(:key, :value) in offline.entries) {
-    if (matchedLocal.contains(key)) continue;
-    items.add(
-      LibraryItem.fromOfflineOnly(
-        key,
-        value,
-        favorite: isFavorite(key),
-        tags: userTags(key),
-        cachedThumb: artwork[key],
-        duration: shapes[key]?.duration,
-        aspectRatio: shapes[key]?.aspectRatio,
-      ),
-    );
-  }
-  return items;
+  return mergeLibrary(
+    history: history,
+    offline: offline,
+    tags: tags,
+    artwork: artwork,
+    shapes: shapes,
+    kept: await ref.watch(keptCoverIndexProvider).readAll(),
+  );
 });
 
 /// Why the server part of the library is missing while the library itself
@@ -195,6 +127,13 @@ class LibraryViewNotifier extends Notifier<LibraryViewOptions> {
     }
     state = state.copyWith(tags: included, excludedTags: excluded);
   }
+
+  /// Lets one tag go, included or excluded: the ✕ on its chip in the first
+  /// row, where cycling would turn an inclusion into an exclusion.
+  void removeTag(String tag) => state = state.copyWith(
+    tags: {...state.tags}..remove(tag),
+    excludedTags: {...state.excludedTags}..remove(tag),
+  );
 
   void clearTags() =>
       state = state.copyWith(tags: const {}, excludedTags: const {});
@@ -307,3 +246,17 @@ final completionGlowProvider = Provider<void>((ref) {
     }
   });
 });
+
+/// Whether a filter chosen inside the sort and filter sheet is on, for the
+/// dot on the button that opens it.
+final sheetFiltersOnProvider = Provider<bool>(
+  (ref) => ref.watch(
+    libraryViewProvider.select(
+      (o) =>
+          o.platform != null ||
+          o.folder != null ||
+          o.tags.isNotEmpty ||
+          o.excludedTags.isNotEmpty,
+    ),
+  ),
+);

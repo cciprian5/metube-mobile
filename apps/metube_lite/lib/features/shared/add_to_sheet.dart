@@ -15,7 +15,7 @@ import '../playlists/add_to_playlist_sheet.dart';
 ///
 /// **No tags in Lite**, deliberately: tags are a Super feature.
 void showAddToSheet(BuildContext context, WidgetRef ref, LocalItem item) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // The screen's context, not the sheet's: the later sheets open after
@@ -56,10 +56,8 @@ class _AddToSheet extends ConsumerWidget {
           ),
           const Divider(),
           ListTile(
-            leading: Icon(
-              item.favorite
-                  ? Icons.favorite_rounded
-                  : Icons.favorite_border_rounded,
+            leading: MTIcon(
+              item.favorite ? MTIcons.favoriteOn : MTIcons.favorite,
               color: item.favorite ? p.favorite : p.ink2,
             ),
             title: Text(
@@ -79,7 +77,7 @@ class _AddToSheet extends ConsumerWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.playlist_add_rounded, color: p.ink2),
+            leading: MTIcon(MTIcons.queueAdd, color: p.ink2),
             title: Text(
               l10n.addToPlaylist,
               style: Theme.of(context).textTheme.bodyMedium,

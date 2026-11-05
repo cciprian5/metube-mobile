@@ -4,8 +4,9 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Both apps share this file: an entry says which one it affects when it affects
-only one.
+The apps share this file: an entry says which ones it affects when it does
+not affect them all. From 2.7.0 there are three: MeTube Lite and MeTube Super
+for Android, and MeTube Ember for Windows.
 
 ## [Unreleased]
 
@@ -25,6 +26,96 @@ only one.
   MeTube server". What Cloudflare itself answers on a rejection has not yet
   been measured against a live hostname, so a rejection that comes from the
   Cloudflare side still shows today's message. See `docs/SERVER-SETUP.md`.
+## [2.7.0] - 2026-11-05
+
+### Added
+
+- **MeTube Ember, for Windows.** The owner's app on a computer: your
+  server's library in a grid, a table or a compact list, with the player
+  in the window and its own mini window, the transcript beside the video,
+  a reading room for long talks, chapters, channels and arrivals, playlists,
+  tags and favourites, and downloads to this computer. Ctrl+K searches the
+  titles and what was said in them; `?` lists every key. It installs per
+  user with no administrator rights, updates itself, and finds your server
+  on the home network when you set it up.
+- **A "To Ember" button for your browser (Ember).** Settings › Desktop opens
+  a page with the button ready to drag to the bookmarks bar; on any video's
+  page, one click opens the add dialog with that link. Nothing is sent until
+  you press Add.
+- **Sync with your computer (Super).** Optional and off until you choose a
+  folder: tags, favourites, playlists, resume positions and transcripts
+  travel between Super and MeTube Ember through a folder a program of your
+  choice keeps in sync (Syncthing at home, or a cloud folder). It is not a
+  backup. Lite does not sync.
+- **Covers stay when YouTube deletes a video.** YouTube removes a video's
+  picture with the video; the apps now keep each cover on the device, and a
+  clip whose cover is already gone takes a frame from its own file. All
+  three apps.
+
+- **A note when another device has gone quiet (Super, Ember).** When nothing
+  has come from your phone or computer for over two days, the sync page
+  says so beside it: a sync app paused or put to sleep by the phone's
+  battery rules is the usual reason.
+- **Ctrl+C and Ctrl+Shift+C with the mouse (Ember).** The link or the file
+  of the clip under the mouse, or of the one clip chosen with its circle;
+  with several chosen it says copying takes one at a time.
+
+### Changed
+
+- **The app's logo in the title bar and in About (Ember)**, in place of
+  the small orange dot.
+
+- **A clip card is one button for a screen reader.** TalkBack reads the
+  title and length once and opens the clip on a double tap; the heart is a
+  button of its own. Both phone apps.
+
+- **Video no longer includes the shorts.** Video, Shorts and Audio now each
+  hold their own clips, so videos can be seen without the shorts. All three
+  apps.
+- **The smart playlists in Lite are quiet rows**, as in Super: favourites
+  and the latest additions in one group, with their counts.
+
+- **Ember's folders bear its own name**: downloads go to
+  `Downloads\MeTube Ember` and offline copies to
+  `Videos\MeTube Ember\Offline` unless you choose others.
+
+### Fixed
+
+- **A backup restored on another phone kept some clips without a cover.**
+  The covers kept as files are paths on the phone that wrote them; they
+  now stay on that phone, and the restored clips fetch their covers again.
+- **A clip downloaded on the phone is no longer announced on the computer
+  as news from a subscription, nor the other way round (Super, Ember).**
+  Only what a subscription's own check queued on the server is announced
+  now, judged from the server's record of each check.
+- **A tag or playlist typed and closed with Done is kept (Ember).** The name
+  in the field was dropped unless Enter was pressed, so tags and lists
+  seemed never to be made; Done now adds it, and a button beside the field
+  adds it too.
+- **The mini window keeps its size, and its Next button works (Ember).**
+  The place of the window's maximize button outlived the title bar: on the
+  small card for sound, in Arabic, it lay over Next, so Next maximized the
+  card. Full screen had the same hidden spot in its corner. The card can no
+  longer be resized or maximized either.
+- **A download shows its title and cover while it is still coming.** The
+  list showed a bare link and a blank picture until the file was done. All
+  three apps.
+
+- **A shared log kept some file names, Windows paths and cookies.** Only the
+  first word of a file name was hidden, and paths on a computer or a memory
+  card were not; they are now hidden whole, with any cookie the log held.
+  All three apps.
+- **The seven backups could fill with the same copy.** A backup with nothing
+  new in it now leaves the older ones in place. All three apps.
+
+### Security
+
+- **Extra protection against a hostile server or a planted file.** Links
+  and covers from the server open only as web pages, a download's folder
+  stays inside the download folder, a sync file cannot point "forget this
+  device" outside its own folder, a crafted subtitle file no longer freezes
+  the app, and an update is taken only from GitHub over https. None of this
+  changes what you see. All three apps, each where it applies.
 
 ## [2.6.0] - 2026-10-23
 

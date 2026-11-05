@@ -75,7 +75,7 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
           ? null
           : FloatingActionButton.extended(
               onPressed: _submit,
-              icon: const Icon(Icons.download_rounded),
+              icon: const MTIcon(MTIcons.download),
               label: Text(l10n.batchDownloadSelected),
             ),
       body: MTReadableWidth(
@@ -84,7 +84,7 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircularProgressIndicator(),
+                const MTSpinner(),
                 const SizedBox(height: MTSpace.md),
                 Text(
                   l10n.batchLoading,
@@ -94,7 +94,6 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
             ),
           ),
           error: (e, _) => MTEmptyState(
-            icon: Icons.error_outline_rounded,
             title: l10n.failedToLoadPlaylist,
             message: errorText(l10n, e),
             actionLabel: l10n.retry,
@@ -103,7 +102,6 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
           ),
           data: (data) => data == null || data.tracks.isEmpty
               ? MTEmptyState(
-                  icon: Icons.playlist_remove_rounded,
                   title: l10n.failedToLoadPlaylist,
                   message: l10n.couldNotLoadPlaylist,
                 )
@@ -173,7 +171,7 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
         if (kind != PlaylistKind.soundcloud)
           _QualityRow(
             quality: _quality ?? Quality.best,
-            youtubeOnly: kind == PlaylistKind.youtube,
+            heights: kind != PlaylistKind.soundcloud,
             onChanged: (q) => setState(() => _quality = q),
           ),
         // **The album on the device** (requested 2026-09-03): Super adds to
@@ -189,7 +187,7 @@ class _BatchScreenState extends ConsumerState<BatchScreen> {
           contentPadding: const EdgeInsets.symmetric(
             horizontal: MTSpace.pagePad,
           ),
-          secondary: const Icon(Icons.save_alt_rounded),
+          secondary: const MTIcon(MTIcons.download),
           title: Text(context.mtl.batchSaveToDevice),
         ),
         Expanded(
@@ -322,19 +320,23 @@ class _Header extends StatelessWidget {
 class _QualityRow extends StatelessWidget {
   const _QualityRow({
     required this.quality,
-    required this.youtubeOnly,
+    required this.heights,
     required this.onChanged,
   });
 
   final Quality quality;
-  final bool youtubeOnly;
+  final bool heights;
   final ValueChanged<Quality> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    // Rule 2: numeric qualities are for YouTube only.
-    final options = youtubeOnly
-        ? Quality.values
+    // Rule 2: no heights for sound alone (a SoundCloud set).
+    // 360 is Lite's alone.
+    final options = heights
+        ? [
+            for (final q in Quality.values)
+              if (q != Quality.q360) q,
+          ]
         : [Quality.best, Quality.audio];
     return SizedBox(
       height: 46,

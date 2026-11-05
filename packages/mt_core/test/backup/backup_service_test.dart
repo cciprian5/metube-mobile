@@ -98,6 +98,36 @@ void main() {
       expect(await fresh.getBool('library_compact_view'), isTrue);
     });
 
+    test('**the guard**: the covers kept as files stay on this phone, or a '
+        'restore elsewhere shows those clips with no cover at all', () async {
+      // Found while restoring a backup on a fresh install (2026-11-05):
+      // the paths pointed at files of the old install, and the clips they
+      // stood for showed blank.
+      await store.setString(
+        KeptCoverIndex.keptKey,
+        '{"https://youtu.be/a":"/data/user/0/app/files/kept_covers/a.jpg"}',
+      );
+      await store.setBool('library_compact_view', true);
+
+      final exported = await service.exportToString();
+      expect(exported, isNot(contains(KeptCoverIndex.keptKey)));
+
+      final planted = json.decode(exported) as Map<String, dynamic>;
+      (planted['prefs'] as Map<String, dynamic>)[KeptCoverIndex.keptKey] = {
+        't': 's',
+        'v': '{"https://youtu.be/a":"/old/kept_covers/a.jpg"}',
+      };
+      final fresh = MemoryKeyValueStore();
+      await BackupService(
+        store: fresh,
+        secrets: MemorySecretStore(),
+        mutex: PrefsMutex(),
+        variant: 'super',
+      ).importFromString(json.encode(planted));
+      expect(await fresh.getString(KeptCoverIndex.keptKey), isNull);
+      expect(await fresh.getBool('library_compact_view'), isTrue);
+    });
+
     test('the "what is new" record stays with the installed app', () async {
       // Restored from an older backup it would show a sheet already read,
       // or show one on a fresh install.

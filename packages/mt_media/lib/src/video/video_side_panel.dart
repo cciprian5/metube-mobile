@@ -12,7 +12,7 @@ class MTVideoPanel {
     required this.builder,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String label;
 
   /// The panel's content; [close] puts it away.

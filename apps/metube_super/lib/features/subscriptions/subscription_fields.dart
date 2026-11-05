@@ -32,6 +32,8 @@ class SubscriptionQualityField extends StatelessWidget {
       children: [
         Expanded(
           child: DropdownMenu<Quality>(
+            trailingIcon: const MTIcon(MTIcons.chevronDown),
+            selectedTrailingIcon: const MTIcon(MTIcons.chevronUp),
             initialSelection: value,
             label: Text(l10n.subscriptionQuality),
             helperText: l10n.subscriptionQualityNote,

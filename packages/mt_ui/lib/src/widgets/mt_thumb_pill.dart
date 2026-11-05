@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// The small ink pill laid over a thumbnail corner. The list card and the
 /// grid card both draw one for the duration and one for the audio mark,
 /// and keeping a single definition stops the two copies drifting apart.
@@ -58,8 +61,8 @@ class _AudioGlyph extends StatelessWidget {
   static const double _size = 12;
 
   @override
-  Widget build(BuildContext context) => Icon(
-    Icons.music_note_rounded,
+  Widget build(BuildContext context) => MTIcon(
+    MTIcons.music,
     size: _size,
     color: MTThemeX.of(context).palette.bg,
   );

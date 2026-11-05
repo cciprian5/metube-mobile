@@ -4,10 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/library_actions.dart';
-import '../library/library_models.dart';
+import '../library/widgets/share_sheet.dart';
+import '../shared/error_report.dart';
 import '../library/library_providers.dart';
 import '../library/widgets/item_details_sheet.dart';
 import '../shared/add_to_sheet.dart';
@@ -71,7 +73,6 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.bolt_rounded,
           title: l10n.shortsFilter,
           message: l10n.noPlayableSource,
         ),
@@ -98,7 +99,6 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.bolt_rounded,
           title: l10n.shortsFilter,
           message: l10n.noResultsMessage,
         ),
@@ -150,19 +150,19 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
         return [
           if (hasTranscript)
             MTPlayerAction(
-              icon: Icons.subject_rounded,
+              icon: MTIcons.transcript,
               label: l10n.transcript,
               onTap: () => showReelTranscript(context, _reel, item),
             ),
           MTPlayerAction(
-            icon: Icons.info_outline_rounded,
+            icon: MTIcons.info,
             label: l10n.details,
             onTap: () {
               if (match != null) showItemDetailsSheet(context, match);
             },
           ),
           MTPlayerAction(
-            icon: Icons.playlist_add_rounded,
+            icon: MTIcons.queueAdd,
             label: l10n.addTo,
             onTap: () {
               if (match != null) showAddToSheet(context, ref, match);
@@ -170,7 +170,7 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
           ),
           if (progress != null)
             MTPlayerAction(
-              icon: Icons.downloading_rounded,
+              icon: MTIcons.download,
               label: l10n.percentValue((progress * 100).round()),
               onTap: () {},
             )
@@ -179,19 +179,19 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
             // here and "available offline" there for exactly the same
             // action.
             MTPlayerAction(
-              icon: Icons.download_rounded,
+              icon: MTIcons.download,
               label: l10n.saveToDevice,
               onTap: () => _makeOffline(item),
             )
           else
             MTPlayerAction(
-              icon: Icons.offline_pin_rounded,
+              icon: MTIcons.offline,
               label: l10n.savedOnDevice,
               highlighted: true,
               onTap: () {},
             ),
           MTPlayerAction(
-            icon: Icons.share_rounded,
+            icon: MTIcons.share,
             label: l10n.share,
             onTap: () => _share(item),
           ),
@@ -226,6 +226,8 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
           type: MTSnackType.success,
         );
       }
+    } on CancelledException {
+      // Stopped on purpose; nothing went wrong.
     } on Object {
       if (mounted) {
         showMTSnack(context, l10n.failed, type: MTSnackType.error);
@@ -236,7 +238,11 @@ class _ReelsScreenState extends ConsumerState<ReelsScreen> {
   Future<void> _share(PlaylistItem item) async {
     final match = _libraryItemOf(item);
     if (match == null) return;
-    await ref.read(libraryActionsProvider).smartShare(match);
+    try {
+      await shareClip(context, ref, match);
+    } on Object catch (e) {
+      if (mounted) showErrorSnack(context, ref, e, tag: 'share');
+    }
   }
 
   /// "Continue with the rest of the list": the first non-short item opens

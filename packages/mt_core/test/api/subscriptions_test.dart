@@ -216,16 +216,20 @@ void main() {
       );
     });
 
-    test('the quality rule still applies: a numeric quality cannot escape '
-        'to a non-YouTube channel', () async {
-      final (client, adapter) = _makeClient((o) => _json('{"status":"ok"}'));
-      await client.subscribe(
-        'https://soundcloud.com/artist',
-        Quality.q720,
-        checkIntervalMinutes: 60,
-      );
-      expect(_body(adapter.requests.single)['quality'], Quality.best.wire);
-    });
+    // A numeric quality on a SoundCloud artist becomes audio, with its
+    // covers (owner's decision 2026-11-04; it was best before).
+    test(
+      'the quality rule still applies: a SoundCloud channel gets audio',
+      () async {
+        final (client, adapter) = _makeClient((o) => _json('{"status":"ok"}'));
+        await client.subscribe(
+          'https://soundcloud.com/artist',
+          Quality.q720,
+          checkIntervalMinutes: 60,
+        );
+        expect(_body(adapter.requests.single)['quality'], Quality.audio.wire);
+      },
+    );
 
     test(
       'compatible video sends the three fields together, as /add does',

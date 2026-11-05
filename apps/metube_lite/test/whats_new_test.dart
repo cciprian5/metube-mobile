@@ -74,7 +74,8 @@ void main() {
                     'assets': [
                       {
                         'name': 'MeTube-Lite-v9.9.9.apk',
-                        'browser_download_url': 'https://example.invalid/a',
+                        'browser_download_url':
+                            'https://github.com/x/y/releases/download/v1/a',
                       },
                     ],
                   })

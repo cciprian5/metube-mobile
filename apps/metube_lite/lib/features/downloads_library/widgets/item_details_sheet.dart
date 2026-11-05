@@ -3,18 +3,18 @@ import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../shared/external_player.dart';
 import '../../shared/membership.dart';
 import '../../shared/platform_label.dart';
 import '../local_item.dart';
 import '../media_probe.dart';
+import '../../shared/open_web_link.dart';
 
 /// Item details, opened from the actions sheet and from the reels player
 /// alike.
 void showItemDetailsSheet(BuildContext context, LocalItem item) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     builder: (_) => _DetailsSheet(item: item),
@@ -98,11 +98,8 @@ class _DetailsSheet extends ConsumerWidget {
                 if (item.canonicalUrl case final String url)
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () => launchUrl(
-                        Uri.parse(url),
-                        mode: LaunchMode.externalApplication,
-                      ),
-                      icon: const Icon(Icons.open_in_new_rounded, size: 16),
+                      onPressed: () => openWebLink(url),
+                      icon: const MTIcon(MTIcons.external, size: 16),
                       label: Text(
                         l10n.openOriginalLink,
                         maxLines: 1,
@@ -127,7 +124,7 @@ class _DetailsSheet extends ConsumerWidget {
                         );
                       }
                     },
-                    icon: const Icon(Icons.open_with_rounded, size: 16),
+                    icon: const MTIcon(MTIcons.playback, size: 16),
                     // A short label: two buttons side by side leave no room
                     // for a long one on a phone (seen on the device).
                     label: Text(
@@ -150,7 +147,7 @@ class _DetailsSheet extends ConsumerWidget {
                   showMTSnack(context, l10n.copiedToClipboard);
                 }
               },
-              icon: const Icon(Icons.copy_rounded, size: 16),
+              icon: const MTIcon(MTIcons.copy, size: 16),
               label: Text(
                 item.canonicalUrl ?? item.filename,
                 maxLines: 1,

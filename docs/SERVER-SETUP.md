@@ -409,7 +409,7 @@ on your own hardware. With Caddy that is four lines:
 ```
 metube.example.com {
     basic_auth {
-        yasir $2a$14$...      # caddy hash-password
+        alice $2a$14$...      # caddy hash-password
     }
     reverse_proxy metube:8081
 }

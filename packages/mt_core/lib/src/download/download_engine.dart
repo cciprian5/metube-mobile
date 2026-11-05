@@ -8,6 +8,7 @@ import '../constants/mt_constants.dart';
 import '../models/download_task.dart';
 import '../models/history_item.dart';
 import '../models/quality.dart';
+import '../urls/platform_detector.dart';
 import '../urls/short_link_resolver.dart';
 import '../urls/url_kit.dart';
 import 'delete_policy.dart';
@@ -18,6 +19,7 @@ import 'history_matcher.dart';
 import 'pull_gate_parking.dart';
 import 'transfer.dart';
 
+part 'download_engine_add.dart';
 part 'download_engine_emit.dart';
 part 'download_engine_pull.dart';
 
@@ -306,35 +308,13 @@ class DownloadEngine {
       }
       _throwIfCancelRequested(taskId);
     }
-    // Know what existed before us, so another operation is
-    // never attributed to this task. **One reading serves both jobs**: the
-    // fingerprints of this URL's items for the fallback match, and the whole
-    // server so the one thing our add changes can be identified by key.
-    final history = await _matcher.read();
-    _snapshots[taskId] = HistoryMatcher.signaturesFor(
-      history,
-      task.effectiveUrl,
-    );
-    _fingerprints[taskId] = history == null
-        ? null
-        : HistoryMatcher.fingerprints(history);
-    // **Before the add, not after**: the point of the record is to survive
-    // a death, and the most likely moment to die is while the server is
-    // working — which begins on the next line.
-    _remember(task, before: _snapshots[taskId]);
-    _throwIfCancelRequested(taskId);
-    await api.add(
-      resolved,
-      task.quality,
-      compatibleVideo: compatibleVideo?.call() ?? false,
-      folder: task.folder,
-    );
-
-    // 2) Poll until completion or an immediate error.
-    task = _emit(task.copyWith(phase: TaskPhase.polling));
-    final done = await _pollUntilDone(taskId, task);
+    // 2) Add, then poll until completion or an immediate error.
+    final done = await _addAndPoll(taskId, task, resolved);
+    // The add may have retried at another quality; only that is taken from
+    // it, so the rest of the update stays what it always was.
     task = _emit(
       task.copyWith(
+        quality: _tasks[taskId]!.quality,
         canonicalUrl: done.canonicalUrl,
         serverFilename: done.serverPath,
         title: done.title,
@@ -378,6 +358,7 @@ class DownloadEngine {
         // need, and the likeliest moment to be killed is while the server
         // is working.
         onIdentified: (key) => _noteServerKey(taskId, key),
+        onSeen: (item) => _noteSeen(taskId, item),
         checkAborted: () {
           if (_disposed) throw const CancelledException();
           _throwIfCancelRequested(taskId);
@@ -385,6 +366,26 @@ class DownloadEngine {
         onProgress: (p) => _emitProgress(taskId, p),
         live: api.liveUpdates(),
       );
+
+  /// The task shows the title, the picture and the speed the server has
+  /// for it as soon as the server has them, not only once it is done:
+  /// until then the list showed a bare link and a blank where the cover
+  /// goes.
+  void _noteSeen(String taskId, HistoryItem item) {
+    final task = _tasks[taskId];
+    if (task == null) return;
+    final title = (item.title ?? '').isEmpty ? task.title : item.title;
+    final thumbnail = item.thumbnail ?? task.thumbnail;
+    final speed = item.rawStatus == 'downloading' ? item.speed : null;
+    if (title == task.title &&
+        thumbnail == task.thumbnail &&
+        speed == task.speed) {
+      return;
+    }
+    _emit(
+      task.copyWith(title: title, thumbnail: thumbnail, speed: () => speed),
+    );
+  }
 
   /// The task learns the URL the server filed it under, and so does its
   /// record.

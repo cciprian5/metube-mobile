@@ -107,13 +107,13 @@ abstract class MTLocalizations {
   /// No description provided for @aboutApp.
   ///
   /// In en, this message translates to:
-  /// **'About App'**
+  /// **'About the app'**
   String get aboutApp;
 
   /// No description provided for @aboutDescriptionLite.
   ///
   /// In en, this message translates to:
-  /// **'A light, fast app that downloads videos from many platforms through your MeTube server, pulls them to your device and cleans the server afterwards — with a built-in player and playlists.'**
+  /// **'A light, fast app that downloads videos from many platforms through your MeTube server, pulls them to your device and cleans the server afterwards. It has its own player and playlists.'**
   String get aboutDescriptionLite;
 
   /// No description provided for @aboutDescriptionSuper.
@@ -125,7 +125,7 @@ abstract class MTLocalizations {
   /// No description provided for @activeDownloads.
   ///
   /// In en, this message translates to:
-  /// **'Active Downloads'**
+  /// **'Active downloads'**
   String get activeDownloads;
 
   /// No description provided for @activeDownloadsCount.
@@ -173,7 +173,7 @@ abstract class MTLocalizations {
   /// No description provided for @addToPlaylist.
   ///
   /// In en, this message translates to:
-  /// **'Add to Playlist'**
+  /// **'Add to playlist'**
   String get addToPlaylist;
 
   /// No description provided for @addUrl.
@@ -209,7 +209,7 @@ abstract class MTLocalizations {
   /// No description provided for @allDownloadsFinished.
   ///
   /// In en, this message translates to:
-  /// **'All downloads finished!'**
+  /// **'All downloads finished.'**
   String get allDownloadsFinished;
 
   /// No description provided for @allFolders.
@@ -263,7 +263,7 @@ abstract class MTLocalizations {
   /// No description provided for @audioOnly.
   ///
   /// In en, this message translates to:
-  /// **'Audio Only'**
+  /// **'Audio only'**
   String get audioOnly;
 
   /// No description provided for @audioStereo.
@@ -281,7 +281,7 @@ abstract class MTLocalizations {
   /// No description provided for @authentication.
   ///
   /// In en, this message translates to:
-  /// **'Authentication (Optional)'**
+  /// **'Authentication (optional)'**
   String get authentication;
 
   /// No description provided for @autoBuilt.
@@ -305,7 +305,7 @@ abstract class MTLocalizations {
   /// No description provided for @autoRestoreSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Data restored from backup successfully!'**
+  /// **'Data restored from the backup.'**
   String get autoRestoreSuccess;
 
   /// No description provided for @autoRetry.
@@ -317,13 +317,13 @@ abstract class MTLocalizations {
   /// No description provided for @autoRetryHelp.
   ///
   /// In en, this message translates to:
-  /// **'Anything that failed because the network dropped is retried on its own when it returns. Server refusals are not retried — repeating them unchanged just fails again.'**
+  /// **'Anything that failed because the network dropped is retried on its own when it returns. Server refusals are not retried: repeating them unchanged just fails again.'**
   String get autoRetryHelp;
 
   /// No description provided for @autoSwitchDisabledHint.
   ///
   /// In en, this message translates to:
-  /// **'Auto-switching is off — the app uses the single Server URL from Settings.'**
+  /// **'Auto-switching is off, so the app uses the single Server URL from Settings.'**
   String get autoSwitchDisabledHint;
 
   /// No description provided for @autoUrlSwitching.
@@ -377,13 +377,13 @@ abstract class MTLocalizations {
   /// No description provided for @backupSettings.
   ///
   /// In en, this message translates to:
-  /// **'Backup All Data'**
+  /// **'Back up all data'**
   String get backupSettings;
 
   /// No description provided for @backupSettingsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Seven dated copies that refresh themselves — restore any of them, or export one to share'**
+  /// **'Seven dated copies that refresh themselves. Restore any of them, or export one to share'**
   String get backupSettingsSubtitle;
 
   /// No description provided for @backupSuccess.
@@ -464,6 +464,12 @@ abstract class MTLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @cancelSaveToDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop saving to the phone'**
+  String get cancelSaveToDevice;
+
   /// No description provided for @changeQuality.
   ///
   /// In en, this message translates to:
@@ -487,6 +493,42 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'https://www.youtube.com/@name'**
   String get channelUrlHint;
+
+  /// No description provided for @chapterCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 chapter} other{{count} chapters}}'**
+  String chapterCount(int count);
+
+  /// No description provided for @chapterNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter {number}'**
+  String chapterNumber(int number);
+
+  /// No description provided for @chaptersFold.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide chapters'**
+  String get chaptersFold;
+
+  /// No description provided for @chaptersFromTranscript.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 chapter from the transcript} other{{count} chapters from the transcript}}'**
+  String chaptersFromTranscript(int count);
+
+  /// No description provided for @chaptersShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all chapters'**
+  String get chaptersShowAll;
+
+  /// No description provided for @chaptersUnfold.
+  ///
+  /// In en, this message translates to:
+  /// **'Show chapters'**
+  String get chaptersUnfold;
 
   /// No description provided for @checkEvery.
   ///
@@ -539,7 +581,7 @@ abstract class MTLocalizations {
   /// No description provided for @clearLogs.
   ///
   /// In en, this message translates to:
-  /// **'Clear Logs'**
+  /// **'Clear logs'**
   String get clearLogs;
 
   /// No description provided for @clearLogsConfirm.
@@ -665,7 +707,7 @@ abstract class MTLocalizations {
   /// No description provided for @connectionSuccessful.
   ///
   /// In en, this message translates to:
-  /// **'Connected successfully — settings saved'**
+  /// **'Connected. Settings saved.'**
   String get connectionSuccessful;
 
   /// No description provided for @continueAsAudio.
@@ -725,7 +767,7 @@ abstract class MTLocalizations {
   /// No description provided for @cookiesHelp.
   ///
   /// In en, this message translates to:
-  /// **'In your browser, use an extension that exports cookies in the Netscape format — one file per platform — and pick the files here. The server then uses them for every download, and yt-dlp decides when it needs them. Cookies expire, so a download that starts failing again usually means a fresh export is due.'**
+  /// **'In your browser, use an extension that exports cookies in the Netscape format (one file per platform) and pick the files here. The server then uses them for every download, and yt-dlp decides when it needs them. Cookies expire, so a download that starts failing again usually means a fresh export is due.'**
   String get cookiesHelp;
 
   /// No description provided for @cookiesNotNetscape.
@@ -755,7 +797,7 @@ abstract class MTLocalizations {
   /// No description provided for @cookiesReplaceNote.
   ///
   /// In en, this message translates to:
-  /// **'Each upload replaces the server\'s whole cookies file. To keep several platforms, pick all their files together every time — the ones you sent before too. To pick more than one, long-press the first file.'**
+  /// **'Each upload replaces the server\'s whole cookies file. To keep several platforms, pick all their files together every time, the ones you sent before too. To pick more than one, long-press the first file.'**
   String get cookiesReplaceNote;
 
   /// No description provided for @cookiesSentFor.
@@ -806,6 +848,12 @@ abstract class MTLocalizations {
   /// **'Copied to clipboard'**
   String get copiedToClipboard;
 
+  /// No description provided for @copyingToPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 clip to this phone} other{{count} clips to this phone}}'**
+  String copyingToPhone(int count);
+
   /// No description provided for @copyright.
   ///
   /// In en, this message translates to:
@@ -827,7 +875,7 @@ abstract class MTLocalizations {
   /// No description provided for @createPlaylist.
   ///
   /// In en, this message translates to:
-  /// **'Create Playlist'**
+  /// **'Create playlist'**
   String get createPlaylist;
 
   /// No description provided for @creator.
@@ -839,7 +887,7 @@ abstract class MTLocalizations {
   /// No description provided for @defaultQuality.
   ///
   /// In en, this message translates to:
-  /// **'Default Video Quality'**
+  /// **'Default video quality'**
   String get defaultQuality;
 
   /// No description provided for @delete.
@@ -851,7 +899,7 @@ abstract class MTLocalizations {
   /// No description provided for @deleteFromServer.
   ///
   /// In en, this message translates to:
-  /// **'Delete From Server'**
+  /// **'Delete from server'**
   String get deleteFromServer;
 
   /// No description provided for @deleteFromServerConfirm.
@@ -875,7 +923,7 @@ abstract class MTLocalizations {
   /// No description provided for @deleteSelected.
   ///
   /// In en, this message translates to:
-  /// **'Delete Selected'**
+  /// **'Delete selected'**
   String get deleteSelected;
 
   /// No description provided for @deleteTag.
@@ -893,7 +941,7 @@ abstract class MTLocalizations {
   /// No description provided for @deleteVideo.
   ///
   /// In en, this message translates to:
-  /// **'Delete Video'**
+  /// **'Delete video'**
   String get deleteVideo;
 
   /// No description provided for @deleteVideoConfirm.
@@ -923,8 +971,1994 @@ abstract class MTLocalizations {
   /// No description provided for @deselectAll.
   ///
   /// In en, this message translates to:
-  /// **'Deselect All'**
+  /// **'Deselect all'**
   String get deselectAll;
+
+  /// No description provided for @desktopAddLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing to add} =1{Add 1 link} other{Add {count} links}}'**
+  String desktopAddLinks(int count);
+
+  /// No description provided for @desktopAddressAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get desktopAddressAdd;
+
+  /// No description provided for @desktopAddressInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'In use'**
+  String get desktopAddressInUse;
+
+  /// No description provided for @desktopAddressInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Not an address, or already in the list'**
+  String get desktopAddressInvalid;
+
+  /// No description provided for @desktopAddressNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New address, e.g. https://metube.example.com'**
+  String get desktopAddressNew;
+
+  /// No description provided for @desktopAddressStatusNotMeTube.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a MeTube server'**
+  String get desktopAddressStatusNotMeTube;
+
+  /// No description provided for @desktopAddressStatusOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers'**
+  String get desktopAddressStatusOk;
+
+  /// No description provided for @desktopAddressStatusRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Refuses the password'**
+  String get desktopAddressStatusRefused;
+
+  /// No description provided for @desktopAddressStatusUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not reachable'**
+  String get desktopAddressStatusUnreachable;
+
+  /// No description provided for @desktopAddressTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get desktopAddressTest;
+
+  /// No description provided for @desktopAddressUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get desktopAddressUse;
+
+  /// No description provided for @desktopAddresses.
+  ///
+  /// In en, this message translates to:
+  /// **'Addresses'**
+  String get desktopAddresses;
+
+  /// No description provided for @desktopAddressesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The app uses the address you choose and never switches by itself.'**
+  String get desktopAddressesHint;
+
+  /// No description provided for @desktopAskEachTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me every time'**
+  String get desktopAskEachTime;
+
+  /// No description provided for @desktopAskEachTimeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows asks for a folder at each download.'**
+  String get desktopAskEachTimeHint;
+
+  /// No description provided for @desktopBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get desktopBack;
+
+  /// No description provided for @desktopBackUpNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get desktopBackUpNow;
+
+  /// No description provided for @desktopBackupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer keeps its last seven backups, at least an hour apart, in its own folder.'**
+  String get desktopBackupHint;
+
+  /// No description provided for @desktopBackupsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup yet'**
+  String get desktopBackupsNone;
+
+  /// No description provided for @desktopBrowserButton.
+  ///
+  /// In en, this message translates to:
+  /// **'“To Ember” button in the browser'**
+  String get desktopBrowserButton;
+
+  /// No description provided for @desktopBrowserButtonCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied. Make a new bookmark and paste it as its address (URL).'**
+  String get desktopBrowserButtonCopied;
+
+  /// No description provided for @desktopBrowserButtonCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the code'**
+  String get desktopBrowserButtonCopy;
+
+  /// No description provided for @desktopBrowserButtonFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The page could not be opened; copy the code instead.'**
+  String get desktopBrowserButtonFailed;
+
+  /// No description provided for @desktopBrowserButtonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A button on your bookmarks bar: one click on any video\'s page opens the add dialog here with its link. Nothing is sent until you press Add.'**
+  String get desktopBrowserButtonHint;
+
+  /// No description provided for @desktopBrowserButtonName.
+  ///
+  /// In en, this message translates to:
+  /// **'To Ember'**
+  String get desktopBrowserButtonName;
+
+  /// No description provided for @desktopBrowserButtonOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the setup page'**
+  String get desktopBrowserButtonOpen;
+
+  /// No description provided for @desktopBrowserPageCopyInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'If dragging does not work, make a new bookmark and paste this as its address:'**
+  String get desktopBrowserPageCopyInstead;
+
+  /// No description provided for @desktopBrowserPageDragHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag it to the bar; a click here does nothing.'**
+  String get desktopBrowserPageDragHint;
+
+  /// No description provided for @desktopBrowserPageStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the bookmarks bar if it is hidden:'**
+  String get desktopBrowserPageStep1;
+
+  /// No description provided for @desktopBrowserPageStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the button below onto the bar with the mouse.'**
+  String get desktopBrowserPageStep2;
+
+  /// No description provided for @desktopBrowserPageStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'On any video\'s page, click it: MeTube Ember opens its add dialog with the link. The first time, the browser asks whether to open the app; allow it.'**
+  String get desktopBrowserPageStep3;
+
+  /// No description provided for @desktopBrowserPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the “To Ember” button to your browser'**
+  String get desktopBrowserPageTitle;
+
+  /// No description provided for @desktopChangeFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Change…'**
+  String get desktopChangeFolder;
+
+  /// No description provided for @desktopChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get desktopChannel;
+
+  /// No description provided for @desktopChannelClips.
+  ///
+  /// In en, this message translates to:
+  /// **'In your library'**
+  String get desktopChannelClips;
+
+  /// No description provided for @desktopChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get desktopChannels;
+
+  /// No description provided for @desktopChannelsInLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels in your library'**
+  String get desktopChannelsInLibrary;
+
+  /// No description provided for @desktopChapters.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapters'**
+  String get desktopChapters;
+
+  /// No description provided for @desktopCheckAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Check all'**
+  String get desktopCheckAll;
+
+  /// No description provided for @desktopChooseClip.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get desktopChooseClip;
+
+  /// No description provided for @desktopClearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get desktopClearFilters;
+
+  /// No description provided for @desktopClearFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide finished'**
+  String get desktopClearFinished;
+
+  /// No description provided for @desktopClearSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get desktopClearSelection;
+
+  /// No description provided for @desktopCookiesPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'The files go straight to your server and are never kept on this computer. They are your accounts\' sign-in material, so only ever send them to a server you own.'**
+  String get desktopCookiesPrivacy;
+
+  /// No description provided for @desktopCookiesReplaceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Each upload replaces the server\'s whole cookies file. To keep several platforms, choose all their files together every time, the ones you sent before too. Hold Ctrl to choose more than one.'**
+  String get desktopCookiesReplaceNote;
+
+  /// No description provided for @desktopCopiedLinkAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add…'**
+  String get desktopCopiedLinkAdd;
+
+  /// No description provided for @desktopCopiedLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add this link to the server?'**
+  String get desktopCopiedLinkTitle;
+
+  /// No description provided for @desktopCopyCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get desktopCopyCancelled;
+
+  /// No description provided for @desktopCopyFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy file'**
+  String get desktopCopyFile;
+
+  /// No description provided for @desktopCopyFileFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The file could not be copied'**
+  String get desktopCopyFileFailed;
+
+  /// No description provided for @desktopCopyFileLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'A large file'**
+  String get desktopCopyFileLarge;
+
+  /// No description provided for @desktopCopyFileLargeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This clip is {size}. It is saved to your download folder first, then copied; many chat apps refuse a file this big.'**
+  String desktopCopyFileLargeMessage(String size);
+
+  /// No description provided for @desktopCopyFileNoSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough space on the drive: the file is {needed} and {free} is free'**
+  String desktopCopyFileNoSpace(String needed, String free);
+
+  /// No description provided for @desktopCopyFilePreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing the file to copy; its progress is in Downloads'**
+  String get desktopCopyFilePreparing;
+
+  /// No description provided for @desktopCopyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get desktopCopyLink;
+
+  /// No description provided for @desktopCopyOneClip.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying takes one clip at a time'**
+  String get desktopCopyOneClip;
+
+  /// No description provided for @desktopCopyQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting its turn'**
+  String get desktopCopyQueued;
+
+  /// No description provided for @desktopCopyQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy with time and link'**
+  String get desktopCopyQuote;
+
+  /// No description provided for @desktopDefaultQualityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What each add starts with; you can still change it for each link.'**
+  String get desktopDefaultQualityHint;
+
+  /// No description provided for @desktopDeleteSelectedConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Delete 1 clip from the server? A copy on this computer stays.} other{Delete {count} clips from the server? Copies on this computer stay.}}'**
+  String desktopDeleteSelectedConfirm(int count);
+
+  /// No description provided for @desktopDesktopSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop'**
+  String get desktopDesktopSection;
+
+  /// No description provided for @desktopDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover MeTube Ember'**
+  String get desktopDiscover;
+
+  /// No description provided for @desktopDiscoverAddLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste or drop a link'**
+  String get desktopDiscoverAddLink;
+
+  /// No description provided for @desktopDiscoverAddLinkLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl+V anywhere, or drop a link on the window, to add it.'**
+  String get desktopDiscoverAddLinkLine;
+
+  /// No description provided for @desktopDiscoverAdding.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding and sharing'**
+  String get desktopDiscoverAdding;
+
+  /// No description provided for @desktopDiscoverBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'From the browser'**
+  String get desktopDiscoverBrowser;
+
+  /// No description provided for @desktopDiscoverBrowserLine.
+  ///
+  /// In en, this message translates to:
+  /// **'The “To Ember” button on your bookmarks bar opens the add dialog with the page you are on.'**
+  String get desktopDiscoverBrowserLine;
+
+  /// No description provided for @desktopDiscoverChapters.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapters'**
+  String get desktopDiscoverChapters;
+
+  /// No description provided for @desktopDiscoverChaptersLine.
+  ///
+  /// In en, this message translates to:
+  /// **'A clip\'s parts, from its transcript, on its page.'**
+  String get desktopDiscoverChaptersLine;
+
+  /// No description provided for @desktopDiscoverChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose many'**
+  String get desktopDiscoverChoose;
+
+  /// No description provided for @desktopDiscoverChooseLine.
+  ///
+  /// In en, this message translates to:
+  /// **'The round mark, or Ctrl or Shift with a click; then add them to a list or delete them together.'**
+  String get desktopDiscoverChooseLine;
+
+  /// No description provided for @desktopDiscoverDragOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a clip out'**
+  String get desktopDiscoverDragOut;
+
+  /// No description provided for @desktopDiscoverDragOutLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Onto a folder or another app, as a file.'**
+  String get desktopDiscoverDragOutLine;
+
+  /// No description provided for @desktopDiscoverExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export a transcript'**
+  String get desktopDiscoverExport;
+
+  /// No description provided for @desktopDiscoverExportLine.
+  ///
+  /// In en, this message translates to:
+  /// **'As text, or as SRT subtitles for another player.'**
+  String get desktopDiscoverExportLine;
+
+  /// No description provided for @desktopDiscoverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything the app can do, a line each, with its keys.'**
+  String get desktopDiscoverHint;
+
+  /// No description provided for @desktopDiscoverLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'The library'**
+  String get desktopDiscoverLibrary;
+
+  /// No description provided for @desktopDiscoverListening.
+  ///
+  /// In en, this message translates to:
+  /// **'For sound: a quiet room with the cover large, in full screen.'**
+  String get desktopDiscoverListening;
+
+  /// No description provided for @desktopDiscoverMini.
+  ///
+  /// In en, this message translates to:
+  /// **'Small window'**
+  String get desktopDiscoverMini;
+
+  /// No description provided for @desktopDiscoverMiniLine.
+  ///
+  /// In en, this message translates to:
+  /// **'A small card above every other window, by the clock.'**
+  String get desktopDiscoverMiniLine;
+
+  /// No description provided for @desktopDiscoverPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'With your phone'**
+  String get desktopDiscoverPhone;
+
+  /// No description provided for @desktopDiscoverPhoneLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags, lists and resume points, shared with MeTube Super through a folder you choose.'**
+  String get desktopDiscoverPhoneLine;
+
+  /// No description provided for @desktopDiscoverReading.
+  ///
+  /// In en, this message translates to:
+  /// **'The transcript as an article: click a sentence to hear it from there.'**
+  String get desktopDiscoverReading;
+
+  /// No description provided for @desktopDiscoverSaid.
+  ///
+  /// In en, this message translates to:
+  /// **'What was said'**
+  String get desktopDiscoverSaid;
+
+  /// No description provided for @desktopDiscoverSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search what was said'**
+  String get desktopDiscoverSearch;
+
+  /// No description provided for @desktopDiscoverSearchLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Find the clips where a word was spoken, not only in titles.'**
+  String get desktopDiscoverSearchLine;
+
+  /// No description provided for @desktopDiscoverShortcutsLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Every key the window answers, on one sheet.'**
+  String get desktopDiscoverShortcutsLine;
+
+  /// No description provided for @desktopDiscoverShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get desktopDiscoverShow;
+
+  /// No description provided for @desktopDiscoverStatsLine.
+  ///
+  /// In en, this message translates to:
+  /// **'The library counted: by site, channel and month.'**
+  String get desktopDiscoverStatsLine;
+
+  /// No description provided for @desktopDiscoverSubtitles.
+  ///
+  /// In en, this message translates to:
+  /// **'The transcript over the picture, the spoken word lit up.'**
+  String get desktopDiscoverSubtitles;
+
+  /// No description provided for @desktopDiscoverTheater.
+  ///
+  /// In en, this message translates to:
+  /// **'A larger picture that takes the side panel\'s place.'**
+  String get desktopDiscoverTheater;
+
+  /// No description provided for @desktopDiscoverTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try it'**
+  String get desktopDiscoverTry;
+
+  /// No description provided for @desktopDiscoverWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Watching and listening'**
+  String get desktopDiscoverWatching;
+
+  /// No description provided for @desktopDownloadFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Download folder'**
+  String get desktopDownloadFolder;
+
+  /// No description provided for @desktopDownloadFolderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own files: saved here, then the app leaves them alone.'**
+  String get desktopDownloadFolderHint;
+
+  /// No description provided for @desktopDownloadTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Download…'**
+  String get desktopDownloadTo;
+
+  /// No description provided for @desktopDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading · {percent}%'**
+  String desktopDownloading(int percent);
+
+  /// No description provided for @desktopDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads'**
+  String get desktopDownloads;
+
+  /// No description provided for @desktopDownloadsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is downloading. Add a link, or make a clip available offline.'**
+  String get desktopDownloadsEmpty;
+
+  /// No description provided for @desktopDragToReorder.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to reorder'**
+  String get desktopDragToReorder;
+
+  /// No description provided for @desktopDropLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop to add'**
+  String get desktopDropLinks;
+
+  /// No description provided for @desktopEmptyLibraryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a link, and the clip appears here once the server has it.'**
+  String get desktopEmptyLibraryMessage;
+
+  /// No description provided for @desktopExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get desktopExport;
+
+  /// No description provided for @desktopExportForPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Export for the phone'**
+  String get desktopExportForPhone;
+
+  /// No description provided for @desktopExportForPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Saves this computer\'s tags, lists and resume points, and its transcripts, as two files the phone restores. Restoring on the phone replaces its own tags and lists.'**
+  String get desktopExportForPhoneHint;
+
+  /// No description provided for @desktopExportMarkdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Text (Markdown)'**
+  String get desktopExportMarkdown;
+
+  /// No description provided for @desktopExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Document (PDF)'**
+  String get desktopExportPdf;
+
+  /// No description provided for @desktopExportPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'For the phone (Super\'s import)'**
+  String get desktopExportPhone;
+
+  /// No description provided for @desktopExportSrt.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitles (SRT)'**
+  String get desktopExportSrt;
+
+  /// No description provided for @desktopExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {name}'**
+  String desktopExported(String name);
+
+  /// No description provided for @desktopFileReadyToPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to paste: {name} · {size}'**
+  String desktopFileReadyToPaste(String name, String size);
+
+  /// No description provided for @desktopFolderUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No folder available'**
+  String get desktopFolderUnavailable;
+
+  /// No description provided for @desktopFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders'**
+  String get desktopFolders;
+
+  /// No description provided for @desktopForward.
+  ///
+  /// In en, this message translates to:
+  /// **'Forward'**
+  String get desktopForward;
+
+  /// No description provided for @desktopGlobalShortcut.
+  ///
+  /// In en, this message translates to:
+  /// **'Play and pause from any app'**
+  String get desktopGlobalShortcut;
+
+  /// No description provided for @desktopGlobalShortcutHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{keys} plays and pauses while the window is behind other apps.'**
+  String desktopGlobalShortcutHint(String keys);
+
+  /// No description provided for @desktopGlobalShortcutTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Another app already uses {keys}.'**
+  String desktopGlobalShortcutTaken(String keys);
+
+  /// No description provided for @desktopHidePanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide side panel'**
+  String get desktopHidePanel;
+
+  /// No description provided for @desktopHintShortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Press ? for the keyboard shortcuts. Space plays and pauses; the arrow keys seek.'**
+  String get desktopHintShortcuts;
+
+  /// No description provided for @desktopHintShortcutsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcuts'**
+  String get desktopHintShortcutsAction;
+
+  /// No description provided for @desktopHintTrayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It keeps playing from its icon by the clock. To quit, right-click the icon.'**
+  String get desktopHintTrayBody;
+
+  /// No description provided for @desktopHintTrayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'MeTube Ember is still running'**
+  String get desktopHintTrayTitle;
+
+  /// No description provided for @desktopHints.
+  ///
+  /// In en, this message translates to:
+  /// **'Show tips'**
+  String get desktopHints;
+
+  /// No description provided for @desktopHintsAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Show them again'**
+  String get desktopHintsAgain;
+
+  /// No description provided for @desktopHintsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Two short tips, each shown once: the shortcuts at the first clip, the icon by the clock at the first close.'**
+  String get desktopHintsHint;
+
+  /// No description provided for @desktopImportFromPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from the phone…'**
+  String get desktopImportFromPhone;
+
+  /// No description provided for @desktopImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A backup or transcripts file from MeTube Super or Lite, chosen here or dropped on the window. It is added to what is here; nothing is replaced.'**
+  String get desktopImportHint;
+
+  /// No description provided for @desktopImportedBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Added from the phone. Tags: {tagged} · lists: {lists} · resume points: {positions}'**
+  String desktopImportedBackup(int tagged, int lists, int positions);
+
+  /// No description provided for @desktopImportedNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing new: this computer already had all of it.'**
+  String get desktopImportedNothing;
+
+  /// No description provided for @desktopImportedTranscripts.
+  ///
+  /// In en, this message translates to:
+  /// **'Transcripts added: {count}'**
+  String desktopImportedTranscripts(int count);
+
+  /// No description provided for @desktopInLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 in your library} other{{count} in your library}}'**
+  String desktopInLibrary(int count);
+
+  /// No description provided for @desktopKeyAddLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the link you copied'**
+  String get desktopKeyAddLink;
+
+  /// No description provided for @desktopKeyFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites or remove'**
+  String get desktopKeyFavorite;
+
+  /// No description provided for @desktopKeyFullScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen; for sound, the listening room'**
+  String get desktopKeyFullScreen;
+
+  /// No description provided for @desktopKeyMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'The clip\'s menu'**
+  String get desktopKeyMenu;
+
+  /// No description provided for @desktopKeyMini.
+  ///
+  /// In en, this message translates to:
+  /// **'Small window above the others, and back'**
+  String get desktopKeyMini;
+
+  /// No description provided for @desktopKeyPlayPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Play or pause'**
+  String get desktopKeyPlayPause;
+
+  /// No description provided for @desktopKeyRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Change repeat'**
+  String get desktopKeyRepeat;
+
+  /// No description provided for @desktopKeySearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search titles and what was said'**
+  String get desktopKeySearch;
+
+  /// No description provided for @desktopKeySeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Back or forward 10 seconds'**
+  String get desktopKeySeek;
+
+  /// No description provided for @desktopKeyShortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'This list'**
+  String get desktopKeyShortcuts;
+
+  /// No description provided for @desktopKeyVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Louder or quieter; in shorts, the previous or next one'**
+  String get desktopKeyVolume;
+
+  /// No description provided for @desktopKeyZoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Larger interface'**
+  String get desktopKeyZoomIn;
+
+  /// No description provided for @desktopKeyZoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller interface'**
+  String get desktopKeyZoomOut;
+
+  /// No description provided for @desktopKeyZoomReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface at its usual size'**
+  String get desktopKeyZoomReset;
+
+  /// No description provided for @desktopLanguageSystemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Follows the language of Windows.'**
+  String get desktopLanguageSystemHint;
+
+  /// No description provided for @desktopLastArrival.
+  ///
+  /// In en, this message translates to:
+  /// **'Last arrival {when}'**
+  String desktopLastArrival(String when);
+
+  /// No description provided for @desktopLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get desktopLess;
+
+  /// No description provided for @desktopLibraryLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the library…'**
+  String get desktopLibraryLoading;
+
+  /// No description provided for @desktopLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get desktopLinkCopied;
+
+  /// No description provided for @desktopLinkDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeated above'**
+  String get desktopLinkDuplicate;
+
+  /// No description provided for @desktopLinkInLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Already in your library'**
+  String get desktopLinkInLibrary;
+
+  /// No description provided for @desktopLinkPlaylist.
+  ///
+  /// In en, this message translates to:
+  /// **'A playlist: choose its clips'**
+  String get desktopLinkPlaylist;
+
+  /// No description provided for @desktopLinkReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get desktopLinkReady;
+
+  /// No description provided for @desktopLinkUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'A site this app doesn\'t know'**
+  String get desktopLinkUnsupported;
+
+  /// No description provided for @desktopLinksDropped.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the first {limit} links are taken; {count} more were left out.'**
+  String desktopLinksDropped(int count, int limit);
+
+  /// No description provided for @desktopLinksFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 link} other{{count} links}}'**
+  String desktopLinksFound(int count);
+
+  /// No description provided for @desktopListeningClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the listening room'**
+  String get desktopListeningClose;
+
+  /// No description provided for @desktopListeningRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening room'**
+  String get desktopListeningRoom;
+
+  /// No description provided for @desktopLocalCopyRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Local copy removed'**
+  String get desktopLocalCopyRemoved;
+
+  /// No description provided for @desktopLogsCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Log copied, without links or addresses'**
+  String get desktopLogsCopied;
+
+  /// No description provided for @desktopLogsCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get desktopLogsCopy;
+
+  /// No description provided for @desktopLogsSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to a file'**
+  String get desktopLogsSave;
+
+  /// No description provided for @desktopMiniRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the full window'**
+  String get desktopMiniRestore;
+
+  /// No description provided for @desktopMiniWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Small window'**
+  String get desktopMiniWindow;
+
+  /// No description provided for @desktopMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get desktopMore;
+
+  /// No description provided for @desktopNarrowSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse sidebar'**
+  String get desktopNarrowSidebar;
+
+  /// No description provided for @desktopNoChannelNames.
+  ///
+  /// In en, this message translates to:
+  /// **'Your server doesn\'t record which channel each clip came from, so this channel\'s clips can\'t be picked out. Follow it with its own folder, and whatever arrives there shows here.'**
+  String get desktopNoChannelNames;
+
+  /// No description provided for @desktopNoFavoritesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark a clip as a favorite and it waits for you here.'**
+  String get desktopNoFavoritesMessage;
+
+  /// No description provided for @desktopNoFavoritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet'**
+  String get desktopNoFavoritesTitle;
+
+  /// No description provided for @desktopNoMatchMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear a filter to see more.'**
+  String get desktopNoMatchMessage;
+
+  /// No description provided for @desktopNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches these filters'**
+  String get desktopNoMatchTitle;
+
+  /// No description provided for @desktopNoOfflineMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose “Make available offline” from a clip\'s menu, and it plays here without the server.'**
+  String get desktopNoOfflineMessage;
+
+  /// No description provided for @desktopNoOfflineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing kept on this computer yet'**
+  String get desktopNoOfflineTitle;
+
+  /// No description provided for @desktopNoServerMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your MeTube server and its library appears here.'**
+  String get desktopNoServerMessage;
+
+  /// No description provided for @desktopNoTags.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags yet. Tag a clip from its page and it appears here.'**
+  String get desktopNoTags;
+
+  /// No description provided for @desktopNoTranscriptMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'It shows here once the server has the clip\'s subtitles.'**
+  String get desktopNoTranscriptMessage;
+
+  /// No description provided for @desktopNoTranscriptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No transcript for this clip'**
+  String get desktopNoTranscriptTitle;
+
+  /// No description provided for @desktopNotABackup.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is not a MeTube backup or transcripts file.'**
+  String get desktopNotABackup;
+
+  /// No description provided for @desktopNotWatched.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 not watched} other{{count} not watched}}'**
+  String desktopNotWatched(int count);
+
+  /// No description provided for @desktopNothingPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing playing'**
+  String get desktopNothingPlaying;
+
+  /// No description provided for @desktopNothingPlayingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Play a clip and its transcript, what comes next and its details appear here.'**
+  String get desktopNothingPlayingHint;
+
+  /// No description provided for @desktopNoticeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to this computer'**
+  String get desktopNoticeSaved;
+
+  /// No description provided for @desktopNotifyArrivalsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A Windows notice when new clips from the channels you follow reach the server.'**
+  String get desktopNotifyArrivalsHint;
+
+  /// No description provided for @desktopOfferCopiedLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer links I copy'**
+  String get desktopOfferCopiedLinks;
+
+  /// No description provided for @desktopOfferCopiedLinksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When you copy a video link in another app, a notification offers to add it. Only links are looked at, and none is saved.'**
+  String get desktopOfferCopiedLinksHint;
+
+  /// No description provided for @desktopOfflineCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} offline'**
+  String desktopOfflineCount(int count);
+
+  /// No description provided for @desktopOfflineFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline folder'**
+  String get desktopOfflineFolder;
+
+  /// No description provided for @desktopOfflineFolderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Copies the app knows and plays without the server; \"Remove local copy\" deletes them.'**
+  String get desktopOfflineFolderHint;
+
+  /// No description provided for @desktopOfflineProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · {percent}%'**
+  String desktopOfflineProgress(int percent);
+
+  /// No description provided for @desktopOpenChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Open channels'**
+  String get desktopOpenChannels;
+
+  /// No description provided for @desktopOpenInExplorer.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Explorer'**
+  String get desktopOpenInExplorer;
+
+  /// No description provided for @desktopPaletteClose.
+  ///
+  /// In en, this message translates to:
+  /// **'to close'**
+  String get desktopPaletteClose;
+
+  /// No description provided for @desktopPaletteCommands.
+  ///
+  /// In en, this message translates to:
+  /// **'Commands'**
+  String get desktopPaletteCommands;
+
+  /// No description provided for @desktopPaletteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search titles and what was said, or type > for commands'**
+  String get desktopPaletteHint;
+
+  /// No description provided for @desktopPaletteList.
+  ///
+  /// In en, this message translates to:
+  /// **'List: {name}'**
+  String desktopPaletteList(String name);
+
+  /// No description provided for @desktopPaletteMove.
+  ///
+  /// In en, this message translates to:
+  /// **'to move'**
+  String get desktopPaletteMove;
+
+  /// No description provided for @desktopPaletteOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'to open'**
+  String get desktopPaletteOpen;
+
+  /// No description provided for @desktopPaletteSaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Said inside clips'**
+  String get desktopPaletteSaid;
+
+  /// No description provided for @desktopPaletteSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this search'**
+  String get desktopPaletteSave;
+
+  /// No description provided for @desktopPaletteSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings: {section}'**
+  String desktopPaletteSettings(String section);
+
+  /// No description provided for @desktopPaletteTitles.
+  ///
+  /// In en, this message translates to:
+  /// **'Titles'**
+  String get desktopPaletteTitles;
+
+  /// No description provided for @desktopPinned.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get desktopPinned;
+
+  /// No description provided for @desktopPlayNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Play next'**
+  String get desktopPlayNext;
+
+  /// No description provided for @desktopPlaysNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Plays next, after this one'**
+  String get desktopPlaysNext;
+
+  /// No description provided for @desktopPullAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Then download it to this computer'**
+  String get desktopPullAfter;
+
+  /// No description provided for @desktopQueueEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing comes after this one'**
+  String get desktopQueueEnd;
+
+  /// No description provided for @desktopQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'“{text}”\n— {title}, {time}\n{link}'**
+  String desktopQuote(String text, String title, String time, String link);
+
+  /// No description provided for @desktopQuoteCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied with its time and link'**
+  String get desktopQuoteCopied;
+
+  /// No description provided for @desktopReadingBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the clip'**
+  String get desktopReadingBack;
+
+  /// No description provided for @desktopReadingCloseFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the search'**
+  String get desktopReadingCloseFind;
+
+  /// No description provided for @desktopReadingFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Find in the text'**
+  String get desktopReadingFind;
+
+  /// No description provided for @desktopReadingFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{at} of {count}'**
+  String desktopReadingFound(int at, int count);
+
+  /// No description provided for @desktopReadingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Click a sentence to hear it from there · Ctrl+F finds a word · select to copy with its time'**
+  String get desktopReadingHint;
+
+  /// No description provided for @desktopReadingNextMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Next match'**
+  String get desktopReadingNextMatch;
+
+  /// No description provided for @desktopReadingPreviousMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous match'**
+  String get desktopReadingPreviousMatch;
+
+  /// No description provided for @desktopReadingRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading room'**
+  String get desktopReadingRoom;
+
+  /// No description provided for @desktopRemoveFromList.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from the list'**
+  String get desktopRemoveFromList;
+
+  /// No description provided for @desktopRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get desktopRestore;
+
+  /// No description provided for @desktopRestoreBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer\'s tags, lists and settings become what the backup holds. The server is not touched.'**
+  String get desktopRestoreBody;
+
+  /// No description provided for @desktopRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this backup?'**
+  String get desktopRestoreTitle;
+
+  /// No description provided for @desktopRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored'**
+  String get desktopRestored;
+
+  /// No description provided for @desktopRevealAfterDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Explorer when done'**
+  String get desktopRevealAfterDownload;
+
+  /// No description provided for @desktopRevealAfterDownloadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When a file downloaded to this computer is done, its folder opens with the file chosen.'**
+  String get desktopRevealAfterDownloadHint;
+
+  /// No description provided for @desktopSavedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved in {folder}'**
+  String desktopSavedIn(String folder);
+
+  /// No description provided for @desktopSavedSearchDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the saved search “{name}”? Nothing in the library changes.'**
+  String desktopSavedSearchDelete(String name);
+
+  /// No description provided for @desktopSavedSearchName.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name'**
+  String get desktopSavedSearchName;
+
+  /// No description provided for @desktopSavingOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving offline · {percent}%'**
+  String desktopSavingOffline(int percent);
+
+  /// No description provided for @desktopSavingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving to {folder}'**
+  String desktopSavingTo(String folder);
+
+  /// No description provided for @desktopSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get desktopSearch;
+
+  /// No description provided for @desktopSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search titles and what was said…'**
+  String get desktopSearchHint;
+
+  /// No description provided for @desktopSearchSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved in the sidebar'**
+  String get desktopSearchSaved;
+
+  /// No description provided for @desktopSeekBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Position in the clip'**
+  String get desktopSeekBar;
+
+  /// No description provided for @desktopSelectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 selected} other{{count} selected}}'**
+  String desktopSelectedCount(int count);
+
+  /// No description provided for @desktopServerFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Same folders as on the server'**
+  String get desktopServerFolders;
+
+  /// No description provided for @desktopServerFoldersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example, a clip in a folder called “Kids” on the server is saved in a folder of the same name here.'**
+  String get desktopServerFoldersHint;
+
+  /// No description provided for @desktopServerPartMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The server isn\'t answering, so this is what it held last time.'**
+  String get desktopServerPartMissing;
+
+  /// No description provided for @desktopServerVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Server version'**
+  String get desktopServerVersion;
+
+  /// No description provided for @desktopSetupAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up again'**
+  String get desktopSetupAgain;
+
+  /// No description provided for @desktopSetupChooseFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file…'**
+  String get desktopSetupChooseFile;
+
+  /// No description provided for @desktopSetupConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get desktopSetupConnect;
+
+  /// No description provided for @desktopSetupEnter.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the address'**
+  String get desktopSetupEnter;
+
+  /// No description provided for @desktopSetupFoundNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No MeTube server answered on these ports.'**
+  String get desktopSetupFoundNone;
+
+  /// No description provided for @desktopSetupHttpWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'An http:// address outside your home network sends the password unencrypted.'**
+  String get desktopSetupHttpWarning;
+
+  /// No description provided for @desktopSetupImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from the phone'**
+  String get desktopSetupImport;
+
+  /// No description provided for @desktopSetupImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a MeTube Super backup: its server address is offered here, and its tags and lists are added.'**
+  String get desktopSetupImportHint;
+
+  /// No description provided for @desktopSetupLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get desktopSetupLater;
+
+  /// No description provided for @desktopSetupNeedsPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs a password'**
+  String get desktopSetupNeedsPassword;
+
+  /// No description provided for @desktopSetupNoServer.
+  ///
+  /// In en, this message translates to:
+  /// **'No server yet?'**
+  String get desktopSetupNoServer;
+
+  /// No description provided for @desktopSetupPorts.
+  ///
+  /// In en, this message translates to:
+  /// **'Ports'**
+  String get desktopSetupPorts;
+
+  /// No description provided for @desktopSetupSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search my network'**
+  String get desktopSetupSearch;
+
+  /// No description provided for @desktopSetupSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks for MeTube on this computer\'s network, only when you click.'**
+  String get desktopSetupSearchHint;
+
+  /// No description provided for @desktopSetupSearching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching… {percent}%'**
+  String desktopSetupSearching(int percent);
+
+  /// No description provided for @desktopSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to your MeTube server'**
+  String get desktopSetupTitle;
+
+  /// No description provided for @desktopShortcutsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get desktopShortcutsApp;
+
+  /// No description provided for @desktopShortcutsClip.
+  ///
+  /// In en, this message translates to:
+  /// **'On a chosen clip'**
+  String get desktopShortcutsClip;
+
+  /// No description provided for @desktopShortcutsPlayback.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing'**
+  String get desktopShortcutsPlayback;
+
+  /// No description provided for @desktopShortcutsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard shortcuts'**
+  String get desktopShortcutsTitle;
+
+  /// No description provided for @desktopShortcutsWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Window'**
+  String get desktopShortcutsWindow;
+
+  /// No description provided for @desktopShortsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'↑ ↓ or the wheel for the next short · double-click to favorite'**
+  String get desktopShortsHint;
+
+  /// No description provided for @desktopShowInFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Show in folder'**
+  String get desktopShowInFolder;
+
+  /// No description provided for @desktopShowPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Show side panel'**
+  String get desktopShowPanel;
+
+  /// No description provided for @desktopStartWithWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with Windows'**
+  String get desktopStartWithWindows;
+
+  /// No description provided for @desktopStartWithWindowsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens when you sign in: in the tray when it keeps playing there, otherwise minimized.'**
+  String get desktopStartWithWindowsHint;
+
+  /// No description provided for @desktopStartWithWindowsRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows did not let the app start with it.'**
+  String get desktopStartWithWindowsRefused;
+
+  /// No description provided for @desktopStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Library statistics'**
+  String get desktopStats;
+
+  /// No description provided for @desktopStatsByChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'By channel'**
+  String get desktopStatsByChannel;
+
+  /// No description provided for @desktopStatsByMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'By month added'**
+  String get desktopStatsByMonth;
+
+  /// No description provided for @desktopStatsBySite.
+  ///
+  /// In en, this message translates to:
+  /// **'By site'**
+  String get desktopStatsBySite;
+
+  /// No description provided for @desktopStatsClips.
+  ///
+  /// In en, this message translates to:
+  /// **'Clips'**
+  String get desktopStatsClips;
+
+  /// No description provided for @desktopStatsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What the library holds, and what may deserve a look. Nothing is deleted from here.'**
+  String get desktopStatsHint;
+
+  /// No description provided for @desktopStatsHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Under an hour} =1{1 hour} other{{count} hours}}'**
+  String desktopStatsHours(int count);
+
+  /// No description provided for @desktopStatsLargest.
+  ///
+  /// In en, this message translates to:
+  /// **'The largest:'**
+  String get desktopStatsLargest;
+
+  /// No description provided for @desktopStatsLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Running time'**
+  String get desktopStatsLength;
+
+  /// No description provided for @desktopStatsLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get desktopStatsLink;
+
+  /// No description provided for @desktopStatsNeverPlayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Never played here'**
+  String get desktopStatsNeverPlayed;
+
+  /// No description provided for @desktopStatsNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'The newest:'**
+  String get desktopStatsNewest;
+
+  /// No description provided for @desktopStatsOtherChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Other channels'**
+  String get desktopStatsOtherChannels;
+
+  /// No description provided for @desktopStatsRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Room taken'**
+  String get desktopStatsRoom;
+
+  /// No description provided for @desktopStatsUnnamed.
+  ///
+  /// In en, this message translates to:
+  /// **'No channel named'**
+  String get desktopStatsUnnamed;
+
+  /// No description provided for @desktopStatsWithText.
+  ///
+  /// In en, this message translates to:
+  /// **'With a transcript'**
+  String get desktopStatsWithText;
+
+  /// No description provided for @desktopStatsWithoutText.
+  ///
+  /// In en, this message translates to:
+  /// **'Without a transcript'**
+  String get desktopStatsWithoutText;
+
+  /// No description provided for @desktopStatsWorthALook.
+  ///
+  /// In en, this message translates to:
+  /// **'Worth a look'**
+  String get desktopStatsWorthALook;
+
+  /// No description provided for @desktopSubtitleOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitle options'**
+  String get desktopSubtitleOptions;
+
+  /// No description provided for @desktopSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get desktopSync;
+
+  /// No description provided for @desktopSyncCameBack.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer was away for more than 90 days, so your other devices\' data was taken first.'**
+  String get desktopSyncCameBack;
+
+  /// No description provided for @desktopSyncChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a folder'**
+  String get desktopSyncChoose;
+
+  /// No description provided for @desktopSyncComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'Computer {name}'**
+  String desktopSyncComputer(String name);
+
+  /// No description provided for @desktopSyncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The sync folder could not be read. Check that its drive is there.'**
+  String get desktopSyncFailed;
+
+  /// No description provided for @desktopSyncFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync folder'**
+  String get desktopSyncFolder;
+
+  /// No description provided for @desktopSyncForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Forget this device'**
+  String get desktopSyncForget;
+
+  /// No description provided for @desktopSyncForgetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} will no longer be read. Its transcripts move to this computer\'s folder first, so none is lost. Use this for a device that was lost or sold.'**
+  String desktopSyncForgetBody(String device);
+
+  /// No description provided for @desktopSyncFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Last from {device}: {ago}'**
+  String desktopSyncFrom(String device, String ago);
+
+  /// No description provided for @desktopSyncGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'At home: Syncthing on this computer and Syncthing‑Fork (from F-Droid) on the phone, sharing one folder; set Syncthing‑Fork to Wi‑Fi only to spare the phone\'s battery. Through a cloud: the cloud app\'s folder on this computer (OneDrive, Google Drive, Dropbox), and FolderSync on the phone with the same folder.'**
+  String get desktopSyncGuide;
+
+  /// No description provided for @desktopSyncHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirrors tags, favorites, lists, positions, saved searches and transcripts with your phone and other computers, through a folder a sync app keeps in step (Syncthing at home, or a cloud folder). Nothing goes to any service from here.'**
+  String get desktopSyncHint;
+
+  /// No description provided for @desktopSyncLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced {ago}'**
+  String desktopSyncLast(String ago);
+
+  /// No description provided for @desktopSyncNoOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'No other device in this folder yet. Turn sync on in MeTube Super with the same folder.'**
+  String get desktopSyncNoOthers;
+
+  /// No description provided for @desktopSyncNotBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync is not a backup: it mirrors a mistake as faithfully as anything else. Your dated backups stay apart from it.'**
+  String get desktopSyncNotBackup;
+
+  /// No description provided for @desktopSyncOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off. Nothing leaves this computer.'**
+  String get desktopSyncOff;
+
+  /// No description provided for @desktopSyncPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone {name}'**
+  String desktopSyncPhone(String name);
+
+  /// No description provided for @desktopSyncThisComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'This computer: {name}'**
+  String desktopSyncThisComputer(String name);
+
+  /// No description provided for @desktopSyncTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get desktopSyncTurnOff;
+
+  /// No description provided for @desktopTheater.
+  ///
+  /// In en, this message translates to:
+  /// **'Theater'**
+  String get desktopTheater;
+
+  /// No description provided for @desktopToThisComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'To this computer'**
+  String get desktopToThisComputer;
+
+  /// No description provided for @desktopTranscriptFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetch its transcript first'**
+  String get desktopTranscriptFirst;
+
+  /// No description provided for @desktopTranscriptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Follows playback · click a line to jump'**
+  String get desktopTranscriptHint;
+
+  /// No description provided for @desktopTranscriptsDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They are removed from this computer. Only a file you exported, or another device through sync, can bring them back.'**
+  String get desktopTranscriptsDeleteBody;
+
+  /// No description provided for @desktopTranscriptsExportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'All of them in one file a phone can import.'**
+  String get desktopTranscriptsExportHint;
+
+  /// No description provided for @desktopTranscriptsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Ember keeps the words said in each YouTube clip you add, so a search (Ctrl+K) also finds what was said inside your clips, not only their titles. They stay on this computer.'**
+  String get desktopTranscriptsHelp;
+
+  /// No description provided for @desktopTranscriptsImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A transcripts file from a phone. It adds what is missing here and deletes nothing.'**
+  String get desktopTranscriptsImportHint;
+
+  /// No description provided for @desktopTrayOnClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep playing in the tray when the window closes'**
+  String get desktopTrayOnClose;
+
+  /// No description provided for @desktopTrayOnCloseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing the window keeps the sound playing; quit from the icon by the clock.'**
+  String get desktopTrayOnCloseHint;
+
+  /// No description provided for @desktopTrayOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open MeTube Ember'**
+  String get desktopTrayOpen;
+
+  /// No description provided for @desktopTrayQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get desktopTrayQuit;
+
+  /// No description provided for @desktopUiSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface size'**
+  String get desktopUiSize;
+
+  /// No description provided for @desktopUiSizeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{bigger} and {smaller} change it from anywhere, and {reset} returns to 100%.'**
+  String desktopUiSizeHint(String bigger, String smaller, String reset);
+
+  /// No description provided for @desktopUiSizeTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Too large for this screen'**
+  String get desktopUiSizeTooLarge;
+
+  /// No description provided for @desktopUpdateInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install and restart'**
+  String get desktopUpdateInstall;
+
+  /// No description provided for @desktopUpdateRestartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ember closes, installs the update and opens again. Your settings and library stay as they are.'**
+  String get desktopUpdateRestartHint;
+
+  /// No description provided for @desktopViewCompact.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact'**
+  String get desktopViewCompact;
+
+  /// No description provided for @desktopViewTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Table'**
+  String get desktopViewTable;
+
+  /// No description provided for @desktopVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get desktopVolume;
+
+  /// No description provided for @desktopVolumeLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume {percent}%'**
+  String desktopVolumeLevel(int percent);
+
+  /// No description provided for @desktopWhatsNewAllFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything Ember can do'**
+  String get desktopWhatsNewAllFeatures;
+
+  /// No description provided for @desktopWidenSidebar.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand sidebar'**
+  String get desktopWidenSidebar;
+
+  /// No description provided for @desktopWindowClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get desktopWindowClose;
+
+  /// No description provided for @desktopWindowMaximize.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximize'**
+  String get desktopWindowMaximize;
+
+  /// No description provided for @desktopWindowMinimize.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimize'**
+  String get desktopWindowMinimize;
+
+  /// No description provided for @desktopWindowRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore down'**
+  String get desktopWindowRestore;
+
+  /// No description provided for @desktopZoomChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get desktopZoomChange;
+
+  /// No description provided for @desktopZoomLowered.
+  ///
+  /// In en, this message translates to:
+  /// **'The interface is now {percent} so it fits this screen.'**
+  String desktopZoomLowered(String percent);
 
   /// No description provided for @details.
   ///
@@ -947,7 +2981,7 @@ abstract class MTLocalizations {
   /// No description provided for @diagnosticLogs.
   ///
   /// In en, this message translates to:
-  /// **'Diagnostic Logs'**
+  /// **'Diagnostic logs'**
   String get diagnosticLogs;
 
   /// No description provided for @diagnosticLogsSubtitle.
@@ -989,31 +3023,31 @@ abstract class MTLocalizations {
   /// No description provided for @downloadComplete.
   ///
   /// In en, this message translates to:
-  /// **'Download Complete'**
+  /// **'Download complete'**
   String get downloadComplete;
 
   /// No description provided for @downloadCompleteTitle.
   ///
   /// In en, this message translates to:
-  /// **'Complete!'**
+  /// **'Complete'**
   String get downloadCompleteTitle;
 
   /// No description provided for @downloadDate.
   ///
   /// In en, this message translates to:
-  /// **'Download Date'**
+  /// **'Download date'**
   String get downloadDate;
 
   /// No description provided for @downloadFailed.
   ///
   /// In en, this message translates to:
-  /// **'Download Failed'**
+  /// **'Download failed'**
   String get downloadFailed;
 
   /// No description provided for @downloadFailedTitle.
   ///
   /// In en, this message translates to:
-  /// **'Download Failed'**
+  /// **'Download failed'**
   String get downloadFailedTitle;
 
   /// No description provided for @downloadNow.
@@ -1025,7 +3059,7 @@ abstract class MTLocalizations {
   /// No description provided for @downloadStarted.
   ///
   /// In en, this message translates to:
-  /// **'Download started...'**
+  /// **'Download started…'**
   String get downloadStarted;
 
   /// No description provided for @downloadStartedQuality.
@@ -1037,7 +3071,7 @@ abstract class MTLocalizations {
   /// No description provided for @downloading.
   ///
   /// In en, this message translates to:
-  /// **'Downloading...'**
+  /// **'Downloading…'**
   String get downloading;
 
   /// No description provided for @downloadingTitle.
@@ -1052,11 +3086,35 @@ abstract class MTLocalizations {
   /// **'Edit'**
   String get editSubscription;
 
+  /// No description provided for @emptyFilteredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear a filter above to see your whole library.'**
+  String get emptyFilteredMessage;
+
+  /// No description provided for @emptyFilteredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches these filters'**
+  String get emptyFilteredTitle;
+
   /// No description provided for @emptyLibraryMessage.
   ///
   /// In en, this message translates to:
   /// **'Add a video link, or pull to refresh.'**
   String get emptyLibraryMessage;
+
+  /// No description provided for @emptyOfflineMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose “Make available offline” on a clip, and it plays here without the server.'**
+  String get emptyOfflineMessage;
+
+  /// No description provided for @emptyOfflineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing saved on this phone yet'**
+  String get emptyOfflineTitle;
 
   /// No description provided for @emptyPlaylist.
   ///
@@ -1121,19 +3179,19 @@ abstract class MTLocalizations {
   /// No description provided for @errPlatformBlocked.
   ///
   /// In en, this message translates to:
-  /// **'The platform requires login — the server admin should refresh the cookies'**
+  /// **'The platform requires login. The server admin should refresh the cookies'**
   String get errPlatformBlocked;
 
   /// No description provided for @errPlatformBlockedCookies.
   ///
   /// In en, this message translates to:
-  /// **'The platform requires login — send it a cookies file from Settings → Cookies'**
+  /// **'The platform requires login. Send it a cookies file from Settings → Cookies'**
   String get errPlatformBlockedCookies;
 
   /// No description provided for @errPollTimeout.
   ///
   /// In en, this message translates to:
-  /// **'The server took too long — try again'**
+  /// **'The server took too long. Try again.'**
   String get errPollTimeout;
 
   /// No description provided for @errServer.
@@ -1223,13 +3281,13 @@ abstract class MTLocalizations {
   /// No description provided for @fileName.
   ///
   /// In en, this message translates to:
-  /// **'File Name'**
+  /// **'File name'**
   String get fileName;
 
   /// No description provided for @fileSize.
   ///
   /// In en, this message translates to:
-  /// **'File Size'**
+  /// **'File size'**
   String get fileSize;
 
   /// No description provided for @filterAll.
@@ -1261,6 +3319,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Video'**
   String get filterVideo;
+
+  /// No description provided for @filtersOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters on'**
+  String get filtersOn;
 
   /// No description provided for @folder.
   ///
@@ -1297,6 +3361,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Follow a channel'**
   String get followChannel;
+
+  /// No description provided for @followingChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Following'**
+  String get followingChannel;
 
   /// No description provided for @format.
   ///
@@ -1357,18 +3427,6 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
-
-  /// No description provided for @languageArabic.
-  ///
-  /// In en, this message translates to:
-  /// **'العربية'**
-  String get languageArabic;
-
-  /// No description provided for @languageEnglish.
-  ///
-  /// In en, this message translates to:
-  /// **'English'**
-  String get languageEnglish;
 
   /// No description provided for @languageSystem.
   ///
@@ -1544,11 +3602,11 @@ abstract class MTLocalizations {
   /// **'Stop at end'**
   String get modeStopAtEnd;
 
-  /// No description provided for @moreFolders.
+  /// No description provided for @moreChips.
   ///
   /// In en, this message translates to:
   /// **'More · {count}'**
-  String moreFolders(int count);
+  String moreChips(int count);
 
   /// No description provided for @navLibrary.
   ///
@@ -1643,7 +3701,7 @@ abstract class MTLocalizations {
   /// No description provided for @noDownloads.
   ///
   /// In en, this message translates to:
-  /// **'No Downloads'**
+  /// **'No downloads'**
   String get noDownloads;
 
   /// No description provided for @noDownloadsMessage.
@@ -1733,8 +3791,14 @@ abstract class MTLocalizations {
   /// No description provided for @notAffiliated.
   ///
   /// In en, this message translates to:
-  /// **'Unofficial client — not affiliated with the MeTube project or yt-dlp, and not endorsed by them.'**
+  /// **'Unofficial client, not affiliated with the MeTube project or yt-dlp, and not endorsed by them.'**
   String get notAffiliated;
+
+  /// No description provided for @notEnoughSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough room on the phone: needs {needed}, {free} free'**
+  String notEnoughSpace(String needed, String free);
 
   /// No description provided for @nothingHereYet.
   ///
@@ -1751,7 +3815,7 @@ abstract class MTLocalizations {
   /// No description provided for @notifyArrivalsDesc.
   ///
   /// In en, this message translates to:
-  /// **'One notice when a followed channel\'s new videos land on the server. It appears when you open the app, return to it, or refresh the library — not while the app is in the background.'**
+  /// **'One notice when a followed channel\'s new videos land on the server. It appears when you open the app, return to it, or refresh the library, not while the app is in the background.'**
   String get notifyArrivalsDesc;
 
   /// No description provided for @nowPlaying.
@@ -1817,7 +3881,7 @@ abstract class MTLocalizations {
   /// No description provided for @openOriginalLink.
   ///
   /// In en, this message translates to:
-  /// **'Open Original Link'**
+  /// **'Open original link'**
   String get openOriginalLink;
 
   /// No description provided for @ownFolder.
@@ -1862,6 +3926,12 @@ abstract class MTLocalizations {
   /// **'{percent}%'**
   String percentValue(Object percent);
 
+  /// No description provided for @phoneCopiesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'To this phone'**
+  String get phoneCopiesSection;
+
   /// No description provided for @pickAnotherFile.
   ///
   /// In en, this message translates to:
@@ -1873,6 +3943,18 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'A backup from another phone or an older version'**
   String get pickAnotherFileSubtitle;
+
+  /// No description provided for @pictureInPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture in picture'**
+  String get pictureInPicture;
+
+  /// No description provided for @pictureInPictureHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'When you leave the app while a video plays, it stays in a corner of the screen'**
+  String get pictureInPictureHelp;
 
   /// No description provided for @pinPlaylist.
   ///
@@ -1955,8 +4037,14 @@ abstract class MTLocalizations {
   /// No description provided for @playlistDetails.
   ///
   /// In en, this message translates to:
-  /// **'Playlist Details'**
+  /// **'Playlist details'**
   String get playlistDetails;
+
+  /// No description provided for @playlistEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press a clip to move it. Swipe it aside to remove it.'**
+  String get playlistEditHint;
 
   /// No description provided for @playlistName.
   ///
@@ -1967,7 +4055,7 @@ abstract class MTLocalizations {
   /// No description provided for @playlistNameHint.
   ///
   /// In en, this message translates to:
-  /// **'My Playlist'**
+  /// **'My playlist'**
   String get playlistNameHint;
 
   /// No description provided for @playlistOf.
@@ -2015,19 +4103,25 @@ abstract class MTLocalizations {
   /// No description provided for @quality1080.
   ///
   /// In en, this message translates to:
-  /// **'1080p'**
+  /// **'Up to 1080p'**
   String get quality1080;
+
+  /// No description provided for @quality360.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 360p'**
+  String get quality360;
 
   /// No description provided for @quality480.
   ///
   /// In en, this message translates to:
-  /// **'480p'**
+  /// **'Up to 480p'**
   String get quality480;
 
   /// No description provided for @quality720.
   ///
   /// In en, this message translates to:
-  /// **'720p'**
+  /// **'Up to 720p'**
   String get quality720;
 
   /// No description provided for @qualityAudio.
@@ -2045,7 +4139,7 @@ abstract class MTLocalizations {
   /// No description provided for @qualityHelper.
   ///
   /// In en, this message translates to:
-  /// **'Used by quick download, by whole-playlist downloads, and by \"Download now\" in the clipboard bar — and it is the preselected option in the add-link sheet. So it matters whether or not quick download is on.'**
+  /// **'Used by quick download, by whole-playlist downloads, and by \"Download now\" in the clipboard bar, and it is the preselected option in the add-link sheet. So it matters whether or not quick download is on.'**
   String get qualityHelper;
 
   /// No description provided for @qualityReading.
@@ -2078,6 +4172,12 @@ abstract class MTLocalizations {
   /// **'Queue'**
   String get queueLabel;
 
+  /// No description provided for @queuePosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Number {position} in line'**
+  String queuePosition(int position);
+
   /// No description provided for @queued.
   ///
   /// In en, this message translates to:
@@ -2099,8 +4199,92 @@ abstract class MTLocalizations {
   /// No description provided for @quickDownloadHelp.
   ///
   /// In en, this message translates to:
-  /// **'A shared or pasted link starts downloading immediately at the default quality, with no sheet. Numeric qualities are YouTube-only — anything else downloads at best quality, and an \"audio only\" default applies everywhere.'**
+  /// **'A shared or pasted link starts downloading immediately at the default quality, with no sheet. Numeric qualities are YouTube-only: anything else downloads at best quality, and an \"audio only\" default applies everywhere.'**
   String get quickDownloadHelp;
+
+  /// No description provided for @quoteExtendHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Touch another line to take it in'**
+  String get quoteExtendHint;
+
+  /// No description provided for @quoteMomentLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link to this moment'**
+  String get quoteMomentLink;
+
+  /// No description provided for @quotePlayFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Play from here'**
+  String get quotePlayFrom;
+
+  /// No description provided for @quoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quote'**
+  String get quoteTitle;
+
+  /// No description provided for @readingAsMarkdownHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each paragraph with its time, linked to its moment'**
+  String get readingAsMarkdownHint;
+
+  /// No description provided for @readingAsPdfHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To print or keep'**
+  String get readingAsPdfHint;
+
+  /// No description provided for @readingAsSrtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Line by line with its times, for any player'**
+  String get readingAsSrtHint;
+
+  /// No description provided for @readingAsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text to read'**
+  String get readingAsText;
+
+  /// No description provided for @readingAsTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paragraphs without times, to paste anywhere'**
+  String get readingAsTextHint;
+
+  /// No description provided for @readingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a sentence to hear it from there'**
+  String get readingHint;
+
+  /// No description provided for @readingMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{About a minute to read} other{About {count} minutes to read}}'**
+  String readingMinutes(int count);
+
+  /// No description provided for @readingRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get readingRead;
+
+  /// No description provided for @readingShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share the text'**
+  String get readingShare;
+
+  /// No description provided for @readingTextSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Text size'**
+  String get readingTextSize;
 
   /// No description provided for @reelsEndBack.
   ///
@@ -2213,7 +4397,7 @@ abstract class MTLocalizations {
   /// No description provided for @reportBug.
   ///
   /// In en, this message translates to:
-  /// **'Report a Bug'**
+  /// **'Report a bug'**
   String get reportBug;
 
   /// No description provided for @restoreConfirm.
@@ -2231,13 +4415,13 @@ abstract class MTLocalizations {
   /// No description provided for @restoreFailed.
   ///
   /// In en, this message translates to:
-  /// **'Restore failed — invalid backup file'**
+  /// **'Restore failed: the backup file is not valid'**
   String get restoreFailed;
 
   /// No description provided for @restoreSettings.
   ///
   /// In en, this message translates to:
-  /// **'Restore All Data'**
+  /// **'Restore all data'**
   String get restoreSettings;
 
   /// No description provided for @restoreSuccess.
@@ -2273,7 +4457,7 @@ abstract class MTLocalizations {
   /// No description provided for @saveSettings.
   ///
   /// In en, this message translates to:
-  /// **'Save Settings'**
+  /// **'Save settings'**
   String get saveSettings;
 
   /// No description provided for @saveToDevice.
@@ -2315,7 +4499,7 @@ abstract class MTLocalizations {
   /// No description provided for @selectAll.
   ///
   /// In en, this message translates to:
-  /// **'Select All'**
+  /// **'Select all'**
   String get selectAll;
 
   /// No description provided for @selected.
@@ -2333,7 +4517,7 @@ abstract class MTLocalizations {
   /// No description provided for @serverConfiguration.
   ///
   /// In en, this message translates to:
-  /// **'Server Configuration'**
+  /// **'Server configuration'**
   String get serverConfiguration;
 
   /// No description provided for @serverFailuresLine.
@@ -2377,6 +4561,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =0{} =1{1 in the queue} other{{count} in the queue}}'**
   String serverQueueCount(int count);
+
+  /// No description provided for @serverSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks for MeTube on the Wi-Fi this phone is on, only when you tap.'**
+  String get serverSearchHint;
 
   /// No description provided for @serverStatusChecking.
   ///
@@ -2423,7 +4613,7 @@ abstract class MTLocalizations {
   /// No description provided for @serverUrlHelpTitle.
   ///
   /// In en, this message translates to:
-  /// **'About the Server URL'**
+  /// **'About the server URL'**
   String get serverUrlHelpTitle;
 
   /// No description provided for @serverUrlHint.
@@ -2612,16 +4802,58 @@ abstract class MTLocalizations {
   /// **'Share'**
   String get share;
 
+  /// No description provided for @shareGoesOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Still preparing in the background. The share menu opens when it is ready; its progress is in Downloads.'**
+  String get shareGoesOn;
+
+  /// No description provided for @shareLargeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It downloads to this phone first, then the share menu opens.'**
+  String get shareLargeBody;
+
+  /// No description provided for @shareLargeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Download {size} to share?'**
+  String shareLargeTitle(String size);
+
   /// No description provided for @shareLogs.
   ///
   /// In en, this message translates to:
-  /// **'Share Logs'**
+  /// **'Share logs'**
   String get shareLogs;
+
+  /// No description provided for @shareMessagingLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp and Telegram take up to 2 GB; for larger files use Drive or Quick Share.'**
+  String get shareMessagingLimit;
+
+  /// No description provided for @sharePreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing to share'**
+  String get sharePreparing;
+
+  /// No description provided for @shareProgressOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{received} of {total}'**
+  String shareProgressOf(String received, String total);
+
+  /// No description provided for @shareReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to share'**
+  String get shareReady;
 
   /// No description provided for @shareSelected.
   ///
   /// In en, this message translates to:
-  /// **'Share Selected'**
+  /// **'Share selected'**
   String get shareSelected;
 
   /// No description provided for @shortsFilter.
@@ -2665,6 +4897,18 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Smart playlists'**
   String get smartPlaylists;
+
+  /// No description provided for @sortAndFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort and filter'**
+  String get sortAndFilter;
+
+  /// No description provided for @sortAndPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort and platform'**
+  String get sortAndPlatform;
 
   /// No description provided for @sortBy.
   ///
@@ -2771,7 +5015,7 @@ abstract class MTLocalizations {
   /// No description provided for @subscriptionQualityHelp.
   ///
   /// In en, this message translates to:
-  /// **'The server keeps the quality chosen when you follow, and does not let it be changed. To change it: Check now, then unfollow and follow again.\n\n\"Best\" can mean 4K in the AV1 format. Recent phones play it smoothly; if you see stuttering, your phone does not decode AV1 in hardware — choose 1080p, or turn on \"Best playback compatibility\" before following.'**
+  /// **'The server keeps the quality chosen when you follow, and does not let it be changed. To change it: Check now, then unfollow and follow again.\n\n\"Best\" can mean 4K in the AV1 format. Recent phones play it smoothly; if you see stuttering, your phone does not decode AV1 in hardware: choose 1080p, or turn on \"Best playback compatibility\" before following.'**
   String get subscriptionQualityHelp;
 
   /// No description provided for @subscriptionQualityNote.
@@ -2912,11 +5156,83 @@ abstract class MTLocalizations {
   /// **'Small'**
   String get subtitlesSizeSmall;
 
+  /// No description provided for @syncDeviceQuiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has come from it for over two days. If it was in use, a sync app is probably paused or asleep, there or here: phones put apps they think unused to sleep.'**
+  String get syncDeviceQuiet;
+
+  /// No description provided for @syncPhoneCameBack.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone was away for more than 90 days, so your other devices\' data was taken first.'**
+  String get syncPhoneCameBack;
+
+  /// No description provided for @syncPhoneFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The sync folder could not be read. Choose it again if it moved or its permission was taken back.'**
+  String get syncPhoneFailed;
+
+  /// No description provided for @syncPhoneForgetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} will no longer be read. Its transcripts move to this phone\'s folder first, so none is lost. Use this for a device that was lost or sold.'**
+  String syncPhoneForgetBody(String device);
+
+  /// No description provided for @syncPhoneGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'At home: Syncthing-Fork (from F-Droid) on this phone and Syncthing on the computer, sharing one folder; set it to Wi‑Fi only to spare the battery. Through a cloud: FolderSync with the cloud folder the computer uses.'**
+  String get syncPhoneGuide;
+
+  /// No description provided for @syncPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirrors tags, favorites, lists, resume positions and transcripts with MeTube Ember on your computer, through a folder a sync app keeps in step. Nothing goes to any service from here.'**
+  String get syncPhoneHint;
+
+  /// No description provided for @syncPhoneNoOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'No other device in this folder yet. Turn sync on in MeTube Ember with the same folder.'**
+  String get syncPhoneNoOthers;
+
+  /// No description provided for @syncPhoneOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off. Nothing leaves this phone.'**
+  String get syncPhoneOff;
+
+  /// No description provided for @syncPhoneThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone: {name}'**
+  String syncPhoneThisDevice(String name);
+
+  /// No description provided for @syncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync with the computer'**
+  String get syncTitle;
+
   /// No description provided for @tagActionsHint.
   ///
   /// In en, this message translates to:
   /// **'Long-press a tag to rename or delete it.'**
   String get tagActionsHint;
+
+  /// No description provided for @tagFilterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a tag to show its clips, again to hide them, and once more to let it go.'**
+  String get tagFilterHint;
+
+  /// No description provided for @tagLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You can have up to {max} tags. Remove one in Manage tags to add another.'**
+  String tagLimitReached(int max);
 
   /// No description provided for @tags.
   ///
@@ -2969,7 +5285,7 @@ abstract class MTLocalizations {
   /// No description provided for @titleFilterHelp.
   ///
   /// In en, this message translates to:
-  /// **'The server downloads a new video from this channel only if its title contains what you write here.\n\n• A plain word is enough: Episode\n• Any of several words: Episode|Part — the | means \"or\"\n• English is case-sensitive: episode does not match Episode. Write [Ee]pisode, or both words.\n\nA video the filter skips counts as seen for good: removing the filter later downloads what comes after, not what was skipped.'**
+  /// **'The server downloads a new video from this channel only if its title contains what you write here.\n\n• A plain word is enough: Episode\n• Any of several words: Episode|Part (the | means \"or\")\n• English is case-sensitive: episode does not match Episode. Write [Ee]pisode, or both words.\n\nA video the filter skips counts as seen for good: removing the filter later downloads what comes after, not what was skipped.'**
   String get titleFilterHelp;
 
   /// No description provided for @titleFilterHelper.
@@ -3026,6 +5342,12 @@ abstract class MTLocalizations {
   /// **'Next match'**
   String get transcriptNextMatch;
 
+  /// No description provided for @transcriptPeekHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap for the whole text'**
+  String get transcriptPeekHint;
+
   /// No description provided for @transcriptPreviousMatch.
   ///
   /// In en, this message translates to:
@@ -3037,6 +5359,12 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{Said once more} other{Said {count} more times}}'**
   String transcriptSaidMore(int count);
+
+  /// No description provided for @transcriptSwitchLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch the transcript language'**
+  String get transcriptSwitchLanguage;
 
   /// No description provided for @transcriptsClips.
   ///
@@ -3353,7 +5681,7 @@ abstract class MTLocalizations {
   /// No description provided for @videoPlayer.
   ///
   /// In en, this message translates to:
-  /// **'Video Player'**
+  /// **'Video player'**
   String get videoPlayer;
 
   /// No description provided for @viewAll.
@@ -3439,6 +5767,24 @@ abstract class MTLocalizations {
   /// In en, this message translates to:
   /// **'Stops pulling files to your device over mobile data. Tasks wait and resume automatically on Wi-Fi.'**
   String get wifiOnlyHelp;
+
+  /// No description provided for @yourChannels.
+  ///
+  /// In en, this message translates to:
+  /// **'Your channels'**
+  String get yourChannels;
+
+  /// No description provided for @yourChannelsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed in Settings or the player'**
+  String get yourChannelsHint;
+
+  /// No description provided for @yourLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Your library'**
+  String get yourLibrary;
 
   /// No description provided for @yourPlaylists.
   ///

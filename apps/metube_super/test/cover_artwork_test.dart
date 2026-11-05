@@ -64,6 +64,21 @@ void main() {
     );
   });
 
+  testWidgets('**the guard**: a cover kept on the phone still asks for the '
+      'wide thumbnail, by the clip, so the square shows no black bands', (
+    tester,
+  ) async {
+    final cover = await build(
+      tester,
+      coverBuilderFor,
+      '/data/user/0/com.yasir.metubesuper/files/kept_covers/a1b2.jpg',
+    );
+    expect(
+      (cover! as CachedNetworkImage).imageUrl,
+      'https://i.ytimg.com/vi/MfDROnE8FG8/maxresdefault.jpg',
+    );
+  });
+
   testWidgets('a list row keeps the thumbnail it had', (tester) async {
     final row = await build(tester, artworkBuilderFor, thumb);
     expect((row! as CachedNetworkImage).imageUrl, thumb);

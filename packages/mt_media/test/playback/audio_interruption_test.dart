@@ -154,7 +154,7 @@ void main() {
     });
 
     test('resuming cancels it', () async {
-      handler = build(pausedAutoStop: const Duration(milliseconds: 40));
+      handler = build(pausedAutoStop: const Duration(milliseconds: 400));
       await handler.playItems([_item('a')]);
 
       await handler.pause();
@@ -162,7 +162,7 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 20));
       await handler.play();
       await pumpEventQueue();
-      await Future<void>.delayed(const Duration(milliseconds: 60));
+      await Future<void>.delayed(const Duration(milliseconds: 600));
 
       expect(
         handler.currentItem?.canonicalUrl,

@@ -33,6 +33,7 @@ final localMediaProvider = FutureProvider<List<LocalItem>>((ref) async {
   final offline = await ref.watch(offlineIndexProvider).readAll();
   final titles = await ref.watch(titleIndexProvider).readAll();
   final artwork = await ref.watch(artworkIndexProvider).readAll();
+  final kept = await ref.watch(keptCoverIndexProvider).readAll();
   final tags = await ref.watch(tagsIndexProvider).readAll();
   final Map<String, MediaShape> shapes = await ref
       .watch(mediaShapeIndexProvider)
@@ -77,7 +78,7 @@ final localMediaProvider = FutureProvider<List<LocalItem>>((ref) async {
             LocalItem.titleFromFilename(path.split('/').last),
         sizeBytes: stat.size,
         modified: stat.modified,
-        thumbnail: artwork[key] ?? artwork[path],
+        thumbnail: LocalItem.coverOf(key, path, kept: kept, artwork: artwork),
         favorite: (tags[key] ?? tags[path] ?? const []).contains(
           MTConstants.favoritesSystemTag,
         ),
@@ -128,6 +129,13 @@ class LibraryViewOptions {
   final Set<String> selection;
 
   bool get selecting => selection.isNotEmpty;
+
+  /// Whether a filter hides part of the library, the search aside: an empty
+  /// list then means "nothing here", not "nothing at all".
+  bool get narrowed =>
+      scope != LocalScope.all ||
+      type != MediaTypeFilter.all ||
+      platform != null;
 
   LibraryViewOptions copyWith({
     LocalScope? scope,
@@ -267,6 +275,5 @@ final platformCountsProvider = Provider<List<MapEntry<MediaPlatform, int>>>((
   return platformCounts(items);
 });
 
-/// The item to highlight, from a tap on the completion notification
-/// (`03-APP-FLOW.md` §1).
+/// The item to highlight, from a tap on the completion notification.
 final highlightedItemProvider = StateProvider<String?>((ref) => null);

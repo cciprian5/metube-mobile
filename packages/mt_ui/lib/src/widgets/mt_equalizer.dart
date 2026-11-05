@@ -1,7 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../theme/mt_theme.dart';
-import '../tokens/tokens.dart';
 
 /// The "now playing" indicator: four swaying bars in the accent colour,
 /// from the Wahaj reference.
@@ -19,16 +20,27 @@ class _MTEqualizerState extends State<MTEqualizer>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 1),
+    // One full sway, up and back, as the old there-and-back pair took.
+    duration: const Duration(seconds: 2),
   );
 
   static const _heights = [6.0, 13.0, 9.0, 12.0];
-  static const _delays = [0.0, 0.2, 0.4, 0.1];
+
+  /// Sways while playing, unless the system asks for no animation: then
+  /// the bars stand still at their own heights, which still say "this
+  /// one".
+  void _drive() {
+    if (widget.animate && !MediaQuery.disableAnimationsOf(context)) {
+      if (!_controller.isAnimating) _controller.repeat();
+    } else {
+      _controller.stop();
+    }
+  }
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.animate) _controller.repeat(reverse: true);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _drive();
   }
 
   /// **It actually stops when playback pauses** (field report 2026-09-04:
@@ -39,12 +51,7 @@ class _MTEqualizerState extends State<MTEqualizer>
   @override
   void didUpdateWidget(MTEqualizer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.animate == oldWidget.animate) return;
-    if (widget.animate) {
-      _controller.repeat(reverse: true);
-    } else {
-      _controller.stop();
-    }
+    if (widget.animate != oldWidget.animate) _drive();
   }
 
   @override
@@ -76,9 +83,7 @@ class _MTEqualizerState extends State<MTEqualizer>
   }
 
   Widget _bar(int i, Color accent, double scale) {
-    final t = widget.animate
-        ? MTMotion.ease.transform(((_controller.value + _delays[i]) % 1.0))
-        : 1.0;
+    final t = widget.animate ? mtEqualizerSway(_controller.value, i) : 1.0;
     final factor = 0.45 + 0.55 * t;
     return Container(
       width: 3 * scale,
@@ -89,4 +94,15 @@ class _MTEqualizerState extends State<MTEqualizer>
       ),
     );
   }
+}
+
+/// How far bar [bar] stands (0 to 1) at [t] of one sway.
+///
+/// **A wave, not a remainder**: the bars were offset with `% 1.0` on a
+/// controller running there and back, so each crossed from 1 to 0 in a
+/// single frame once a sweep and three of the four bars snapped short. A
+/// cosine returns where it began, so the loop has no seam.
+double mtEqualizerSway(double t, int bar) {
+  const delays = [0.0, 0.2, 0.4, 0.1];
+  return 0.5 - 0.5 * math.cos(2 * math.pi * (t + delays[bar]));
 }

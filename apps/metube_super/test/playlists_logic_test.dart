@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/playlists/playlists_providers.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
 
 SavedPlaylist _playlist(
   String name, {

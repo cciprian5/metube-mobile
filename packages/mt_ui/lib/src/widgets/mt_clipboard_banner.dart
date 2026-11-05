@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// The "a link is ready in the clipboard" bar, which sits above the mini
 /// player.
 ///
@@ -48,7 +51,7 @@ class MTClipboardBanner extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.link_rounded, size: 18, color: p.accentInk),
+            MTIcon(MTIcons.link, size: 18, color: p.accentInk),
             const SizedBox(width: MTSpace.sm),
             Expanded(
               child: Column(
@@ -77,7 +80,7 @@ class MTClipboardBanner extends StatelessWidget {
             IconButton(
               onPressed: onDismiss,
               visualDensity: VisualDensity.compact,
-              icon: Icon(Icons.close_rounded, size: 18, color: p.ink3),
+              icon: MTIcon(MTIcons.close, size: 18, color: p.ink3),
             ),
           ],
         ),

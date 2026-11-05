@@ -35,12 +35,18 @@ class Transfer {
   /// Returns **the path actually used**, which may differ from [savePath]
   /// if that was taken. The caller indexes what comes back,
   /// not what it asked for.
+  ///
+  /// [onBytes] carries the raw counts for a caller that shows a size or a
+  /// speed; [onProgress] is the same report as a fraction.
   Future<String> pull({
     required String serverFilename,
     required String savePath,
     void Function(double progress)? onProgress,
+    void Function(int received, int total)? onBytes,
     CancelToken? cancelToken,
+    TransferCancel? cancel,
   }) async {
+    cancelToken ??= cancel?._token;
     final partPath = '$savePath$partSuffix';
     for (var attempt = 0; attempt < retries; attempt++) {
       await _deletePartial(partPath);
@@ -50,6 +56,7 @@ class Transfer {
           partPath,
           cancelToken: cancelToken,
           onProgress: (received, total) {
+            onBytes?.call(received, total);
             if (onProgress != null && total > 0) {
               onProgress(received / total);
             }
@@ -103,4 +110,15 @@ class Transfer {
       // A temporarily locked file. The next attempt will write over it.
     }
   }
+}
+
+/// Stops a [Transfer.pull] in flight, for an app that never touches the
+/// network client itself: the pull then throws [CancelledException] and
+/// leaves no partial file.
+class TransferCancel {
+  final CancelToken _token = CancelToken();
+
+  bool get isCancelled => _token.isCancelled;
+
+  void cancel() => _token.cancel();
 }

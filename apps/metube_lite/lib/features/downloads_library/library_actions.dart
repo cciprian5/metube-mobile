@@ -58,6 +58,9 @@ class LibraryActions {
     await _ref.read(artworkIndexProvider).removeKeysAndFiles([
       for (final item in items) item.key,
     ]);
+    await _ref.read(keptCoverIndexProvider).removeKeysAndFiles([
+      for (final item in items) item.key,
+    ]);
     // **And the saved playlists** (field report 2026-09-04): every index
     // was
     // pruned except the playlists, so a dead entry stayed and played

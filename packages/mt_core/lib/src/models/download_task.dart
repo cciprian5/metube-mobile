@@ -5,8 +5,8 @@ import 'quality.dart';
 
 const _uuid = Uuid();
 
-/// The phases of a download task along the four-stage pipeline
-/// (`05-DATA-SCHEMA.md` §3): add, poll, pull, delete by policy.
+/// The phases of a download task along the four-stage pipeline: add,
+/// poll, pull, delete by policy.
 enum TaskPhase {
   queued,
   adding,
@@ -44,6 +44,7 @@ class DownloadTask {
     this.localPath,
     this.phase = TaskPhase.queued,
     this.progress = 0,
+    this.speed,
     this.error,
     this.isBatchMember = false,
     this.serverCleanupFailed = false,
@@ -78,6 +79,11 @@ class DownloadTask {
   /// while pulling.
   final double progress;
 
+  /// The server's download speed in bytes per second while it fetches the
+  /// clip, or null when it is not downloading (waiting, between streams,
+  /// pulling to the device).
+  final double? speed;
+
   /// The classified error on failure. The app turns its type into
   /// translated text (TRD §3.3).
   final MTApiException? error;
@@ -111,6 +117,7 @@ class DownloadTask {
   String get effectiveUrl => resolvedUrl ?? inputUrl;
 
   DownloadTask copyWith({
+    Quality? quality,
     String? resolvedUrl,
     String? canonicalUrl,
     String? serverFilename,
@@ -119,12 +126,13 @@ class DownloadTask {
     String? localPath,
     TaskPhase? phase,
     double? progress,
+    double? Function()? speed,
     MTApiException? error,
     bool? serverCleanupFailed,
   }) => DownloadTask(
     id: id,
     inputUrl: inputUrl,
-    quality: quality,
+    quality: quality ?? this.quality,
     resolvedUrl: resolvedUrl ?? this.resolvedUrl,
     canonicalUrl: canonicalUrl ?? this.canonicalUrl,
     serverFilename: serverFilename ?? this.serverFilename,
@@ -133,6 +141,7 @@ class DownloadTask {
     localPath: localPath ?? this.localPath,
     phase: phase ?? this.phase,
     progress: progress ?? this.progress,
+    speed: speed == null ? this.speed : speed(),
     error: error ?? this.error,
     isBatchMember: isBatchMember,
     serverCleanupFailed: serverCleanupFailed ?? this.serverCleanupFailed,

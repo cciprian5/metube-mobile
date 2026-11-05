@@ -60,11 +60,7 @@ void logEveryError(MTLogger logger) {
   };
 }
 
-String _where(StackTrace? stack) => (stack?.toString() ?? '')
-    .split('\n')
-    .take(4)
-    .map((line) => line.trim())
-    .join(' | ');
+String _where(StackTrace? stack) => mtStackPlace(stack?.toString());
 
 /// **It returns the future rather than swallowing it**: the call from the
 /// interface is `unawaited` so the screen never waits on the disk, but a

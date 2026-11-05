@@ -1,7 +1,7 @@
 /// The unified item for every player, audio, video and reels. **A lesson
 /// from the old Super:** the screens carried two conflicting classes for
 /// the same concept, so play modes drifted apart. The single key is
-/// [canonicalUrl] (`05-DATA-SCHEMA.md` §5.5), so a stream and a local copy
+/// [canonicalUrl], so a stream and a local copy
 /// share the same resume position.
 class PlaylistItem {
   const PlaylistItem({

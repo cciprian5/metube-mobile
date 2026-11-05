@@ -9,6 +9,7 @@ import 'package:mt_media/src/video/mt_video_codec.dart';
 import 'package:mt_media/src/video/mt_video_open.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
+import 'package:mt_ui/mt_ui.dart';
 
 import 'fake_video_platform.dart';
 
@@ -99,7 +100,11 @@ void main() {
 
       MTVideoOpen.platformView = false;
       final texture = await MTVideoOpen.prepare(source);
-      expect(mtFullscreenRoute(texture, page), isA<MaterialPageRoute<void>>());
+      // The texture shows the picture on both pages, so it moves: out of
+      // the player's place at a sheet's pace, back into it faster.
+      final moving = mtFullscreenRoute(texture, page) as PageRoute<void>;
+      expect(moving.transitionDuration, MTMotion.medium);
+      expect(moving.reverseTransitionDuration, MTMotion.leave);
       await texture.dispose();
     },
   );

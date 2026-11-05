@@ -9,6 +9,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'device_matrix.dart';
 
+import 'wahaj_finder.dart';
+
 /// **Requested 2026-09-08**: the choice was a `SegmentedButton` with three
 /// segments, and it divides the width by their number, so three fit 360dp
 /// **and six break**, while the declared plan is to support the common
@@ -69,7 +71,7 @@ void main() {
     tester,
   ) async {
     await pump(tester, null);
-    expect(find.byIcon(Icons.check_rounded), findsOneWidget);
+    expect(byWahaj(MTIcons.check), findsOneWidget);
   });
 
   testWidgets('choosing a language saves it, and the tick moves to it', (
@@ -82,7 +84,7 @@ void main() {
 
     expect(container.read(settingsProvider).localeCode, 'en');
     expect(
-      find.byIcon(Icons.check_rounded),
+      byWahaj(MTIcons.check),
       findsOneWidget,
       reason: 'علامة واحدة لا اثنتان',
     );

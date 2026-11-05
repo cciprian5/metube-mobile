@@ -5,6 +5,9 @@ import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import 'mt_polish.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// A small round arrow over a long list that takes the reader to its end in
 /// one tap, for a list whose newest entry is at the bottom (a log).
 ///
@@ -204,7 +207,12 @@ class _Arrow extends StatelessWidget {
         ),
         child: Material(
           color: p.card,
-          shape: CircleBorder(side: BorderSide(color: p.line2)),
+          shape: CircleBorder(
+            side: BorderSide(
+              color: p.line2,
+              width: MTThemeX.of(context).hairline,
+            ),
+          ),
           child: InkWell(
             customBorder: const CircleBorder(),
             onTap: onTap,
@@ -213,7 +221,7 @@ class _Arrow extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Icon(Icons.arrow_downward_rounded, size: 20, color: p.ink2),
+                  MTIcon(MTIcons.chevronDown, size: 20, color: p.ink2),
                   if (fresh)
                     PositionedDirectional(
                       top: MTSpace.xs,

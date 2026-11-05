@@ -4,6 +4,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'di.dart';
 import 'features/settings/auto_switch.dart';
+import 'features/sync/phone_sync.dart';
 import 'router.dart';
 
 /// The MeTube Super root: the Wahaj theme in Super's identity, plus
@@ -19,6 +20,8 @@ class SuperApp extends ConsumerWidget {
     // change must be caught wherever the user is, including when the app
     // was in the background and comes back.
     ref.watch(autoSwitchProvider);
+    // The same for the sync folder: it reads on every return to the app.
+    ref.watch(phoneSyncRunnerProvider);
 
     return MaterialApp.router(
       title: 'MeTube Super',

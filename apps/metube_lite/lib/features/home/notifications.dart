@@ -15,7 +15,7 @@ class DownloadNotifications {
   final FlutterLocalNotificationsPlugin _plugin;
 
   /// Called once at startup. [onOpenItem] carries the completed item's key
-  /// for the app to highlight (`03-APP-FLOW.md` §1).
+  /// for the app to highlight.
   Future<void> init({void Function(String itemKey)? onOpenItem}) async {
     await _plugin.initialize(
       settings: const InitializationSettings(

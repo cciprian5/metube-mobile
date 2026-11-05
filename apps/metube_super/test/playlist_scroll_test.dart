@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/library/library_providers.dart';
 import 'package:metube_super/features/playlists/playlist_details_screen.dart';
 import 'package:metube_super/features/playlists/playlists_providers.dart';
@@ -10,8 +9,11 @@ import 'package:metube_super/features/settings/settings_state.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import 'playback_test_doubles.dart';
+
+import 'wahaj_finder.dart';
 
 /// **Playing a clip low in a playlist keeps the list where it was** (field
 /// report 2026-09-25: it flashed and jumped to the top).
@@ -112,5 +114,68 @@ void main() {
           .pixels,
       scrolled,
     );
+  });
+
+  testWidgets('**the guard**: the playlist page as the plan draws it: its '
+      'length under the name, a gone clip faded, and the editing hint', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(411, 914);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    final store = PlaylistsStore(store: kv, mutex: mutex);
+    final kept = LibraryItem(
+      canonicalUrl: 'https://v/kept',
+      title: 'Kept',
+      onServer: true,
+    );
+    final gone = LibraryItem(
+      canonicalUrl: 'https://v/gone',
+      title: 'Gone',
+      onServer: true,
+    );
+    final playlist = await store.create(
+      'Drive',
+      items: [toPlaylistEntry(kept), toPlaylistEntry(gone)],
+    );
+    final container = ProviderContainer(
+      overrides: [
+        audioHandlerProvider.overrideWithValue(handler),
+        keyValueStoreProvider.overrideWithValue(kv),
+        secretStoreProvider.overrideWithValue(MemorySecretStore()),
+        prefsMutexProvider.overrideWithValue(mutex),
+        initialSettingsProvider.overrideWithValue(const SuperSettings()),
+        playlistsStoreProvider.overrideWithValue(store),
+        libraryItemsProvider.overrideWith((ref) async => [kept]),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          theme: mtTheme(MTVariant.superApp, Brightness.light),
+          localizationsDelegates: MTLocalizations.localizationsDelegates,
+          supportedLocales: MTLocalizations.supportedLocales,
+          home: PlaylistDetailsScreen(playlistId: playlist.id),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('2'), findsWidgets);
+    expect(
+      find.text('Long-press a clip to move it. Swipe it aside to remove it.'),
+      findsOneWidget,
+    );
+    final fade = tester.widget<Opacity>(
+      find
+          .ancestor(of: find.text('Gone'), matching: find.byType(Opacity))
+          .first,
+    );
+    expect(fade.opacity, 0.5);
+    final headphones = tester.widget<MTIcon>(byWahaj(MTIcons.headphones));
+    expect(headphones.color, isNot(MTPalette.superDay.accent));
   });
 }

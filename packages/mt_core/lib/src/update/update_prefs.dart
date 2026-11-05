@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import '../storage/key_value_store.dart';
 
-/// Self-update preferences, with keys from `05-DATA-SCHEMA.md` §5.1.
+/// Self-update preferences.
 ///
 /// **A store of its own rather than fields in `SuperSettings` or
 /// `LiteSettings`**: the feature arrives behind a new path, so it touches

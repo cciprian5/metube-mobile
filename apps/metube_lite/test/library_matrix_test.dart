@@ -12,6 +12,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'device_matrix.dart';
 
+import 'wahaj_finder.dart';
+
 /// **The whole library on every shape (2026-10-10)**, the twin of Super's:
 /// each view mode, in both languages, across the device matrix's phones,
 /// tablets and foldables and its three font scales.
@@ -97,5 +99,19 @@ void main() {
     await tester.pumpWidget(host!());
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaRow), findsWidgets);
+  });
+
+  testWidgets('**the guard**: search sits behind the bar button and back '
+      'clears it', (tester) async {
+    final host = await hostFor(LibraryViewMode.list, const Locale('en'));
+    await tester.pumpWidget(host());
+    await tester.pumpAndSettle();
+    expect(find.byType(MTQuerySearchField), findsNothing);
+    await tester.tap(byWahaj(MTIcons.search));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTQuerySearchField), findsOneWidget);
+    await tester.tap(find.byType(BackButtonIcon));
+    await tester.pumpAndSettle();
+    expect(find.byType(MTQuerySearchField), findsNothing);
   });
 }

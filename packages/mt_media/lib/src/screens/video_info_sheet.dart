@@ -4,12 +4,14 @@ import 'package:mt_ui/mt_ui.dart';
 import '../models/playlist_item.dart';
 import '../video/mt_video_session.dart';
 import '../widgets/media_time.dart';
+import '../widgets/mt_chapters.dart';
 import '../widgets/mt_player_controls_row.dart';
 import '../widgets/mt_queue_panel.dart';
 import '../widgets/mt_up_next_list.dart';
 import 'mt_video_screen.dart';
+import 'video_actions_row.dart';
 
-/// The cream sheet under the portrait video (Wahaj reference B): title,
+/// The light sheet under the portrait video (Wahaj reference B): title,
 /// then metadata, then actions, then mode and speed, then the "up next"
 /// section.
 class MTVideoInfoSheet extends StatelessWidget {
@@ -19,8 +21,11 @@ class MTVideoInfoSheet extends StatelessWidget {
     this.actions = const [],
     this.artwork,
     this.subtitleBuilder,
+    this.byline,
     this.onShowPlaylist,
     this.playlistName,
+    this.chapters,
+    this.chaptersFolded,
   });
 
   final MTVideoSession session;
@@ -29,7 +34,14 @@ class MTVideoInfoSheet extends StatelessWidget {
   final String Function(BuildContext context, PlaylistItem item)?
   subtitleBuilder;
   final VoidCallback? onShowPlaylist;
+
+  /// A line under the title an app adds, such as the clip's channel.
+  final Widget Function(BuildContext context, PlaylistItem item)? byline;
   final String? playlistName;
+
+  /// See [MTVideoScreen.chapters].
+  final List<MTChapter> Function(PlaylistItem item)? chapters;
+  final ValueNotifier<bool>? chaptersFolded;
 
   @override
   Widget build(BuildContext context) {
@@ -50,35 +62,40 @@ class MTVideoInfoSheet extends StatelessWidget {
             top: Radius.circular(MTRadius.sheet - 4),
           ),
         ),
-        padding: const EdgeInsets.fromLTRB(
-          MTSpace.pagePad,
-          MTSpace.xl,
-          MTSpace.pagePad,
-          0,
-        ),
+        // The margins are inside the list, not around it: a list clips what
+        // passes its edges, and the actions row runs out to the screen's.
+        padding: const EdgeInsets.only(top: MTSpace.xl),
         child: CustomScrollView(
           slivers: [
-            SliverList.list(
-              children: [
-                ..._top(context, item),
-                const SizedBox(height: MTSpace.md),
-                MTQueueHeader(
-                  count: ordered.length,
-                  playlistName: playlistName,
-                  onShowAll: onShowPlaylist,
+            for (final sliver in [
+              SliverList.list(
+                children: [
+                  ..._top(context, item),
+                  const SizedBox(height: MTSpace.md),
+                  MTQueueHeader(
+                    count: ordered.length,
+                    playlistName: playlistName,
+                    onShowAll: onShowPlaylist,
+                  ),
+                  const SizedBox(height: MTSpace.xs),
+                ],
+              ),
+              MTUpNextSliver(
+                items: ordered,
+                currentIndex: currentIndex,
+                artwork: artwork,
+                paused: !session.isPlaying,
+                onTap: (index) =>
+                    session.jumpTo(session.items.indexOf(ordered[index])),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: MTSpace.xl)),
+            ])
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: MTSpace.pagePad,
                 ),
-                const SizedBox(height: MTSpace.xs),
-              ],
-            ),
-            MTUpNextSliver(
-              items: ordered,
-              currentIndex: currentIndex,
-              artwork: artwork,
-              paused: !session.isPlaying,
-              onTap: (index) =>
-                  session.jumpTo(session.items.indexOf(ordered[index])),
-            ),
-            const SliverToBoxAdapter(child: SizedBox(height: MTSpace.xl)),
+                sliver: sliver,
+              ),
           ],
         ),
       ),
@@ -103,83 +120,36 @@ class MTVideoInfoSheet extends StatelessWidget {
           style: text.bodySmall!.copyWith(color: p.ink3),
         ),
       ],
+      ?byline?.call(context, item),
       if (actions.isNotEmpty) ...[
         const SizedBox(height: MTSpace.md),
-        // One height for every tile: a label on two lines ("open
-        // the original link") made its tile taller than the rest.
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (final action in actions) ...[
-                if (action != actions.first) const SizedBox(width: MTSpace.xs),
-                Expanded(child: _ActionTile(action: action)),
-              ],
-            ],
-          ),
-        ),
+        MTVideoActionsRow(actions: actions),
       ],
       const SizedBox(height: MTSpace.md),
       _ModeRow(session: session),
       const SizedBox(height: MTSpace.md),
       Divider(color: p.line, height: 1),
+      if (chapters?.call(item) ?? const <MTChapter>[] case final chapters
+          when chapters.isNotEmpty) ...[
+        const SizedBox(height: MTSpace.lg),
+        MTChapterSection(
+          chapters: chapters,
+          current: mtChapterAt(chapters, session.position),
+          onSeek: session.seek,
+          folded: chaptersFolded,
+          onShowAll: () => showMTChapterSheet(
+            context,
+            chapters: chapters,
+            ticks: session,
+            position: () => session.position,
+            onSeek: session.seek,
+          ),
+        ),
+      ],
     ];
   }
 }
 
-class _ActionTile extends StatelessWidget {
-  const _ActionTile({required this.action});
-
-  final MTPlayerAction action;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = MTThemeX.of(context).palette;
-    final fg = action.highlighted ? p.accentInk : p.ink2;
-    return Material(
-      color: action.highlighted ? p.accentSoft : p.card,
-      borderRadius: BorderRadius.circular(MTRadius.field + 1),
-      child: InkWell(
-        onTap: action.onTap,
-        borderRadius: BorderRadius.circular(MTRadius.field + 1),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: MTSpace.sm + 1),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(MTRadius.field + 1),
-            border: Border.all(
-              color: action.highlighted
-                  ? p.accent.withValues(alpha: 0.3)
-                  : p.line,
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(action.icon, size: 17, color: fg),
-              const SizedBox(height: MTSpace.xxs + 2),
-              Text(
-                action.label,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                  color: fg,
-                  fontSize: 9.5,
-                  height: 1.35,
-                  fontWeight: action.highlighted ? FontWeight.w700 : null,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The mode and speed row (reference B): a chip for the current mode with
-/// the speed at the far end.
 class _ModeRow extends StatelessWidget {
   const _ModeRow({required this.session});
 
@@ -241,8 +211,10 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
+    // The chosen chip is filled with the ink, as every chosen chip is: the
+    // action colour is kept for the one thing to press.
     return Material(
-      color: selected ? p.accentSoft : Colors.transparent,
+      color: selected ? p.ink : Colors.transparent,
       borderRadius: BorderRadius.circular(MTRadius.chip),
       child: InkWell(
         onTap: onTap,
@@ -254,12 +226,12 @@ class _Chip extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(MTRadius.chip),
-            border: Border.all(color: selected ? p.accent : p.line2),
+            border: Border.all(color: selected ? p.ink : p.line2),
           ),
           child: Text(
             label,
             style: Theme.of(context).textTheme.labelSmall!.copyWith(
-              color: selected ? p.accentInk : p.ink2,
+              color: selected ? p.bg : p.ink2,
               fontWeight: selected ? FontWeight.w700 : null,
             ),
           ),

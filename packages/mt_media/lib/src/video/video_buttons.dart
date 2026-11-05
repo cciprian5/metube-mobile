@@ -10,7 +10,7 @@ import 'mt_video_session.dart';
 /// size limit).
 
 /// The chrome buttons over the video: semi-transparent dark squares with
-/// cream ink.
+/// light ink.
 class MTVideoIconButton extends StatelessWidget {
   const MTVideoIconButton({
     super.key,
@@ -21,7 +21,7 @@ class MTVideoIconButton extends StatelessWidget {
     this.active = false,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final VoidCallback onTap;
   final String tooltip;
   final double size;
@@ -43,8 +43,10 @@ class MTVideoIconButton extends StatelessWidget {
           child: SizedBox(
             width: size,
             height: size,
-            child: Icon(
-              icon,
+            // Subtitles on and off, the play mode, full screen: the
+            // glyph swaps rather than jumps.
+            child: MTIconSwap(
+              icon: icon,
               size: size * 0.42,
               color: MTPalette.serverCardInk,
             ),

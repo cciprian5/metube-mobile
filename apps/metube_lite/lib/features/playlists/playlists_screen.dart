@@ -11,6 +11,7 @@ import '../shared/error_report.dart';
 import 'playlist_dialogs.dart';
 import 'playlists_providers.dart';
 import 'widgets/playlist_cards.dart';
+import 'widgets/smart_list_rows.dart';
 
 /// Lite's playlists tab has **two sections**: pinned smart playlists, then
 /// your playlists. The "your tags" section is a Super feature and does not
@@ -31,7 +32,7 @@ class PlaylistsScreen extends ConsumerWidget {
           IconButton(
             tooltip: l10n.createPlaylist,
             onPressed: () => showCreatePlaylistDialog(context, ref),
-            icon: const Icon(Icons.add_rounded),
+            icon: const MTIcon(MTIcons.plus),
           ),
         ],
       ),
@@ -46,20 +47,9 @@ class PlaylistsScreen extends ConsumerWidget {
           children: [
             MTSectionHeader(title: l10n.smartPlaylists),
             const SizedBox(height: MTSpace.sm),
-            Row(
-              children: [
-                for (final list in smart) ...[
-                  if (list != smart.first)
-                    const SizedBox(width: MTSpace.xs + 2),
-                  Expanded(
-                    child: SmartPlaylistCard(
-                      kind: list.kind,
-                      count: list.count,
-                      onTap: () => _playSmart(context, ref, list),
-                    ),
-                  ),
-                ],
-              ],
+            SmartListRows(
+              lists: smart,
+              onPlay: (list) => _playSmart(context, ref, list),
             ),
             const SizedBox(height: MTSpace.xl),
             MTSectionHeader(
@@ -68,9 +58,8 @@ class PlaylistsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: MTSpace.sm),
             playlists.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: MTSpinner()),
               error: (_, _) => MTEmptyState(
-                icon: Icons.error_outline_rounded,
                 title: l10n.tryAgain,
                 message: l10n.noPlaylistsMessage,
               ),
@@ -212,7 +201,7 @@ class _NewPlaylistTile extends StatelessWidget {
                 color: p.accentSoft,
                 borderRadius: BorderRadius.circular(MTRadius.field - 1),
               ),
-              child: Icon(Icons.add_rounded, size: 17, color: p.accentInk),
+              child: MTIcon(MTIcons.plus, size: 17, color: p.accentInk),
             ),
             const SizedBox(height: MTSpace.xs),
             Text(

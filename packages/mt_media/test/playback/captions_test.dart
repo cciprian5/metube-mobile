@@ -10,6 +10,8 @@ import 'package:video_player_platform_interface/video_player_platform_interface.
 
 import 'fake_video_platform.dart';
 
+import '../wahaj_finder.dart';
+
 /// **Subtitles over the video (owner's request 2026-10-14)**: a sentence
 /// that stays put, the spoken word lit along it, above the controls when
 /// they show, and a CC button that hides them.
@@ -421,12 +423,12 @@ void main() {
         tester,
         (_) => MTCaptions(lines: [line(0, 9000, 'hello')], shown: shown),
       );
-      expect(find.byIcon(Icons.closed_caption_off_rounded), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.closed_caption_off_rounded));
+      expect(byWahaj(MTIcons.captionsOff), findsOneWidget);
+      await tester.tap(byWahaj(MTIcons.captionsOff));
       // The controls wait to see whether a tap is a double one (a seek).
       await tester.pump(kDoubleTapTimeout + const Duration(milliseconds: 50));
       expect(shown.value, isTrue);
-      expect(find.byIcon(Icons.closed_caption_rounded), findsOneWidget);
+      expect(byWahaj(MTIcons.captions), findsOneWidget);
       await leave(tester, session);
     });
 
@@ -494,8 +496,8 @@ void main() {
 
     testWidgets('a clip without subtitles has no button', (tester) async {
       final session = await show(tester, (_) => null);
-      expect(find.byIcon(Icons.closed_caption_off_rounded), findsNothing);
-      expect(find.byIcon(Icons.closed_caption_rounded), findsNothing);
+      expect(byWahaj(MTIcons.captionsOff), findsNothing);
+      expect(byWahaj(MTIcons.captions), findsNothing);
       await leave(tester, session);
     });
   });

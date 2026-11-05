@@ -20,17 +20,28 @@ Future<void> showSubscriptionSheet(
   BuildContext context,
   WidgetRef ref, {
   ChannelSubscription? editing,
-}) => showModalBottomSheet<void>(
+  String? url,
+  String? name,
+}) => showMTSheet<void>(
   context: context,
   isScrollControlled: true,
   useSafeArea: true,
-  builder: (_) => _SubscriptionSheet(editing: editing),
+  // Above the whole app, as every sheet is: opened from a channel's page
+  // inside a tab, it stayed in that tab and the add button floated over
+  // it (field report 2026-11-01).
+  useRootNavigator: true,
+  builder: (_) => _SubscriptionSheet(editing: editing, url: url, name: name),
 );
 
 class _SubscriptionSheet extends ConsumerStatefulWidget {
-  const _SubscriptionSheet({this.editing});
+  const _SubscriptionSheet({this.editing, this.url, this.name});
 
   final ChannelSubscription? editing;
+
+  /// A channel to follow, already known (from the video player): the link
+  /// is filled in and the user only chooses how to follow it.
+  final String? url;
+  final String? name;
 
   @override
   ConsumerState<_SubscriptionSheet> createState() => _SubscriptionSheetState();
@@ -38,10 +49,10 @@ class _SubscriptionSheet extends ConsumerStatefulWidget {
 
 class _SubscriptionSheetState extends ConsumerState<_SubscriptionSheet> {
   late final _urlController = TextEditingController(
-    text: widget.editing?.url ?? '',
+    text: widget.editing?.url ?? widget.url ?? '',
   );
   late final _nameController = TextEditingController(
-    text: widget.editing?.name ?? '',
+    text: widget.editing?.name ?? widget.name ?? '',
   );
   late final _filterController = TextEditingController(
     text: widget.editing?.titleRegex ?? '',
@@ -205,6 +216,8 @@ class _SubscriptionSheetState extends ConsumerState<_SubscriptionSheet> {
               ),
             const SizedBox(height: MTSpace.md),
             DropdownMenu<int>(
+              trailingIcon: const MTIcon(MTIcons.chevronDown),
+              selectedTrailingIcon: const MTIcon(MTIcons.chevronUp),
               initialSelection: _interval,
               label: Text(l10n.checkEvery),
               expandedInsets: EdgeInsets.zero,
@@ -263,7 +276,7 @@ class _SubscriptionSheetState extends ConsumerState<_SubscriptionSheet> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outline_rounded, size: 16, color: p.ink3),
+                  MTIcon(MTIcons.info, size: 16, color: p.ink3),
                   const SizedBox(width: MTSpace.xs),
                   Expanded(
                     child: Text(
@@ -280,14 +293,8 @@ class _SubscriptionSheetState extends ConsumerState<_SubscriptionSheet> {
               child: FilledButton.icon(
                 onPressed: canSubmit ? _submit : null,
                 icon: _busy
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Icon(
-                        _isEdit ? Icons.check_rounded : Icons.add_link_rounded,
-                      ),
+                    ? const MTSpinner(size: 16)
+                    : MTIcon(_isEdit ? MTIcons.check : MTIcons.addlink),
                 label: Text(_isEdit ? l10n.saveSettings : l10n.follow),
               ),
             ),

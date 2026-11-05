@@ -119,12 +119,12 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
           IconButton(
             tooltip: l10n.shareLogs,
             onPressed: _lines.isEmpty ? null : _share,
-            icon: const Icon(Icons.share_rounded),
+            icon: const MTIcon(MTIcons.share),
           ),
           IconButton(
             tooltip: l10n.clearLogs,
             onPressed: _lines.isEmpty ? null : _confirmClear,
-            icon: const Icon(Icons.delete_sweep_rounded),
+            icon: const MTIcon(MTIcons.trash),
           ),
         ],
       ),
@@ -147,7 +147,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: MTSpace.pagePad),
               child: Row(
                 children: [
-                  Icon(Icons.privacy_tip_outlined, size: 14, color: p.ink3),
+                  MTIcon(MTIcons.shield, size: 14, color: p.ink3),
                   const SizedBox(width: MTSpace.xs),
                   Expanded(
                     child: Text(
@@ -162,10 +162,9 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
             const SizedBox(height: MTSpace.sm),
             Expanded(
               child: _loading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(child: MTSpinner())
                   : visible.isEmpty
                   ? MTEmptyState(
-                      icon: Icons.article_outlined,
                       title: query.isEmpty ? l10n.logsEmpty : l10n.noResults,
                       message: query.isEmpty
                           ? l10n.noLogsFound
@@ -213,7 +212,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
 
   void _confirmClear() {
     final l10n = context.mtl;
-    showDialog<void>(
+    showMTDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         content: Text(l10n.clearLogsConfirm),

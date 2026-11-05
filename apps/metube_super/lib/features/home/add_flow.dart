@@ -5,26 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../folders/folder_picker.dart';
 import '../shared/error_text.dart';
-
-/// Converts the core's platform into its presentation type, since mt_ui
-/// does not know mt_core.
-MTPlatformKind platformKindOf(MediaPlatform platform) => switch (platform) {
-  MediaPlatform.youtube => MTPlatformKind.youtube,
-  MediaPlatform.tiktok => MTPlatformKind.tiktok,
-  MediaPlatform.instagram => MTPlatformKind.instagram,
-  MediaPlatform.soundcloud => MTPlatformKind.soundcloud,
-  MediaPlatform.x => MTPlatformKind.x,
-  MediaPlatform.facebook => MTPlatformKind.facebook,
-  MediaPlatform.vimeo => MTPlatformKind.vimeo,
-  MediaPlatform.twitch => MTPlatformKind.twitch,
-  MediaPlatform.reddit => MTPlatformKind.reddit,
-  MediaPlatform.dailymotion => MTPlatformKind.dailymotion,
-  MediaPlatform.other => MTPlatformKind.other,
-};
+import 'link_preview_view.dart';
 
 /// The add dialog plus automatic routing: a playlist goes to `/batch`, a
 /// single link goes straight to the engine (rule 2).
@@ -37,7 +23,7 @@ Future<void> openAddSheet(
   final logger = ref.read(loggerProvider);
   final opened = DateTime.now();
   unawaited(logger.log('add sheet shown', tag: 'share'));
-  final submitted = await showModalBottomSheet<bool>(
+  final submitted = await showMTSheet<bool>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -110,10 +96,11 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
   Widget build(BuildContext context) {
     final l10n = widget.l10n;
     final platform = MediaPlatform.detect(_url);
-    // The quality rule: numeric qualities are offered for YouTube only.
+    // The quality rule: heights for every platform but an audio-only one;
+    // outside YouTube the engine falls back to best if the site has none.
     final qualities = [
       MTQualityOption(value: 'best', label: l10n.qualityBest),
-      if (platform.isYouTube) ...[
+      if (!platform.isAudioOnly) ...[
         MTQualityOption(value: '1080', label: l10n.quality1080),
         MTQualityOption(value: '720', label: l10n.quality720),
         MTQualityOption(value: '480', label: l10n.quality480),
@@ -127,6 +114,7 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
       urlHint: l10n.pasteUrlHint,
       controller: _controller,
       onUrlChanged: (value) => setState(() => _url = value),
+      preview: linkPreviewFor(ref, _url),
       platform: platformKindOf(platform),
       platformLabel: platform == MediaPlatform.other ? null : platform.label,
       qualities: qualities,
@@ -138,7 +126,9 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
       extra: PlaylistDetector.isPlaylist(_url)
           ? null
           : FolderRow(
-              value: _folder.isTop ? l10n.noFolder : mtName(_folder.path),
+              value: _folder.isTop
+                  ? '${l10n.noFolder} · ${l10n.noFolderHint}'
+                  : mtName(_folder.path),
               onTap: () async {
                 // Otherwise the link field takes the focus back when the
                 // picker closes, and the keyboard covers the sheet.

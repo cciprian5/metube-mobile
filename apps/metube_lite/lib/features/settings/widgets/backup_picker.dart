@@ -17,7 +17,7 @@ class BackupStatusLine extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(Icons.autorenew_rounded, size: 16, color: p.ink3),
+        MTIcon(MTIcons.refresh, size: 16, color: p.ink3),
         const SizedBox(width: MTSpace.xs),
         Expanded(
           child: Text(

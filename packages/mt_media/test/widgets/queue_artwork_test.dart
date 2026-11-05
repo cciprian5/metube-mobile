@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import '../wahaj_finder.dart';
+
 /// **An empty square where a cover should be** (field report 2026-09-20:
 /// "an audio clip inside the video player's queue shows a black square").
 ///
@@ -51,7 +53,7 @@ void main() {
     await pump(tester, artwork: (_, _) => const SizedBox.shrink());
 
     expect(
-      find.byIcon(Icons.music_note_rounded),
+      byWahaj(MTIcons.music),
       findsOneWidget,
       reason: 'قبل الإصلاح كان المربّع يخلو تماماً فيُقرأ أسود',
     );
@@ -59,18 +61,18 @@ void main() {
 
   testWidgets('and so does no cover at all', (tester) async {
     await pump(tester, artwork: (_, _) => null);
-    expect(find.byIcon(Icons.music_note_rounded), findsOneWidget);
+    expect(byWahaj(MTIcons.music), findsOneWidget);
   });
 
   testWidgets('with no builder at all', (tester) async {
     await pump(tester, artwork: null);
-    expect(find.byIcon(Icons.music_note_rounded), findsOneWidget);
+    expect(byWahaj(MTIcons.music), findsOneWidget);
   });
 
   testWidgets('a video with no cover gets the video icon', (tester) async {
     await pump(tester, artwork: null, isAudio: false);
-    expect(find.byIcon(Icons.movie_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.music_note_rounded), findsNothing);
+    expect(byWahaj(MTIcons.video), findsOneWidget);
+    expect(byWahaj(MTIcons.music), findsNothing);
   });
 
   testWidgets('a cover that does load covers the icon rather than sitting '
@@ -83,7 +85,10 @@ void main() {
     final stack = tester.widget<Stack>(
       find
           .ancestor(
-            of: find.byType(ColoredBox).first,
+            // The cover itself: pages draw their own ground as well.
+            of: find.byWidgetPredicate(
+              (w) => w is ColoredBox && w.color == const Color(0xFF00FF00),
+            ),
             matching: find.byType(Stack),
           )
           .first,

@@ -106,7 +106,9 @@ void main() {
       SettingsPane.playback: l10n.settingsPlayback,
       SettingsPane.appearance: l10n.appearanceAndLanguage,
       SettingsPane.transcripts: l10n.settingsTranscripts,
+      SettingsPane.library: l10n.yourLibrary,
       SettingsPane.backup: l10n.settingsBackup,
+      SettingsPane.sync: l10n.syncTitle,
       SettingsPane.updates: l10n.updates,
       SettingsPane.logs: l10n.diagnosticLogs,
       SettingsPane.about: l10n.aboutApp,
@@ -145,7 +147,7 @@ void main() {
         localUrl: 'http://nas.local:8081',
         activeUrl: 'http://nas.local:8081',
         externalUrls: ['https://tube.example.com'],
-        username: 'yasir',
+        username: 'alice',
         quality: Quality.q720,
         wifiOnly: true,
         themeMode: ThemeMode.dark,
@@ -153,7 +155,7 @@ void main() {
       ),
     );
     final l10n = l10nOf(tester);
-    expect(find.text(mtMetaLine(['nas.local:8081', 'yasir'])), findsOneWidget);
+    expect(find.text(mtMetaLine(['nas.local:8081', 'alice'])), findsOneWidget);
     expect(
       find.text(
         mtMetaLine([l10n.settingsValueAuto, l10n.settingsValueLocalNow]),
@@ -233,5 +235,20 @@ void main() {
         );
       });
     }
+  });
+
+  // Field report 2026-11-01: an empty strip past the last card, kept for a
+  // mini player and an add button that never show on this tab.
+  testWidgets('**the guard**: the home ends just past its last card', (
+    tester,
+  ) async {
+    await at(tester, const Size(411, 600));
+    final list = find.byType(ListView).first;
+    await tester.drag(list, const Offset(0, -4000));
+    await tester.pumpAndSettle();
+    final gap =
+        tester.getRect(list).bottom -
+        tester.getRect(find.byType(MTSettingsGroup).last).bottom;
+    expect(gap, lessThanOrEqualTo(MTSpace.xl + 1));
   });
 }

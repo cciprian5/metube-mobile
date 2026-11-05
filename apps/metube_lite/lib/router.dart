@@ -14,7 +14,7 @@ import 'features/settings/settings_screen.dart';
 import 'features/settings/settings_sections.dart';
 import 'features/shell/shell_screen.dart';
 
-/// The single route table (`03-APP-FLOW.md` §1). No direct Navigator.push.
+/// The single route table. No direct Navigator.push.
 /// Lite's map is Super's map **without** `/settings/network`, which is a
 /// Super feature.
 final router = GoRouter(
@@ -23,9 +23,12 @@ final router = GoRouter(
   // covering their content (field report).
   observers: [MTRouteDepth.instance],
   routes: [
-    StatefulShellRoute.indexedStack(
+    StatefulShellRoute(
       builder: (context, state, navigationShell) =>
           ShellScreen(navigationShell: navigationShell),
+      // The sections fade into one another rather than cut.
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          MTTabStack(index: navigationShell.currentIndex, children: children),
       branches: [
         StatefulShellBranch(
           routes: [
@@ -94,7 +97,7 @@ final router = GoRouter(
         // background (reported with a screenshot 2026-09-04).
         opaque: false,
         transitionDuration: MTMotion.sheetPage,
-        reverseTransitionDuration: MTMotion.page,
+        reverseTransitionDuration: MTMotion.leave,
         transitionsBuilder: mtSheetPageTransition,
       ),
     ),

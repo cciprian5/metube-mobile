@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// **Polish guards** (requested 2026-09-04). Motion is glimpsed, not
 /// watched: durations come from `MTMotion`, and none of it runs when the
 /// system asks to reduce motion.
@@ -18,7 +20,7 @@ void main() {
     testWidgets(
       'an icon change passes through a transition and settles on the new one',
       (tester) async {
-        var icon = Icons.play_arrow_rounded;
+        var icon = MTIcons.playFill;
         late StateSetter set;
         await tester.pumpWidget(
           host(
@@ -30,25 +32,25 @@ void main() {
             ),
           ),
         );
-        expect(find.byIcon(Icons.play_arrow_rounded), findsOneWidget);
+        expect(byWahaj(MTIcons.playFill), findsOneWidget);
 
-        set(() => icon = Icons.pause_rounded);
+        set(() => icon = MTIcons.pause);
         await tester.pump();
         await tester.pump(MTMotion.tap ~/ 2);
         // Halfway through, both are present: that is what a cross-fade is.
-        expect(find.byIcon(Icons.play_arrow_rounded), findsOneWidget);
-        expect(find.byIcon(Icons.pause_rounded), findsOneWidget);
+        expect(byWahaj(MTIcons.playFill), findsOneWidget);
+        expect(byWahaj(MTIcons.pause), findsOneWidget);
 
         await tester.pumpAndSettle();
-        expect(find.byIcon(Icons.play_arrow_rounded), findsNothing);
-        expect(find.byIcon(Icons.pause_rounded), findsOneWidget);
+        expect(byWahaj(MTIcons.playFill), findsNothing);
+        expect(byWahaj(MTIcons.pause), findsOneWidget);
       },
     );
 
     testWidgets(
       'with reduced motion the switch is immediate, with no transition',
       (tester) async {
-        var icon = Icons.play_arrow_rounded;
+        var icon = MTIcons.playFill;
         late StateSetter set;
         await tester.pumpWidget(
           host(
@@ -61,10 +63,10 @@ void main() {
             reduceMotion: true,
           ),
         );
-        set(() => icon = Icons.pause_rounded);
+        set(() => icon = MTIcons.pause);
         await tester.pump();
-        expect(find.byIcon(Icons.play_arrow_rounded), findsNothing);
-        expect(find.byIcon(Icons.pause_rounded), findsOneWidget);
+        expect(byWahaj(MTIcons.playFill), findsNothing);
+        expect(byWahaj(MTIcons.pause), findsOneWidget);
       },
     );
   });

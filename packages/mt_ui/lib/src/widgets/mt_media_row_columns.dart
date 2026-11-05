@@ -83,18 +83,40 @@ Widget _figure(String? value, TextStyle style) => Text(
   style: style,
 );
 
+/// The table columns a header can sort by.
+enum MTTableColumn { title, size, added }
+
+/// Sorting from the table's header, for a mouse: a click on a title sorts
+/// by that column and a second click turns the order around.
+class MTTableSort {
+  const MTTableSort({
+    required this.column,
+    required this.ascending,
+    required this.onSort,
+  });
+
+  /// The column the table is sorted by now, or null for none of them.
+  final MTTableColumn? column;
+  final bool ascending;
+  final ValueChanged<MTTableColumn> onSort;
+}
+
 /// The titles over a library table.
 class MTMediaRowHeader extends StatelessWidget {
-  const MTMediaRowHeader({super.key, required this.columns});
+  const MTMediaRowHeader({super.key, required this.columns, this.sort});
 
   final MTMediaColumns columns;
+
+  /// Null keeps plain titles, as on a tablet, where sorting lives in its
+  /// own sheet.
+  final MTTableSort? sort;
 
   @override
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final l10n = context.mtl;
     final style = Theme.of(context).textTheme.labelSmall!
-        .copyWith(color: p.ink3, letterSpacing: 0.6);
+        .copyWith(color: p.ink3, letterSpacing: mtLabelTracking(context, 0.6));
     Text label(String text, {TextAlign align = TextAlign.start}) => Text(
       text,
       maxLines: 1,
@@ -103,6 +125,37 @@ class MTMediaRowHeader extends StatelessWidget {
       textAlign: align,
       style: style,
     );
+    Widget sortable(MTTableColumn column, Text text) {
+      final by = sort;
+      if (by == null) return text;
+      final current = by.column == column;
+      return Semantics(
+        button: true,
+        child: InkWell(
+          onTap: () => by.onSort(column),
+          borderRadius: BorderRadius.circular(MTCorners.desktop.box),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: text.textAlign == TextAlign.end
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
+            children: [
+              Flexible(child: text),
+              if (current)
+                Transform.flip(
+                  flipY: by.ascending,
+                  child: MTIcon(
+                    MTIcons.chevronDown,
+                    size: MTSpace.md,
+                    color: p.ink2,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Container(
       padding: const EdgeInsets.fromLTRB(
         MTSpace.xs,
@@ -111,22 +164,96 @@ class MTMediaRowHeader extends StatelessWidget {
         MTSpace.sm,
       ),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: p.line2)),
+        border: Border(
+          bottom: BorderSide(
+            color: p.line2,
+            width: MTThemeX.of(context).hairline,
+          ),
+        ),
       ),
       child: Row(
         children: [
           const SizedBox(width: MTMediaColumns.thumbWidth + MTSpace.lg),
-          Expanded(child: label(l10n.titleLabel)),
+          Expanded(
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: sortable(MTTableColumn.title, label(l10n.titleLabel)),
+            ),
+          ),
           ..._cells(
             context,
             columns,
             length: label(l10n.columnLength, align: TextAlign.end),
-            size: label(l10n.size, align: TextAlign.end),
-            added: label(l10n.columnAdded),
+            size: sortable(
+              MTTableColumn.size,
+              label(l10n.size, align: TextAlign.end),
+            ),
+            added: sortable(MTTableColumn.added, label(l10n.columnAdded)),
             location: label(l10n.source),
             actions: const SizedBox.shrink(),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The source column: the site, when the row is given one, over the badge
+/// for a copy kept on this device.
+class _SourceCell extends StatelessWidget {
+  const _SourceCell({
+    required this.name,
+    required this.location,
+    required this.locationLabel,
+    required this.style,
+  });
+
+  final String? name;
+  final MTMediaLocation location;
+  final String? locationLabel;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      if (name case final name?)
+        Text(
+          name,
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.fade,
+          style: style,
+        ),
+      if (location != MTMediaLocation.none && locationLabel != null)
+        MTLocationBadge(location: location, label: locationLabel!),
+    ],
+  );
+}
+
+class _Tag extends StatelessWidget {
+  const _Tag(this.tag);
+
+  final String tag;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: MTSpace.xs - 1),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: p.line2,
+          width: MTThemeX.of(context).hairline,
+        ),
+        borderRadius: BorderRadius.circular(MTRadius.thumb),
+      ),
+      child: Text(
+        mtName('#$tag'),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: p.ink2),
       ),
     );
   }

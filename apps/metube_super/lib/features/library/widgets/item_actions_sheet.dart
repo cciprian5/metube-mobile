@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mt_core/mt_core.dart' show CancelledException, ImageHeaders;
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:mt_media/library.dart';
 
 import '../../playlists/add_to_playlist_sheet.dart';
 import '../../shared/error_report.dart';
@@ -9,10 +10,15 @@ import '../../shared/external_player.dart';
 import '../../tags/item_tags_sheet.dart';
 import '../../transcripts/transcript_openers.dart';
 import '../../transcripts/transcripts_state.dart';
-import '../library_models.dart';
+import '../../../di.dart';
+import '../artwork_view.dart';
+import '../device_pulls.dart';
 import '../library_actions.dart';
 import '../library_providers.dart';
+import 'confirm_bulk_delete.dart';
 import 'item_details_sheet.dart';
+import 'share_sheet.dart';
+import '../../shared/open_web_link.dart';
 
 /// The item actions sheet, by state (rule 5). Delete comes last, isolated
 /// by a divider and in the error colour, which is a general navigation
@@ -22,7 +28,7 @@ void showItemActionsSheet(
   WidgetRef ref,
   LibraryItem item,
 ) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // As tall as its rows, not the default nine sixteenths of the screen,
@@ -52,6 +58,20 @@ class _ItemActionsSheet extends ConsumerWidget {
     final l10n = context.mtl;
     final p = MTThemeX.of(context).palette;
     final actions = ref.read(libraryActionsProvider);
+    final saving = ref
+        .watch(devicePullsProvider)
+        .containsKey(DevicePull.keyOf(PullKind.offline, item.canonicalUrl));
+    final clip = MTDialogClip(
+      title: mtName(item.title),
+      thumbnail: artworkFor(
+        item.thumbnail,
+        headers: switch (item.thumbnail) {
+          final url? => ref.read(apiClientProvider)?.imageHeadersFor(url),
+          null => null,
+        },
+        decodeWidth: 120,
+      ),
+    );
 
     Future<void> run(
       Future<void> Function() action, {
@@ -64,6 +84,8 @@ class _ItemActionsSheet extends ConsumerWidget {
         if (successText != null && messenger != null && context.mounted) {
           showMTSnack(context, successText, type: MTSnackType.success);
         }
+      } on CancelledException {
+        // Stopped on purpose; nothing went wrong.
       } catch (e) {
         if (context.mounted) {
           showErrorSnack(context, ref, e, tag: 'library');
@@ -72,12 +94,12 @@ class _ItemActionsSheet extends ConsumerWidget {
     }
 
     ListTile tile(
-      IconData icon,
+      MTIconData icon,
       String label,
       VoidCallback onTap, {
       Color? color,
     }) => ListTile(
-      leading: Icon(icon, color: color ?? p.ink2),
+      leading: MTIcon(icon, color: color ?? p.ink2),
       title: Text(
         label,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color),
@@ -113,9 +135,34 @@ class _ItemActionsSheet extends ConsumerWidget {
               ),
             ),
             const Divider(),
-            if (item.onServer && !item.isOffline)
+            // **Favourites from the menu, not an empty heart on every card**
+            // (owner's decision 2026-11-01): the card shows a small heart on
+            // favourites alone, and the players keep the one-tap heart.
+            MTFavoriteTile(
+              favorite: item.favorite,
+              onTap: () async {
+                Navigator.pop(context);
+                final added = await actions.toggleFavorite(item.canonicalUrl);
+                if (host.mounted) {
+                  showMTSnack(
+                    host,
+                    added ? l10n.addedToFavorites : l10n.removedFromFavorites,
+                  );
+                }
+              },
+            ),
+            // While its copy runs the row stops it instead: a second tap
+            // used to start a second copy of the same clip.
+            if (saving)
+              tile(MTIcons.close, l10n.cancelSaveToDevice, () {
+                Navigator.pop(context);
+                ref
+                    .read(devicePullsProvider.notifier)
+                    .cancel(PullKind.offline, item.canonicalUrl);
+              })
+            else if (item.onServer && !item.isOffline)
               tile(
-                Icons.download_for_offline_outlined,
+                MTIcons.offline,
                 l10n.makeOffline,
                 () => run(
                   () => actions.makeOffline(item),
@@ -128,14 +175,14 @@ class _ItemActionsSheet extends ConsumerWidget {
             if (item.uploader case final channel?
                 when channel.trim().isNotEmpty)
               tile(
-                Icons.subscriptions_outlined,
+                MTIcons.subscriptions,
                 l10n.showChannel(mtName(channel)),
                 () {
                   Navigator.pop(context);
                   ref.read(libraryViewProvider.notifier).toggleChannel(channel);
                 },
               ),
-            tile(Icons.info_outline_rounded, l10n.details, () {
+            tile(MTIcons.info, l10n.details, () {
               Navigator.pop(context);
               showItemDetailsSheet(host, item);
             }),
@@ -146,14 +193,14 @@ class _ItemActionsSheet extends ConsumerWidget {
                     .valueOrNull
                     ?.contains(item.canonicalUrl) ??
                 false)
-              tile(Icons.subject_rounded, l10n.transcript, () {
+              tile(MTIcons.transcript, l10n.transcript, () {
                 Navigator.pop(context);
                 showTranscriptSheet(host, item, '');
               }),
             tile(
-              Icons.share_rounded,
+              MTIcons.share,
               l10n.share,
-              () => run(() => actions.smartShare(item)),
+              () => run(() => shareClip(host, ref, item)),
             ),
             // **The external player is offered for a local copy only**
             // (decision 2026-09-05): a Super server runs without
@@ -162,7 +209,7 @@ class _ItemActionsSheet extends ConsumerWidget {
             // local copy sees "make available offline" above instead.
             if (item.localPath case final String path)
               tile(
-                Icons.open_with_rounded,
+                MTIcons.playback,
                 l10n.openInExternalPlayer,
                 () => run(() async {
                   final opened = await const ExternalPlayer().open(
@@ -180,24 +227,21 @@ class _ItemActionsSheet extends ConsumerWidget {
               ),
             // Every server item has a canonical URL, so the original link
             // is always offered here; Lite offers it only when known.
-            tile(Icons.open_in_new_rounded, l10n.openOriginalLink, () {
+            tile(MTIcons.external, l10n.openOriginalLink, () {
               Navigator.pop(context);
-              launchUrl(
-                Uri.parse(item.canonicalUrl),
-                mode: LaunchMode.externalApplication,
-              );
+              openWebLink(item.canonicalUrl);
             }),
-            tile(Icons.playlist_add_rounded, l10n.addToPlaylist, () {
+            tile(MTIcons.queueAdd, l10n.addToPlaylist, () {
               Navigator.pop(context);
               showAddToPlaylistSheet(host, ref, [item]);
             }),
-            tile(Icons.sell_outlined, l10n.tags, () {
+            tile(MTIcons.tags, l10n.tags, () {
               Navigator.pop(context);
               showItemTagsSheet(host, ref, [item.canonicalUrl]);
             }),
             if (item.isOffline && item.onServer)
               tile(
-                Icons.phonelink_erase_rounded,
+                MTIcons.phoneOff,
                 l10n.removeLocalCopy,
                 () => run(
                   () => actions.removeLocalCopy(item),
@@ -207,23 +251,29 @@ class _ItemActionsSheet extends ConsumerWidget {
             const Divider(),
             if (item.onServer)
               tile(
-                Icons.delete_outline_rounded,
+                MTIcons.trash,
                 l10n.deleteFromServer,
-                () => _confirm(context, l10n.deleteFromServerConfirm, () {
-                  run(
+                () => confirmItemDelete(
+                  context,
+                  l10n.deleteFromServer,
+                  l10n.deleteFromServerConfirm,
+                  clip,
+                  () => run(
                     () => actions.deleteFromServer([item.canonicalUrl]),
                     successText: l10n.deletedFromServer,
-                  );
-                }),
+                  ),
+                ),
                 color: p.err,
               ),
             if (!item.onServer && item.isOffline)
               tile(
-                Icons.delete_outline_rounded,
+                MTIcons.trash,
                 l10n.deleteVideo,
-                () => _confirm(
+                () => confirmItemDelete(
                   context,
+                  l10n.deleteVideo,
                   l10n.deleteVideoConfirm(mtName(item.title)),
+                  clip,
                   () {
                     run(
                       () => actions.deleteLocalOnly(item),
@@ -236,29 +286,6 @@ class _ItemActionsSheet extends ConsumerWidget {
             const SizedBox(height: MTSpace.md),
           ],
         ),
-      ),
-    );
-  }
-
-  void _confirm(BuildContext context, String message, VoidCallback onYes) {
-    final l10n = context.mtl;
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              onYes();
-            },
-            child: Text(l10n.delete),
-          ),
-        ],
       ),
     );
   }

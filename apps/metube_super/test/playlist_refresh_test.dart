@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:metube_super/di.dart';
-import 'package:metube_super/features/library/library_models.dart';
 import 'package:metube_super/features/library/library_providers.dart';
 import 'package:metube_super/features/playlists/playlists_providers.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
 
 /// **An open playlist shows what was just added or removed** (field report
 /// 2026-09-25: both appeared only after the app was closed).

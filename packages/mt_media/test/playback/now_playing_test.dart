@@ -6,6 +6,8 @@ import 'package:mt_ui/mt_ui.dart';
 
 import 'fake_player_port.dart';
 
+import '../wahaj_finder.dart';
+
 /// **Tablet guards, batch 2 (2026-10-10)**: the player panel beside the
 /// library, its two tabs, and the full player's tablet forms. A phone keeps
 /// the queue and the extra as buttons that open sheets.
@@ -41,7 +43,7 @@ void main() {
   );
 
   MTVideoPanel transcript(PlaylistItem item) => MTVideoPanel(
-    icon: Icons.subject_rounded,
+    icon: MTIcons.transcript,
     label: 'Transcript',
     builder: (context, close) => Text('words of ${item.title}'),
   );
@@ -116,7 +118,7 @@ void main() {
       await pump(tester, const Size(1280, 800), panel(() => folded++));
       expect(find.byType(MTPlayerControlsRow), findsOneWidget);
       expect(find.text('words of a'), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.close_fullscreen_rounded));
+      await tester.tap(byWahaj(MTIcons.collapse));
       expect(folded, 1);
     });
 
@@ -159,8 +161,8 @@ void main() {
       await tester.runAsync(() => handler.playItems([clip('a'), clip('b')]));
       await pump(tester, const Size(411, 914), screen());
       expect(find.byType(MTNowPlayingTabs), findsNothing);
-      expect(find.byIcon(Icons.queue_music_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.star), findsOneWidget);
+      expect(byWahaj(MTIcons.queue), findsOneWidget);
+      expect(byWahaj(MTIcons.favoriteOn), findsOneWidget);
     });
 
     testWidgets('the square cover draws its own picture', (tester) async {
@@ -218,7 +220,7 @@ void main() {
       final tabs = tester.getRect(find.byType(MTNowPlayingTabs));
       final controls = tester.getRect(find.byType(MTPlayerControlsRow));
       expect(tabs.left, greaterThan(controls.right));
-      expect(find.byIcon(Icons.star), findsNothing);
+      expect(byWahaj(MTIcons.favoriteOn), findsNothing);
     });
 
     testWidgets('an 8-inch tablet of 593 points on its side counts too', (
@@ -252,7 +254,7 @@ void main() {
           bottomNavigationBar: MTMiniPlayer(handler: handler, onOpen: () {}),
         ),
       );
-      expect(find.byIcon(Icons.open_in_full_rounded), findsNothing);
+      expect(byWahaj(MTIcons.fullscreen), findsNothing);
 
       var expanded = 0;
       await pump(
@@ -266,11 +268,11 @@ void main() {
           ),
         ),
       );
-      await tester.tap(find.byIcon(Icons.open_in_full_rounded));
+      await tester.tap(byWahaj(MTIcons.fullscreen));
       expect(expanded, 1);
     });
   });
 }
 
 MTExtraAction? _extra(PlaylistItem item) =>
-    MTExtraAction(icon: Icons.star, label: 'Extra', onTap: () {});
+    MTExtraAction(icon: MTIcons.favoriteOn, label: 'Extra', onTap: () {});

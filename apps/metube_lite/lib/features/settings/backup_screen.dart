@@ -125,14 +125,14 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
     final p = MTThemeX.of(context).palette;
 
     ListTile tile(
-      IconData icon,
+      MTIconData icon,
       String title,
       String subtitle,
       VoidCallback onTap,
     ) => ListTile(
       contentPadding: EdgeInsets.zero,
       enabled: !_busy,
-      leading: Icon(icon, color: p.ink2),
+      leading: MTIcon(icon, color: p.ink2),
       title: Text(title),
       subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
       onTap: onTap,
@@ -157,13 +157,13 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             BackupStatusLine(backups: _backups),
             const SizedBox(height: MTSpace.md),
             tile(
-              Icons.ios_share_rounded,
+              MTIcons.share,
               l10n.exportShare,
               l10n.exportShareSubtitle,
               () => _run(_exportAndShare),
             ),
             tile(
-              Icons.folder_open_rounded,
+              MTIcons.folder,
               l10n.pickAnotherFile,
               l10n.pickAnotherFileSubtitle,
               () => _run(_importPicked),
@@ -189,10 +189,8 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   enabled: !_busy,
-                  leading: Icon(
-                    index == 0
-                        ? Icons.history_toggle_off_rounded
-                        : Icons.history_rounded,
+                  leading: MTIcon(
+                    index == 0 ? MTIcons.clock : MTIcons.clock,
                     color: index == 0 ? p.accent : p.ink3,
                   ),
                   title: Text(mtTimeAgo(context, file.at)),

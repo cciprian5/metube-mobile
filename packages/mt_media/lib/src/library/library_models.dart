@@ -1,0 +1,331 @@
+import 'package:mt_core/mt_core.dart';
+import 'package:mt_ui/mt_ui.dart' show MTMediaLocation;
+
+import '../models/playlist_item.dart';
+
+const _audioExtensions = {'mp3', 'm4a', 'aac', 'ogg', 'opus', 'wav', 'flac'};
+
+/// The unified library item: the server history merged with the local
+/// index on the canonicalUrl key, with a location badge on each one.
+class LibraryItem {
+  const LibraryItem({
+    required this.canonicalUrl,
+    required this.title,
+    this.uploader,
+    this.thumbnail,
+    this.serverFilename,
+    this.localPath,
+    this.timestamp,
+    this.sizeBytes,
+    this.onServer = false,
+    this.isAudio = false,
+    this.favorite = false,
+    this.tags = const [],
+    this.duration,
+    this.aspectRatio,
+  });
+
+  final String canonicalUrl;
+  final String title;
+  final String? uploader;
+  final String? thumbnail;
+
+  /// Where the file is on the server, as a [ServerPath]: folder, name and
+  /// route.
+  final String? serverFilename;
+  final String? localPath;
+  final DateTime? timestamp;
+  final int? sizeBytes;
+  final bool onServer;
+  final bool isAudio;
+  final bool favorite;
+  final List<String> tags;
+
+  /// Clip dimensions from `media_shape_index`, known after the first play.
+  final Duration? duration;
+  final double? aspectRatio;
+
+  bool get isOffline => localPath != null;
+
+  /// **The folder the file sits in on the server**, below its route, or
+  /// null at the top: the one chosen when it was added, and any subfolders
+  /// `OUTPUT_TEMPLATE` wrote inside it.
+  String? get folderPath {
+    final path = serverFilename;
+    if (path == null) return null;
+    final dir = ServerPath.folderOf(path);
+    return dir.isEmpty ? null : dir;
+  }
+
+  /// The first level of [folderPath].
+  String? get topFolder => folderPath?.split('/').first;
+
+  /// In [folder] or anywhere below it.
+  bool isIn(String folder) {
+    final dir = folderPath;
+    return dir != null && (dir == folder || dir.startsWith('$folder/'));
+  }
+
+  /// The platform from the canonical URL: one approved detector, never a
+  /// second list.
+  MediaPlatform get platform => MediaPlatform.detect(canonicalUrl);
+
+  /// A portrait video of three minutes or less is a "short". Unknown is not
+  /// short: no guessing.
+  bool get isShortForm =>
+      !isAudio &&
+      duration != null &&
+      duration! <= const Duration(minutes: 3) &&
+      aspectRatio != null &&
+      aspectRatio! < 1;
+
+  MTMediaLocation get location => switch ((isOffline, onServer)) {
+    (true, true) => MTMediaLocation.both,
+    (true, false) => MTMediaLocation.offline,
+    (false, true) => MTMediaLocation.onServer,
+    _ => MTMediaLocation.none,
+  };
+
+  /// [keptCover] is the online cover kept as a file on this device, first
+  /// when there is one (see `CoverKeeper`).
+  ///
+  /// [cachedThumb] is the cover from the artwork index, **in practice the
+  /// only source on a real server**: `/history` returns no `thumbnail` for
+  /// any item (zero out of 252), and the cover is generated locally by
+  /// `MediaProbe` (field report).
+  factory LibraryItem.fromHistory(
+    HistoryItem item, {
+    String? localPath,
+    bool favorite = false,
+    List<String> tags = const [],
+    Duration? duration,
+    double? aspectRatio,
+    String? cachedThumb,
+    String? keptCover,
+  }) => LibraryItem(
+    duration: duration,
+    aspectRatio: aspectRatio,
+    canonicalUrl: item.canonicalUrl,
+    title: item.title ?? item.filename ?? item.canonicalUrl,
+    uploader: item.uploader,
+    // A cover kept on this device comes first: the online one it was
+    // taken from may be gone (YouTube deletes it with the video).
+    thumbnail: keptCover ?? item.thumbnail ?? cachedThumb,
+    serverFilename: item.serverPath,
+    localPath: localPath,
+    timestamp: item.timestamp,
+    sizeBytes: item.sizeBytes,
+    onServer: true,
+    isAudio: _looksAudio(item.quality, item.format, item.filename),
+    favorite: favorite,
+    tags: tags,
+  );
+
+  /// A local item no longer on the server; its metadata comes from its
+  /// path.
+  factory LibraryItem.fromOfflineOnly(
+    String canonicalUrl,
+    String localPath, {
+    bool favorite = false,
+    List<String> tags = const [],
+    String? cachedThumb,
+    String? keptCover,
+    Duration? duration,
+    double? aspectRatio,
+  }) {
+    final basename = localPath.split(RegExp(r'[/\\]')).last;
+    final dot = basename.lastIndexOf('.');
+    return LibraryItem(
+      duration: duration,
+      aspectRatio: aspectRatio,
+      canonicalUrl: canonicalUrl,
+      title: dot > 0 ? basename.substring(0, dot) : basename,
+      localPath: localPath,
+      thumbnail: keptCover ?? cachedThumb,
+      isAudio: _looksAudio(null, null, basename),
+      favorite: favorite,
+      tags: tags,
+    );
+  }
+
+  static bool _looksAudio(String? quality, String? format, String? filename) {
+    if (quality == 'audio') return true;
+    if (format != null && _audioExtensions.contains(format.toLowerCase())) {
+      return true;
+    }
+    final ext = extensionOf(filename);
+    return _audioExtensions.contains(ext);
+  }
+}
+
+/// Converts a library item into a unified playback item, keyed by
+/// canonicalUrl.
+PlaylistItem toPlaylistItem(LibraryItem item) => PlaylistItem(
+  canonicalUrl: item.canonicalUrl,
+  title: item.title,
+  uploader: item.uploader,
+  artworkUrl: item.thumbnail,
+  localPath: item.localPath,
+  serverFilename: item.serverFilename,
+  isAudio: item.isAudio,
+  duration: item.duration,
+  aspectRatio: item.aspectRatio,
+);
+
+/// Library filters: all, favourites, offline, server.
+enum LibraryScope { all, favorites, offline, onServer }
+
+enum MediaTypeFilter { all, video, audio, shorts }
+
+/// **The four view modes: one exclusive choice, not overlapping flags.**
+///
+/// They used to be two flags (`compact` and `grid`) that could be on
+/// together meaninglessly, and the fourth mode, cards, would have made them
+/// three flags with eight states, half of them impossible. One value
+/// eliminates the impossible state at the root.
+enum LibraryViewMode {
+  /// A row with a thumbnail beside it. The default, and the best fit for
+  /// long titles and for audio.
+  list,
+
+  /// The same row with a smaller thumbnail and a single title line: more
+  /// items on screen.
+  compact,
+
+  /// Two columns with a 16:9 cover, for quick visual scanning.
+  grid,
+
+  /// **One column with a wide cover** (asked 2026-09-08, the YouTube
+  /// pattern): the largest cover possible for the fewest items — for
+  /// unhurried browsing, not for searching.
+  cards,
+}
+
+/// The saved sort options (video_sort_option, §5.1).
+enum LibrarySort { newest, oldest, nameAZ, nameZA, largest, smallest }
+
+/// Building the view: pure, testable logic (TRD §3.2).
+List<LibraryItem> buildLibraryView(
+  List<LibraryItem> items, {
+  LibraryScope scope = LibraryScope.all,
+  MediaTypeFilter type = MediaTypeFilter.all,
+  String query = '',
+  Set<String> tags = const {},
+  Set<String> excludedTags = const {},
+  MediaPlatform? platform,
+  String? channel,
+  String? folder,
+  LibrarySort sort = LibrarySort.newest,
+}) {
+  final q = query.trim().toLowerCase();
+  // **Compared case-insensitively and trimmed**, because the name arrives
+  // from the server verbatim and the same channel can reach `/history`
+  // with a stray space after a yt-dlp upgrade.
+  //
+  // **A blank name is no filter, not "the items with no channel".** The
+  // interface never sets one, but a filter that quietly hides the whole
+  // library is the wrong thing to be one typo away from.
+  final trimmedChannel = channel?.trim().toLowerCase();
+  final wantedChannel = (trimmedChannel?.isEmpty ?? true)
+      ? null
+      : trimmedChannel;
+  final filtered = items.where((item) {
+    final scopeOk = switch (scope) {
+      LibraryScope.all => true,
+      LibraryScope.favorites => item.favorite,
+      LibraryScope.offline => item.isOffline,
+      LibraryScope.onServer => item.onServer,
+    };
+    if (!scopeOk) return false;
+    final typeOk = switch (type) {
+      MediaTypeFilter.all => true,
+      MediaTypeFilter.audio => item.isAudio,
+      // Video leaves the shorts to their own chip, so every clip is under
+      // one type and video without the shorts can be had (owner's
+      // choice, 2026-11-05). A clip of unknown shape stays a video.
+      MediaTypeFilter.video => !item.isAudio && !item.isShortForm,
+      // Shorts: portrait, short, and only where the dimensions are known.
+      MediaTypeFilter.shorts => item.isShortForm,
+    };
+    if (!typeOk) return false;
+    if (platform != null && item.platform != platform) return false;
+    if (folder != null && !item.isIn(folder)) return false;
+    if (wantedChannel != null &&
+        (item.uploader?.trim().toLowerCase() ?? '') != wantedChannel) {
+      return false;
+    }
+    // **Compound tag filtering**: included tags are combined with OR
+    // (widening: show me tech or science), while excluded ones are always
+    // subtracted and beat inclusion. An exclusion is an explicit intention
+    // that another tag on the same item must not be able to override.
+    if (tags.isNotEmpty && !item.tags.any(tags.contains)) return false;
+    if (item.tags.any(excludedTags.contains)) return false;
+    // **The channel is searched as well as the title.** Someone looking
+    // for "Homelab Hour" is looking for the channel at least as often as
+    // for a clip whose title happens to contain those words.
+    if (q.isNotEmpty &&
+        !item.title.toLowerCase().contains(q) &&
+        !(item.uploader?.toLowerCase().contains(q) ?? false)) {
+      return false;
+    }
+    return true;
+  }).toList();
+
+  int byDate(LibraryItem a, LibraryItem b) =>
+      (a.timestamp ?? DateTime(0)).compareTo(b.timestamp ?? DateTime(0));
+  int byName(LibraryItem a, LibraryItem b) =>
+      a.title.toLowerCase().compareTo(b.title.toLowerCase());
+  int bySize(LibraryItem a, LibraryItem b) =>
+      (a.sizeBytes ?? 0).compareTo(b.sizeBytes ?? 0);
+
+  filtered.sort(switch (sort) {
+    LibrarySort.newest => (a, b) => byDate(b, a),
+    LibrarySort.oldest => byDate,
+    LibrarySort.nameAZ => byName,
+    LibrarySort.nameZA => (a, b) => byName(b, a),
+    LibrarySort.largest => (a, b) => bySize(b, a),
+    LibrarySort.smallest => bySize,
+  });
+  return filtered;
+}
+
+/// Live platform counters, most first, with unknown last: the one rule
+/// every library counts with ([countPlatforms]).
+List<MapEntry<MediaPlatform, int>> platformCounts(List<LibraryItem> items) =>
+    countPlatforms(items, (item) => item.platform);
+
+/// The folders one level below [parent] (the top when empty), each with
+/// the clips in it or below it, most clips first, as full paths. Empty when
+/// nothing lies below, which hides that level of the filter.
+///
+/// **A level where every folder holds a single clip is no level at all**:
+/// a server whose `OUTPUT_TEMPLATE` gives each clip a folder of its own
+/// (`channel/clip [id]/clip [id].mp4`) would otherwise offer one choice
+/// per clip, so it is left out and the parent shows them all.
+List<MapEntry<String, int>> folderCounts(
+  List<LibraryItem> items, {
+  String parent = '',
+}) {
+  final counts = <String, int>{};
+  for (final item in items) {
+    final dir = item.folderPath;
+    if (dir == null) continue;
+    final String rest;
+    if (parent.isEmpty) {
+      rest = dir;
+    } else if (dir.startsWith('$parent/')) {
+      rest = dir.substring(parent.length + 1);
+    } else {
+      continue;
+    }
+    final child = rest.split('/').first;
+    final key = parent.isEmpty ? child : '$parent/$child';
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  if (parent.isNotEmpty && counts.values.every((n) => n == 1)) return const [];
+  return counts.entries.toList()..sort(
+    (a, b) => a.value != b.value
+        ? b.value.compareTo(a.value)
+        : a.key.toLowerCase().compareTo(b.key.toLowerCase()),
+  );
+}

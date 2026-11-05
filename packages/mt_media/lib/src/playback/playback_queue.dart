@@ -129,6 +129,59 @@ class PlaybackQueue {
     return true;
   }
 
+  /// Moves the item at [from] to [to], both positions in [ordered] (the
+  /// play order the user sees), and keeps the current item current.
+  /// Returns false when either position is out of range.
+  ///
+  /// **In sequential order the items themselves move**, so the new order
+  /// survives turning shuffle on and off again; under shuffle only the
+  /// shuffled order changes, and the next reshuffle starts afresh.
+  bool moveOrdered(int from, int to) {
+    final n = _order.length;
+    if (from < 0 || from >= n || to < 0 || to >= n) return false;
+    if (from == to) return true;
+    // The cursor follows by position, not by looking the item up: the same
+    // clip can sit in a queue twice.
+    final at = _cursor;
+    _cursor = at == from
+        ? to
+        : (from < at && to >= at)
+        ? at - 1
+        : (from > at && to <= at)
+        ? at + 1
+        : at;
+    if (_shuffle) {
+      final order = List.of(_order);
+      order.insert(to, order.removeAt(from));
+      _order = order;
+      return true;
+    }
+    final moved = _items.removeAt(from);
+    _items.insert(to, moved);
+    return true;
+  }
+
+  /// Puts [item] right after the current one, so it plays next whatever
+  /// the order, shuffled or not; the rest keeps its order. An empty queue
+  /// takes it as its only item.
+  void insertNext(PlaylistItem item) {
+    if (_items.isEmpty) {
+      _items.add(item);
+      _rebuildOrder(startAt: 0);
+      return;
+    }
+    if (_shuffle) {
+      _items.add(item);
+      _order = List.of(_order)..insert(_cursor + 1, _items.length - 1);
+      return;
+    }
+    // Sequential: the item itself moves in, so turning shuffle on and off
+    // again keeps it where it was put.
+    final at = index + 1;
+    _items.insert(at, item);
+    _order = List.generate(_items.length, (i) => i);
+  }
+
   /// Rebuilds after the items change. Shuffle is reshuffled, since an order
   /// pointing at vanished indexes cannot be preserved, and sequential keeps
   /// its position.

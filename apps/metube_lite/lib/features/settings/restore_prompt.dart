@@ -37,7 +37,7 @@ Future<void> maybeOfferAutoRestore(BuildContext context, WidgetRef ref) async {
   if (!context.mounted) return;
 
   final l10n = context.mtl;
-  final accepted = await showDialog<bool>(
+  final accepted = await showMTDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
       title: Text(l10n.restoreSettings),

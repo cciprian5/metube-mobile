@@ -75,6 +75,21 @@ void main() {
     expect(part().existsSync(), isFalse);
   });
 
+  test('**the guard**: the Windows installer must start as a program, and '
+      'an APK is refused there', () async {
+    final exe = Uint8List(4000)..setAll(0, ApkDownloader.exeMagic);
+    handler = (r) async => r.response.add(exe);
+    final windows = ApkDownloader(magic: ApkDownloader.exeMagic);
+    expect(await windows.download(url: url(), savePath: savePath), savePath);
+
+    handler = (r) async => r.response.add(fakeApk(4000));
+    await expectLater(
+      windows.download(url: url(), savePath: savePath),
+      throwsA(isA<UpdateDownloadException>()),
+    );
+    expect(part().existsSync(), isFalse);
+  });
+
   test('a truncated size is refused', () async {
     final body = fakeApk(1000);
     handler = (r) async => r.response.add(body);

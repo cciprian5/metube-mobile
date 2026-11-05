@@ -25,8 +25,8 @@ class UpdateSection extends ConsumerWidget {
       children: [
         ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: Icon(
-            hasUpdate ? Icons.system_update_rounded : Icons.update_rounded,
+          leading: MTIcon(
+            hasUpdate ? MTIcons.saveTo : MTIcons.refresh,
             // **The accent colour when an update exists**, read from the
             // palette so
             // Super's ember never leaks into Lite's petrol bay.
@@ -46,16 +46,8 @@ class UpdateSection extends ConsumerWidget {
             style: text.bodySmall!.copyWith(color: p.ink3),
           ),
           trailing: state.phase == UpdatePhase.checking
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Icon(
-                  hasUpdate
-                      ? Icons.chevron_right_rounded
-                      : Icons.refresh_rounded,
-                ),
+              ? const MTSpinner(size: 18)
+              : MTIcon(hasUpdate ? MTIcons.forward : MTIcons.refresh),
           onTap: state.busy
               ? null
               : () async {
@@ -90,9 +82,9 @@ class UpdateSection extends ConsumerWidget {
         // after the update, or never saw it.
         ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: Icon(Icons.auto_awesome_rounded, color: p.ink2),
+          leading: MTIcon(MTIcons.sparkle, color: p.ink2),
           title: Text(l10n.whatsNewThisVersion),
-          trailing: const Icon(Icons.chevron_right_rounded),
+          trailing: const MTIcon(MTIcons.forward, matchTextDirection: true),
           onTap: () => showWhatsNewNow(context, ref),
         ),
         SwitchListTile(

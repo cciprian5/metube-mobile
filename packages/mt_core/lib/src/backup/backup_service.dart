@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../constants/mt_constants.dart';
 import '../download/pending_downloads.dart';
 import '../download/trashcan_probe.dart';
+import '../storage/artwork_index.dart';
 import '../storage/key_value_store.dart';
 import '../storage/secret_store.dart';
 import '../update/update_prefs.dart';
@@ -40,15 +41,6 @@ class BackupService {
   /// import accepts either.
   final String variant;
 
-  /// Keys holding server URLs, which may be pasted as
-  /// `https://user:pass@host`.
-  static const _urlKeys = {
-    'server_url',
-    'local_url',
-    'active_url',
-    'external_urls',
-  };
-
   /// **Keys that describe this phone's dealings with the server, not the
   /// user's data.** A pending download is a promise *this* process made;
   /// restored on another phone it would have that phone pull the file and
@@ -57,8 +49,11 @@ class BackupService {
   /// backup to a server it was never measured on. Which version's "what's
   /// new" this install has seen is about the installed app: a restore from
   /// an older backup would show a sheet already read, or show one on a
-  /// fresh install.
+  /// fresh install. The covers kept as files are paths on this device:
+  /// restored elsewhere they point at nothing, and the clips they stand
+  /// for show no cover at all instead of fetching theirs again.
   static const _deviceOnlyKeys = {
+    KeptCoverIndex.keptKey,
     PendingDownloadsStore.prefsKey,
     TrashcanProbe.prefsKey,
     UpdatePrefs.lastSeenVersionKey,
@@ -69,13 +64,22 @@ class BackupService {
   /// Excluding the password from the backup is correct, but someone
   /// who pastes `https://user:pass@host` as the server URL puts it in an
   /// ordinary string key, so it entered the backup despite the rule.
-  static Object? _sanitize(String key, Object? value) {
-    if (!_urlKeys.contains(key)) return value;
-    if (value is String) return stripUrlCredentials(value);
+  /// **Any key whose value is a web address**, not a list of known ones:
+  /// the Windows app keeps its addresses under keys of its own, and a list
+  /// of names missed them.
+  static Object? _sanitize(Object? value) {
+    if (value is String) return _stripIfUrl(value);
     if (value is List) {
-      return [for (final v in value) stripUrlCredentials(v.toString())];
+      return [for (final v in value) v is String ? _stripIfUrl(v) : v];
     }
     return value;
+  }
+
+  static String _stripIfUrl(String value) {
+    final lower = value.trimLeft().toLowerCase();
+    return lower.startsWith('http://') || lower.startsWith('https://')
+        ? stripUrlCredentials(value)
+        : value;
   }
 
   /// Returns the URL without `user:pass@`, and anything that is not a URL
@@ -122,7 +126,7 @@ class BackupService {
     final prefsMap = <String, dynamic>{};
     for (final key in await store.keys()) {
       if (_deviceOnlyKeys.contains(key)) continue;
-      final cell = _encodeCell(_sanitize(key, await store.get(key)));
+      final cell = _encodeCell(_sanitize(await store.get(key)));
       if (cell != null) prefsMap[key] = cell;
     }
     return const JsonEncoder.withIndent('  ').convert({

@@ -83,7 +83,11 @@ void main() {
       host(const LibraryFilterChips(), overrides: base([sample('a')])),
     );
     await tester.pumpAndSettle();
-    expect(find.textContaining('♥'), findsOneWidget);
-    expect(find.textContaining('⚡'), findsOneWidget);
+    // Named in words, without the heart and lightning glyphs (audit
+    // 2026-10-30: symbols inside labels, coloured on the chrome).
+    expect(find.text('المفضلة'), findsOneWidget);
+    expect(find.text('قِصار'), findsOneWidget);
+    expect(find.textContaining('♥'), findsNothing);
+    expect(find.textContaining('⚡'), findsNothing);
   });
 }

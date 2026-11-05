@@ -8,6 +8,7 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../../di.dart';
 import '../shared/error_text.dart';
+import 'link_preview_view.dart';
 
 /// Converts the core's platform into its presentation type, since mt_ui
 /// does not know mt_core.
@@ -36,7 +37,7 @@ Future<void> openAddSheet(
   final logger = ref.read(loggerProvider);
   final opened = DateTime.now();
   unawaited(logger.log('add sheet shown', tag: 'share'));
-  final submitted = await showModalBottomSheet<bool>(
+  final submitted = await showMTSheet<bool>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -105,13 +106,16 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
   Widget build(BuildContext context) {
     final l10n = widget.l10n;
     final platform = MediaPlatform.detect(_url);
-    // The quality rule: numeric qualities are offered for YouTube only.
+    // The quality rule: heights for every platform but an audio-only one;
+    // outside YouTube the engine falls back to best if the site has none.
     final qualities = [
       MTQualityOption(value: 'best', label: l10n.qualityBest),
-      if (platform.isYouTube) ...[
+      if (!platform.isAudioOnly) ...[
         MTQualityOption(value: '1080', label: l10n.quality1080),
         MTQualityOption(value: '720', label: l10n.quality720),
         MTQualityOption(value: '480', label: l10n.quality480),
+        // Lite alone: a family phone keeps what it downloads.
+        MTQualityOption(value: '360', label: l10n.quality360),
       ],
       MTQualityOption(value: 'audio', label: l10n.audioOnly),
     ];
@@ -122,6 +126,7 @@ class _AddSheetState extends ConsumerState<_AddSheet> {
       urlHint: l10n.pasteUrlHint,
       controller: _controller,
       onUrlChanged: (value) => setState(() => _url = value),
+      preview: linkPreviewFor(ref, _url),
       platform: platformKindOf(platform),
       platformLabel: platform == MediaPlatform.other ? null : platform.label,
       qualities: qualities,

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'features/downloads_library/download_wiring.dart';
 import 'features/downloads_library/local_item.dart';
@@ -59,6 +60,26 @@ final offlineIndexProvider = Provider(
 
 final artworkIndexProvider = Provider(
   (ref) => ArtworkIndex(
+    store: ref.watch(keyValueStoreProvider),
+    mutex: ref.watch(prefsMutexProvider),
+    // The covers the app draws are in filesDir/thumbs; nothing outside
+    // the app's files is deleted with an entry.
+    ownFolder: () async => (await getApplicationSupportDirectory()).path,
+  ),
+);
+
+/// Online covers kept as files on the phone (see CoverKeeper).
+final keptCoverIndexProvider = Provider(
+  (ref) => KeptCoverIndex(
+    store: ref.watch(keyValueStoreProvider),
+    mutex: ref.watch(prefsMutexProvider),
+  ),
+);
+
+/// Clips whose cover was gone with nothing to stand in for it, left alone
+/// for a day.
+final probeFailureIndexProvider = Provider(
+  (ref) => ProbeFailureIndex(
     store: ref.watch(keyValueStoreProvider),
     mutex: ref.watch(prefsMutexProvider),
   ),

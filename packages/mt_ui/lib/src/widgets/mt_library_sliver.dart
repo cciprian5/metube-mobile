@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../theme/mt_theme.dart';
 import '../tokens/tokens.dart';
 import 'mt_adaptive.dart';
 import 'mt_media_row.dart';
@@ -36,6 +37,8 @@ class MTLibrarySliver extends StatelessWidget {
     required this.itemCount,
     required this.itemBuilder,
     this.showLocation = false,
+    this.sort,
+    this.pinHeader = false,
   });
 
   final MTLibraryLayout layout;
@@ -45,6 +48,14 @@ class MTLibrarySliver extends StatelessWidget {
   /// Whether the table has a "where is it" column. Only a library that
   /// mixes the server's files with the device's has something to say there.
   final bool showLocation;
+
+  /// Sorting from the table's header (the Windows app); null keeps plain
+  /// titles.
+  final MTTableSort? sort;
+
+  /// Whether the table's titles stay at the top while its rows scroll
+  /// under them (the Windows app); a phone or tablet lets them go.
+  final bool pinHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +99,17 @@ class MTLibrarySliver extends StatelessWidget {
           if (columns == null) return _rows();
           return SliverMainAxisGroup(
             slivers: [
-              SliverToBoxAdapter(child: MTMediaRowHeader(columns: columns)),
+              if (pinHeader)
+                PinnedHeaderSliver(
+                  child: ColoredBox(
+                    color: MTThemeX.of(context).palette.bg,
+                    child: MTMediaRowHeader(columns: columns, sort: sort),
+                  ),
+                )
+              else
+                SliverToBoxAdapter(
+                  child: MTMediaRowHeader(columns: columns, sort: sort),
+                ),
               SliverList.builder(
                 itemCount: itemCount,
                 itemBuilder: (context, index) =>
@@ -151,9 +172,16 @@ class _MTGridSliver extends StatelessWidget {
   static double _cellHeight(BuildContext context, double width) {
     final text = Theme.of(context).textTheme;
     final scaler = MediaQuery.textScalerOf(context);
+    // Measured with Latin, CJK and an emoji on each line: a character the
+    // app's font lacks is drawn in a fallback font whose taller ascent or
+    // deeper descent stretches the line, and a Japanese title overflowed a
+    // cell measured on Latin alone (seen on Windows).
     double lines(TextStyle style, int count) {
       final painter = TextPainter(
-        text: TextSpan(text: List.filled(count, 'Ag').join('\n'), style: style),
+        text: TextSpan(
+          text: List.filled(count, 'Ag国\u{1F600}').join('\n'),
+          style: style,
+        ),
         textDirection: TextDirection.ltr,
         textScaler: scaler,
         maxLines: count,

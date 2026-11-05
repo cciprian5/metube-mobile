@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
+import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../../di.dart';
@@ -21,6 +22,13 @@ const arrivalSeenKey = 'subs_seen_keys';
 /// once to carry its answer over and then removed.
 const arrivalWatermarkKey = 'subs_seen_timestamp';
 
+/// What this phone sent and the server has not finished yet, kept across
+/// runs: [UnfinishedSends].
+const arrivalUnfinishedKey = 'subs_unfinished_sends';
+
+/// What each subscription's checks queued: [SubscriptionChecks].
+const arrivalChecksKey = 'subs_checks';
+
 /// A fixed id, so a second batch replaces the first notice instead of
 /// stacking a second one beside it.
 const arrivalNotificationId = 770001;
@@ -28,22 +36,17 @@ const arrivalNotificationId = 770001;
 /// **Telling the user when the server brought something by itself**
 /// (subscription arrivals).
 ///
-/// Every other notification in this app is about a download **this app**
-/// started, and comes from the engine. A subscription download has no task
-/// here at all: MeTube decides, fetches, and the clip simply turns up in
-/// `/history`. Without this, files appear on the server's disk and in the
-/// library with nothing ever saying so.
+/// A subscription download has no task here: MeTube fetches it and the
+/// clip turns up in `/history`, with nothing else saying so.
 ///
-/// **What counts as an arrival**: a completed item that was not in the
-/// accounted-for set and that this app did not submit. Anything the engine handled is
-/// excluded, because the engine already announced it and a second notice
-/// for the same file is worse than none.
+/// **What counts**: a completed item not yet accounted for, that this app
+/// did not send (the engine announces those), and that a subscription's
+/// check queued ([SubscriptionChecks]); a clip another device or the web
+/// page sent is nobody's news here.
 ///
-/// **It cannot wake the app up.** There is no periodic background task
-/// here, by choice: the check runs whenever `/history` is read — opening
-/// the app, returning to it, pulling to refresh, or the live poll during a
-/// download. So the notice arrives with the user, not before them. Adding
-/// a real background poll is a separate decision with a battery cost.
+/// **It cannot wake the app up**, by choice (a background poll costs
+/// battery): it runs whenever `/history` is read, so the notice arrives
+/// with the user.
 class ArrivalWatcher {
   ArrivalWatcher(this._ref);
 
@@ -64,7 +67,32 @@ class ArrivalWatcher {
 
   void noteOwnTask(String? canonicalUrl) {
     if (canonicalUrl != null && canonicalUrl.isNotEmpty) {
-      _mine.add(canonicalUrl);
+      if (_mine.add(canonicalUrl)) unawaited(_keep(canonicalUrl));
+    }
+  }
+
+  UnfinishedSends get _sends => _unfinished ??= UnfinishedSends(
+    store: _ref.read(keyValueStoreProvider),
+    mutex: _ref.read(prefsMutexProvider),
+    key: arrivalUnfinishedKey,
+  );
+  UnfinishedSends? _unfinished;
+
+  SubscriptionChecks get _checks => _checksStore ??= SubscriptionChecks(
+    store: _ref.read(keyValueStoreProvider),
+    mutex: _ref.read(prefsMutexProvider),
+    key: arrivalChecksKey,
+  );
+  SubscriptionChecks? _checksStore;
+
+  Future<void> _keep(String canonicalUrl) async {
+    try {
+      await _sends.note(
+        canonicalUrl,
+        finished: _seen?.contains(canonicalUrl) ?? false,
+      );
+    } on Object {
+      // Only one notice too many if the app closes before this clip ends.
     }
   }
 
@@ -91,9 +119,12 @@ class ArrivalWatcher {
     final store = _ref.read(keyValueStoreProvider);
     if (!_loaded) {
       _seen = await _load(store, done);
+      _mine.addAll(await _sends.all());
       _loaded = true;
+      await _observeChecks();
     }
     final seen = _seen;
+    await _sends.settle(now);
 
     // **The first run announces nothing.** A fresh install, or a phone
     // restored from a backup, would otherwise report the server's entire
@@ -123,16 +154,11 @@ class ArrivalWatcher {
     }
 
     if (_ref.read(settingsProvider).notifyArrivals) {
-      // **Only when a subscription could explain it.** Someone who queued a
-      // clip from MeTube's own web page should not be told their phone
-      // downloaded something; with no subscriptions at all, this app has
-      // no business claiming to know where the file came from.
-      //
-      // **Awaited, not peeked.** Only the subscriptions screen watches
-      // this list, so on a fresh start it is still loading when the first
-      // `/history` lands — and that first read is exactly when arrivals
-      // are found. Peeking read "loading" as "none", the arrivals were
-      // marked seen, and no notice ever came (2026-09-23).
+      // **Read afresh and awaited**: each subscription's count and last
+      // check tell a clip it queued from one sent elsewhere, and a list
+      // still loading on a fresh start once read as "none" and swallowed
+      // the first batch (2026-09-23).
+      _ref.invalidate(subscriptionsProvider);
       final subs = await _ref.read(subscriptionsProvider.future);
       // **No answer is asked twice before it counts as "none".** The client
       // reads a failed request and a MeTube without subscriptions alike,
@@ -146,10 +172,25 @@ class ArrivalWatcher {
       }
       _askedAgain = false;
       if (subs.sorted.any((sub) => sub.enabled)) {
+        final sorted = await sortArrivals<HistoryItem>(
+          arrivals,
+          urlOf: (item) => item.canonicalUrl,
+          uploaderOf: (item) => item.uploader,
+          following: subs.sorted,
+          author: _ref.read(arrivalAuthorProvider),
+        );
+        // **Only what a check queued** (owner's report, 2026-11-05): a clip
+        // the computer, the web page or this phone in another run sent is
+        // nobody's news, even from a channel that is followed.
+        await _checks.observe(subs.sorted);
+        final worth = await _checks.fromChecks([
+          ...sorted.followed,
+          ...sorted.unknown,
+        ], createdOf: (item) => item.timestamp);
         // Marked seen first: a notice twice is worse than a notice lost to
         // a failed write.
         await _save(store, now);
-        await _announce(arrivals);
+        if (worth.isNotEmpty) await _announce(worth);
         return;
       }
     }
@@ -185,6 +226,19 @@ class ArrivalWatcher {
         .run(() => store.setStringList(arrivalSeenKey, keys.toList()));
   }
 
+  /// Where counting starts for this run, so the first batch is weighed
+  /// against the checks since the app was last open rather than since ever.
+  Future<void> _observeChecks() async {
+    if (!_ref.read(settingsProvider).notifyArrivals) return;
+    try {
+      final subs = await _ref.read(subscriptionsProvider.future);
+      if (subs.supported) await _checks.observe(subs.sorted);
+    } on Object {
+      // The batch that needs it reads the list again.
+    }
+  }
+
+  /// Clips a subscription's check queued, so the notice says so.
   Future<void> _announce(List<HistoryItem> arrivals) async {
     final l10n = mtLocalizationsFor(_ref.read(settingsProvider).localeCode);
     // **One notice for the batch**, as asked 2026-09-20: a channel checked
@@ -214,6 +268,11 @@ class ArrivalWatcher {
         .log('subscription arrivals: ${arrivals.length}', tag: 'subs');
   }
 }
+
+/// Who posted an arrived clip, from its public address.
+final arrivalAuthorProvider = Provider<ClipAuthorLookup>(
+  (ref) => clipAuthorFrom(ClipPreviewResolver()),
+);
 
 /// The watcher itself, separate from the wiring below so a test can drive
 /// it a history at a time instead of simulating the whole app.

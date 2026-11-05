@@ -42,11 +42,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: ListenableBuilder(
           listenable: ref.watch(subtitlePrefsProvider).shown,
           builder: (context, _) => ListView(
-            padding: const EdgeInsets.fromLTRB(
+            // Neither the mini player nor the add button shows on this tab,
+            // so the list ends just past its last card; the system's own bar
+            // is added where no bottom bar takes it (an upright tablet).
+            padding: EdgeInsets.fromLTRB(
               MTSpace.pagePad,
               0,
               MTSpace.pagePad,
-              120,
+              MTSpace.xl + MediaQuery.paddingOf(context).bottom,
             ),
             children: [
               const ServerStatusCard(),

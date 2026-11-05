@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
-import '../library/library_models.dart';
 import 'playlist_dialogs.dart';
 import 'playlists_providers.dart';
 
@@ -16,7 +16,7 @@ void showAddToPlaylistSheet(
   List<LibraryItem> items,
 ) {
   if (items.isEmpty) return;
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -52,8 +52,7 @@ class _AddToPlaylistSheet extends ConsumerWidget {
               const SizedBox(height: MTSpace.sm),
               Flexible(
                 child: playlists.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const Center(child: MTSpinner()),
                   error: (_, _) => Text(l10n.tryAgain),
                   data: (all) => ListView(
                     shrinkWrap: true,
@@ -75,7 +74,7 @@ class _AddToPlaylistSheet extends ConsumerWidget {
               const SizedBox(height: MTSpace.sm),
               OutlinedButton.icon(
                 onPressed: () => _createAndAdd(context, ref),
-                icon: const Icon(Icons.add_rounded, size: 18),
+                icon: const MTIcon(MTIcons.plus, size: 18),
                 label: Text(l10n.newPlaylistAction),
               ),
             ],
@@ -100,8 +99,8 @@ class _AddToPlaylistSheet extends ConsumerWidget {
     );
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(
-        playlist.pinned ? Icons.push_pin_rounded : Icons.queue_music_rounded,
+      leading: MTIcon(
+        playlist.pinned ? MTIcons.pinOn : MTIcons.queue,
         color: palette.ink2,
       ),
       title: Text(playlist.name),
@@ -110,9 +109,7 @@ class _AddToPlaylistSheet extends ConsumerWidget {
             ? l10n.alreadyInPlaylist
             : l10n.queueItemsCount(playlist.items.length),
       ),
-      trailing: already
-          ? Icon(Icons.check_circle_rounded, color: palette.accent)
-          : null,
+      trailing: already ? MTIcon(MTIcons.check, color: palette.accent) : null,
       onTap: () => _add(context, ref, playlist, already: already),
     );
   }

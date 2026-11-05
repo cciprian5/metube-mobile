@@ -153,7 +153,7 @@ Future<void> showMTQueueSheet(
   String? playlistName,
   Listenable? liveness,
   bool Function()? paused,
-}) => showModalBottomSheet<void>(
+}) => showMTSheet<void>(
   context: context,
   useRootNavigator: true,
   isScrollControlled: true,

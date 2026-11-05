@@ -26,9 +26,7 @@ class MTCaptionButtons extends StatelessWidget {
               const SizedBox(width: MTSpace.xs),
             ],
             MTVideoIconButton(
-              icon: shown
-                  ? Icons.closed_caption_rounded
-                  : Icons.closed_caption_off_rounded,
+              icon: shown ? MTIcons.captions : MTIcons.captionsOff,
               onTap: () => captions.shown.value = !shown,
               tooltip: shown ? l10n.subtitlesHide : l10n.subtitlesShow,
               active: shown,

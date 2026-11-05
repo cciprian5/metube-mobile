@@ -3,16 +3,17 @@ import 'package:mt_ui/mt_ui.dart';
 
 import '../models/playlist_item.dart';
 import '../video/mt_orientation.dart';
-import '../video/mt_video_controls.dart';
-import '../video/mt_video_frame.dart';
+import '../video/mt_picture_in_picture.dart';
 import '../video/mt_video_fullscreen.dart';
 import '../video/mt_video_open.dart';
 import '../video/mt_video_session.dart';
+import '../video/video_area.dart';
 import '../video/video_side_panel.dart';
 import '../widgets/mt_queue_panel.dart';
 import '../widgets/mt_up_next_list.dart';
 import 'video_info_sheet.dart';
 import '../video/mt_captions.dart';
+import '../widgets/mt_chapters.dart';
 
 /// One action in the portrait player (offline, share, add to a list…).
 /// The app supplies them, because mt_media knows neither the server nor
@@ -23,16 +24,25 @@ class MTPlayerAction {
     required this.label,
     required this.onTap,
     this.highlighted = false,
+    this.main = false,
+    this.inMenu = false,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final String label;
   final VoidCallback onTap;
   final bool highlighted;
+
+  /// The one pill outlined in the ink: what the sheet is mostly for.
+  final bool main;
+
+  /// Under the ⋮ at the end of the row rather than a pill of its own
+  /// (sharing, the original link); the reels' side buttons show it anyway.
+  final bool inMenu;
 }
 
 /// The portrait video player (Wahaj reference B): the video leads with a
-/// cream sheet beneath it, running title, then actions, then mode, then the
+/// light sheet beneath it, running title, then actions, then mode, then the
 /// "up next" list. Going back offers "continue as background audio?" from
 /// the same second.
 class MTVideoScreen extends StatelessWidget {
@@ -47,8 +57,11 @@ class MTVideoScreen extends StatelessWidget {
     this.shouldOfferContinueAsAudio,
     this.playlistName,
     this.membershipLine,
+    this.byline,
     this.fullscreenPanel,
     this.captions,
+    this.chapters,
+    this.chaptersFolded,
   });
 
   final MTVideoSession session;
@@ -94,6 +107,20 @@ class MTVideoScreen extends StatelessWidget {
   /// sheet.
   final String? membershipLine;
 
+  /// See [MTVideoInfoSheet.byline].
+  final Widget Function(BuildContext context, PlaylistItem item)? byline;
+
+  /// The chapters of the item playing, asked again as the queue moves: cut
+  /// into the progress bar, named beside the time, and listed under the
+  /// buttons. Empty, or null, for a clip without any.
+  final List<MTChapter> Function(PlaylistItem item)? chapters;
+
+  /// Whether the chapters under the buttons are folded away; see
+  /// [MTChapterSection.folded].
+  final ValueNotifier<bool>? chaptersFolded;
+
+  MTPictureInPicture get _pip => MTPictureInPicture.instance;
+
   bool get _offersAudio =>
       onContinueAsAudio != null && (shouldOfferContinueAsAudio?.call() ?? true);
 
@@ -119,9 +146,10 @@ class MTVideoScreen extends StatelessWidget {
   Widget _wide(BuildContext context, VoidCallback openFullscreen) => Row(
     children: [
       Expanded(
-        child: _VideoArea(
+        child: VideoArea(
           session: session,
           captions: captions,
+          chapters: chapters,
           artwork: artwork,
           fill: true,
           playlistName: playlistName,
@@ -145,6 +173,9 @@ class MTVideoScreen extends StatelessWidget {
               subtitleBuilder: subtitleBuilder,
               playlistName: playlistName,
               onShowPlaylist: onShowPlaylist,
+              byline: byline,
+              chapters: chapters,
+              chaptersFolded: chaptersFolded,
             ),
           ),
         ),
@@ -158,32 +189,21 @@ class MTVideoScreen extends StatelessWidget {
       if (!didPop) _askContinueAsAudio(context);
     },
     child: Scaffold(
-      // **In landscape the video alone fills the screen** (field report
-      // 2026-09-05: "I leave full screen with the device in landscape
-      // and the
-      // app shows sideways"). Leaving manually disarms tilt so full
-      // screen is
-      // not reopened, and the result was a cream sheet with a squeezed
-      // video on
-      // a wide screen. Landscape is now **a form** of this screen
-      // rather than a
-      // fault in it.
       backgroundColor: MTThemeX.of(context).palette.bg,
       body: ListenableBuilder(
-        listenable: session,
-        // **In landscape the video alone fills the screen** (field
-        // report 2026-09-05: "I leave full screen with the device in
-        // landscape and the app shows sideways"). Leaving manually
-        // disarms tilt so full screen is not reopened, and the result
-        // was a cream sheet with a squeezed video on a wide screen.
-        // Landscape is now **a form** of this screen rather than a
-        // fault in it.
-        builder: (context, _) => _isWide(context)
+        listenable: Listenable.merge([session, _pip.active]),
+        // **In landscape the video alone fills the screen** (field report
+        // 2026-09-05): leaving full screen by hand left a squeezed video
+        // over a light sheet. Landscape is a form of this screen, and so is
+        // a corner of the screen, which an upright clip shapes upright.
+        builder: (context, _) => !_pip.active.value && _isWide(context)
             ? _wide(context, openFullscreen)
-            : MediaQuery.orientationOf(context) == Orientation.landscape
-            ? _VideoArea(
+            : _pip.active.value ||
+                  MediaQuery.orientationOf(context) == Orientation.landscape
+            ? VideoArea(
                 session: session,
                 captions: captions,
+                chapters: chapters,
                 artwork: artwork,
                 fill: true,
                 playlistName: playlistName,
@@ -194,9 +214,10 @@ class MTVideoScreen extends StatelessWidget {
               )
             : Column(
                 children: [
-                  _VideoArea(
+                  VideoArea(
                     session: session,
                     captions: captions,
+                    chapters: chapters,
                     artwork: artwork,
                     playlistName: playlistName,
                     membershipLine: membershipLine,
@@ -212,6 +233,9 @@ class MTVideoScreen extends StatelessWidget {
                       subtitleBuilder: subtitleBuilder,
                       playlistName: playlistName,
                       onShowPlaylist: onShowPlaylist,
+                      byline: byline,
+                      chapters: chapters,
+                      chaptersFolded: chaptersFolded,
                     ),
                   ),
                 ],
@@ -224,6 +248,9 @@ class MTVideoScreen extends StatelessWidget {
       Navigator.of(context).push(
         mtFullscreenRoute(
           session.controller,
+          from: byRotation || _isWide(context)
+              ? null
+              : mtUprightPlayerPlace(context, VideoArea.share),
           (_) => MTVideoFullscreenPage(
             session: session,
             byRotation: byRotation,
@@ -233,6 +260,7 @@ class MTVideoScreen extends StatelessWidget {
             onShowPlaylist: onShowPlaylist,
             panel: fullscreenPanel,
             captions: captions,
+            chapters: chapters,
           ),
         ),
       );
@@ -246,13 +274,8 @@ class MTVideoScreen extends StatelessWidget {
       currentIndex: ordered.indexWhere((i) => i.canonicalUrl == currentUrl),
       artwork: artwork,
       playlistName: playlistName,
-      // **We only pop our own page** (field report 2026-09-03): the
-      // handover to
-      // audio can take a while, and the user may have left another way in
-      // the
-      // meantime, so a blind `pop()` afterwards popped **the shell itself**
-      // and
-      // nothing was left: a black screen.
+      // Only this page is popped once the queue sheet is done; see
+      // _askContinueAsAudio.
       liveness: session,
       paused: () => !session.isPlaying,
       onShowAll: onShowPlaylist,
@@ -261,12 +284,7 @@ class MTVideoScreen extends StatelessWidget {
     );
   }
 
-  /// **We only pop our own page** (field report 2026-09-03): the handover
-  /// to
-  /// audio can take a while, and the user may have left another way in the
-  /// meantime, so a blind `pop()` afterwards popped **the shell itself**
-  /// and
-  /// nothing was left: a black screen.
+  /// Asks whether to carry on as audio from the same second, then leaves.
   Future<void> _askContinueAsAudio(BuildContext context) async {
     final item = session.current;
     final navigator = Navigator.of(context);
@@ -285,7 +303,7 @@ class MTVideoScreen extends StatelessWidget {
     if (!context.mounted) return;
     final l10n = context.mtl;
 
-    final choice = await showDialog<bool>(
+    final choice = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.continueAsAudioTitle),
@@ -304,81 +322,5 @@ class MTVideoScreen extends StatelessWidget {
     );
     if (choice == true) await onContinueAsAudio?.call(item, position);
     popSelf();
-  }
-}
-
-class _VideoArea extends StatelessWidget {
-  const _VideoArea({
-    required this.session,
-    required this.onBack,
-    required this.onFullscreen,
-    required this.onQueue,
-    this.artwork,
-    this.playlistName,
-    this.membershipLine,
-    this.fill = false,
-    this.captions,
-  });
-
-  /// Fills the screen in landscape instead of 32% of its height.
-  final bool fill;
-  final MTArtworkBuilder? artwork;
-  final MTCaptions? Function(PlaylistItem item)? captions;
-
-  final MTVideoSession session;
-  final VoidCallback onBack;
-  final VoidCallback onFullscreen;
-  final VoidCallback onQueue;
-  final String? playlistName;
-  final String? membershipLine;
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = session.controller;
-    final ready = controller != null && controller.value.isInitialized;
-    return SafeArea(
-      bottom: false,
-      child: SizedBox(
-        height: fill
-            ? double.infinity
-            : MediaQuery.sizeOf(context).height * 0.32,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ColoredBox(color: MTPalette.serverCardBg),
-            if (ready)
-              Center(
-                child: MTVideoFrame(
-                  controller: controller,
-                  item: session.current,
-                  artwork: artwork,
-                ),
-              )
-            else
-              Center(
-                child: session.error != null
-                    ? Icon(
-                        Icons.error_outline_rounded,
-                        color: MTPalette.serverCardInk,
-                      )
-                    : const CircularProgressIndicator(),
-              ),
-            if (ready)
-              MTVideoControls(
-                session: session,
-                captions: switch (session.current) {
-                  final item? => captions?.call(item),
-                  null => null,
-                },
-                playlistName: playlistName,
-                membershipLine: membershipLine,
-                onBack: onBack,
-                onToggleFullscreen: onFullscreen,
-                onQueue: onQueue,
-              ),
-          ],
-        ),
-      ),
-    );
   }
 }

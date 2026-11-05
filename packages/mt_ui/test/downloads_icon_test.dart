@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mt_ui/mt_ui.dart';
 
+import 'wahaj_finder.dart';
+
 /// The downloads icon moves only while something downloads.
 void main() {
   Widget host(int active, {bool still = false}) => MediaQuery(
@@ -16,9 +18,9 @@ void main() {
 
   // The glyph is drawn twice: the still tray first, the moving arrow last.
   Offset arrow(WidgetTester tester) =>
-      tester.getTopLeft(find.byIcon(Icons.download_rounded).last);
+      tester.getTopLeft(byWahaj(MTIcons.download).last);
   Offset tray(WidgetTester tester) =>
-      tester.getTopLeft(find.byIcon(Icons.download_rounded).first);
+      tester.getTopLeft(byWahaj(MTIcons.download).first);
 
   group('the drop', () {
     test('rests upright for most of the loop', () {

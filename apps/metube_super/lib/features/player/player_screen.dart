@@ -6,18 +6,22 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../library/library_actions.dart';
-import '../library/library_models.dart';
+import '../library/widgets/share_sheet.dart';
+import '../shared/error_report.dart';
 import '../library/library_providers.dart';
 import '../shared/membership.dart';
 import '../shared/platform_label.dart';
+import '../transcripts/clip_chapters.dart';
 import '../transcripts/transcript_openers.dart';
 import '../transcripts/transcripts_state.dart';
 import 'playback_providers.dart';
 import '../transcripts/subtitles.dart';
+import '../subscriptions/widgets/follow_line.dart';
+import '../shared/open_web_link.dart';
 
 /// Super's video player (rule 4): it feeds `MTVideoScreen` with the app's
 /// actions, available offline, continue as audio, share, and open the
@@ -63,7 +67,6 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
       return Scaffold(
         appBar: AppBar(),
         body: MTEmptyState(
-          icon: Icons.play_disabled_rounded,
           title: l10n.videoPlayer,
           message: l10n.noPlayableSource,
         ),
@@ -85,6 +88,8 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
         context.mtl,
       ),
       subtitleBuilder: (context, item) => _subtitle(context, item, membership),
+      // Who made it, with the way to follow them (YouTube only).
+      byline: (context, item) => FollowLine(item: item),
       actions: _actions(session),
       onContinueAsAudio: _continueAsAudio,
       // **Never asked twice** (field report 2026-09-02): someone who had
@@ -97,6 +102,9 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
           : () => context.push('/playlists/${request.playlistId}'),
       fullscreenPanel: transcriptPanels(context, session),
       captions: (item) => subtitlesFor(ref, item),
+      // From the transcript: none without one, nor under four minutes.
+      chapters: (item) => chaptersFor(ref, item),
+      chaptersFolded: ref.read(subtitlePrefsProvider).chaptersFolded,
     );
   }
 
@@ -137,40 +145,53 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
             .valueOrNull
             ?.contains(item.canonicalUrl) ??
         false;
+    final favorite =
+        ref
+            .watch(libraryItemsProvider)
+            .valueOrNull
+            ?.any((c) => c.canonicalUrl == item.canonicalUrl && c.favorite) ??
+        false;
     return [
-      if (hasTranscript)
-        MTPlayerAction(
-          icon: Icons.subject_rounded,
-          label: l10n.transcript,
-          onTap: () => showVideoTranscript(context, session, item),
-        ),
       MTPlayerAction(
         icon: pulling != null
-            ? Icons.downloading_rounded
-            : (offline ? Icons.offline_pin_rounded : Icons.download_rounded),
+            ? MTIcons.download
+            : (offline ? MTIcons.offline : MTIcons.download),
         label: pulling != null
             ? l10n.percentValue((pulling * 100).round())
             : (offline ? l10n.savedOnDevice : l10n.saveToDevice),
         highlighted: offline,
+        main: true,
         onTap: (offline || pulling != null) ? () {} : () => _makeOffline(item),
       ),
+      // The one-tap heart: the library cards show it on favourites alone.
       MTPlayerAction(
-        icon: Icons.headphones_rounded,
+        icon: favorite ? MTIcons.favoriteOn : MTIcons.favorite,
+        label: favorite ? l10n.removeFromFavorites : l10n.addToFavorites,
+        onTap: () =>
+            ref.read(libraryActionsProvider).toggleFavorite(item.canonicalUrl),
+      ),
+      if (hasTranscript)
+        MTPlayerAction(
+          icon: MTIcons.transcript,
+          label: l10n.transcript,
+          onTap: () => showVideoTranscript(context, session, item),
+        ),
+      MTPlayerAction(
+        icon: MTIcons.headphones,
         label: l10n.continueAsAudio,
         onTap: () => _continueAsAudio(item, session.position, pop: true),
       ),
       MTPlayerAction(
-        icon: Icons.share_rounded,
+        icon: MTIcons.share,
         label: l10n.share,
         onTap: () => _share(item),
+        inMenu: true,
       ),
       MTPlayerAction(
-        icon: Icons.open_in_new_rounded,
+        icon: MTIcons.external,
         label: l10n.openOriginalLink,
-        onTap: () => launchUrl(
-          Uri.parse(item.canonicalUrl),
-          mode: LaunchMode.externalApplication,
-        ),
+        inMenu: true,
+        onTap: () => openWebLink(item.canonicalUrl),
       ),
     ];
   }
@@ -187,14 +208,25 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
   Future<void> _makeOffline(PlaylistItem item) async {
     final match = _libraryItemOf(item);
     if (match == null) return;
-    await ref.read(libraryActionsProvider).makeOffline(match);
+    try {
+      await ref.read(libraryActionsProvider).makeOffline(match);
+    } on CancelledException {
+      return;
+    } on Object catch (e) {
+      if (mounted) showErrorSnack(context, ref, e, tag: 'library');
+      return;
+    }
     if (mounted) showMTSnack(context, context.mtl.madeOffline);
   }
 
   Future<void> _share(PlaylistItem item) async {
     final match = _libraryItemOf(item);
     if (match == null) return;
-    await ref.read(libraryActionsProvider).smartShare(match);
+    try {
+      await shareClip(context, ref, match);
+    } on Object catch (e) {
+      if (mounted) showErrorSnack(context, ref, e, tag: 'share');
+    }
   }
 
   /// The question is only worth asking when there is something to carry

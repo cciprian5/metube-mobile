@@ -10,7 +10,7 @@ class MTExtraAction {
     required this.onTap,
   });
 
-  final IconData icon;
+  final MTIconData icon;
 
   /// Read aloud and shown on a long press; the button itself is the icon
   /// alone.
@@ -39,7 +39,7 @@ class MTExtraButton extends StatelessWidget {
           customBorder: const CircleBorder(),
           child: SizedBox.square(
             dimension: size,
-            child: Icon(
+            child: MTIcon(
               extra.icon,
               size: size * 0.55,
               color: p.onAccent,

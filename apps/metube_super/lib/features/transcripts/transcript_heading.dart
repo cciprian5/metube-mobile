@@ -25,6 +25,7 @@ class TranscriptHeading extends StatelessWidget {
     required this.onStep,
     required this.onShow,
     this.onClose,
+    this.onRead,
   });
 
   final String title;
@@ -44,6 +45,9 @@ class TranscriptHeading extends StatelessWidget {
   /// Shown as a close button when the transcript sits in a panel rather
   /// than a sheet, which has no edge to drag down.
   final VoidCallback? onClose;
+
+  /// Opens the text as an article, to read rather than follow.
+  final VoidCallback? onRead;
 
   @override
   Widget build(BuildContext context) {
@@ -68,18 +72,28 @@ class TranscriptHeading extends StatelessWidget {
                 style: text.titleMedium,
               ),
             ),
+            if (onRead case final read?)
+              TextButton.icon(
+                onPressed: read,
+                style: TextButton.styleFrom(
+                  foregroundColor: p.ink2,
+                  visualDensity: VisualDensity.compact,
+                ),
+                icon: const MTIcon(MTIcons.reading, size: 18),
+                label: Text(l10n.readingRead),
+              ),
             IconButton(
               onPressed: onSearchToggle,
               tooltip: l10n.transcriptFind,
               isSelected: searching,
-              icon: Icon(Icons.search_rounded, color: p.ink2),
-              selectedIcon: Icon(Icons.search_off_rounded, color: p.accent),
+              icon: MTIcon(MTIcons.search, color: p.ink2),
+              selectedIcon: MTIcon(MTIcons.close, color: p.accent),
             ),
             if (onClose case final close?)
               IconButton(
                 onPressed: close,
                 tooltip: l10n.dismiss,
-                icon: Icon(Icons.close_rounded, color: p.ink2),
+                icon: MTIcon(MTIcons.close, color: p.ink2),
               ),
           ],
         ),
@@ -99,13 +113,13 @@ class TranscriptHeading extends StatelessWidget {
                 onPressed: () => onStep(-1),
                 tooltip: l10n.transcriptPreviousMatch,
                 visualDensity: VisualDensity.compact,
-                icon: Icon(Icons.keyboard_arrow_up_rounded, color: p.accent),
+                icon: MTIcon(MTIcons.chevronUp, color: p.accent),
               ),
               IconButton(
                 onPressed: () => onStep(1),
                 tooltip: l10n.transcriptNextMatch,
                 visualDensity: VisualDensity.compact,
-                icon: Icon(Icons.keyboard_arrow_down_rounded, color: p.accent),
+                icon: MTIcon(MTIcons.chevronDown, color: p.accent),
               ),
             ],
           ],

@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:mt_ui/mt_ui.dart';
 
 import '../models/playlist_item.dart';
+import '../widgets/mt_chapters.dart';
 import '../widgets/mt_extra_button.dart';
 import '../widgets/mt_queue_panel.dart';
 import '../widgets/mt_up_next_list.dart';
 import 'mt_orientation.dart';
+import 'mt_picture_in_picture.dart';
 import 'mt_video_controls.dart';
 import 'mt_video_frame.dart';
 import 'mt_video_session.dart';
@@ -29,6 +31,7 @@ class MTVideoFullscreenPage extends StatefulWidget {
     this.byRotation = false,
     this.panel,
     this.captions,
+    this.chapters,
   });
 
   final MTVideoSession session;
@@ -40,6 +43,9 @@ class MTVideoFullscreenPage extends StatefulWidget {
   /// The subtitles of the item playing; see [MTVideoScreen.captions].
   final MTCaptions? Function(PlaylistItem item)? captions;
   final MTArtworkBuilder? artwork;
+
+  /// The chapters of the item playing; see [MTVideoScreen.chapters].
+  final List<MTChapter> Function(PlaylistItem item)? chapters;
   final VoidCallback? onShowPlaylist;
   final String? playlistName;
 
@@ -159,9 +165,14 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: ListenableBuilder(
-        listenable: session,
+        listenable: Listenable.merge([
+          session,
+          MTPictureInPicture.instance.active,
+        ]),
         builder: (context, _) {
           final controller = session.controller;
+          // In a corner of the screen the picture shows alone.
+          final inCorner = MTPictureInPicture.instance.active.value;
           final panel = switch (session.current) {
             final item? => widget.panel?.call(item),
             null => null,
@@ -181,13 +192,17 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
                   ),
                 )
               else
-                const Center(child: CircularProgressIndicator()),
+                const Center(child: MTSpinner()),
               MTVideoControls(
                 session: session,
                 fullscreen: true,
                 captions: switch (session.current) {
                   final item? => widget.captions?.call(item),
                   null => null,
+                },
+                chapters: switch (session.current) {
+                  final item? => widget.chapters?.call(item) ?? const [],
+                  null => const [],
                 },
                 playlistName: widget.playlistName,
                 membershipLine: widget.membershipLine,
@@ -204,18 +219,25 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
                         ),
                       ),
               ),
-              if (panel != null &&
-                  _panelFor != null &&
-                  _panelFor == session.current?.canonicalUrl)
-                MTVideoEndPanel(
+              _presence(
+                context,
+                open:
+                    !inCorner &&
+                    panel != null &&
+                    _panelFor != null &&
+                    _panelFor == session.current?.canonicalUrl,
+                build: () => MTVideoEndPanel(
                   key: ValueKey(_panelFor),
-                  child: panel.builder(
+                  child: panel!.builder(
                     context,
                     () => setState(() => _panelFor = null),
                   ),
                 ),
-              if (_queueOpen)
-                _SidePanel(
+              ),
+              _presence(
+                context,
+                open: !inCorner && _queueOpen,
+                build: () => _SidePanel(
                   session: session,
                   artwork: widget.artwork,
                   playlistName: widget.playlistName,
@@ -224,6 +246,7 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
                       : () => _leaveThenShowPlaylist(context),
                   onClose: () => setState(() => _queueOpen = false),
                 ),
+              ),
             ],
           );
         },
@@ -231,3 +254,22 @@ class _MTVideoFullscreenPageState extends State<MTVideoFullscreenPage> {
     );
   }
 }
+
+/// A side panel that **fades out when closed** rather than vanishing in a
+/// frame; it slides in on its own. Its own stack keeps the panel's
+/// position valid inside the switcher.
+Widget _presence(
+  BuildContext context, {
+  required bool open,
+  required Widget Function() build,
+}) => Positioned.fill(
+  child: AnimatedSwitcher(
+    duration: mtMotionDuration(context, MTMotion.medium),
+    reverseDuration: mtMotionDuration(context, MTMotion.fast),
+    transitionBuilder: (child, animation) =>
+        FadeTransition(opacity: animation, child: child),
+    child: open
+        ? Stack(key: const ValueKey('open'), children: [build()])
+        : const SizedBox.shrink(key: ValueKey('closed')),
+  ),
+);

@@ -31,6 +31,19 @@ void main() {
       expect(progress, [0.5, 1.0]);
     });
 
+    test(
+      'the raw counts reach a caller that shows a size or a speed',
+      () async {
+        final bytes = <(int, int)>[];
+        await makeTransfer(FakeApi()).pull(
+          serverFilename: 'a.mp4',
+          savePath: pathOf('a.mp4'),
+          onBytes: (received, total) => bytes.add((received, total)),
+        );
+        expect(bytes, [(50, 100), (100, 100)]);
+      },
+    );
+
     // A regression (field report 2026-09-02): "the clip appears in the
     // library before it has finished downloading". Lite's library is built
     // by **scanning the folder**, and Dio writes incrementally, so the
@@ -118,6 +131,25 @@ void main() {
         );
         await Future<void>.delayed(const Duration(milliseconds: 20));
         token.cancel();
+        await expectLater(pulling, throwsA(isA<CancelledException>()));
+        expect(api.downloadCalls, 1);
+        expect(File(pathOf('a.mp4')).existsSync(), isFalse);
+      },
+    );
+
+    test(
+      'an app without the client token stops a pull with TransferCancel',
+      () async {
+        final api = FakeApi()..hangDownloadUntilCancel = true;
+        final cancel = TransferCancel();
+        final pulling = makeTransfer(api).pull(
+          serverFilename: 'a.mp4',
+          savePath: pathOf('a.mp4'),
+          cancel: cancel,
+        );
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+        cancel.cancel();
+        expect(cancel.isCancelled, isTrue);
         await expectLater(pulling, throwsA(isA<CancelledException>()));
         expect(api.downloadCalls, 1);
         expect(File(pathOf('a.mp4')).existsSync(), isFalse);

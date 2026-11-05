@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icon_data.dart';
+import '../icons/mt_icons.dart';
 import '../tokens/tokens.dart';
+import 'mt_desktop_app.dart';
 
 /// **Light Wahaj touches** (requested 2026-09-04: "motion on some icons,
 /// light touches, pretty and consistent and suited to both apps").
@@ -73,13 +77,15 @@ class MTIconSwap extends StatelessWidget {
     this.color,
     this.semanticLabel,
     this.shadows,
+    this.matchTextDirection = false,
   });
 
-  final IconData icon;
+  final MTIconData icon;
   final double? size;
   final Color? color;
   final String? semanticLabel;
   final List<Shadow>? shadows;
+  final bool matchTextDirection;
 
   @override
   Widget build(BuildContext context) => AnimatedSwitcher(
@@ -96,16 +102,35 @@ class MTIconSwap extends StatelessWidget {
         child: child,
       ),
     ),
-    child: Icon(
+    child: MTIcon(
       icon,
-      key: ValueKey(icon.codePoint),
+      key: ValueKey(icon.name),
       size: size,
       color: color,
       semanticLabel: semanticLabel,
       shadows: shadows,
+      matchTextDirection: matchTextDirection,
     ),
   );
 }
+
+/// What an item's thumbnail shows when it has no cover: on the phones a
+/// music note, as always; in the Windows app the headphones for audio and
+/// the clip mark for video.
+Widget mtCoverPlaceholder(
+  BuildContext context, {
+  required double size,
+  required Color color,
+  bool audio = false,
+}) => Center(
+  child: MTIcon(
+    MTDesktopApp.isDesktop(context)
+        ? (audio ? MTIcons.headphones : MTIcons.library)
+        : MTIcons.music,
+    size: size,
+    color: color,
+  ),
+);
 
 /// **A "rising sheet" transition**: the screen rises whole from the bottom
 /// while the one beneath it dims slightly. For screens that expand out of a

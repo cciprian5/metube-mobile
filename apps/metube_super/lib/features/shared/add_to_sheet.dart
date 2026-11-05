@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../library/library_actions.dart';
-import '../library/library_models.dart';
 import '../playlists/add_to_playlist_sheet.dart';
 import '../tags/item_tags_sheet.dart';
 
@@ -16,7 +16,7 @@ import '../tags/item_tags_sheet.dart';
 ///
 /// Its Lite counterpart has no tag row (tags are Super only).
 void showAddToSheet(BuildContext context, WidgetRef ref, LibraryItem item) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     // The screen's context, not the sheet's: the later sheets open after
@@ -57,10 +57,8 @@ class _AddToSheet extends ConsumerWidget {
           ),
           const Divider(),
           ListTile(
-            leading: Icon(
-              item.favorite
-                  ? Icons.favorite_rounded
-                  : Icons.favorite_border_rounded,
+            leading: MTIcon(
+              item.favorite ? MTIcons.favoriteOn : MTIcons.favorite,
               color: item.favorite ? p.favorite : p.ink2,
             ),
             title: Text(
@@ -80,7 +78,7 @@ class _AddToSheet extends ConsumerWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.sell_outlined, color: p.ink2),
+            leading: MTIcon(MTIcons.tags, color: p.ink2),
             title: Text(
               l10n.tags,
               style: Theme.of(context).textTheme.bodyMedium,
@@ -91,7 +89,7 @@ class _AddToSheet extends ConsumerWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.playlist_add_rounded, color: p.ink2),
+            leading: MTIcon(MTIcons.queueAdd, color: p.ink2),
             title: Text(
               l10n.addToPlaylist,
               style: Theme.of(context).textTheme.bodyMedium,

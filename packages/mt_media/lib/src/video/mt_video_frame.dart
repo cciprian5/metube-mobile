@@ -43,11 +43,7 @@ class MTVideoFrame extends StatelessWidget {
       child: ClipRect(
         child:
             cover ??
-            Icon(
-              Icons.music_note_rounded,
-              size: 64,
-              color: MTPalette.serverCardInk,
-            ),
+            MTIcon(MTIcons.music, size: 64, color: MTPalette.serverCardInk),
       ),
     );
   }

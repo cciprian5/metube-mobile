@@ -5,6 +5,9 @@ import '../tokens/tokens.dart';
 import 'mt_platform_chip.dart';
 import 'mt_system_bars.dart';
 
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
+
 /// A quality option shown in the sheet. Values and labels come from the
 /// app, since mt_ui does not know the server contract: numeric qualities
 /// are only passed through when the link is a YouTube one.
@@ -32,6 +35,7 @@ class MTUrlInputSheet extends StatelessWidget {
     this.platformLabel,
     this.onUrlChanged,
     this.extra,
+    this.preview,
   });
 
   final String title;
@@ -49,6 +53,9 @@ class MTUrlInputSheet extends StatelessWidget {
   /// One more choice under the qualities, such as Super's server folder;
   /// null for no extra row.
   final Widget? extra;
+
+  /// What the link is, under the field: usually an [MTLinkPreview].
+  final Widget? preview;
 
   @override
   Widget build(BuildContext context) {
@@ -76,37 +83,7 @@ class MTUrlInputSheet extends StatelessWidget {
             // **No drag handle here**: the theme sets `showDragHandle: true`
             // for every bottom sheet, so drawing a second one showed two bars
             // stacked on top of each other (screenshot 2026-09-04).
-            Row(
-              children: [
-                Expanded(child: Text(title, style: text.titleLarge)),
-                if (platform != null && platform != MTPlatformKind.other)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: MTSpace.sm,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: p.accentSoft,
-                      borderRadius: BorderRadius.circular(MTRadius.chip),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        MTPlatformChip(kind: platform!),
-                        if (platformLabel != null) ...[
-                          const SizedBox(width: 5),
-                          Text(
-                            platformLabel!,
-                            style: text.labelSmall!.copyWith(
-                              color: p.accentInk,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+            Text(title, style: text.titleLarge),
             const SizedBox(height: MTSpace.lg),
             TextField(
               controller: controller,
@@ -116,9 +93,37 @@ class MTUrlInputSheet extends StatelessWidget {
               style: text.bodyMedium,
               decoration: InputDecoration(
                 hintText: urlHint,
-                prefixIcon: Icon(Icons.link_rounded, size: 20, color: p.ink3),
+                prefixIcon: MTIcon(MTIcons.link, size: 20, color: p.ink3),
+                // The platform the link was recognised as, inside the
+                // field it was read from, with a check: the field is
+                // right, not a badge on the sheet's frame.
+                suffixIcon:
+                    platform == null ||
+                        platform == MTPlatformKind.other ||
+                        platformLabel == null
+                    ? null
+                    : Padding(
+                        padding: const EdgeInsetsDirectional.only(
+                          end: MTSpace.md,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              platformLabel!,
+                              style: text.labelSmall!.copyWith(color: p.ok),
+                            ),
+                            const SizedBox(width: MTSpace.xxs),
+                            MTIcon(MTIcons.check, size: 14, color: p.ok),
+                          ],
+                        ),
+                      ),
               ),
             ),
+            if (preview case final preview?) ...[
+              const SizedBox(height: MTSpace.md),
+              preview,
+            ],
             const SizedBox(height: MTSpace.lg),
             Wrap(
               spacing: MTSpace.xs,
@@ -143,12 +148,92 @@ class MTUrlInputSheet extends StatelessWidget {
             const SizedBox(height: MTSpace.xl),
             FilledButton.icon(
               onPressed: onStart,
-              icon: const Icon(Icons.download_rounded, size: 18),
+              icon: const MTIcon(MTIcons.download, size: 18),
               label: Text(startLabel),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// What a link is before it is downloaded: its picture, title and maker.
+/// While [loading], grey blocks hold the place, so nothing jumps when the
+/// answer arrives.
+class MTLinkPreview extends StatelessWidget {
+  const MTLinkPreview({
+    super.key,
+    this.thumbnail,
+    this.title,
+    this.subtitle,
+    this.loading = false,
+  });
+
+  final Widget? thumbnail;
+  final String? title;
+  final String? subtitle;
+  final bool loading;
+
+  static const _thumb = Size(96, 54);
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    final text = Theme.of(context).textTheme;
+    Widget block(double width) => Container(
+      width: width,
+      height: 10,
+      decoration: BoxDecoration(
+        color: p.cardAlt,
+        borderRadius: BorderRadius.circular(MTRadius.badge),
+      ),
+    );
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(MTRadius.thumb),
+          child: SizedBox.fromSize(
+            size: _thumb,
+            child: loading
+                ? ColoredBox(color: p.cardAlt)
+                : thumbnail ?? ColoredBox(color: p.cardAlt),
+          ),
+        ),
+        const SizedBox(width: MTSpace.md),
+        Expanded(
+          child: loading
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    block(double.infinity),
+                    const SizedBox(height: MTSpace.xs),
+                    block(90),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (title != null)
+                      Text(
+                        title!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.bodyMedium!.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    if (subtitle != null)
+                      Text(
+                        subtitle!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.bodySmall!.copyWith(color: p.ink3),
+                      ),
+                  ],
+                ),
+        ),
+      ],
     );
   }
 }

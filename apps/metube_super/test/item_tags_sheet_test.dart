@@ -67,4 +67,82 @@ void main() {
     final field = tester.getRect(find.byType(TextField));
     expect(field.bottom, lessThanOrEqualTo(823));
   });
+
+  testWidgets('**the guard**: past the limit a new tag is refused, said in '
+      'the sheet, and a name stops at its length', (tester) async {
+    tester.view.physicalSize = const Size(384, 823);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    final container = ProviderContainer(
+      overrides: [
+        keyValueStoreProvider.overrideWithValue(MemoryKeyValueStore()),
+        secretStoreProvider.overrideWithValue(MemorySecretStore()),
+        prefsMutexProvider.overrideWithValue(PrefsMutex()),
+        initialSettingsProvider.overrideWithValue(const SuperSettings()),
+        loggerProvider.overrideWithValue(
+          MTLogger(filePath: '${Directory.systemTemp.path}/mtf_test.log'),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.runAsync(
+      () => container.read(tagsIndexProvider).put('https://x/a', [
+        for (var i = 0; i < MTConstants.maxTags; i++) 't$i',
+      ]),
+    );
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          theme: mtTheme(MTVariant.superApp, Brightness.light),
+          locale: const Locale('en'),
+          localizationsDelegates: MTLocalizations.localizationsDelegates,
+          supportedLocales: MTLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Consumer(
+              builder: (context, ref, _) => TextButton(
+                onPressed: () =>
+                    showItemTagsSheet(context, ref, const ['https://x/b']),
+                child: const Text('open'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'x' * 40);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      hasLength(MTConstants.maxTagLength),
+    );
+    await tester.enterText(find.byType(TextField), 'one too many');
+    await tester.tap(find.text('Create'));
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pumpAndSettle();
+    expect(
+      find.textContaining('up to ${MTConstants.maxTags} tags'),
+      findsOneWidget,
+    );
+    final all = await tester.runAsync(
+      () => container.read(tagsIndexProvider).allTagsWithCounts(),
+    );
+    expect(all!.keys, isNot(contains('one too many')));
+
+    // A tag that already exists is still put on: the limit is on new ones.
+    await tester.enterText(find.byType(TextField), 't3');
+    await tester.tap(find.text('Create'));
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pumpAndSettle();
+    final tagsOfB = await tester.runAsync(
+      () => container.read(tagsIndexProvider).tagsOf('https://x/b'),
+    );
+    expect(tagsOfB, contains('t3'));
+    // Writing a tag sets off the library's refresh timer; let it run out.
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 10));
+  });
 }

@@ -29,6 +29,19 @@ void main() {
   );
 
   test(
+    '**the guard**: file names never change, or phones lose theirs',
+    () async {
+      // Names already on phones, from the FNV-1a hash as first shipped. A
+      // change to how the hash is written (it must also compile for the web)
+      // has to leave these exactly as they are.
+      await store.write(sample);
+      expect(store.root.listSync().map((f) => f.uri.pathSegments.last), [
+        'ff46673e9f6544be.json',
+      ]);
+    },
+  );
+
+  test(
     'nothing exists on disk until the first transcript is written',
     () async {
       // Privacy: a phone that never turns the feature on never

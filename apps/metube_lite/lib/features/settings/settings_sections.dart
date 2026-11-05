@@ -31,7 +31,7 @@ class SettingsEntry {
   const SettingsEntry(this.pane, this.icon, this.title, this.value);
 
   final SettingsPane pane;
-  final IconData icon;
+  final MTIconData icon;
   final String title;
 
   /// The setting as it stands, not a description of the section.
@@ -52,7 +52,7 @@ List<(String, List<SettingsEntry>)> settingsGroups(
       [
         SettingsEntry(
           SettingsPane.server,
-          Icons.cloud_outlined,
+          MTIcons.cloud,
           l10n.serverConfiguration,
           v.server(),
         ),
@@ -63,19 +63,19 @@ List<(String, List<SettingsEntry>)> settingsGroups(
       [
         SettingsEntry(
           SettingsPane.downloads,
-          Icons.download_rounded,
+          MTIcons.download,
           l10n.settingsDownloads,
           v.downloads(),
         ),
         SettingsEntry(
           SettingsPane.playback,
-          Icons.play_arrow_rounded,
+          MTIcons.playback,
           l10n.settingsPlayback,
           v.playback(),
         ),
         SettingsEntry(
           SettingsPane.appearance,
-          Icons.palette_outlined,
+          MTIcons.appearance,
           l10n.appearanceAndLanguage,
           v.appearance(),
         ),
@@ -86,25 +86,25 @@ List<(String, List<SettingsEntry>)> settingsGroups(
       [
         SettingsEntry(
           SettingsPane.backup,
-          Icons.shield_outlined,
+          MTIcons.backup,
           l10n.settingsBackup,
           v.backup(),
         ),
         SettingsEntry(
           SettingsPane.updates,
-          Icons.system_update_alt_rounded,
+          MTIcons.saveTo,
           l10n.updates,
           v.updates(),
         ),
         SettingsEntry(
           SettingsPane.logs,
-          Icons.article_outlined,
+          MTIcons.list,
           l10n.diagnosticLogs,
           l10n.diagnosticLogsSubtitle,
         ),
         SettingsEntry(
           SettingsPane.about,
-          Icons.info_outline_rounded,
+          MTIcons.info,
           l10n.aboutApp,
           v.about(),
         ),
@@ -141,6 +141,7 @@ class _Values {
       Quality.q1080 => l10n.quality1080,
       Quality.q720 => l10n.quality720,
       Quality.q480 => l10n.quality480,
+      Quality.q360 => l10n.quality360,
       Quality.audio => l10n.audioOnly,
     },
     if (s.wifiOnly) l10n.settingsValueWifiOnly,

@@ -45,20 +45,15 @@ class MTPlayerControlsRow extends StatelessWidget {
               IconButton(
                 onPressed: () => handler.setShuffle(!handler.shuffleEnabled),
                 tooltip: l10n.shuffle,
-                icon: Icon(
-                  Icons.shuffle_rounded,
-                  size: 21,
-                  color: handler.shuffleEnabled ? p.accent : p.ink3,
+                icon: MTToggledIcon(
+                  icon: MTIcons.shuffle,
+                  on: handler.shuffleEnabled,
                 ),
               ),
               IconButton(
                 onPressed: handler.skipToPrevious,
                 tooltip: l10n.previous,
-                icon: Icon(
-                  Icons.skip_previous_rounded,
-                  size: 32,
-                  color: p.ink2,
-                ),
+                icon: MTIcon(MTIcons.prev, size: 32, color: p.ink2),
               ),
               _PlayButton(
                 size: size,
@@ -70,7 +65,7 @@ class MTPlayerControlsRow extends StatelessWidget {
               IconButton(
                 onPressed: handler.skipToNext,
                 tooltip: l10n.next,
-                icon: Icon(Icons.skip_next_rounded, size: 32, color: p.ink2),
+                icon: MTIcon(MTIcons.next, size: 32, color: p.ink2),
               ),
               _ModeButton(handler: handler, palette: p),
             ],
@@ -109,16 +104,13 @@ class _PlayButton extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(size / 3),
-          child: Container(
+          // No coloured shadow: the accent fill alone says "the action".
+          child: SizedBox(
             width: size,
             height: size,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(size / 3),
-              boxShadow: MTShadow.fab(palette),
-            ),
             child: Center(
               child: MTIconSwap(
-                icon: playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                icon: playing ? MTIcons.pause : MTIcons.playFill,
                 size: size * 0.42,
                 color: palette.onAccent,
               ),
@@ -142,20 +134,55 @@ class _ModeButton extends StatelessWidget {
     return IconButton(
       onPressed: () => handler.setPlayMode(mode.next),
       tooltip: mtPlayModeLabel(context, mode),
-      icon: Icon(
-        mtPlayModeIcon(mode),
-        size: 21,
-        color: mode == PlayMode.autoNext ? palette.ink3 : palette.accent,
+      icon: MTToggledIcon(
+        icon: mtPlayModeIcon(mode),
+        on: mode != PlayMode.autoNext,
       ),
     );
   }
 }
 
-IconData mtPlayModeIcon(PlayMode mode) => switch (mode) {
-  PlayMode.autoNext => Icons.playlist_play_rounded,
-  PlayMode.repeatOne => Icons.repeat_one_rounded,
-  PlayMode.repeatAll => Icons.repeat_rounded,
-  PlayMode.stopAtEnd => Icons.stop_circle_outlined,
+/// A switch-like control beside the transport: in ink with a dot under it
+/// while on, grey while off. The accent stays for play and progress, so
+/// "on" is told by the dot rather than a second orange glyph.
+class MTToggledIcon extends StatelessWidget {
+  const MTToggledIcon({super.key, required this.icon, required this.on});
+
+  final MTIconData icon;
+  final bool on;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = MTThemeX.of(context).palette;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // The glyph swaps and the dot grows in, rather than jumping
+        // from one mode to the next.
+        MTIconSwap(icon: icon, size: 21, color: on ? p.ink : p.ink3),
+        const SizedBox(height: 2),
+        AnimatedScale(
+          scale: on ? 1 : 0,
+          duration: mtMotionDuration(context, MTMotion.tap),
+          curve: on ? MTMotion.entrance : MTMotion.exit,
+          child: Container(
+            width: 4,
+            height: 4,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: p.ink),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Each mode its glyph, as in the Windows app: playing on through the
+/// queue is the loop switched off, which keeps it apart from the queue
+/// button beside it; whoever draws it marks the loop on or off.
+MTIconData mtPlayModeIcon(PlayMode mode) => switch (mode) {
+  PlayMode.repeatOne => MTIcons.repeatOne,
+  PlayMode.stopAtEnd => MTIcons.stopAfter,
+  PlayMode.autoNext || PlayMode.repeatAll => MTIcons.repeat,
 };
 
 String mtPlayModeLabel(BuildContext context, PlayMode mode) => switch (mode) {

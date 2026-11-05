@@ -3,28 +3,39 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../settings/auto_backup.dart';
 import '../home/network_gate.dart';
 import '../transcripts/sidecar_backfill.dart';
-import 'library_models.dart';
+import 'device_pulls.dart';
 import 'library_providers.dart';
 import 'quality_cache.dart';
 
 /// Super's "offline" media folder (§5.3).
 const superMediaDir = '/storage/emulated/0/Download/MeTube_Super';
 
+/// Where offline copies land; a provider so a test copies into a folder of
+/// its own instead of a phone path.
+final mediaDirProvider = Provider<String>((ref) => superMediaDir);
+
 /// The `detail` marker that distinguishes a "Wi-Fi only" refusal from a
 /// real network outage; `errorText` reads it to show the right message.
 const wifiOnlyRejection = 'wifi-only';
 
-/// Progress of an "available offline" pull in flight: canonicalUrl to 0-1.
-final offlinePullProgressProvider = StateProvider<Map<String, double>>(
-  (ref) => {},
-);
+/// Progress of a copy to this phone in flight, canonicalUrl to 0-1, for
+/// the card and the player. An offline copy wins over a share's copy of
+/// the same clip, being the one the save button stands for.
+final offlinePullProgressProvider = Provider<Map<String, double>>((ref) {
+  final pulls = ref.watch(devicePullsProvider).values;
+  return {
+    for (final pull in pulls.where((p) => p.kind == PullKind.share))
+      pull.url: pull.progress ?? 0,
+    for (final pull in pulls.where((p) => p.kind == PullKind.offline))
+      pull.url: pull.progress ?? 0,
+  };
+});
 
 final libraryActionsProvider = Provider((ref) => LibraryActions(ref));
 
@@ -73,7 +84,15 @@ class LibraryActions {
     serverFilename: item.serverFilename,
     title: item.title,
     thumbnail: item.thumbnail,
+    sizeBytes: item.sizeBytes,
   );
+
+  /// Offline copies in flight, so asking again for the same clip waits on
+  /// the copy already running instead of starting a second one.
+  final _running = <String, Future<String>>{};
+
+  /// The offline copy of [canonicalUrl] in flight, if any.
+  Future<String>? runningOffline(String canonicalUrl) => _running[canonicalUrl];
 
   /// The same action for an item that has **just completed** and has not
   /// appeared in the library yet. Collecting a batch on the device needs it
@@ -84,6 +103,31 @@ class LibraryActions {
     required String? serverFilename,
     required String title,
     String? thumbnail,
+    int? sizeBytes,
+  }) {
+    final running = _running[canonicalUrl];
+    if (running != null) return running;
+    final pull =
+        _pullToDevice(
+          canonicalUrl: canonicalUrl,
+          serverFilename: serverFilename,
+          title: title,
+          thumbnail: thumbnail,
+          sizeBytes: sizeBytes,
+        ).whenComplete(() {
+          // A block, not an arrow: `remove` returns this very future, and
+          // `whenComplete` would wait on it, so the copy never finished.
+          _running.remove(canonicalUrl);
+        });
+    return _running[canonicalUrl] = pull;
+  }
+
+  Future<String> _pullToDevice({
+    required String canonicalUrl,
+    required String? serverFilename,
+    required String title,
+    required String? thumbnail,
+    required int? sizeBytes,
   }) async {
     // **Refused outright rather than waiting**: the add pipeline in Lite
     // has a queue where an item can be patient, but this is a direct action
@@ -92,24 +136,33 @@ class LibraryActions {
     if (!canPullNow) throw const NetworkException(wifiOnlyRejection);
     final filename = serverFilename;
     if (filename == null) throw const UnsafeFilenameException();
-    final dir = Directory(superMediaDir);
-    await dir.create(recursive: true);
+    final media = _ref.read(mediaDirProvider);
+    await Directory(media).create(recursive: true);
+    await ensureRoom(_ref, media, sizeBytes);
     final savePath =
-        '$superMediaDir/${buildLocalFilename(title, serverFilename: filename)}';
+        '$media/${buildLocalFilename(title, serverFilename: filename)}';
 
-    _setProgress(canonicalUrl, 0);
+    final pulls = _ref.read(devicePullsProvider.notifier);
+    final cancel = pulls.begin(
+      PullKind.offline,
+      canonicalUrl,
+      title,
+      total: sizeBytes,
+    )!;
     final String finalPath;
     try {
       // The final path comes from `pull`: a collision shifts it, and
       // indexing the requested path instead would have pointed at a
       // different file.
-      finalPath = await Transfer(api: _api).pull(
+      finalPath = await _ref.read(phonePullProvider)(
         serverFilename: filename,
         savePath: savePath,
-        onProgress: (p) => _setProgress(canonicalUrl, p),
+        cancel: cancel,
+        onBytes: (received, total) =>
+            pulls.report(PullKind.offline, canonicalUrl, received, total),
       );
     } finally {
-      _clearProgress(canonicalUrl);
+      pulls.end(PullKind.offline, canonicalUrl);
     }
     await _ref.read(offlineIndexProvider).put(canonicalUrl, finalPath);
     if (thumbnail != null) {
@@ -167,6 +220,7 @@ class LibraryActions {
     // the entry, or it stays orphaned in `filesDir/thumbs`, which Android
     // never sweeps.
     await artwork.removeKeysAndFiles(gone);
+    await _ref.read(keptCoverIndexProvider).removeKeysAndFiles(gone);
     for (final url in gone) {
       await tags.removeKey(url);
       await shapes.removeKey(url);
@@ -207,64 +261,5 @@ class LibraryActions {
     await removeLocalCopy(item);
     // The file is gone, so the key lands in `gone` and is pruned.
     await pruneItemData([item.canonicalUrl]);
-  }
-
-  /// Smart sharing: the local file if there is one, otherwise download then
-  /// share. **Field report 2026-09-02:** "there is no counter showing it is
-  /// downloading, it looks unresponsive". The progress was being computed
-  /// in [offlinePullProgressProvider] and nobody displayed it. The share
-  /// screens show it now, and the temporary file **is deleted after
-  /// sharing** rather than left to accumulate in the system temp folder.
-  Future<void> smartShare(LibraryItem item) async {
-    final localPath = item.localPath;
-    if (localPath != null) {
-      await Share.shareXFiles([XFile(localPath)]);
-      return;
-    }
-    if (!canPullNow) throw const NetworkException(wifiOnlyRejection);
-    final filename = item.serverFilename;
-    if (filename == null) throw const UnsafeFilenameException();
-    final tmp = await getTemporaryDirectory();
-    final path =
-        '${tmp.path}/${buildLocalFilename(item.title, serverFilename: filename)}';
-    _setProgress(item.canonicalUrl, 0);
-    try {
-      await Transfer(api: _api).pull(
-        serverFilename: filename,
-        savePath: path,
-        onProgress: (p) => _setProgress(item.canonicalUrl, p),
-      );
-    } finally {
-      _clearProgress(item.canonicalUrl);
-    }
-    try {
-      await Share.shareXFiles([XFile(path)]);
-    } finally {
-      // A transient copy the offline index knows nothing about; leaving it
-      // is a silent leak.
-      try {
-        final file = File(path);
-        if (await file.exists()) await file.delete();
-      } on FileSystemException {
-        // The sharing app is still reading it; the system will clean it up
-        // later.
-      }
-    }
-  }
-
-  void _setProgress(String url, double value) {
-    final map = Map<String, double>.from(
-      _ref.read(offlinePullProgressProvider),
-    );
-    map[url] = value;
-    _ref.read(offlinePullProgressProvider.notifier).state = map;
-  }
-
-  void _clearProgress(String url) {
-    final map = Map<String, double>.from(
-      _ref.read(offlinePullProgressProvider),
-    );
-    map.remove(url);
-    _ref.read(offlinePullProgressProvider.notifier).state = map;
   }
 }

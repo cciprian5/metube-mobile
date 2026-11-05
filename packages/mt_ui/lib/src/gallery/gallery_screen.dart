@@ -11,6 +11,10 @@ import '../widgets/mt_search_field.dart';
 import '../widgets/mt_section_header.dart';
 import '../widgets/mt_snackbar.dart';
 import '../widgets/mt_url_input_sheet.dart';
+import '../widgets/mt_route_motion.dart';
+
+import '../icons/mt_icon.dart';
+import '../icons/mt_icons.dart';
 
 /// An internal gallery for reviewing every component in both themes and
 /// both text directions. **Not a product screen**: its strings are fixed
@@ -42,17 +46,17 @@ class MTGalleryScreen extends StatelessWidget {
           IconButton(
             onPressed: onToggleVariant,
             tooltip: 'Lite/Super',
-            icon: const Icon(Icons.swap_horiz_rounded),
+            icon: const MTIcon(MTIcons.swap),
           ),
           IconButton(
             onPressed: onToggleDirection,
             tooltip: 'RTL/LTR',
-            icon: const Icon(Icons.format_textdirection_r_to_l_rounded),
+            icon: const MTIcon(MTIcons.swap),
           ),
           IconButton(
             onPressed: onToggleTheme,
             tooltip: 'ليل/نهار',
-            icon: const Icon(Icons.dark_mode_rounded),
+            icon: const MTIcon(MTIcons.appearance),
           ),
         ],
       ),
@@ -230,7 +234,6 @@ class MTGalleryScreen extends StatelessWidget {
 
           const MTSectionHeader(title: 'حالة فارغة'),
           MTEmptyState(
-            icon: Icons.cloud_off_rounded,
             title: 'لا سيرفر بعد',
             message: 'أدخل رابط سيرفر MeTube من الإعدادات لبدء التحميل',
             actionLabel: 'فتح الإعدادات',
@@ -245,7 +248,7 @@ class MTGalleryScreen extends StatelessWidget {
     final controller = TextEditingController(
       text: 'https://youtu.be/dQw4w9WgXcQ',
     );
-    showModalBottomSheet<void>(
+    showMTSheet<void>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,

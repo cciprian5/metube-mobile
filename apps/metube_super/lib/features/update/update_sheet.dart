@@ -7,7 +7,7 @@ import 'update_state.dart';
 /// The update sheet: what is new, then one prominent action according to
 /// the phase.
 void showUpdateSheet(BuildContext context) {
-  showModalBottomSheet<void>(
+  showMTSheet<void>(
     context: context,
     useRootNavigator: true,
     isScrollControlled: true,
@@ -61,7 +61,7 @@ class UpdateSheet extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.system_update_rounded, color: p.accent),
+                        MTIcon(MTIcons.saveTo, color: p.accent),
                         const SizedBox(width: MTSpace.sm),
                         Expanded(
                           child: Text(
@@ -118,7 +118,7 @@ class _Actions extends ConsumerWidget {
   /// open where it lives.
   Future<void> _askPermission(BuildContext context, WidgetRef ref) async {
     final l10n = context.mtl;
-    final go = await showDialog<bool>(
+    final go = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.updateAllowInstallTitle),
@@ -169,7 +169,7 @@ class _Actions extends ConsumerWidget {
               // **Both colours come from the palette explicitly**:
               // Material's default track is derived from
               // `secondaryContainer` and comes out greenish over the Wahaj
-              // cream, a colour that does not exist in the identity
+              // ground, a colour that does not exist in the identity
               // (measured on the emulator).
               backgroundColor: p.accent.withValues(alpha: 0.16),
               valueColor: AlwaysStoppedAnimation(p.accent),
@@ -190,7 +190,7 @@ class _Actions extends ConsumerWidget {
         children: [
           FilledButton.icon(
             onPressed: () => _install(context, ref),
-            icon: const Icon(Icons.install_mobile_rounded, size: 18),
+            icon: const MTIcon(MTIcons.offline, size: 18),
             label: Text(l10n.updateInstall),
           ),
           const SizedBox(height: MTSpace.xs),
@@ -222,7 +222,7 @@ class _Actions extends ConsumerWidget {
         ],
         FilledButton.icon(
           onPressed: controller.download,
-          icon: const Icon(Icons.download_rounded, size: 18),
+          icon: const MTIcon(MTIcons.download, size: 18),
           label: Text(l10n.updateNow),
         ),
         const SizedBox(height: MTSpace.xxs),

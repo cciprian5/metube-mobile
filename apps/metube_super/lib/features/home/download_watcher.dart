@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
@@ -8,6 +7,7 @@ import 'package:mt_ui/mt_ui.dart';
 import '../../di.dart';
 import '../library/library_providers.dart';
 import '../shared/error_text.dart';
+import 'background_hold.dart';
 import 'notifications.dart';
 
 final notificationsProvider = Provider((ref) => DownloadNotifications());
@@ -31,8 +31,8 @@ final notificationsProvider = Provider((ref) => DownloadNotifications());
 final downloadWatcherProvider = Provider<void>((ref) {
   final notifications = ref.watch(notificationsProvider);
   final logger = ref.watch(loggerProvider);
+  final hold = ref.watch(backgroundHoldProvider);
   final notified = <String>{};
-  var backgroundOn = false;
 
   /// The last notification's fingerprint per task. Without this filter,
   /// seven tasks are posted on every broadcast, thousands of calls a
@@ -47,39 +47,6 @@ final downloadWatcherProvider = Provider<void>((ref) {
       mtLocalizationsFor(ref.read(settingsProvider).localeCode);
 
   int idOf(DownloadTask task) => task.id.hashCode & 0x7fffffff;
-
-  Future<void> syncBackground(bool anyActive) async {
-    if (anyActive == backgroundOn) return;
-    backgroundOn = anyActive;
-    try {
-      if (anyActive) {
-        final texts = l10n();
-        final ready = await FlutterBackground.initialize(
-          androidConfig: FlutterBackgroundAndroidConfig(
-            notificationTitle: texts.downloadingTitle,
-            notificationText: texts.backgroundDownload,
-            notificationImportance: AndroidNotificationImportance.normal,
-            notificationIcon: const AndroidResource(
-              name: 'ic_stat_metube',
-              defType: 'drawable',
-            ),
-            enableWifiLock: true,
-            // No battery-optimisation exemption: an intrusive system dialog,
-            // and the foreground service alone carries a download session.
-            shouldRequestBatteryOptimizationsOff: false,
-          ),
-        );
-        if (ready) await FlutterBackground.enableBackgroundExecution();
-      } else if (FlutterBackground.isBackgroundExecutionEnabled) {
-        await FlutterBackground.disableBackgroundExecution();
-      }
-    } catch (e) {
-      // A refused permission or an unsupported device: the download still
-      // runs while the app is open, as it did before.
-      backgroundOn = false;
-      await logger.error('background mode failed', cause: e, tag: 'download');
-    }
-  }
 
   Future<void> showProgressIfChanged(
     int id, {
@@ -203,7 +170,7 @@ final downloadWatcherProvider = Provider<void>((ref) {
       lastShown.remove(id);
       await notifications.cancel(id);
     }
-    await syncBackground(tasks.any((t) => !t.isFinished));
+    await hold.set('downloads', tasks.any((t) => !t.isFinished));
   }
 
   ref.listen<AsyncValue<List<DownloadTask>>>(engineTasksProvider, (_, next) {

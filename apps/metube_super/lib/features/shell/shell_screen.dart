@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
+import 'package:mt_media/library.dart';
 
 import '../../di.dart';
 import '../home/add_flow.dart';
@@ -14,8 +15,8 @@ import '../home/download_watcher.dart';
 import '../home/network_gate.dart';
 import '../home/quick_download.dart';
 import '../home/reception.dart';
+import '../library/cover_keeping.dart';
 import '../library/library_enricher.dart';
-import '../library/library_models.dart' show MediaTypeFilter;
 import '../library/library_providers.dart'
     show completionGlowProvider, libraryViewProvider;
 import '../library/quality_backfill.dart';
@@ -253,6 +254,9 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
     // Returning to the app asks the server again; the card is not truthful
     // without this.
     ref.watch(libraryEnrichmentProvider);
+    // Keeps the online covers on the phone, so a clip taken down at its
+    // source keeps its face.
+    ref.watch(coverKeepingProvider);
     // Stores each item's quality ahead of time, after the enricher has
     // shown its file is readable.
     ref.watch(qualityBackfillRunProvider);
@@ -357,17 +361,17 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
                     openAddSheet(context, ref, initialUrl: clipboardUrl),
                 onDismiss: _dismissClipboard,
               ),
-            if (branch != 2 && !panel)
-              MTMiniPlayer(
-                handler: handler,
-                // A square thumbnail, so the wide YouTube picture: the
-                // letterboxed one shows its black bands.
-                artwork: coverBuilderFor(ref),
-                onOpen: () => GoRouter.of(context).push('/audio'),
-                onExpand: roomForPanel
-                    ? () => setState(() => _panelFolded = false)
-                    : null,
-              ),
+            MTMiniPlayer(
+              hidden: branch == 2 || panel,
+              handler: handler,
+              // A square thumbnail, so the wide YouTube picture: the
+              // letterboxed one shows its black bands.
+              artwork: coverBuilderFor(ref),
+              onOpen: () => GoRouter.of(context).push('/audio'),
+              onExpand: roomForPanel
+                  ? () => setState(() => _panelFolded = false)
+                  : null,
+            ),
           ],
         );
       },
@@ -376,18 +380,18 @@ class _ShellScreenState extends ConsumerState<ShellScreen>
 
   List<MTNavItem> _navItems(MTLocalizations l10n) => [
     MTNavItem(
-      icon: Icons.video_library_outlined,
-      selectedIcon: Icons.video_library_rounded,
+      icon: MTIcons.library,
+      selectedIcon: MTIcons.library,
       label: l10n.navLibrary,
     ),
     MTNavItem(
-      icon: Icons.queue_music_outlined,
-      selectedIcon: Icons.queue_music_rounded,
+      icon: MTIcons.queue,
+      selectedIcon: MTIcons.queue,
       label: l10n.navPlaylists,
     ),
     MTNavItem(
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings_rounded,
+      icon: MTIcons.settings,
+      selectedIcon: MTIcons.settings,
       label: l10n.navSettings,
     ),
   ];

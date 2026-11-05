@@ -65,7 +65,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String addedNToServer(int count) {
-    return 'أُضيف $count إلى الخادم';
+    return 'أُضيف $count إلى السيرفر';
   }
 
   @override
@@ -80,7 +80,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get addingToServer => 'جارٍ الإرسال إلى السيرفر…';
 
   @override
-  String get allDownloadsFinished => 'اكتملت جميع التحميلات!';
+  String get allDownloadsFinished => 'اكتملت جميع التحميلات';
 
   @override
   String get allFolders => 'كل المجلدات';
@@ -124,7 +124,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get audioStereo => 'ستيريو';
 
   @override
-  String get authHelper => 'اتركه فارغاً إن كان الخادم بلا كلمة مرور';
+  String get authHelper => 'اتركه فارغاً إن كان السيرفر بلا كلمة مرور';
 
   @override
   String get authentication => 'تسجيل الدخول (اختياري)';
@@ -141,18 +141,18 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get autoRestoreSuccess =>
-      'استُعيدت البيانات من النسخة الاحتياطية بنجاح!';
+      'استُعيدت البيانات من النسخة الاحتياطية بنجاح';
 
   @override
   String get autoRetry => 'إعادة المحاولة عند عودة الشبكة';
 
   @override
   String get autoRetryHelp =>
-      'إذا فشل تحميل بسبب انقطاع الشبكة أعاده التطبيق تلقائياً حين تعود. أما ما رفضه الخادم فلا يُعاد، لأن تكراره دون تغيير سيفشل مجدداً.';
+      'إذا فشل تحميل بسبب انقطاع الشبكة أعاده التطبيق تلقائياً حين تعود. أما ما رفضه السيرفر فلا يُعاد، لأن تكراره دون تغيير سيفشل مجدداً.';
 
   @override
   String get autoSwitchDisabledHint =>
-      'التبديل التلقائي مُعطّل، لذا يستخدم التطبيق عنوان الخادم المحدد في الإعدادات.';
+      'التبديل التلقائي مُعطّل، لذا يستخدم التطبيق عنوان السيرفر المحدد في الإعدادات.';
 
   @override
   String get autoUrlSwitching => 'التبديل التلقائي للعنوان';
@@ -168,7 +168,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get availabilityOffline => 'بلا اتصال (نسخة محلية)';
 
   @override
-  String get availabilityServer => 'الخادم (بث)';
+  String get availabilityServer => 'السيرفر (بث)';
 
   @override
   String get availableOfflineNow => 'صار متاحاً دون اتصال';
@@ -246,6 +246,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get cancel => 'إلغاء';
 
   @override
+  String get cancelSaveToDevice => 'إيقاف الحفظ في الجوال';
+
+  @override
   String get changeQuality => 'تغيير الجودة';
 
   @override
@@ -256,6 +259,48 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get channelUrlHint => 'https://www.youtube.com/@name';
+
+  @override
+  String chapterCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فصل',
+      many: '$count فصلاً',
+      few: '$count فصول',
+      two: 'فصلان',
+      one: 'فصل واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String chapterNumber(int number) {
+    return 'الفصل $number';
+  }
+
+  @override
+  String get chaptersFold => 'إخفاء الفصول';
+
+  @override
+  String chaptersFromTranscript(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فصل من نص المقطع',
+      many: '$count فصلاً من نص المقطع',
+      few: '$count فصول من نص المقطع',
+      two: 'فصلان من نص المقطع',
+      one: 'فصل واحد من نص المقطع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get chaptersShowAll => 'عرض كل الفصول';
+
+  @override
+  String get chaptersUnfold => 'إظهار الفصول';
 
   @override
   String get checkEvery => 'معدّل الفحص';
@@ -339,7 +384,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get compatiblePlaybackHelp =>
-      'يطلب من الخادم صيغة H.264/AAC التي تشغّلها كل الهواتف بعتادها مباشرة. وإن أطفأته أتاح لك أعلى دقة، لكن يوتيوب قد يرسل حينها صيغة AV1 فتظهر الصورة مشوّشة على أجهزة كثيرة.';
+      'يطلب من السيرفر صيغة H.264/AAC التي تشغّلها كل الهواتف بعتادها مباشرة. وإن أطفأته أتاح لك أعلى دقة، لكن يوتيوب قد يرسل حينها صيغة AV1 فتظهر الصورة مشوّشة على أجهزة كثيرة.';
 
   @override
   String get completed => 'مكتمل';
@@ -431,6 +476,21 @@ class MTLocalizationsAr extends MTLocalizations {
   String get copiedToClipboard => 'نُسِخ إلى الحافظة';
 
   @override
+  String copyingToPhone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقطع إلى الجوال',
+      many: '$count مقطعاً إلى الجوال',
+      few: '$count مقاطع إلى الجوال',
+      two: 'مقطعان إلى الجوال',
+      one: 'مقطع واحد إلى الجوال',
+      zero: 'لا مقاطع',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get copyright => '© 2026 ياسر صغير';
 
   @override
@@ -453,10 +513,10 @@ class MTLocalizationsAr extends MTLocalizations {
   String get delete => 'حذف';
 
   @override
-  String get deleteFromServer => 'حذف من الخادم';
+  String get deleteFromServer => 'حذف من السيرفر';
 
   @override
-  String get deleteFromServerConfirm => 'إزالة هذا العنصر من الخادم؟';
+  String get deleteFromServerConfirm => 'إزالة هذا العنصر من السيرفر؟';
 
   @override
   String deleteMultipleConfirm(int count) {
@@ -504,6 +564,1215 @@ class MTLocalizationsAr extends MTLocalizations {
   String get deselectAll => 'إلغاء التحديد';
 
   @override
+  String desktopAddLinks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'أضف $count رابط',
+      many: 'أضف $count رابطاً',
+      few: 'أضف $count روابط',
+      two: 'أضف الرابطين',
+      one: 'أضف رابطاً واحداً',
+      zero: 'لا شيء لإضافته',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get desktopAddressAdd => 'أضف';
+
+  @override
+  String get desktopAddressInUse => 'قيد الاستعمال';
+
+  @override
+  String get desktopAddressInvalid => 'ليس عنواناً صالحاً، أو أنه في القائمة';
+
+  @override
+  String get desktopAddressNew => 'عنوان جديد، مثل https://metube.example.com';
+
+  @override
+  String get desktopAddressStatusNotMeTube => 'ليس سيرفر MeTube';
+
+  @override
+  String get desktopAddressStatusOk => 'يستجيب';
+
+  @override
+  String get desktopAddressStatusRefused => 'يرفض كلمة المرور';
+
+  @override
+  String get desktopAddressStatusUnreachable => 'لا يمكن الوصول إليه';
+
+  @override
+  String get desktopAddressTest => 'اختبار';
+
+  @override
+  String get desktopAddressUse => 'استعمل';
+
+  @override
+  String get desktopAddresses => 'العناوين';
+
+  @override
+  String get desktopAddressesHint =>
+      'يستعمل التطبيق العنوان الذي تختاره، ولا يبدّله من تلقاء نفسه.';
+
+  @override
+  String get desktopAskEachTime => 'اسألني كل مرة';
+
+  @override
+  String get desktopAskEachTimeHint => 'يسألك Windows عن المجلد عند كل تنزيل.';
+
+  @override
+  String get desktopBack => 'رجوع';
+
+  @override
+  String get desktopBackUpNow => 'انسخ الآن';
+
+  @override
+  String get desktopBackupHint =>
+      'يحتفظ هذا الكمبيوتر بآخر سبع نسخ احتياطية، بين كل نسخة والتي تليها ساعة على الأقل، في مجلده الخاص.';
+
+  @override
+  String get desktopBackupsNone => 'لا نسخة بعد';
+
+  @override
+  String get desktopBrowserButton => 'زر «إلى Ember» في المتصفح';
+
+  @override
+  String get desktopBrowserButtonCopied =>
+      'نُسخ الرمز. أنشئ إشارة مرجعية جديدة، والصقه في خانة عنوانها (URL).';
+
+  @override
+  String get desktopBrowserButtonCopy => 'انسخ الرمز';
+
+  @override
+  String get desktopBrowserButtonFailed =>
+      'تعذّر فتح الصفحة؛ انسخ الرمز بدلاً منها.';
+
+  @override
+  String get desktopBrowserButtonHint =>
+      'زرّ في شريط الإشارات المرجعية: نقرة عليه في صفحة أي مقطع تفتح نافذة الإضافة هنا بالرابط، ولا يُرسَل شيء قبل أن تضغط «إضافة».';
+
+  @override
+  String get desktopBrowserButtonName => 'إلى Ember';
+
+  @override
+  String get desktopBrowserButtonOpen => 'افتح صفحة الإعداد';
+
+  @override
+  String get desktopBrowserPageCopyInstead =>
+      'إن لم ينجح السحب، فأنشئ إشارة مرجعية جديدة والصق هذا في خانة عنوانها:';
+
+  @override
+  String get desktopBrowserPageDragHint =>
+      'اسحبه إلى الشريط؛ النقر عليه هنا لا يفعل شيئاً.';
+
+  @override
+  String get desktopBrowserPageStep1 =>
+      'أظهر شريط الإشارات المرجعية إن كان مخفياً:';
+
+  @override
+  String get desktopBrowserPageStep2 =>
+      'اسحب الزر الذي تحت هذا السطر بالفأرة، وأفلته على الشريط.';
+
+  @override
+  String get desktopBrowserPageStep3 =>
+      'في صفحة أي مقطع انقره، فيفتح MeTube Ember نافذة الإضافة بالرابط. وفي المرة الأولى يسألك المتصفح هل يفتح التطبيق، فاسمح له.';
+
+  @override
+  String get desktopBrowserPageTitle => 'أضف زر «إلى Ember» إلى متصفحك';
+
+  @override
+  String get desktopChangeFolder => 'تغيير…';
+
+  @override
+  String get desktopChannel => 'القناة';
+
+  @override
+  String get desktopChannelClips => 'في مكتبتك';
+
+  @override
+  String get desktopChannels => 'القنوات';
+
+  @override
+  String get desktopChannelsInLibrary => 'قنوات في مكتبتك';
+
+  @override
+  String get desktopChapters => 'الفصول';
+
+  @override
+  String get desktopCheckAll => 'افحص الكل';
+
+  @override
+  String get desktopChooseClip => 'تحديد';
+
+  @override
+  String get desktopClearFilters => 'إلغاء التصفية';
+
+  @override
+  String get desktopClearFinished => 'إخفاء المنتهية';
+
+  @override
+  String get desktopClearSelection => 'إلغاء التحديد';
+
+  @override
+  String get desktopCookiesPrivacy =>
+      'تُرسَل الملفات إلى سيرفرك مباشرة ولا تُحفظ على هذا الكمبيوتر أبداً. ولأنها بمثابة مفاتيح لحساباتك، فلا ترسلها إلا إلى سيرفر تملكه.';
+
+  @override
+  String get desktopCookiesReplaceNote =>
+      'كل رفع جديد يحلّ محل ملف الكوكيز على السيرفر بالكامل، فإن أردت الإبقاء على عدة منصات فاختر ملفاتها كلها معاً في كل مرة، ومنها ما رفعته من قبل. ولاختيار أكثر من ملف، اضغط Ctrl أثناء النقر.';
+
+  @override
+  String get desktopCopiedLinkAdd => 'إضافة…';
+
+  @override
+  String get desktopCopiedLinkTitle => 'أتضيف هذا الرابط إلى السيرفر؟';
+
+  @override
+  String get desktopCopyCancelled => 'أُلغي';
+
+  @override
+  String get desktopCopyFile => 'نسخ الملف';
+
+  @override
+  String get desktopCopyFileFailed => 'تعذّر نسخ الملف';
+
+  @override
+  String get desktopCopyFileLarge => 'ملف كبير';
+
+  @override
+  String desktopCopyFileLargeMessage(String size) {
+    return 'حجم هذا المقطع $size. يُحفظ أولاً في مجلد التنزيل ثم يُنسخ، وكثير من برامج المحادثة يرفض ملفاً بهذا الحجم.';
+  }
+
+  @override
+  String desktopCopyFileNoSpace(String needed, String free) {
+    return 'المساحة على القرص لا تكفي: الملف $needed والمتاح $free';
+  }
+
+  @override
+  String get desktopCopyFilePreparing =>
+      'يُجهَّز الملف للنسخ، وتقدّمه في التنزيلات';
+
+  @override
+  String get desktopCopyLink => 'نسخ الرابط';
+
+  @override
+  String get desktopCopyOneClip => 'النسخ لمقطع واحد في كل مرة';
+
+  @override
+  String get desktopCopyQueued => 'ينتظر دوره';
+
+  @override
+  String get desktopCopyQuote => 'انسخ مع الوقت والرابط';
+
+  @override
+  String get desktopDefaultQualityHint =>
+      'ما تبدأ به كل إضافة، ويبقى تغييره ممكناً لكل رابط.';
+
+  @override
+  String desktopDeleteSelectedConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'حذف $count مقطع من السيرفر؟ تبقى نسخها على هذا الكمبيوتر إن وُجدت.',
+      many:
+          'حذف $count مقطعاً من السيرفر؟ تبقى نسخها على هذا الكمبيوتر إن وُجدت.',
+      few:
+          'حذف $count مقاطع من السيرفر؟ تبقى نسخها على هذا الكمبيوتر إن وُجدت.',
+      two: 'حذف مقطعين من السيرفر؟ تبقى نسختاهما على هذا الكمبيوتر إن وُجدتا.',
+      one: 'حذف مقطع واحد من السيرفر؟ تبقى نسخته على هذا الكمبيوتر إن وُجدت.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get desktopDesktopSection => 'سطح المكتب';
+
+  @override
+  String get desktopDiscover => 'اكتشف MeTube Ember';
+
+  @override
+  String get desktopDiscoverAddLink => 'الصق رابطاً أو اسحبه';
+
+  @override
+  String get desktopDiscoverAddLinkLine =>
+      'Ctrl+V في أي مكان، أو اسحب الرابط إلى النافذة لتضيفه.';
+
+  @override
+  String get desktopDiscoverAdding => 'الإضافة والمشاركة';
+
+  @override
+  String get desktopDiscoverBrowser => 'من المتصفح';
+
+  @override
+  String get desktopDiscoverBrowserLine =>
+      'زر «إلى Ember» في شريط الإشارات المرجعية يفتح نافذة الإضافة بالصفحة التي أنت فيها.';
+
+  @override
+  String get desktopDiscoverChapters => 'الفصول';
+
+  @override
+  String get desktopDiscoverChaptersLine => 'أقسام المقطع من نصه، في صفحته.';
+
+  @override
+  String get desktopDiscoverChoose => 'حدّد عدة مقاطع';
+
+  @override
+  String get desktopDiscoverChooseLine =>
+      'بالدائرة عند المرور، أو Ctrl أو Shift مع النقر، ثم أضفها إلى قائمة أو احذفها معاً.';
+
+  @override
+  String get desktopDiscoverDragOut => 'اسحب مقطعاً إلى الخارج';
+
+  @override
+  String get desktopDiscoverDragOutLine => 'إلى مجلد أو برنامج آخر، ملفاً.';
+
+  @override
+  String get desktopDiscoverExport => 'صدّر النص';
+
+  @override
+  String get desktopDiscoverExportLine =>
+      'نصاً، أو ترجمةً بصيغة SRT لمشغّل آخر.';
+
+  @override
+  String get desktopDiscoverHint =>
+      'كل ما يستطيعه التطبيق، سطراً لكل ميزة، مع اختصاراتها.';
+
+  @override
+  String get desktopDiscoverLibrary => 'المكتبة';
+
+  @override
+  String get desktopDiscoverListening =>
+      'للصوت: غرفة هادئة بغلاف كبير، بملء الشاشة.';
+
+  @override
+  String get desktopDiscoverMini => 'النافذة الصغيرة';
+
+  @override
+  String get desktopDiscoverMiniLine =>
+      'بطاقة صغيرة فوق كل النوافذ، بجانب الساعة.';
+
+  @override
+  String get desktopDiscoverPhone => 'مع جوالك';
+
+  @override
+  String get desktopDiscoverPhoneLine =>
+      'الوسوم والقوائم ومواضع الاستئناف، تُزامَن مع MeTube Super عبر مجلد تختاره.';
+
+  @override
+  String get desktopDiscoverReading =>
+      'النص مقالةً: انقر جملة لتسمعها من مكانها.';
+
+  @override
+  String get desktopDiscoverSaid => 'ما قيل في المقاطع';
+
+  @override
+  String get desktopDiscoverSearch => 'ابحث في ما قيل';
+
+  @override
+  String get desktopDiscoverSearchLine =>
+      'اعثر على المقاطع التي قيلت فيها كلمة، لا في العناوين وحدها.';
+
+  @override
+  String get desktopDiscoverShortcutsLine =>
+      'كل اختصارات النافذة في ورقة واحدة.';
+
+  @override
+  String get desktopDiscoverShow => 'اعرضها';
+
+  @override
+  String get desktopDiscoverStatsLine =>
+      'المكتبة بالأرقام: حسب الموقع والقناة والشهر.';
+
+  @override
+  String get desktopDiscoverSubtitles =>
+      'النص على الصورة، والكلمة المنطوقة تضيء.';
+
+  @override
+  String get desktopDiscoverTheater => 'صورة أكبر تأخذ مكان اللوحة الجانبية.';
+
+  @override
+  String get desktopDiscoverTry => 'جرّبها';
+
+  @override
+  String get desktopDiscoverWatching => 'المشاهدة والاستماع';
+
+  @override
+  String get desktopDownloadFolder => 'مجلد التنزيل';
+
+  @override
+  String get desktopDownloadFolderHint =>
+      'ملفاتك الخاصة: تُحفظ هنا، ثم لا يتدخل فيها التطبيق.';
+
+  @override
+  String get desktopDownloadTo => 'تنزيل…';
+
+  @override
+  String desktopDownloading(int percent) {
+    return 'يُنزَّل · $percent٪';
+  }
+
+  @override
+  String get desktopDownloads => 'التحميلات';
+
+  @override
+  String get desktopDownloadsEmpty =>
+      'لا شيء قيد التحميل. أضف رابطاً، أو أتِح مقطعاً دون اتصال.';
+
+  @override
+  String get desktopDragToReorder => 'اسحب لتغيير الترتيب';
+
+  @override
+  String get desktopDropLinks => 'أفلِته لإضافته';
+
+  @override
+  String get desktopEmptyLibraryMessage =>
+      'أضِف رابطاً فيظهر المقطع هنا بعد أن ينزّله السيرفر.';
+
+  @override
+  String get desktopExport => 'تصدير';
+
+  @override
+  String get desktopExportForPhone => 'تصدير للجوال';
+
+  @override
+  String get desktopExportForPhoneHint =>
+      'يحفظ وسوم هذا الكمبيوتر وقوائمه ومواضع الاستئناف ونصوصه في ملفين يستعيدهما الجوال. والاستعادة في الجوال تستبدل وسومه وقوائمه.';
+
+  @override
+  String get desktopExportMarkdown => 'نص (Markdown)';
+
+  @override
+  String get desktopExportPdf => 'مستند (PDF)';
+
+  @override
+  String get desktopExportPhone => 'للجوال (ملف الاستيراد في Super)';
+
+  @override
+  String get desktopExportSrt => 'ترجمة (SRT)';
+
+  @override
+  String desktopExported(String name) {
+    return 'حُفظ $name';
+  }
+
+  @override
+  String desktopFileReadyToPaste(String name, String size) {
+    return 'جاهز للصق: $name · $size';
+  }
+
+  @override
+  String get desktopFolderUnavailable => 'لا مجلد متاح';
+
+  @override
+  String get desktopFolders => 'المجلدات';
+
+  @override
+  String get desktopForward => 'تقدّم';
+
+  @override
+  String get desktopGlobalShortcut => 'التشغيل والإيقاف من أي تطبيق';
+
+  @override
+  String desktopGlobalShortcutHint(String keys) {
+    return '$keys يشغّل ويوقف والنافذة خلف البرامج الأخرى.';
+  }
+
+  @override
+  String desktopGlobalShortcutTaken(String keys) {
+    return 'برنامج آخر يستعمل $keys من قبل.';
+  }
+
+  @override
+  String get desktopHidePanel => 'إخفاء اللوحة الجانبية';
+
+  @override
+  String get desktopHintShortcuts =>
+      'اضغط ? لترى اختصارات لوحة المفاتيح. المسافة للتشغيل والإيقاف، والسهمان الأيمن والأيسر للتقديم والتأخير.';
+
+  @override
+  String get desktopHintShortcutsAction => 'الاختصارات';
+
+  @override
+  String get desktopHintTrayBody =>
+      'يكمل التشغيل من أيقونته بجانب الساعة. للخروج، انقر الأيقونة بالزر الأيمن.';
+
+  @override
+  String get desktopHintTrayTitle => 'ما زال MeTube Ember يعمل';
+
+  @override
+  String get desktopHints => 'إظهار التلميحات';
+
+  @override
+  String get desktopHintsAgain => 'أعد عرضها';
+
+  @override
+  String get desktopHintsHint =>
+      'تلميحان قصيران، يظهر كل منهما مرة واحدة: الاختصارات مع أول مقطع، وأيقونة الساعة مع أول إغلاق.';
+
+  @override
+  String get desktopImportFromPhone => 'استيراد من الجوال…';
+
+  @override
+  String get desktopImportHint =>
+      'نسخة احتياطية أو ملف نصوص من MeTube Super أو Lite، تختاره هنا أو تُفلته على النافذة. يُضاف إلى ما هنا ولا يستبدل شيئاً.';
+
+  @override
+  String desktopImportedBackup(int tagged, int lists, int positions) {
+    return 'أُضيف من الجوال. وسوم: $tagged · قوائم: $lists · مواضع استئناف: $positions';
+  }
+
+  @override
+  String get desktopImportedNothing => 'لا جديد: كل ما فيها موجود هنا.';
+
+  @override
+  String desktopImportedTranscripts(int count) {
+    return 'نصوص أُضيفت: $count';
+  }
+
+  @override
+  String desktopInLibrary(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقطع في مكتبتك',
+      many: '$count مقطعاً في مكتبتك',
+      few: '$count مقاطع في مكتبتك',
+      two: 'مقطعان في مكتبتك',
+      one: 'مقطع في مكتبتك',
+      zero: 'لا شيء في مكتبتك',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get desktopKeyAddLink => 'إضافة الرابط المنسوخ';
+
+  @override
+  String get desktopKeyFavorite => 'إضافة إلى المفضلة أو إزالة منها';
+
+  @override
+  String get desktopKeyFullScreen => 'ملء الشاشة، وفي الصوت غرفة الاستماع';
+
+  @override
+  String get desktopKeyMenu => 'قائمة المقطع';
+
+  @override
+  String get desktopKeyMini => 'نافذة صغيرة فوق البرامج، والعودة منها';
+
+  @override
+  String get desktopKeyPlayPause => 'تشغيل أو إيقاف مؤقت';
+
+  @override
+  String get desktopKeyRepeat => 'تغيير التكرار';
+
+  @override
+  String get desktopKeySearch => 'البحث في العناوين وما قيل';
+
+  @override
+  String get desktopKeySeek => 'رجوع أو تقدّم 10 ثوانٍ';
+
+  @override
+  String get desktopKeyShortcuts => 'هذه القائمة';
+
+  @override
+  String get desktopKeyVolume =>
+      'رفع الصوت أو خفضه، وفي المقاطع القصيرة: السابق أو التالي';
+
+  @override
+  String get desktopKeyZoomIn => 'تكبير الواجهة';
+
+  @override
+  String get desktopKeyZoomOut => 'تصغير الواجهة';
+
+  @override
+  String get desktopKeyZoomReset => 'الواجهة بحجمها المعتاد';
+
+  @override
+  String get desktopLanguageSystemHint => 'يتبع لغة Windows.';
+
+  @override
+  String desktopLastArrival(String when) {
+    return 'آخر وصول $when';
+  }
+
+  @override
+  String get desktopLess => 'أقل';
+
+  @override
+  String get desktopLibraryLoading => 'تُحمَّل المكتبة…';
+
+  @override
+  String get desktopLinkCopied => 'نُسخ الرابط';
+
+  @override
+  String get desktopLinkDuplicate => 'مكرّر أعلاه';
+
+  @override
+  String get desktopLinkInLibrary => 'موجود في مكتبتك';
+
+  @override
+  String get desktopLinkPlaylist => 'قائمة تشغيل: اختر مقاطعها';
+
+  @override
+  String get desktopLinkReady => 'جاهز';
+
+  @override
+  String get desktopLinkUnsupported => 'موقع لا يعرفه التطبيق';
+
+  @override
+  String desktopLinksDropped(int count, int limit) {
+    return 'تُؤخذ أول $limit رابط فقط، وتُرك الباقي: $count.';
+  }
+
+  @override
+  String desktopLinksFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count رابط',
+      many: '$count رابطاً',
+      few: '$count روابط',
+      two: 'رابطان',
+      one: 'رابط واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get desktopListeningClose => 'إغلاق غرفة الاستماع';
+
+  @override
+  String get desktopListeningRoom => 'غرفة الاستماع';
+
+  @override
+  String get desktopLocalCopyRemoved => 'أُزيلت النسخة المحلية';
+
+  @override
+  String get desktopLogsCopied => 'نُسخ السجل بلا روابط ولا عناوين';
+
+  @override
+  String get desktopLogsCopy => 'نسخ';
+
+  @override
+  String get desktopLogsSave => 'حفظ في ملف';
+
+  @override
+  String get desktopMiniRestore => 'العودة إلى النافذة الكاملة';
+
+  @override
+  String get desktopMiniWindow => 'نافذة صغيرة';
+
+  @override
+  String get desktopMore => 'المزيد';
+
+  @override
+  String get desktopNarrowSidebar => 'تضييق الشريط الجانبي';
+
+  @override
+  String get desktopNoChannelNames =>
+      'لا يحفظ سيرفرك اسم القناة مع كل مقطع، فلا يُعرف هنا ما نزل منها. لتظهر مقاطعها، تابِعها بمجلد خاص بها: كل ما ينزل في مجلدها يظهر هنا.';
+
+  @override
+  String get desktopNoFavoritesMessage => 'ضع قلباً على مقطع فيبقى لك هنا.';
+
+  @override
+  String get desktopNoFavoritesTitle => 'لا مفضلة بعد';
+
+  @override
+  String get desktopNoMatchMessage => 'ألغِ أحد الاختيارات لترى أكثر.';
+
+  @override
+  String get desktopNoMatchTitle => 'لا شيء يطابق هذه التصفية';
+
+  @override
+  String get desktopNoOfflineMessage =>
+      'اختر «إتاحة دون اتصال» من قائمة مقطع، فيعمل هنا دون السيرفر.';
+
+  @override
+  String get desktopNoOfflineTitle => 'لا شيء محفوظ على هذا الكمبيوتر بعد';
+
+  @override
+  String get desktopNoServerMessage =>
+      'اربط التطبيق بسيرفر MeTube فتظهر مكتبته هنا.';
+
+  @override
+  String get desktopNoTags =>
+      'لا وسوم بعد. أضف وسماً لأي مقطع من صفحته فيظهر هنا.';
+
+  @override
+  String get desktopNoTranscriptMessage =>
+      'يظهر هنا حين يحفظ السيرفر ترجمة المقطع.';
+
+  @override
+  String get desktopNoTranscriptTitle => 'لا نص لهذا المقطع';
+
+  @override
+  String get desktopNotABackup =>
+      'هذا الملف ليس نسخة احتياطية ولا ملف نصوص من MeTube.';
+
+  @override
+  String desktopNotWatched(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count لم تشاهدها',
+      many: '$count لم تشاهدها',
+      few: '$count لم تشاهدها',
+      two: 'اثنان لم تشاهدهما',
+      one: 'واحد لم تشاهده',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get desktopNothingPlaying => 'لا شيء قيد التشغيل';
+
+  @override
+  String get desktopNothingPlayingHint =>
+      'شغّل مقطعاً فيظهر هنا نصه وما يليه وتفاصيله.';
+
+  @override
+  String get desktopNoticeSaved => 'حُفظ على هذا الكمبيوتر';
+
+  @override
+  String get desktopNotifyArrivalsHint =>
+      'إشعار من Windows حين تصل إلى السيرفر مقاطع جديدة من القنوات التي تتابعها.';
+
+  @override
+  String get desktopOfferCopiedLinks => 'اعرض عليّ الروابط التي أنسخها';
+
+  @override
+  String get desktopOfferCopiedLinksHint =>
+      'حين تنسخ رابط مقطع في برنامج آخر، يعرض عليك إشعارٌ إضافته. لا يُنظر إلا في الروابط، ولا يُحفظ منها شيء.';
+
+  @override
+  String desktopOfflineCount(int count) {
+    return 'دون اتصال: $count';
+  }
+
+  @override
+  String get desktopOfflineFolder => 'مجلد «دون اتصال»';
+
+  @override
+  String get desktopOfflineFolderHint =>
+      'نسخ يعرفها التطبيق ويشغّلها دون السيرفر، ويحذفها «إزالة النسخة المحلية».';
+
+  @override
+  String desktopOfflineProgress(int percent) {
+    return 'دون اتصال · $percent٪';
+  }
+
+  @override
+  String get desktopOpenChannels => 'افتح القنوات';
+
+  @override
+  String get desktopOpenInExplorer => 'فتح في مستكشف الملفات';
+
+  @override
+  String get desktopPaletteClose => 'للإغلاق';
+
+  @override
+  String get desktopPaletteCommands => 'الأوامر';
+
+  @override
+  String get desktopPaletteHint =>
+      'ابحث في العناوين وما قيل، أو اكتب > للأوامر';
+
+  @override
+  String desktopPaletteList(String name) {
+    return 'قائمة: $name';
+  }
+
+  @override
+  String get desktopPaletteMove => 'للتنقل';
+
+  @override
+  String get desktopPaletteOpen => 'للفتح';
+
+  @override
+  String get desktopPaletteSaid => 'قيل داخل المقاطع';
+
+  @override
+  String get desktopPaletteSave => 'احفظ هذا البحث';
+
+  @override
+  String desktopPaletteSettings(String section) {
+    return 'الإعدادات: $section';
+  }
+
+  @override
+  String get desktopPaletteTitles => 'العناوين';
+
+  @override
+  String get desktopPinned => 'مثبّتة';
+
+  @override
+  String get desktopPlayNext => 'تشغيل التالي';
+
+  @override
+  String get desktopPlaysNext => 'سيُشغَّل بعد الحالي';
+
+  @override
+  String get desktopPullAfter => 'ثم نزّله إلى هذا الكمبيوتر';
+
+  @override
+  String get desktopQueueEnd => 'لا شيء بعد هذا المقطع';
+
+  @override
+  String desktopQuote(String text, String title, String time, String link) {
+    return '«$text»\n— $title، $time\n$link';
+  }
+
+  @override
+  String get desktopQuoteCopied => 'نُسخ مع وقته ورابطه';
+
+  @override
+  String get desktopReadingBack => 'العودة إلى المقطع';
+
+  @override
+  String get desktopReadingCloseFind => 'إغلاق البحث';
+
+  @override
+  String get desktopReadingFind => 'ابحث في النص';
+
+  @override
+  String desktopReadingFound(int at, int count) {
+    return '$at من $count';
+  }
+
+  @override
+  String get desktopReadingHint =>
+      'انقر جملة لتسمعها منها · Ctrl+F للبحث عن كلمة · حدِّد لتنسخ مع الوقت';
+
+  @override
+  String get desktopReadingNextMatch => 'النتيجة التالية';
+
+  @override
+  String get desktopReadingPreviousMatch => 'النتيجة السابقة';
+
+  @override
+  String get desktopReadingRoom => 'غرفة القراءة';
+
+  @override
+  String get desktopRemoveFromList => 'أزله من القائمة';
+
+  @override
+  String get desktopRestore => 'استعادة';
+
+  @override
+  String get desktopRestoreBody =>
+      'تصبح وسوم هذا الكمبيوتر وقوائمه وإعداداته كما في النسخة، ولا يُمسّ السيرفر.';
+
+  @override
+  String get desktopRestoreTitle => 'استعادة هذه النسخة؟';
+
+  @override
+  String get desktopRestored => 'استُعيدت النسخة';
+
+  @override
+  String get desktopRevealAfterDownload => 'أظهره في المستكشف حين يكتمل';
+
+  @override
+  String get desktopRevealAfterDownloadHint =>
+      'حين يكتمل تنزيل ملف إلى هذا الكمبيوتر، يُفتح مجلده والملف محدَّد فيه.';
+
+  @override
+  String desktopSavedIn(String folder) {
+    return 'حُفظ في $folder';
+  }
+
+  @override
+  String desktopSavedSearchDelete(String name) {
+    return 'حذف البحث المحفوظ «$name»؟ لا يتغير شيء في المكتبة.';
+  }
+
+  @override
+  String get desktopSavedSearchName => 'اسم البحث';
+
+  @override
+  String desktopSavingOffline(int percent) {
+    return 'يُحفظ دون اتصال · $percent٪';
+  }
+
+  @override
+  String desktopSavingTo(String folder) {
+    return 'يُحفظ في $folder';
+  }
+
+  @override
+  String get desktopSearch => 'البحث';
+
+  @override
+  String get desktopSearchHint => 'ابحث في العناوين وما قيل…';
+
+  @override
+  String get desktopSearchSaved => 'حُفظ في الشريط الجانبي';
+
+  @override
+  String get desktopSeekBar => 'الموضع في المقطع';
+
+  @override
+  String desktopSelectedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقطع محدد',
+      many: '$count مقطعاً محدداً',
+      few: '$count مقاطع محددة',
+      two: 'مقطعان محددان',
+      one: 'مقطع محدد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get desktopServerFolders => 'بالمجلدات نفسها التي على السيرفر';
+
+  @override
+  String get desktopServerFoldersHint =>
+      'مثلاً: المقطع الذي في مجلد «أطفال» على السيرفر يُحفظ في مجلد بالاسم نفسه هنا.';
+
+  @override
+  String get desktopServerPartMissing =>
+      'السيرفر لا يستجيب، فهذا ما كان فيه آخر مرة.';
+
+  @override
+  String get desktopServerVersion => 'نسخة السيرفر';
+
+  @override
+  String get desktopSetupAgain => 'إعداد من جديد';
+
+  @override
+  String get desktopSetupChooseFile => 'اختر ملفاً…';
+
+  @override
+  String get desktopSetupConnect => 'اتصل';
+
+  @override
+  String get desktopSetupEnter => 'أدخل العنوان';
+
+  @override
+  String get desktopSetupFoundNone =>
+      'لم يستجب أي سيرفر MeTube على هذه المنافذ.';
+
+  @override
+  String get desktopSetupHttpWarning =>
+      'العنوان الذي يبدأ بـ http:// خارج شبكة البيت يُرسل كلمة المرور دون تشفير.';
+
+  @override
+  String get desktopSetupImport => 'استيراد من الجوال';
+
+  @override
+  String get desktopSetupImportHint =>
+      'اختر نسخة احتياطية من MeTube Super: يُقترح عنوان سيرفرها هنا، وتُضاف وسومها وقوائمها.';
+
+  @override
+  String get desktopSetupLater => 'لاحقاً';
+
+  @override
+  String get desktopSetupNeedsPassword => 'يحتاج كلمة مرور';
+
+  @override
+  String get desktopSetupNoServer => 'ليس عندك سيرفر؟';
+
+  @override
+  String get desktopSetupPorts => 'المنافذ';
+
+  @override
+  String get desktopSetupSearch => 'ابحث في شبكتي';
+
+  @override
+  String get desktopSetupSearchHint =>
+      'يبحث عن MeTube في شبكة هذا الكمبيوتر، حين تنقر فقط.';
+
+  @override
+  String desktopSetupSearching(int percent) {
+    return 'جارٍ البحث… $percent٪';
+  }
+
+  @override
+  String get desktopSetupTitle => 'اربط البرنامج بسيرفر MeTube';
+
+  @override
+  String get desktopShortcutsApp => 'التطبيق';
+
+  @override
+  String get desktopShortcutsClip => 'على مقطع محدد';
+
+  @override
+  String get desktopShortcutsPlayback => 'التشغيل';
+
+  @override
+  String get desktopShortcutsTitle => 'اختصارات لوحة المفاتيح';
+
+  @override
+  String get desktopShortcutsWindow => 'النافذة';
+
+  @override
+  String get desktopShortsHint =>
+      '↑ ↓ أو العجلة للقصير التالي · نقرتان للمفضلة';
+
+  @override
+  String get desktopShowInFolder => 'إظهار في المجلد';
+
+  @override
+  String get desktopShowPanel => 'إظهار اللوحة الجانبية';
+
+  @override
+  String get desktopStartWithWindows => 'التشغيل مع بدء Windows';
+
+  @override
+  String get desktopStartWithWindowsHint =>
+      'يفتح عند تسجيل الدخول: في الدرج إن كان يستمر في التشغيل هناك، وإلا مصغَّراً.';
+
+  @override
+  String get desktopStartWithWindowsRefused =>
+      'لم يسمح Windows للتطبيق بالبدء معه.';
+
+  @override
+  String get desktopStats => 'إحصاءات المكتبة';
+
+  @override
+  String get desktopStatsByChannel => 'حسب القناة';
+
+  @override
+  String get desktopStatsByMonth => 'حسب شهر الإضافة';
+
+  @override
+  String get desktopStatsBySite => 'حسب المنصة';
+
+  @override
+  String get desktopStatsClips => 'المقاطع';
+
+  @override
+  String get desktopStatsHint =>
+      'ما تحويه المكتبة، وما قد يستحق نظرة. لا يُحذف شيء من هنا.';
+
+  @override
+  String desktopStatsHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ساعة',
+      many: '$count ساعة',
+      few: '$count ساعات',
+      two: 'ساعتان',
+      one: 'ساعة واحدة',
+      zero: 'أقل من ساعة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get desktopStatsLargest => 'أكبرها:';
+
+  @override
+  String get desktopStatsLength => 'المدة';
+
+  @override
+  String get desktopStatsLink => 'الإحصاءات';
+
+  @override
+  String get desktopStatsNeverPlayed => 'لم تُشغَّل هنا قط';
+
+  @override
+  String get desktopStatsNewest => 'أحدثها:';
+
+  @override
+  String get desktopStatsOtherChannels => 'قنوات أخرى';
+
+  @override
+  String get desktopStatsRoom => 'المساحة';
+
+  @override
+  String get desktopStatsUnnamed => 'بلا اسم قناة';
+
+  @override
+  String get desktopStatsWithText => 'لها نص';
+
+  @override
+  String get desktopStatsWithoutText => 'بلا نص';
+
+  @override
+  String get desktopStatsWorthALook => 'قد تستحق نظرة';
+
+  @override
+  String get desktopSubtitleOptions => 'خيارات الترجمة';
+
+  @override
+  String get desktopSync => 'المزامنة';
+
+  @override
+  String get desktopSyncCameBack =>
+      'غاب هذا الكمبيوتر أكثر من 90 يوماً، فأُخذت بيانات أجهزتك الأخرى أولاً.';
+
+  @override
+  String get desktopSyncChoose => 'اختر مجلداً';
+
+  @override
+  String desktopSyncComputer(String name) {
+    return 'الكمبيوتر $name';
+  }
+
+  @override
+  String get desktopSyncFailed =>
+      'تعذّرت قراءة مجلد المزامنة، فتأكد أن قرصه موجود.';
+
+  @override
+  String get desktopSyncFolder => 'مجلد المزامنة';
+
+  @override
+  String get desktopSyncForget => 'انسَ هذا الجهاز';
+
+  @override
+  String desktopSyncForgetBody(String device) {
+    return 'لن يُقرأ $device بعد الآن، وتُنقل نصوصه إلى مجلد هذا الكمبيوتر أولاً فلا يضيع منها شيء. استعمله لجهاز ضاع أو بِيع.';
+  }
+
+  @override
+  String desktopSyncFrom(String device, String ago) {
+    return 'آخر ما وصل من $device: $ago';
+  }
+
+  @override
+  String get desktopSyncGuide =>
+      'داخل البيت: Syncthing على هذا الكمبيوتر وSyncthing‑Fork (من F-Droid) على الجوال يتشاركان مجلداً واحداً، واضبط Syncthing‑Fork على «Wi‑Fi فقط» توفيراً لبطارية الجوال. وعبر السحابة: مجلد برنامج السحابة على هذا الكمبيوتر (OneDrive أو Google Drive أو Dropbox)، وFolderSync على الجوال بالمجلد نفسه.';
+
+  @override
+  String get desktopSyncHint =>
+      'تعكس الوسوم والمفضلة والقوائم ومواضع التوقف والبحوث المحفوظة والنصوص بين هذا الكمبيوتر وجوالك وأجهزتك الأخرى، عبر مجلد يزامنه برنامج تختاره (Syncthing داخل البيت، أو مجلد سحابي). ولا يُرسَل شيء من هنا إلى أي خدمة.';
+
+  @override
+  String desktopSyncLast(String ago) {
+    return 'آخر مزامنة $ago';
+  }
+
+  @override
+  String get desktopSyncNoOthers =>
+      'لا جهاز آخر في هذا المجلد بعد. شغّل المزامنة في MeTube Super بالمجلد نفسه.';
+
+  @override
+  String get desktopSyncNotBackup =>
+      'المزامنة ليست نسخاً احتياطياً: تعكس الخطأ كما تعكس الصواب، ونسخك المؤرَّخة تبقى منفصلة عنها.';
+
+  @override
+  String get desktopSyncOff => 'متوقفة، ولا يخرج شيء من هذا الكمبيوتر.';
+
+  @override
+  String desktopSyncPhone(String name) {
+    return 'الجوال $name';
+  }
+
+  @override
+  String desktopSyncThisComputer(String name) {
+    return 'هذا الكمبيوتر: $name';
+  }
+
+  @override
+  String get desktopSyncTurnOff => 'إيقاف';
+
+  @override
+  String get desktopTheater => 'وضع المسرح';
+
+  @override
+  String get desktopToThisComputer => 'إلى هذا الكمبيوتر';
+
+  @override
+  String get desktopTranscriptFirst => 'اجلب نصّه أولاً';
+
+  @override
+  String get desktopTranscriptHint => 'يتبع التشغيل · انقر سطراً ليُشغَّل منه';
+
+  @override
+  String get desktopTranscriptsDeleteBody =>
+      'تُحذف من هذا الكمبيوتر، ولا يعيدها إلا ملف صدّرته أو جهاز آخر عبر المزامنة.';
+
+  @override
+  String get desktopTranscriptsExportHint => 'كلها في ملف واحد يستورده الجوال.';
+
+  @override
+  String get desktopTranscriptsHelp =>
+      'يحفظ Ember ما يُقال في كل مقطع يوتيوب تضيفه، فيجد البحث (Ctrl+K) ما قيل داخل مقاطعك لا عناوينها وحدها. وتبقى النصوص على هذا الكمبيوتر.';
+
+  @override
+  String get desktopTranscriptsImportHint =>
+      'ملف نصوص من الجوال، يضيف ما ينقص هنا ولا يحذف شيئاً.';
+
+  @override
+  String get desktopTrayOnClose => 'يبقى التشغيل في الدرج عند إغلاق النافذة';
+
+  @override
+  String get desktopTrayOnCloseHint =>
+      'إغلاق النافذة يُبقي الصوت شغالاً، والخروج من الأيقونة بجانب الساعة.';
+
+  @override
+  String get desktopTrayOpen => 'فتح MeTube Ember';
+
+  @override
+  String get desktopTrayQuit => 'خروج';
+
+  @override
+  String get desktopUiSize => 'حجم الواجهة';
+
+  @override
+  String desktopUiSizeHint(String bigger, String smaller, String reset) {
+    return 'يتغيّر من أي مكان بـ$bigger و$smaller، ويعود إلى 100% بـ$reset.';
+  }
+
+  @override
+  String get desktopUiSizeTooLarge => 'لا تتسع له هذه الشاشة';
+
+  @override
+  String get desktopUpdateInstall => 'ثبّته وأعد التشغيل';
+
+  @override
+  String get desktopUpdateRestartHint =>
+      'يُغلَق Ember ويثبّت التحديث ثم يُفتح من جديد، وتبقى إعداداتك ومكتبتك كما هي.';
+
+  @override
+  String get desktopViewCompact => 'مختصر';
+
+  @override
+  String get desktopViewTable => 'جدول';
+
+  @override
+  String get desktopVolume => 'مستوى الصوت';
+
+  @override
+  String desktopVolumeLevel(int percent) {
+    return 'الصوت $percent٪';
+  }
+
+  @override
+  String get desktopWhatsNewAllFeatures => 'وكل مزايا Ember';
+
+  @override
+  String get desktopWidenSidebar => 'توسيع الشريط الجانبي';
+
+  @override
+  String get desktopWindowClose => 'إغلاق';
+
+  @override
+  String get desktopWindowMaximize => 'تكبير';
+
+  @override
+  String get desktopWindowMinimize => 'تصغير';
+
+  @override
+  String get desktopWindowRestore => 'استعادة الحجم';
+
+  @override
+  String get desktopZoomChange => 'غيّره';
+
+  @override
+  String desktopZoomLowered(String percent) {
+    return 'صُغّرت الواجهة إلى $percent لتتسع لهذه الشاشة.';
+  }
+
+  @override
   String get details => 'التفاصيل';
 
   @override
@@ -539,7 +1808,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get downloadComplete => 'اكتمل التحميل';
 
   @override
-  String get downloadCompleteTitle => 'اكتمل!';
+  String get downloadCompleteTitle => 'اكتمل';
 
   @override
   String get downloadDate => 'تاريخ التحميل';
@@ -554,7 +1823,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get downloadNow => 'تحميل';
 
   @override
-  String get downloadStarted => 'بدأ التحميل...';
+  String get downloadStarted => 'بدأ التحميل…';
 
   @override
   String downloadStartedQuality(Object quality) {
@@ -562,7 +1831,7 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
-  String get downloading => 'جارٍ التحميل...';
+  String get downloading => 'جارٍ التحميل…';
 
   @override
   String get downloadingTitle => 'جارٍ التنزيل';
@@ -571,7 +1840,20 @@ class MTLocalizationsAr extends MTLocalizations {
   String get editSubscription => 'تعديل';
 
   @override
+  String get emptyFilteredMessage => 'أزل مرشّحاً من الأعلى لترى مكتبتك كلها.';
+
+  @override
+  String get emptyFilteredTitle => 'لا شيء بهذه المرشّحات';
+
+  @override
   String get emptyLibraryMessage => 'أضِف رابط فيديو، أو اسحب للتحديث.';
+
+  @override
+  String get emptyOfflineMessage =>
+      'اختر «إتاحة دون اتصال» من قائمة مقطع، فيعمل هنا دون السيرفر.';
+
+  @override
+  String get emptyOfflineTitle => 'لا شيء محفوظ على هذا الجوال بعد';
 
   @override
   String get emptyPlaylist => 'قائمة فارغة';
@@ -580,7 +1862,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get emptyPlaylistMessage => 'أضِف فيديوهات من المكتبة';
 
   @override
-  String get endpointUrl => 'عنوان الخادم الخارجي';
+  String get endpointUrl => 'عنوان السيرفر الخارجي';
 
   @override
   String get enterFullscreen => 'ملء الشاشة';
@@ -607,14 +1889,14 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get errPlatformBlocked =>
-      'المنصة تطلب تسجيل الدخول — على مدير السيرفر تحديث الكوكيز';
+      'المنصة تطلب تسجيل الدخول، وعلى مدير السيرفر تحديث الكوكيز';
 
   @override
   String get errPlatformBlockedCookies =>
-      'المنصة تطلب تسجيل الدخول — ارفع ملف كوكيز من الإعدادات ← الكوكيز';
+      'المنصة تطلب تسجيل الدخول. ارفع ملف كوكيز من الإعدادات ← الكوكيز';
 
   @override
-  String get errPollTimeout => 'تأخّر ردّ السيرفر — أعد المحاولة';
+  String get errPollTimeout => 'تأخّر ردّ السيرفر، فأعد المحاولة.';
 
   @override
   String errServer(Object message) {
@@ -690,10 +1972,13 @@ class MTLocalizationsAr extends MTLocalizations {
   String get filterOffline => 'بلا اتصال';
 
   @override
-  String get filterServer => 'الخادم';
+  String get filterServer => 'السيرفر';
 
   @override
   String get filterVideo => 'فيديو';
+
+  @override
+  String get filtersOn => 'مرشّحات مفعّلة';
 
   @override
   String get folder => 'المجلد';
@@ -715,6 +2000,9 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get followChannel => 'تابِع قناة';
+
+  @override
+  String get followingChannel => 'تتابعها';
 
   @override
   String get format => 'الصيغة';
@@ -761,12 +2049,6 @@ class MTLocalizationsAr extends MTLocalizations {
   String get language => 'اللغة';
 
   @override
-  String get languageArabic => 'العربية';
-
-  @override
-  String get languageEnglish => 'English';
-
-  @override
   String get languageSystem => 'النظام';
 
   @override
@@ -802,13 +2084,13 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get localNetworkDesc =>
-      'يتصل التطبيق بالخادم عبر هذا العنوان متى أمكن الوصول إليه.';
+      'يتصل التطبيق بالسيرفر عبر هذا العنوان متى أمكن الوصول إليه.';
 
   @override
   String get localNetworkSection => 'شبكة محلية';
 
   @override
-  String get localUrlLabel => 'عنوان الخادم المحلي';
+  String get localUrlLabel => 'عنوان السيرفر المحلي';
 
   @override
   String get lockTouch => 'قفل اللمس';
@@ -847,7 +2129,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get mediaAccessTitle => 'اسمح بالوصول إلى الوسائط';
 
   @override
-  String get metubeCredit => 'الخادم ذاتي الاستضافة الذي يتصل به التطبيق';
+  String get metubeCredit => 'السيرفر ذاتي الاستضافة الذي يتصل به التطبيق';
 
   @override
   String get modeAutoNext => 'تلقائي';
@@ -862,7 +2144,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get modeStopAtEnd => 'التوقف في النهاية';
 
   @override
-  String moreFolders(int count) {
+  String moreChips(int count) {
     return 'المزيد · $count';
   }
 
@@ -886,7 +2168,7 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get networkSettingsSubtitle =>
-      'التبديل التلقائي بين عناوين الخادم المحلية والخارجية';
+      'التبديل التلقائي بين عناوين السيرفر المحلية والخارجية';
 
   @override
   String get neverChecked => 'لم يُتحقَّق بعد';
@@ -976,6 +2258,11 @@ class MTLocalizationsAr extends MTLocalizations {
       'تطبيق غير رسمي، لا صلة له بمشروع MeTube ولا yt-dlp، ولا يحظى بتأييدهما.';
 
   @override
+  String notEnoughSpace(String needed, String free) {
+    return 'لا تتسع ذاكرة الجوال: يحتاج $needed والمتاح $free';
+  }
+
+  @override
   String get nothingHereYet => 'لا يوجد شيء بعد';
 
   @override
@@ -1046,10 +2333,20 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String get phoneCopiesSection => 'إلى الجوال';
+
+  @override
   String get pickAnotherFile => 'من ملف آخر…';
 
   @override
   String get pickAnotherFileSubtitle => 'نسخة من هاتف آخر أو من إصدار سابق';
+
+  @override
+  String get pictureInPicture => 'صورة داخل صورة';
+
+  @override
+  String get pictureInPictureHelp =>
+      'حين تخرج من التطبيق والفيديو يعمل، يبقى في زاوية الشاشة';
 
   @override
   String get pinPlaylist => 'تثبيت في الصدارة';
@@ -1096,6 +2393,10 @@ class MTLocalizationsAr extends MTLocalizations {
   String get playlistDetails => 'تفاصيل القائمة';
 
   @override
+  String get playlistEditHint =>
+      'اضغط مطوّلاً لتغيير الترتيب، واسحب الصف جانباً لإزالته.';
+
+  @override
   String get playlistName => 'اسم القائمة';
 
   @override
@@ -1127,13 +2428,16 @@ class MTLocalizationsAr extends MTLocalizations {
   String get quality => 'الجودة';
 
   @override
-  String get quality1080 => '1080p';
+  String get quality1080 => 'حتى 1080p';
 
   @override
-  String get quality480 => '480p';
+  String get quality360 => 'حتى 360p';
 
   @override
-  String get quality720 => '720p';
+  String get quality480 => 'حتى 480p';
+
+  @override
+  String get quality720 => 'حتى 720p';
 
   @override
   String get qualityAudio => 'الصوت';
@@ -1172,6 +2476,11 @@ class MTLocalizationsAr extends MTLocalizations {
   String get queueLabel => 'قائمة الانتظار';
 
   @override
+  String queuePosition(int position) {
+    return 'رقم $position في الطابور';
+  }
+
+  @override
   String get queued => 'في الانتظار';
 
   @override
@@ -1183,6 +2492,59 @@ class MTLocalizationsAr extends MTLocalizations {
   @override
   String get quickDownloadHelp =>
       'حين تشارك رابطاً أو تلصقه يبدأ تحميله فوراً بالجودة الافتراضية دون أي نافذة. الجودات الرقمية خاصة بيوتيوب، فما سواه يُحمَّل بأفضل جودة، أما «صوت فقط» فيسري على كل المنصات.';
+
+  @override
+  String get quoteExtendHint => 'المس سطراً آخر لتوسيع الاقتباس';
+
+  @override
+  String get quoteMomentLink => 'انسخ رابط هذه اللحظة';
+
+  @override
+  String get quotePlayFrom => 'شغّل من هنا';
+
+  @override
+  String get quoteTitle => 'اقتباس';
+
+  @override
+  String get readingAsMarkdownHint => 'عند كل فقرة وقتها برابط إلى لحظتها';
+
+  @override
+  String get readingAsPdfHint => 'للطباعة أو الحفظ';
+
+  @override
+  String get readingAsSrtHint => 'سطراً سطراً بأوقاته، لأي مشغّل';
+
+  @override
+  String get readingAsText => 'نص للقراءة';
+
+  @override
+  String get readingAsTextHint => 'فقرات بلا أوقات، يُلصق في أي تطبيق';
+
+  @override
+  String get readingHint => 'انقر جملة لتسمعها من هناك';
+
+  @override
+  String readingMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'نحو $count دقيقة قراءة',
+      many: 'نحو $count دقيقة قراءة',
+      few: 'نحو $count دقائق قراءة',
+      two: 'نحو دقيقتين قراءة',
+      one: 'نحو دقيقة قراءة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get readingRead => 'اقرأ';
+
+  @override
+  String get readingShare => 'شارك النص';
+
+  @override
+  String get readingTextSize => 'مقاس الخط';
 
   @override
   String get reelsEndBack => 'عودة للمكتبة';
@@ -1275,7 +2637,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get restoreData => 'استعادة';
 
   @override
-  String get restoreFailed => 'فشلت الاستعادة — ملف النسخة الاحتياطية غير صالح';
+  String get restoreFailed => 'فشلت الاستعادة: ملف النسخة الاحتياطية غير صالح';
 
   @override
   String get restoreSettings => 'استعادة جميع البيانات';
@@ -1341,7 +2703,7 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
-  String get serverConfiguration => 'إعداد الخادم';
+  String get serverConfiguration => 'إعداد السيرفر';
 
   @override
   String serverFailuresLine(int count) {
@@ -1369,18 +2731,18 @@ class MTLocalizationsAr extends MTLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count ملفاً على الخادم',
-      few: '$count ملفات على الخادم',
-      two: 'ملفان على الخادم',
-      one: 'ملف واحد على الخادم',
-      zero: 'لا ملفات على الخادم',
+      other: '$count ملفاً على السيرفر',
+      few: '$count ملفات على السيرفر',
+      two: 'ملفان على السيرفر',
+      one: 'ملف واحد على السيرفر',
+      zero: 'لا ملفات على السيرفر',
     );
     return '$_temp0';
   }
 
   @override
   String get serverKeepsFilesBody =>
-      'يُحذف العنصر من السجل لكن ملفه يبقى على القرص، فتمتلئ مساحة الخادم. اضبط DELETE_FILE_ON_TRASHCAN=true في حاوية MeTube.';
+      'يُحذف العنصر من السجل لكن ملفه يبقى على القرص، فتمتلئ مساحة السيرفر. اضبط DELETE_FILE_ON_TRASHCAN=true في حاوية MeTube.';
 
   @override
   String get serverKeepsFilesTitle => 'خادمك لا يحذف الملفات';
@@ -1400,16 +2762,20 @@ class MTLocalizationsAr extends MTLocalizations {
   }
 
   @override
+  String get serverSearchHint =>
+      'يبحث عن MeTube في شبكة Wi‑Fi التي يتصل بها هذا الجوال، حين تنقر فقط.';
+
+  @override
   String get serverStatusChecking => 'جارٍ فحص الاتصال…';
 
   @override
-  String get serverStatusConnected => 'متصل بالخادم';
+  String get serverStatusConnected => 'متصل بالسيرفر';
 
   @override
   String get serverStatusOffline => 'تعذّر الوصول للخادم';
 
   @override
-  String get serverStatusUnconfigured => 'لم يُضبط الخادم';
+  String get serverStatusUnconfigured => 'لم يُضبط السيرفر';
 
   @override
   String get serverUnreachableLocalHint =>
@@ -1429,7 +2795,7 @@ class MTLocalizationsAr extends MTLocalizations {
   String get serverUrlHint => 'http://192.168.1.5:8086 أو https://domain.com';
 
   @override
-  String get serverUrlRequired => 'رابط الخادم مطلوب';
+  String get serverUrlRequired => 'رابط السيرفر مطلوب';
 
   @override
   String serverVersionLabel(String version) {
@@ -1535,7 +2901,35 @@ class MTLocalizationsAr extends MTLocalizations {
   String get share => 'مشاركة';
 
   @override
+  String get shareGoesOn =>
+      'التجهيز مستمر في الخلفية، وتُفتح قائمة المشاركة حين يجهز. تقدّمه في التنزيلات.';
+
+  @override
+  String get shareLargeBody =>
+      'يُنزَّل إلى هذا الجوال أولاً، ثم تُفتح قائمة المشاركة.';
+
+  @override
+  String shareLargeTitle(String size) {
+    return 'تنزيل $size للمشاركة؟';
+  }
+
+  @override
   String get shareLogs => 'مشاركة السجلات';
+
+  @override
+  String get shareMessagingLimit =>
+      'واتساب وتيليجرام يقبلان حتى 2 GB؛ وللأكبر استعمل Drive أو Quick Share.';
+
+  @override
+  String get sharePreparing => 'تجهيز المشاركة';
+
+  @override
+  String shareProgressOf(String received, String total) {
+    return '$received من $total';
+  }
+
+  @override
+  String get shareReady => 'جاهز للمشاركة';
 
   @override
   String get shareSelected => 'مشاركة المحدد';
@@ -1563,6 +2957,12 @@ class MTLocalizationsAr extends MTLocalizations {
 
   @override
   String get smartPlaylists => 'قوائم ذكية';
+
+  @override
+  String get sortAndFilter => 'الترتيب والتصفية';
+
+  @override
+  String get sortAndPlatform => 'الترتيب والمنصة';
 
   @override
   String get sortBy => 'ترتيب حسب';
@@ -1696,7 +3096,56 @@ class MTLocalizationsAr extends MTLocalizations {
   String get subtitlesSizeSmall => 'صغير';
 
   @override
+  String get syncDeviceQuiet =>
+      'لم يصل منه شيء منذ أكثر من يومين. إن كان مستعملاً فالأرجح أن برنامج المزامنة متوقف أو نائم، عليه أو هنا، فالجوال يُنيم التطبيقات التي يظنها غير مستعملة.';
+
+  @override
+  String get syncPhoneCameBack =>
+      'غاب هذا الجوال أكثر من 90 يوماً، فأُخذت بيانات أجهزتك الأخرى أولاً.';
+
+  @override
+  String get syncPhoneFailed =>
+      'تعذّرت قراءة مجلد المزامنة. اختره من جديد إن نُقل أو سُحب إذنه.';
+
+  @override
+  String syncPhoneForgetBody(String device) {
+    return 'لن يُقرأ $device بعد الآن، وتُنقل نصوصه إلى مجلد هذا الجوال أولاً فلا يضيع منها شيء. استعمله لجهاز ضاع أو بِيع.';
+  }
+
+  @override
+  String get syncPhoneGuide =>
+      'داخل البيت: Syncthing-Fork (من F-Droid) على هذا الجوال وSyncthing على الكمبيوتر يتشاركان مجلداً واحداً، واضبطه على «Wi‑Fi فقط» توفيراً للبطارية. وعبر السحابة: FolderSync مع المجلد السحابي الذي يستعمله الكمبيوتر.';
+
+  @override
+  String get syncPhoneHint =>
+      'تعكس الوسوم والمفضلة والقوائم ومواضع التوقف والنصوص بين هذا الجوال وMeTube Ember على الكمبيوتر، عبر مجلد يزامنه برنامج تختاره. ولا يُرسَل شيء من هنا إلى أي خدمة.';
+
+  @override
+  String get syncPhoneNoOthers =>
+      'لا جهاز آخر في هذا المجلد بعد. شغّل المزامنة في MeTube Ember بالمجلد نفسه.';
+
+  @override
+  String get syncPhoneOff => 'متوقفة، ولا يخرج شيء من هذا الجوال.';
+
+  @override
+  String syncPhoneThisDevice(String name) {
+    return 'هذا الجوال: $name';
+  }
+
+  @override
+  String get syncTitle => 'المزامنة مع الكمبيوتر';
+
+  @override
   String get tagActionsHint => 'اضغط مطوّلاً على وسم لإعادة تسميته أو حذفه.';
+
+  @override
+  String get tagFilterHint =>
+      'اضغط الوسم لإظهار مقاطعه، ومرة ثانية لإخفائها، وثالثة لإلغائه.';
+
+  @override
+  String tagLimitReached(int max) {
+    return 'الحد الأقصى $max وسماً. احذف وسماً من «إدارة الوسوم» لتضيف غيره.';
+  }
 
   @override
   String get tags => 'الوسوم';
@@ -1717,14 +3166,14 @@ class MTLocalizationsAr extends MTLocalizations {
   String get themeLight => 'فاتح';
 
   @override
-  String get themeSystem => 'حسب النظام';
+  String get themeSystem => 'النظام';
 
   @override
   String get titleFilter => 'نزّل فقط المقاطع التي يحتوي عنوانها على';
 
   @override
   String get titleFilterHelp =>
-      'لا ينزّل السيرفر مقطعاً جديداً من هذه القناة إلا إذا احتوى عنوانه على ما تكتبه هنا.\n\n• كلمة عادية تكفي: الحلقة\n• أيّ كلمة من عدة كلمات: الحلقة|الجزء — العلامة | تعني «أو»\n• في الإنجليزية يُفرَّق بين الأحرف الكبيرة والصغيرة: episode لا تطابق Episode. اكتب ‎[Ee]pisode‎ أو اكتب الصيغتين.\n\nوالمقطع الذي يتخطاه الفلتر يُعدّ مُشاهَداً إلى الأبد، فإن أزلت الفلتر لاحقاً نُزِّل ما يُنشر بعد ذلك فقط، لا ما تخطّاه.';
+      'لا ينزّل السيرفر مقطعاً جديداً من هذه القناة إلا إذا احتوى عنوانه على ما تكتبه هنا.\n\n• كلمة عادية تكفي: الحلقة\n• أيّ كلمة من عدة كلمات: الحلقة|الجزء (العلامة | تعني «أو»)\n• في الإنجليزية يُفرَّق بين الأحرف الكبيرة والصغيرة: episode لا تطابق Episode. اكتب ‎[Ee]pisode‎ أو اكتب الصيغتين.\n\nوالمقطع الذي يتخطاه الفلتر يُعدّ مُشاهَداً إلى الأبد، فإن أزلت الفلتر لاحقاً نُزِّل ما يُنشر بعد ذلك فقط، لا ما تخطّاه.';
 
   @override
   String get titleFilterHelper =>
@@ -1769,6 +3218,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get transcriptNextMatch => 'الموضع التالي';
 
   @override
+  String get transcriptPeekHint => 'اضغط للنص كاملاً';
+
+  @override
   String get transcriptPreviousMatch => 'الموضع السابق';
 
   @override
@@ -1784,6 +3236,9 @@ class MTLocalizationsAr extends MTLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get transcriptSwitchLanguage => 'بدّل لغة النص';
 
   @override
   String transcriptsClips(int count) {
@@ -2030,6 +3485,15 @@ class MTLocalizationsAr extends MTLocalizations {
   @override
   String get wifiOnlyHelp =>
       'لا تُسحب الملفات إلى جهازك عبر بيانات الجوّال، بل تنتظر المهام وتُستأنف تلقائياً عند الاتصال بشبكة Wi‑Fi.';
+
+  @override
+  String get yourChannels => 'قنواتك';
+
+  @override
+  String get yourChannelsHint => 'تابعتها من الإعدادات أو من المشغّل';
+
+  @override
+  String get yourLibrary => 'مكتبتك';
 
   @override
   String get yourPlaylists => 'قوائمك';

@@ -20,11 +20,17 @@ class MTTiltedArtwork extends StatelessWidget {
     required this.item,
     this.artwork,
     this.size = 296,
+    this.shadow = true,
   });
 
   final PlaylistItem item;
   final MTArtworkBuilder? artwork;
   final double size;
+
+  /// The deep shadow under the plate. Off where a glow already moves behind
+  /// the cover (the computer's listening room): the two together read as
+  /// a light that glows and a plate that floats, where one is enough.
+  final bool shadow;
 
   static const double _tilt = -1.5 * math.pi / 180;
   static const double _frameTilt = 1 * math.pi / 180;
@@ -48,22 +54,22 @@ class MTTiltedArtwork extends StatelessWidget {
               decoration: BoxDecoration(
                 color: p.cardAlt,
                 borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: p.accentDeep.withValues(alpha: 0.4),
-                    blurRadius: 60,
-                    offset: const Offset(0, 30),
-                    spreadRadius: -18,
-                  ),
-                ],
+                boxShadow: shadow
+                    ? [
+                        BoxShadow(
+                          color: p.accentDeep.withValues(alpha: 0.4),
+                          blurRadius: 60,
+                          offset: const Offset(0, 30),
+                          spreadRadius: -18,
+                        ),
+                      ]
+                    : null,
               ),
               child:
                   artwork?.call(context, item) ??
                   Center(
-                    child: Icon(
-                      item.isAudio
-                          ? Icons.graphic_eq_rounded
-                          : Icons.movie_rounded,
+                    child: MTIcon(
+                      item.isAudio ? MTIcons.music : MTIcons.video,
                       size: size * 0.22,
                       color: p.ink3,
                     ),
@@ -93,8 +99,9 @@ class MTTiltedArtwork extends StatelessWidget {
   }
 }
 
-/// The source chip: "streaming from the server" or "playing from your
-/// device", the golden rule made visible.
+/// Where the sound comes from, "streaming from the server" or "playing
+/// from your device": the golden rule made visible, as a quiet grey line
+/// rather than a tinted pill over the title (mobile plan 2026-11-01).
 class MTSourceChip extends StatelessWidget {
   const MTSourceChip({super.key, required this.local});
 
@@ -104,40 +111,27 @@ class MTSourceChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = MTThemeX.of(context).palette;
     final l10n = context.mtl;
-    final (bg, fg) = local
-        ? (p.offlineSoft, p.offlineInk)
-        : (p.onServerSoft, p.onServerInk);
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: MTSpace.md,
-        vertical: MTSpace.xxs + 2,
-      ),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(MTRadius.pill),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            local ? Icons.download_done_rounded : Icons.rss_feed_rounded,
-            size: 13,
-            color: fg,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        MTIcon(
+          local ? MTIcons.offline : MTIcons.subscriptions,
+          size: 13,
+          color: p.ink3,
+        ),
+        const SizedBox(width: MTSpace.xxs + 2),
+        // Cut short rather than run past the screen, on a narrow phone
+        // with large text.
+        Flexible(
+          child: Text(
+            local ? l10n.playingFromDevice : l10n.streamingFromServer,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelSmall!
+                .copyWith(color: p.ink3),
           ),
-          const SizedBox(width: MTSpace.xxs + 2),
-          // Cut short rather than run past the screen, on a narrow phone
-          // with large text.
-          Flexible(
-            child: Text(
-              local ? l10n.playingFromDevice : l10n.streamingFromServer,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelSmall!
-                  .copyWith(color: fg, fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

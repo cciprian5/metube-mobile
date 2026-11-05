@@ -10,7 +10,7 @@ typedef RedirectStep = Future<String?> Function(String url);
 
 /// Resolves short links (vm./vt.tiktok, fb.watch, facebook /share/,
 /// on.soundcloud) by following redirects, while **refusing an HTTPS to HTTP
-/// downgrade** (`05-DATA-SCHEMA.md` §4). On any failure or downgrade the
+/// downgrade**. On any failure or downgrade the
 /// original URL is returned unchanged.
 class ShortLinkResolver {
   ShortLinkResolver({RedirectStep? redirectStep})

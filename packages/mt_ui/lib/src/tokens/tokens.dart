@@ -1,23 +1,25 @@
 import 'package:flutter/widgets.dart';
 
-import 'palette.dart';
-
 export 'palette.dart';
+export 'shadows.dart';
 
-/// Radii are "quiet and printed" (log §4): 28 for sheets, 16 to 18 for
-/// cards, 12 to 13 for fields and icon buttons. Full pills only for round
-/// chips.
+/// **Three corners, not nine** (log §4, 2026-10-31): 8 on what is touched
+/// or shown small (a thumbnail, a field, a chip, a button), 16 on what
+/// floats or gathers (a sheet, a dialog, a settings group, the mini player)
+/// and full pills on round controls; 4 on the small badges. Nine near
+/// values between 6 and 28 read as "everything medium", one of the marks of
+/// a generated screen.
 abstract final class MTRadius {
-  static const double sheet = 28;
+  static const double sheet = 16;
   static const double card = 16;
-  static const double cardLg = 18;
-  static const double field = 13;
-  static const double iconButton = 13;
-  static const double thumb = 12;
-  static const double chip = 10;
+  static const double cardLg = 16;
+  static const double field = 8;
+  static const double iconButton = 8;
+  static const double thumb = 8;
+  static const double chip = 8;
   static const double fab = 16;
-  static const double mini = 18;
-  static const double badge = 6;
+  static const double mini = 16;
+  static const double badge = 4;
   static const double pill = 999;
 }
 
@@ -69,11 +71,23 @@ abstract final class MTMotion {
   /// A small element's pulse: badge, button, chip.
   static const Duration tap = Duration(milliseconds: 160);
 
+  /// Half a breath of a placeholder while the first answer is awaited:
+  /// slow enough to read as waiting, not as an alarm.
+  static const Duration wait = Duration(milliseconds: 900);
+
   /// A full screen transition.
   static const Duration page = Duration(milliseconds: 240);
 
   /// Content appearing inside a screen.
   static const Duration reveal = Duration(milliseconds: 220);
+
+  /// The way back, and anything closing that came up in [medium]: out
+  /// faster than it came in.
+  static const Duration leave = Duration(milliseconds: 200);
+
+  /// How small the page underneath gets while another is pushed over it,
+  /// and the size a dialog grows from.
+  static const double recede = 0.96;
 
   /// Slide offset for an element inside a screen, in points. Small on
   /// purpose.
@@ -85,9 +99,9 @@ abstract final class MTMotion {
   // How far an element shrinks while pressed. Glimpsed, not watched.
 
   /// A screen that rises like a sheet from the bottom, such as the audio
-  /// screen opened from the mini player. Longer than [page] because it
-  /// travels the full distance, and still under the agreed 320ms ceiling.
-  static const Duration sheetPage = Duration(milliseconds: 300);
+  /// screen opened from the mini player: at a sheet's pace, longer than
+  /// [page] because it travels the full distance. It goes down in [leave].
+  static const Duration sheetPage = medium;
 
   /// How far an element shrinks while pressed. Glimpsed, not watched.
   static const double pressScale = 0.97;
@@ -114,6 +128,145 @@ abstract final class MTType {
   static const String package = 'mt_ui';
 }
 
+/// The corner scale a theme is built with.
+///
+/// The phones keep [MTRadius] exactly. The Windows app steps every corner
+/// down: on a large screen at arm's length, Material's soft corners read
+/// as a phone app blown up.
+class MTCorners {
+  const MTCorners({
+    required this.sheet,
+    required this.card,
+    required this.dialog,
+    required this.field,
+    required this.thumb,
+    required this.fab,
+    required this.chip,
+    required this.iconButton,
+    required this.tooltip,
+    required this.box,
+    required this.button,
+  });
+
+  final double sheet;
+  final double card;
+  final double dialog;
+  final double field;
+  final double thumb;
+  final double fab;
+  final double chip;
+  final double iconButton;
+  final double tooltip;
+
+  /// Checkboxes and count badges.
+  final double box;
+
+  /// A filled button with a label.
+  final double button;
+
+  static const mobile = MTCorners(
+    sheet: MTRadius.sheet,
+    card: MTRadius.card,
+    dialog: MTRadius.card,
+    field: MTRadius.field,
+    thumb: MTRadius.thumb,
+    fab: MTRadius.fab,
+    chip: MTRadius.chip,
+    iconButton: MTRadius.iconButton,
+    tooltip: 8,
+    box: 2,
+    button: MTRadius.field,
+  );
+
+  /// **Two corners, not nine**: 8 on everything that rests and 12 on what
+  /// floats over it (a dialog, a sheet), stepping down as they nest; the
+  /// filled actions are full pills. Nine near values between 6 and 20 read
+  /// as "everything medium", one of the marks of a generated screen.
+  static const desktop = MTCorners(
+    sheet: 12,
+    card: 8,
+    dialog: 12,
+    field: 8,
+    thumb: 8,
+    fab: MTRadius.pill,
+    chip: 8,
+    iconButton: 8,
+    tooltip: 6,
+    box: 4,
+    button: MTRadius.pill,
+  );
+}
+
+/// The three type sizes that differ between the phone and the computer.
+///
+/// A desktop screen is read from further away but with a finer pointer, so
+/// body text is a step smaller and secondary text a step larger than on a
+/// phone, where it sits a hand's length from the eye.
+class MTTypeScale {
+  const MTTypeScale({
+    required this.headline,
+    required this.body,
+    required this.secondary,
+  });
+
+  /// Screen titles, in the heading font at 700.
+  final double headline;
+
+  /// Running text, in the body font at 400.
+  final double body;
+
+  /// Captions and metadata under a title.
+  final double secondary;
+
+  /// The phones' scale, exactly the sizes they always had.
+  static const mobile = MTTypeScale(headline: 24, body: 15, secondary: 11.5);
+
+  /// The Windows app's scale.
+  static const desktop = MTTypeScale(headline: 24, body: 14, secondary: 12.5);
+}
+
+/// Spacing for a pointer rather than a finger: rows a mouse can still hit
+/// comfortably at a third less height than a thumb needs.
+class MTDensity {
+  const MTDensity({
+    required this.row,
+    required this.icon,
+    required this.iconButton,
+    required this.gap,
+    required this.scrollbar,
+    required this.focusRing,
+  });
+
+  /// The height of a list or table row.
+  final double row;
+
+  /// An icon on its own in a bar or a list: a little larger than the
+  /// body text, so a glyph reads at a glance.
+  final double icon;
+
+  /// The square an icon button occupies, its hit area included.
+  final double iconButton;
+
+  /// The space between neighbouring controls.
+  final double gap;
+
+  /// How thick a scrollbar's thumb is: a thin line, not Windows' bar.
+  final double scrollbar;
+
+  /// How thick the keyboard focus ring is.
+  final double focusRing;
+
+  /// The Windows app. The phones keep their own spacing (`MTSpace`).
+  static const desktop = MTDensity(
+    row: 36,
+    icon: 18,
+    iconButton: 32,
+    gap: 12,
+    scrollbar: 6,
+    focusRing: 2,
+  );
+}
+
 /// **Fixed-width digits** for live counters.
 ///
 /// **A documented trap:** adding `FontFeature.tabularFigures()` on its own
@@ -133,37 +286,9 @@ extension MTTabularFigures on TextStyle {
   );
 }
 
-/// Warm shadows, copied from the reference values.
-abstract final class MTShadow {
-  /// Daylight card shadow: 0 3 6 at 5% plus 0 30 60 -22 at 22%, in a warm
-  /// brown.
-  static const List<BoxShadow> card = [
-    BoxShadow(color: Color(0x0D50371E), blurRadius: 6, offset: Offset(0, 3)),
-    BoxShadow(
-      color: Color(0x3850371E),
-      blurRadius: 60,
-      offset: Offset(0, 30),
-      spreadRadius: -22,
-    ),
-  ];
-
-  /// FAB shadow: 0 16 32 -10 in accentDeep at 55%, built from the palette.
-  static List<BoxShadow> fab(MTPalette p) => [
-    BoxShadow(
-      color: p.accentDeep.withValues(alpha: 0.55),
-      blurRadius: 32,
-      offset: const Offset(0, 16),
-      spreadRadius: -10,
-    ),
-  ];
-
-  /// Mini player shadow: 0 18 40 -12 in ink at 50%.
-  static List<BoxShadow> mini(MTPalette p) => [
-    BoxShadow(
-      color: p.ink.withValues(alpha: 0.5),
-      blurRadius: 40,
-      offset: const Offset(0, 18),
-      spreadRadius: -12,
-    ),
-  ];
-}
+/// **Tracking for a small label, in Latin script only.** Spacing letters
+/// apart pulls Arabic's joined letters away from each other (the Arabic
+/// "Now playing" read as broken glyphs), so a right-to-left label is set
+/// solid.
+double mtLabelTracking(BuildContext context, double latin) =>
+    Directionality.of(context) == TextDirection.rtl ? 0 : latin;

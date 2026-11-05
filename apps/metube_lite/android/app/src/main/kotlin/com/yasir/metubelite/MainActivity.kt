@@ -20,6 +20,7 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : AudioServiceActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        PictureInPicture.register(this, flutterEngine.dartExecutor.binaryMessenger)
         UpdateInstaller.register(this, flutterEngine)
         ShareInbox.register(flutterEngine.dartExecutor.binaryMessenger)
         MethodChannel(
@@ -126,6 +127,22 @@ class MainActivity : AudioServiceActivity() {
         super.onCreate(savedInstanceState)
         captureShortcut(intent)
         ShareInbox.offer(intent, restored = savedInstanceState != null)
+    }
+
+    // Picture in picture (see PictureInPicture): before Android 12 the
+    // activity asks for it as the user leaves; the Dart side learns when the
+    // window moves into a corner or back.
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        PictureInPicture.onUserLeaveHint(this)
+    }
+
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: android.content.res.Configuration,
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        PictureInPicture.onModeChanged(isInPictureInPictureMode)
     }
 
     // With `launchMode="singleTask"` a running app is not recreated, so the

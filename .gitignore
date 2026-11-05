@@ -110,3 +110,9 @@ mtf-transcripts-library*.json
 specs/
 # Widget Preview related
 .widget_preview/
+# Python bytecode from the tool scripts
+__pycache__/
+
+# Pages saved while investigating (a YouTube watch page, 2026-10-28) are
+# never source; the repository root holds no HTML of its own.
+/*.html

@@ -3,6 +3,10 @@
 *.ps1 text eol=crlf
 *.cmd text eol=crlf
 *.bat text eol=crlf
+# Inno Setup reads its scripts as Windows text; UTF-8 with a BOM.
+*.iss text eol=crlf
+# The installer's license pages, written by tool/make_installer_license.py.
+*.rtf text eol=crlf linguist-generated
 
 # Binaries
 *.png binary

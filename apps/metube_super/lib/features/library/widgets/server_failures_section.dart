@@ -40,7 +40,7 @@ class _ServerFailuresSectionState extends ConsumerState<ServerFailuresSection> {
   Future<void> _removeAll() async {
     final l10n = context.mtl;
     final count = widget.items.length;
-    final ok = await showDialog<bool>(
+    final ok = await showMTDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l10n.removeFailedTitle(count)),
@@ -172,7 +172,7 @@ class ServerFailuresLine extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                Icon(Icons.error_outline_rounded, size: 18, color: p.err),
+                MTIcon(MTIcons.alert, size: 18, color: p.err),
                 const SizedBox(width: MTSpace.sm),
                 Expanded(
                   child: Text(

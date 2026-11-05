@@ -147,7 +147,7 @@ void main() {
         localUrl: 'http://nas.local:8081',
         activeUrl: 'http://nas.local:8081',
         externalUrls: ['https://tube.example.com'],
-        username: 'yasir',
+        username: 'alice',
         quality: Quality.q720,
         wifiOnly: true,
         themeMode: ThemeMode.dark,
@@ -155,7 +155,7 @@ void main() {
       ),
     );
     final l10n = l10nOf(tester);
-    expect(find.text(mtMetaLine(['nas.local:8081', 'yasir'])), findsOneWidget);
+    expect(find.text(mtMetaLine(['nas.local:8081', 'alice'])), findsOneWidget);
     expect(
       find.text(
         mtMetaLine([l10n.settingsValueAuto, l10n.settingsValueLocalNow]),

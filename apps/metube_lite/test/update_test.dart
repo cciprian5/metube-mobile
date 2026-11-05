@@ -25,11 +25,12 @@ String releaseJson({String tag = 'v9.9.9'}) => json.encode({
   'draft': false,
   'prerelease': false,
   'body': 'إصلاحات',
-  'html_url': 'https://example.invalid/r',
+  'html_url': 'https://github.com/x/y/releases/tag/v1',
   'assets': [
     {
       'name': 'MeTube-Lite-$tag.apk',
-      'browser_download_url': 'https://example.invalid/app.apk',
+      'browser_download_url':
+          'https://github.com/x/y/releases/download/v1/app.apk',
       'size': 12582912,
     },
   ],
@@ -90,7 +91,10 @@ void main() {
       final state = c.read(updateControllerProvider);
       expect(state.phase, UpdatePhase.available);
       expect(state.release!.version.toString(), '9.9.9');
-      expect(state.release!.apkUrl, 'https://example.invalid/app.apk');
+      expect(
+        state.release!.apkUrl,
+        'https://github.com/x/y/releases/download/v1/app.apk',
+      );
     });
 
     test('**the guard**: a network failure neither throws nor shows in the interface', () async {

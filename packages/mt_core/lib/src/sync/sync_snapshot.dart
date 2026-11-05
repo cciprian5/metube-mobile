@@ -189,6 +189,14 @@ class SyncSnapshot {
     'searches': _flat(searches, (v) => v.toJson()),
   });
 
+  /// Whether [id] can be a device's name: letters, digits, `-` and `_`,
+  /// as [SyncFolder.newDeviceId] makes them. The name becomes a folder in
+  /// the sync folder, and the file is written by another device, so
+  /// anything that could climb out of it (`..`, a separator) is refused.
+  static bool isDeviceId(String id) => _deviceId.hasMatch(id);
+
+  static final _deviceId = RegExp(r'^[A-Za-z0-9_-]{1,64}$');
+
   /// The file's contents, or null when it is not a sync file at all.
   static SyncSnapshot? decode(String contents) {
     final Object? json;
@@ -200,7 +208,7 @@ class SyncSnapshot {
     if (json is! Map || json['device'] is! Map) return null;
     final device = json['device'] as Map;
     final id = device['id'];
-    if (id is! String || id.isEmpty || _int(json['format']) == null) {
+    if (id is! String || !isDeviceId(id) || _int(json['format']) == null) {
       return null;
     }
     return SyncSnapshot(

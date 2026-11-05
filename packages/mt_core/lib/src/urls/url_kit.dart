@@ -4,6 +4,18 @@ import '../constants/mt_constants.dart';
 /// YouTube and numeric ids, normalisation, fuzzy matching, and the server
 /// filename guard.
 abstract final class UrlKit {
+  /// [text] as a page a browser can open: `http` or `https` with a host,
+  /// else null. A clip's or a channel's link comes from the server's
+  /// history, and the system's opener runs `file:`, a network share or
+  /// another app's scheme as readily as it opens a web page.
+  static Uri? webUri(String? text) {
+    final uri = text == null ? null : Uri.tryParse(text.trim());
+    if (uri == null || !(uri.isScheme('http') || uri.isScheme('https'))) {
+      return null;
+    }
+    return uri.host.isEmpty ? null : uri;
+  }
+
   static final RegExp _urlPattern = RegExp(
     r'https?://[^\s<>"]+',
     caseSensitive: false,

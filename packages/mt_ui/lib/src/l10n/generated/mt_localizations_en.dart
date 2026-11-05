@@ -3001,6 +3001,10 @@ class MTLocalizationsEn extends MTLocalizations {
   String get subtitlesSizeSmall => 'Small';
 
   @override
+  String get syncDeviceQuiet =>
+      'Nothing has come from it for over two days. If it was in use, a sync app is probably paused or asleep, there or here: phones put apps they think unused to sleep.';
+
+  @override
   String get syncPhoneCameBack =>
       'This phone was away for more than 90 days, so your other devices\' data was taken first.';
 

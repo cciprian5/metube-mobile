@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+import '../../shell/open_web_link.dart';
 
 import '../../data/library_data.dart';
 import '../../data/lists_data.dart';
@@ -24,11 +25,7 @@ class ClipActions {
   }
 
   /// The clip on its own site, in the browser.
-  Future<void> openOriginal(String canonicalUrl) async {
-    final uri = Uri.tryParse(canonicalUrl);
-    if (uri == null) return;
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  }
+  Future<void> openOriginal(String canonicalUrl) => openWebLink(canonicalUrl);
 
   /// Deletes from the server **by the canonical URL from /history and
   /// nothing else**, then forgets what this computer kept about the clip.

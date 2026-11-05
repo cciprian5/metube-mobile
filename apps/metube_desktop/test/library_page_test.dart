@@ -106,6 +106,14 @@ void main() {
     await tester.tap(find.text('Shorts'));
     await tester.pumpAndSettle();
     expect(find.byType(MTMediaGridCard), findsNWidgets(4));
+
+    // **The guard** (owner's choice, 2026-11-05): video leaves the shorts
+    // to their own pill, so videos without the shorts can be had.
+    await tester.tap(find.text('Video'));
+    await tester.pumpAndSettle();
+    expect(titleOf('Blue Hour'), findsNothing);
+    expect(titleOf('Amber Skies'), findsNothing);
+    expect(find.byType(MTMediaGridCard), findsNWidgets(2));
   });
 
   testWidgets('the platforms are one pill whose menu carries live counts, '

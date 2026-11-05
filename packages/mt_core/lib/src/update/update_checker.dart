@@ -21,7 +21,12 @@ class UpdateChecker {
     required this.assetMarker,
     this.assetExtension = '.apk',
     this.repo = MTConstants.updateRepo,
+    this.trustedAsset = UpdateRelease.fromGitHub,
   });
+
+  /// Where this app's file may be downloaded from: GitHub over https.
+  /// Tests serve a file of their own.
+  final bool Function(Uri link) trustedAsset;
 
   final HttpGetString fetch;
 
@@ -101,6 +106,7 @@ class UpdateChecker {
       body,
       assetMarker: assetMarker,
       extension: assetExtension,
+      trusted: trustedAsset,
     );
     if (release == null) return null;
     if (release.version <= current) return null;

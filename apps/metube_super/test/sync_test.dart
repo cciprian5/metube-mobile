@@ -205,7 +205,7 @@ void main() {
           ),
         );
 
-    ProviderContainer on() {
+    ProviderContainer on({Duration heardAgo = Duration.zero}) {
       final c = make();
       final store = c.read(keyValueStoreProvider);
       store.setString(PhoneSyncSettingsNotifier.treeKey, _tree);
@@ -218,13 +218,38 @@ void main() {
             SyncSnapshot(
               deviceId: _ember,
               deviceKind: 'ember',
-              writtenAt: DateTime.now().millisecondsSinceEpoch,
+              writtenAt: DateTime.now()
+                  .subtract(heardAgo)
+                  .millisecondsSinceEpoch,
             ),
           ),
         ],
       );
       return c;
     }
+
+    // The owner's report, 2026-11-05: the sync app on the phone had been
+    // put to sleep and nothing said why the computer's changes stopped.
+    testWidgets('**the guard**: a device unheard for days says a sync app '
+        'may be asleep; one heard today says nothing', (tester) async {
+      await tester.pumpWidget(host(on(heardAgo: const Duration(days: 3))));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('paused or asleep'), findsOneWidget);
+
+      await tester.pumpWidget(host(on()));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('paused or asleep'), findsNothing);
+    });
+
+    testWidgets('the note fits, in Arabic too', (tester) async {
+      await expectNoOverflow(
+        tester,
+        () => host(
+          on(heardAgo: const Duration(days: 3)),
+          locale: const Locale('ar'),
+        ),
+      );
+    });
 
     testWidgets('on, with the computer, at every size', (tester) async {
       await expectNoOverflow(tester, () => host(on()));

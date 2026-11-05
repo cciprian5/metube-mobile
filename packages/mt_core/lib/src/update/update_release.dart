@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../urls/url_kit.dart';
 import 'app_version.dart';
 
 /// A release published on GitHub, as read from `releases/latest`.
@@ -49,10 +50,18 @@ class UpdateRelease {
   /// pre-release, a release with no APK for this app, or unexpected JSON.
   /// **An update check never troubles the user with an error** (rule 5: a
   /// new feature does not break what works).
+  /// A link to GitHub itself over https: where a release's page and its
+  /// files are (`https://github.com/<owner>/<repo>/releases/download/…`,
+  /// measured on the published release; GitHub redirects the download
+  /// to its own file host from there).
+  static bool fromGitHub(Uri link) =>
+      link.isScheme('https') && link.host == 'github.com';
+
   static UpdateRelease? tryParse(
     String body, {
     required String assetMarker,
     String extension = '.apk',
+    bool Function(Uri link) trusted = fromGitHub,
   }) {
     Object? decoded;
     try {
@@ -81,6 +90,10 @@ class UpdateRelease {
       final name = asset['name'];
       final url = asset['browser_download_url'];
       if (name is! String || url is! String) continue;
+      // The file is downloaded and installed (run, on Windows) as it is,
+      // so it comes from GitHub over https or not at all.
+      final link = UrlKit.webUri(url);
+      if (link == null || !trusted(link)) continue;
       final lower = name.toLowerCase();
       // **Matching on both the marker and the extension**: one release
       // carries every app's file, so without the marker a Lite user
@@ -94,9 +107,10 @@ class UpdateRelease {
         apkUrl: url,
         apkSize: size is int ? size : 0,
         notes: decoded['body'] is String ? decoded['body'] as String : '',
-        pageUrl: decoded['html_url'] is String
-            ? decoded['html_url'] as String
-            : '',
+        pageUrl: switch (UrlKit.webUri(decoded['html_url']?.toString())) {
+          final page? when fromGitHub(page) => page.toString(),
+          _ => '',
+        },
         publishedAt: decoded['published_at'] is String
             ? DateTime.tryParse(decoded['published_at'] as String)
             : null,

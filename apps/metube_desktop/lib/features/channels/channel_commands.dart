@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+import '../../shell/open_web_link.dart';
 
 import '../../data/channels_data.dart';
 import '../../router.dart';
@@ -81,10 +82,7 @@ Future<bool> unfollowChannel(
 }
 
 /// The channel on its own site, in the browser.
-Future<void> openChannelSite(ChannelSubscription sub) async {
-  final uri = Uri.tryParse(sub.url);
-  if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
-}
+Future<void> openChannelSite(ChannelSubscription sub) => openWebLink(sub.url);
 
 enum _ChannelChoice { open, check, edit, unfollow }
 

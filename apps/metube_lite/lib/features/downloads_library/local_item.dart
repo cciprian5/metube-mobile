@@ -137,7 +137,10 @@ List<LocalItem> buildLocalLibraryView(
     final typeOk = switch (type) {
       MediaTypeFilter.all => true,
       MediaTypeFilter.audio => item.isAudio,
-      MediaTypeFilter.video => !item.isAudio,
+      // Video leaves the shorts to their own chip, so every clip is under
+      // one type and video without the shorts can be had (owner's
+      // choice, 2026-11-05). A clip of unknown shape stays a video.
+      MediaTypeFilter.video => !item.isAudio && !item.isShortForm,
       // Shorts: portrait, short, and only where the dimensions are known.
       MediaTypeFilter.shorts => item.isShortForm,
     };

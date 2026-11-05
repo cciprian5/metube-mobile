@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../di.dart';
 import '../downloads_library/library_actions.dart';
@@ -13,6 +12,7 @@ import '../downloads_library/library_providers.dart';
 import '../downloads_library/local_item.dart';
 import '../shared/membership.dart';
 import 'playback_providers.dart';
+import '../shared/open_web_link.dart';
 
 /// Lite's video player (rule 4): every source is local, so the actions are
 /// continue as audio, share and open the original link. There is no
@@ -134,10 +134,7 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
           icon: MTIcons.external,
           label: l10n.openOriginalLink,
           inMenu: true,
-          onTap: () => launchUrl(
-            Uri.parse(item.canonicalUrl),
-            mode: LaunchMode.externalApplication,
-          ),
+          onTap: () => openWebLink(item.canonicalUrl),
         ),
     ];
   }

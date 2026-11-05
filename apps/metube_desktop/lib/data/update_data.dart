@@ -114,9 +114,13 @@ final updateProvider = NotifierProvider<UpdateNotifier, UpdateState>(
   UpdateNotifier.new,
 );
 
-/// The installer's file name for [version], as the release names it.
+/// The installer's file name for [version], as the release names it. The
+/// version comes from the release's tag, and the name becomes a path in
+/// the temporary folder that is written, run and deleted: anything but
+/// letters, digits and dots becomes `_`, so no tag climbs out of it.
 String installerNameFor(String version) =>
-    'MeTube-Ember-$version-windows-x64-setup.exe';
+    'MeTube-Ember-${version.replaceAll(RegExp('[^0-9A-Za-z.]'), '_')}'
+    '-windows-x64-setup.exe';
 
 class UpdateNotifier extends Notifier<UpdateState> {
   DownloadCancelToken? _cancel;

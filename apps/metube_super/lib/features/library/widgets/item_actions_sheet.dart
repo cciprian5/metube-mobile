@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart' show CancelledException, ImageHeaders;
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:mt_media/library.dart';
 
 import '../../playlists/add_to_playlist_sheet.dart';
@@ -19,6 +18,7 @@ import '../library_providers.dart';
 import 'confirm_bulk_delete.dart';
 import 'item_details_sheet.dart';
 import 'share_sheet.dart';
+import '../../shared/open_web_link.dart';
 
 /// The item actions sheet, by state (rule 5). Delete comes last, isolated
 /// by a divider and in the error colour, which is a general navigation
@@ -229,10 +229,7 @@ class _ItemActionsSheet extends ConsumerWidget {
             // is always offered here; Lite offers it only when known.
             tile(MTIcons.external, l10n.openOriginalLink, () {
               Navigator.pop(context);
-              launchUrl(
-                Uri.parse(item.canonicalUrl),
-                mode: LaunchMode.externalApplication,
-              );
+              openWebLink(item.canonicalUrl);
             }),
             tile(MTIcons.queueAdd, l10n.addToPlaylist, () {
               Navigator.pop(context);

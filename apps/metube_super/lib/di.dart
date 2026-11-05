@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'features/batch/batch_offline_saver.dart';
 import 'features/home/handled_links.dart';
@@ -76,6 +77,9 @@ final artworkIndexProvider = Provider(
   (ref) => ArtworkIndex(
     store: ref.watch(keyValueStoreProvider),
     mutex: ref.watch(prefsMutexProvider),
+    // The covers the app draws are in filesDir/thumbs; nothing outside
+    // the app's files is deleted with an entry.
+    ownFolder: () async => (await getApplicationSupportDirectory()).path,
   ),
 );
 

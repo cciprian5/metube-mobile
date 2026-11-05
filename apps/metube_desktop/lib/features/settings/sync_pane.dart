@@ -123,6 +123,7 @@ class SyncPane extends ConsumerWidget {
                   ),
                 ),
               ),
+              hint: device.isQuietAt(DateTime.now()) ? l.syncDeviceQuiet : null,
               trailing: MTLinkButton(
                 label: l.desktopSyncForget,
                 icon: MTIcons.trash,

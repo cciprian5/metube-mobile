@@ -146,6 +146,17 @@ void main() {
       );
     });
 
+    test('**the guard**: video leaves the shorts to their own chip '
+        "(owner's choice, 2026-11-05)", () {
+      expect(
+        buildLocalLibraryView(
+          items,
+          type: MediaTypeFilter.video,
+        ).map((i) => i.title),
+        ['Alpha'],
+      );
+    });
+
     test("the platform filter, which is Lite's alone", () {
       expect(
         buildLocalLibraryView(

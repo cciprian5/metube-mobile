@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../playlists/add_to_playlist_sheet.dart';
 import '../../shared/error_report.dart';
@@ -11,6 +10,7 @@ import '../library_actions.dart';
 import '../library_providers.dart';
 import '../local_item.dart';
 import 'item_details_sheet.dart';
+import '../../shared/open_web_link.dart';
 
 /// The item actions sheet (rule 5, Lite's version where everything is
 /// local). Delete comes last, isolated by a divider and in the error
@@ -153,10 +153,7 @@ class _ItemActionsSheet extends ConsumerWidget {
             if (item.canonicalUrl != null)
               tile(MTIcons.external, l10n.openOriginalLink, () {
                 Navigator.pop(context);
-                launchUrl(
-                  Uri.parse(item.canonicalUrl!),
-                  mode: LaunchMode.externalApplication,
-                );
+                openWebLink(item.canonicalUrl);
               }),
             const Divider(),
             tile(

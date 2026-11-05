@@ -36,7 +36,8 @@ String _latest(String version) => jsonEncode({
   'assets': [
     {
       'name': installerNameFor(version),
-      'browser_download_url': 'https://x/setup.exe',
+      'browser_download_url':
+          'https://github.com/x/y/releases/download/v1/setup.exe',
       'size': 28000000,
     },
   ],

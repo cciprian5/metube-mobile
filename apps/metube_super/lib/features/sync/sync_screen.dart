@@ -168,6 +168,9 @@ class SyncScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  subtitle: device.isQuietAt(DateTime.now())
+                      ? Text(l10n.syncDeviceQuiet, style: small)
+                      : null,
                   trailing: IconButton(
                     tooltip: l10n.desktopSyncForget,
                     icon: MTIcon(MTIcons.linkOff, color: p.ink3),

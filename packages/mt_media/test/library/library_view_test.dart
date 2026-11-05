@@ -66,6 +66,37 @@ void main() {
       );
     });
 
+    test('**the guard**: video leaves the shorts to their own chip, so '
+        'every clip is under one type (owner\'s choice, 2026-11-05)', () {
+      final reel = LibraryItem(
+        canonicalUrl: 'https://youtu.be/ccccccccccc',
+        title: 'Reel',
+        timestamp: DateTime(2026, 9, 2),
+        onServer: true,
+        duration: const Duration(seconds: 40),
+        aspectRatio: 9 / 16,
+      );
+      final all = [...items, reel];
+      final video = buildLibraryView(all, type: MediaTypeFilter.video);
+      expect(video, hasLength(2));
+      expect(video, isNot(contains(reel)));
+      expect(
+        buildLibraryView(all, type: MediaTypeFilter.shorts).single.title,
+        'Reel',
+      );
+      // Each clip in exactly one of video, shorts and audio.
+      final typed = [
+        for (final t in [
+          MediaTypeFilter.video,
+          MediaTypeFilter.shorts,
+          MediaTypeFilter.audio,
+        ])
+          ...buildLibraryView(all, type: t),
+      ];
+      expect(typed.toSet(), all.toSet());
+      expect(typed, hasLength(all.length));
+    });
+
     test('live search by title', () {
       expect(buildLibraryView(items, query: 'أنشودة').single.isAudio, isTrue);
       expect(buildLibraryView(items, query: 'غير موجود'), isEmpty);

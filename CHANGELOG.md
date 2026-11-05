@@ -36,6 +36,14 @@ for Android, and MeTube Ember for Windows.
   clip whose cover is already gone takes a frame from its own file. All
   three apps.
 
+- **A note when another device has gone quiet (Super, Ember).** When nothing
+  has come from your phone or computer for over two days, the sync page
+  says so beside it: a sync app paused or put to sleep by the phone's
+  battery rules is the usual reason.
+- **Ctrl+C and Ctrl+Shift+C with the mouse (Ember).** The link or the file
+  of the clip under the mouse, or of the one clip chosen with its circle;
+  with several chosen it says copying takes one at a time.
+
 ### Changed
 
 - **The app's logo in the title bar and in About (Ember)**, in place of
@@ -44,6 +52,12 @@ for Android, and MeTube Ember for Windows.
 - **A clip card is one button for a screen reader.** TalkBack reads the
   title and length once and opens the clip on a double tap; the heart is a
   button of its own. Both phone apps.
+
+- **Video no longer includes the shorts.** Video, Shorts and Audio now each
+  hold their own clips, so videos can be seen without the shorts. All three
+  apps.
+- **The smart playlists in Lite are quiet rows**, as in Super: favourites
+  and the latest additions in one group, with their counts.
 
 ### Fixed
 
@@ -66,6 +80,15 @@ for Android, and MeTube Ember for Windows.
   All three apps.
 - **The seven backups could fill with the same copy.** A backup with nothing
   new in it now leaves the older ones in place. All three apps.
+
+### Security
+
+- **Extra protection against a hostile server or a planted file.** Links
+  and covers from the server open only as web pages, a download's folder
+  stays inside the download folder, a sync file cannot point "forget this
+  device" outside its own folder, a crafted subtitle file no longer freezes
+  the app, and an update is taken only from GitHub over https. None of this
+  changes what you see. All three apps, each where it applies.
 
 ## [2.6.0] - 2026-10-23
 

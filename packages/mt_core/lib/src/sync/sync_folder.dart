@@ -48,9 +48,24 @@ class IoSyncStorage implements SyncStorage {
     Duration(seconds: 2),
   ];
 
-  /// Where [path] is on disk.
-  String pathOf(List<String> path) =>
-      [root.path, ...path].join(Platform.pathSeparator);
+  /// Where [path] is on disk. Every part is one name inside the folder:
+  /// an empty part, `.`, `..` or one holding a separator would reach
+  /// outside it, and removing a device removes its folder recursively.
+  String pathOf(List<String> path) {
+    for (final part in path) {
+      if (!isSafeName(part)) {
+        throw ArgumentError.value(part, 'path', 'not a name in the folder');
+      }
+    }
+    return [root.path, ...path].join(Platform.pathSeparator);
+  }
+
+  /// Whether [name] is one plain name, with nothing that climbs or splits.
+  static bool isSafeName(String name) =>
+      name.isNotEmpty &&
+      name != '.' &&
+      name != '..' &&
+      !name.contains(RegExp(r'[/\\:\x00]'));
 
   Future<List<String>> _names(List<String> dir, {required bool folders}) async {
     final at = Directory(pathOf(dir));
@@ -115,6 +130,19 @@ class SyncDevice {
   final SyncSnapshot snapshot;
 
   String get id => snapshot.deviceId;
+
+  /// How long a device may go unheard before it is pointed out: two of
+  /// the daily writes every running device makes.
+  static const quietAfter = Duration(days: 2);
+
+  /// Whether nothing has come from it for longer than [quietAfter]: its
+  /// app unused, or the sync app between the two paused or asleep (the
+  /// phone's battery rules put one to sleep). A file without a time is
+  /// not quiet.
+  bool isQuietAt(DateTime now) =>
+      snapshot.writtenAt > 0 &&
+      now.millisecondsSinceEpoch - snapshot.writtenAt >
+          quietAfter.inMilliseconds;
 }
 
 /// **The sync folder**, one subfolder per device:
@@ -168,11 +196,16 @@ class SyncFolder {
 
   /// Every other device whose file can be read. A folder without a
   /// readable file (one being created, one from another program) is
-  /// skipped.
+  /// skipped, and so is a file that names a device other than its own
+  /// folder: whatever is done to that device later (forgetting it removes
+  /// its folder) is done by the name inside the file, so a file claiming
+  /// another device's name, or a name outside the folder, would aim it
+  /// elsewhere.
   Future<List<SyncDevice>> others(String myId) async => [
     for (final name in await storage.folders(const []))
       if (name != myId && !isConflictCopy(name))
-        if (await read(name) case final snapshot?) SyncDevice(snapshot),
+        if (await read(name) case final snapshot?)
+          if (snapshot.deviceId == name) SyncDevice(snapshot),
   ];
 
   /// A device's file, or null when it is missing or unreadable.

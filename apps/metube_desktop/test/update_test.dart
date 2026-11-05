@@ -20,7 +20,8 @@ String latest(String version, String setupUrl, {int size = 4000}) =>
       'assets': [
         {
           'name': 'MeTube-Super-v$version.apk',
-          'browser_download_url': 'https://x/super.apk',
+          'browser_download_url':
+              'https://github.com/x/y/releases/download/v1/super.apk',
           'size': 1,
         },
         {
@@ -73,6 +74,8 @@ void main() {
             assetMarker: 'ember',
             assetExtension: '.exe',
             fetch: (_) async => release,
+            // The installer comes from this test's own server.
+            trustedAsset: (_) => true,
           ),
         ),
         updateFolderProvider.overrideWithValue(folder.path),
@@ -107,6 +110,30 @@ void main() {
     final checker = c.read(updateCheckerProvider);
     expect((checker.assetMarker, checker.assetExtension), ('ember', '.exe'));
     expect(c.read(installerDownloaderProvider).magic, ApkDownloader.exeMagic);
+    // From GitHub over https only: a file from anywhere else is no update.
+    expect(checker.trustedAsset(Uri.parse('http://127.0.0.1/x.exe')), isFalse);
+    expect(
+      checker.trustedAsset(
+        Uri.parse('https://github.com/a/b/releases/download/v1/x.exe'),
+      ),
+      isTrue,
+    );
+  });
+
+  test('**the guard**: a release tag never makes the installer\'s path '
+      'climb out of the temporary folder', () {
+    final name = installerNameFor(
+      AppVersion.tryParse(
+        r'v9.9.9-..\..\Microsoft\Windows\Start Menu\Programs\Startup\x',
+      ).toString(),
+    );
+    expect(name, isNot(contains(r'\')));
+    expect(name, isNot(contains('/')));
+    expect(name, isNot(contains(' ')));
+    expect(
+      installerNameFor('2.7.0'),
+      'MeTube-Ember-2.7.0-windows-x64-setup.exe',
+    );
   });
 
   test('what is not an installer is never started', () async {

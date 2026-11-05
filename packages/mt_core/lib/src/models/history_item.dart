@@ -165,7 +165,9 @@ class HistoryItem {
         }
       }
     }
-    if (thumb != null) return thumb;
+    // A cover is a web address; anything else (a path on this device)
+    // would be read and later deleted as the app's own file.
+    if (thumb != null && UrlKit.webUri(thumb) != null) return thumb;
 
     final videoId = UrlKit.youtubeVideoId(url);
     if (videoId != null) {

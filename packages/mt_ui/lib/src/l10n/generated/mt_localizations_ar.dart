@@ -3079,6 +3079,10 @@ class MTLocalizationsAr extends MTLocalizations {
   String get subtitlesSizeSmall => 'صغير';
 
   @override
+  String get syncDeviceQuiet =>
+      'لم يصل منه شيء منذ أكثر من يومين. إن كان مستعملاً فالأرجح أن برنامج المزامنة متوقف أو نائم، عليه أو هنا، فالجوال يُنيم التطبيقات التي يظنها غير مستعملة.';
+
+  @override
   String get syncPhoneCameBack =>
       'غاب هذا الجوال أكثر من 90 يوماً، فأُخذت بيانات أجهزتك الأخرى أولاً.';
 

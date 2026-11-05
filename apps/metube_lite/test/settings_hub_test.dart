@@ -139,7 +139,7 @@ void main() {
       const Size(411, 2000),
       settings: const LiteSettings(
         serverUrl: 'http://nas.local:8081',
-        username: 'yasir',
+        username: 'alice',
         quality: Quality.q720,
         wifiOnly: true,
         themeMode: ThemeMode.dark,
@@ -147,7 +147,7 @@ void main() {
       ),
     );
     final l10n = l10nOf(tester);
-    expect(find.text(mtMetaLine(['nas.local:8081', 'yasir'])), findsOneWidget);
+    expect(find.text(mtMetaLine(['nas.local:8081', 'alice'])), findsOneWidget);
     expect(
       find.text(mtMetaLine([l10n.quality720, l10n.settingsValueWifiOnly])),
       findsOneWidget,

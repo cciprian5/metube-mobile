@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:mt_core/mt_core.dart';
+
 /// [name] as Windows accepts it: the characters it forbids become `_`, and
 /// trailing dots and spaces, which it drops silently, go.
 String windowsSafeName(String name) {
@@ -7,6 +9,20 @@ String windowsSafeName(String name) {
       .replaceAll(RegExp(r'[<>:"/\\|?*\x00-\x1F]'), '_')
       .replaceAll(RegExp(r'[. ]+$'), '');
   return safe.isEmpty ? '_' : safe;
+}
+
+/// The folder below the download folder that a server file keeps on this
+/// computer: its folder on the server, each part a name Windows accepts
+/// (`..` and `.` become `_`). Empty for a file at the top, and for a path
+/// the traversal guard refuses: that copy fails at the guard, and no
+/// folder is made on the way there.
+String serverSubfolder(String serverPath) {
+  if (!ServerPath.isSafe(serverPath)) return '';
+  return ServerPath.folderOf(serverPath)
+      .split('/')
+      .where((part) => part.isNotEmpty)
+      .map(windowsSafeName)
+      .join(Platform.pathSeparator);
 }
 
 /// [path], or the same name with " (2)", " (3)"… when taken, as Explorer

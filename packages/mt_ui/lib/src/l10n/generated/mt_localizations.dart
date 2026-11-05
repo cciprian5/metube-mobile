@@ -5102,6 +5102,12 @@ abstract class MTLocalizations {
   /// **'Small'**
   String get subtitlesSizeSmall;
 
+  /// No description provided for @syncDeviceQuiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing has come from it for over two days. If it was in use, a sync app is probably paused or asleep, there or here: phones put apps they think unused to sleep.'**
+  String get syncDeviceQuiet;
+
   /// No description provided for @syncPhoneCameBack.
   ///
   /// In en, this message translates to:

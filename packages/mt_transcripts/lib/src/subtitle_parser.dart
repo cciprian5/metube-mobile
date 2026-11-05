@@ -16,7 +16,10 @@ abstract final class SubtitleParser {
     r'^\s*((?:\d+:)?\d{1,2}:\d{2}[,.]\d{1,3})\s*-->\s*'
     r'((?:\d+:)?\d{1,2}:\d{2}[,.]\d{1,3})',
   );
-  static final _tag = RegExp(r'<[^>]*>|\{\\[^}]*\}');
+  // A tag holds no other bracket of its own kind: with `[^>]*` a line of
+  // unclosed `<` made every one of them scan to the line's end, so one
+  // crafted caption line took minutes and froze the app.
+  static final _tag = RegExp(r'<[^<>]*>|\{\\[^{}]*\}');
   static final _space = RegExp(r'\s+');
   static final _vttBlock = RegExp(r'^(NOTE|STYLE|REGION)\b');
 

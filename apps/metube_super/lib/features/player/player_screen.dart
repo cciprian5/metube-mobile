@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:mt_media/library.dart';
 
 import '../../di.dart';
@@ -22,6 +21,7 @@ import '../transcripts/transcripts_state.dart';
 import 'playback_providers.dart';
 import '../transcripts/subtitles.dart';
 import '../subscriptions/widgets/follow_line.dart';
+import '../shared/open_web_link.dart';
 
 /// Super's video player (rule 4): it feeds `MTVideoScreen` with the app's
 /// actions, available offline, continue as audio, share, and open the
@@ -191,10 +191,7 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
         icon: MTIcons.external,
         label: l10n.openOriginalLink,
         inMenu: true,
-        onTap: () => launchUrl(
-          Uri.parse(item.canonicalUrl),
-          mode: LaunchMode.externalApplication,
-        ),
+        onTap: () => openWebLink(item.canonicalUrl),
       ),
     ];
   }

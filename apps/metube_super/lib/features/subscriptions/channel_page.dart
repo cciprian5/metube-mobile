@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_media/library.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../di.dart';
 import '../library/library_providers.dart';
@@ -15,6 +14,7 @@ import 'channel_match.dart';
 import 'subscription_sheet.dart';
 import 'subscriptions_providers.dart';
 import 'widgets/channel_row.dart';
+import '../shared/open_web_link.dart';
 
 /// **One followed channel's page**, as in the Windows app: its link, when
 /// the server last looked, its actions, how it is set up, and its clips in
@@ -45,10 +45,7 @@ class ChannelPage extends ConsumerWidget {
               onSelected: (action) => action(),
               itemBuilder: (_) => [
                 PopupMenuItem(
-                  value: () => launchUrl(
-                    Uri.parse(sub.url),
-                    mode: LaunchMode.externalApplication,
-                  ),
+                  value: () => openWebLink(sub.url),
                   child: Text(l10n.openChannel),
                 ),
                 PopupMenuItem(

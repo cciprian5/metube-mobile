@@ -1380,6 +1380,7 @@
   "subtitlesSizeLarge": "Large",
   "subtitlesSizeMedium": "Medium",
   "subtitlesSizeSmall": "Small",
+  "syncDeviceQuiet": "Nothing has come from it for over two days. If it was in use, a sync app is probably paused or asleep, there or here: phones put apps they think unused to sleep.",
   "syncPhoneCameBack": "This phone was away for more than 90 days, so your other devices' data was taken first.",
   "syncPhoneFailed": "The sync folder could not be read. Choose it again if it moved or its permission was taken back.",
   "syncPhoneForgetBody": "{device} will no longer be read. Its transcripts move to this phone's folder first, so none is lost. Use this for a device that was lost or sold.",

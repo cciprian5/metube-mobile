@@ -3,13 +3,13 @@ import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_media/mt_media.dart';
 import 'package:mt_ui/mt_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../shared/external_player.dart';
 import '../../shared/membership.dart';
 import '../../shared/platform_label.dart';
 import '../local_item.dart';
 import '../media_probe.dart';
+import '../../shared/open_web_link.dart';
 
 /// Item details, opened from the actions sheet and from the reels player
 /// alike.
@@ -98,10 +98,7 @@ class _DetailsSheet extends ConsumerWidget {
                 if (item.canonicalUrl case final String url)
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () => launchUrl(
-                        Uri.parse(url),
-                        mode: LaunchMode.externalApplication,
-                      ),
+                      onPressed: () => openWebLink(url),
                       icon: const MTIcon(MTIcons.external, size: 16),
                       label: Text(
                         l10n.openOriginalLink,

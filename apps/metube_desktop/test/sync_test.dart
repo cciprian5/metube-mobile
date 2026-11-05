@@ -37,10 +37,13 @@ Transcript _said(String id) => Transcript(
 );
 
 /// A phone that already wrote its file: one tag on the trip, one list.
-Future<void> _phoneWrote(SyncFolder folder) async {
+Future<void> _phoneWrote(
+  SyncFolder folder, {
+  Duration ago = Duration.zero,
+}) async {
   final store = MemoryKeyValueStore();
   final mutex = PrefsMutex();
-  final now = DateTime.now();
+  final now = DateTime.now().subtract(ago);
   await TagsIndex(
     store: store,
     mutex: mutex,
@@ -182,7 +185,10 @@ void main() {
   });
 
   group('the settings pane', () {
-    Future<ShellHarness> open(WidgetTester tester) async {
+    Future<ShellHarness> open(
+      WidgetTester tester, {
+      Duration phoneAgo = Duration.zero,
+    }) async {
       ShellHarness.useWindow(tester, const Size(1440, 900));
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
         SystemChannels.platform,
@@ -209,7 +215,7 @@ void main() {
         '${root.path}/Sync',
       );
       await h.store.setString(SyncSettingsNotifier.deviceKey, 'ember-c3d4');
-      await tester.runAsync(() => _phoneWrote(folder));
+      await tester.runAsync(() => _phoneWrote(folder, ago: phoneAgo));
       await tester.pumpWidget(h.app());
       await settle(tester);
       GoRouter.of(tester.element(find.byType(EmberSidebar)))
@@ -226,6 +232,19 @@ void main() {
       expect(find.textContaining('FolderSync'), findsOneWidget);
       expect(find.textContaining('Wi‑Fi only'), findsOneWidget);
       expect(find.textContaining('not a backup'), findsOneWidget);
+    });
+
+    // The owner's report, 2026-11-05: the sync app on the phone had been
+    // put to sleep and nothing said why the phone's changes stopped.
+    testWidgets('**the guard**: a phone unheard for days says a sync app '
+        'may be asleep; one heard today says nothing', (tester) async {
+      await open(tester, phoneAgo: const Duration(days: 3));
+      expect(find.textContaining('paused or asleep'), findsOneWidget);
+    });
+
+    testWidgets('a phone heard today has no note', (tester) async {
+      await open(tester);
+      expect(find.textContaining('paused or asleep'), findsNothing);
     });
 
     testWidgets('shows this computer and the phone, and forgetting the '

@@ -146,7 +146,7 @@ class LocalCopies extends Notifier<List<LocalCopy>> {
     final base = into ?? (await chooseDownloadFolder()).into;
     if (base == null) return false;
     final sub = settings.serverFolders && !picked
-        ? ServerPath.folderOf(source.serverPath).replaceAll('/', r'\')
+        ? serverSubfolder(source.serverPath)
         : '';
     _add(CopyKind.download, source, sub.isEmpty ? base : '$base\\$sub');
     return true;

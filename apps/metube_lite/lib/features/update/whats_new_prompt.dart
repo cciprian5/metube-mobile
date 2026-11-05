@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 import 'package:mt_ui/mt_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../di.dart';
 import 'update_state.dart';
+import '../shared/open_web_link.dart';
 
 /// The running version, and whether Android installed it over an older
 /// copy. **A provider of its own** so tests can replace it:
@@ -109,9 +109,6 @@ void _show(BuildContext context, WhatsNew notes) {
     context,
     version: notes.version,
     notes: mtReleaseNotesFor(notes.notes, arabic: arabic, app: 'lite'),
-    onOpenPage: () => launchUrl(
-      Uri.parse(notes.pageUrl),
-      mode: LaunchMode.externalApplication,
-    ),
+    onOpenPage: () => openWebLink(notes.pageUrl),
   );
 }

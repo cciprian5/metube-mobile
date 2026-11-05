@@ -1,0 +1,20 @@
+{
+  "tag_name": "v2.6.0",
+  "draft": false,
+  "prerelease": false,
+  "html_url": "https://github.com/sagheerys/metube-mobile/releases/tag/v2.6.0",
+  "published_at": "2026-10-23T10:34:20Z",
+  "body": "## Fixed (trimmed for the test)",
+  "assets": [
+    {
+      "name": "MeTube-Lite-2.6.0.apk",
+      "size": 44164051,
+      "browser_download_url": "https://github.com/sagheerys/metube-mobile/releases/download/v2.6.0/MeTube-Lite-2.6.0.apk"
+    },
+    {
+      "name": "MeTube-Super-2.6.0.apk",
+      "size": 45474647,
+      "browser_download_url": "https://github.com/sagheerys/metube-mobile/releases/download/v2.6.0/MeTube-Super-2.6.0.apk"
+    }
+  ]
+}

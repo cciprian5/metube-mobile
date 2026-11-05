@@ -107,11 +107,11 @@ class SubscriptionChecks {
       final counts = <String, _Count>{
         for (final MapEntry(:key, :value)
             in (json['counts'] as Map<String, dynamic>? ?? const {}).entries)
-          if (_Count.fromJson(value) case final count?) key: count,
+          key: ?_Count.fromJson(value),
       };
       final credits = [
         for (final row in json['credits'] as List? ?? const [])
-          if (_Credit.fromJson(row) case final credit?) credit,
+          ?_Credit.fromJson(row),
       ];
       return _State(counts, credits);
     } on Object {

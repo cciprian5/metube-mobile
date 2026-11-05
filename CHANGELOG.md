@@ -65,6 +65,9 @@ for Android, and MeTube Ember for Windows.
 
 ### Fixed
 
+- **A backup restored on another phone kept some clips without a cover.**
+  The covers kept as files are paths on the phone that wrote them; they
+  now stay on that phone, and the restored clips fetch their covers again.
 - **A clip downloaded on the phone is no longer announced on the computer
   as news from a subscription, nor the other way round (Super, Ember).**
   Only what a subscription's own check queued on the server is announced

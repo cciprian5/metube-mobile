@@ -53,7 +53,8 @@ The three apps share the same core, media and design packages, and all ship in
 
 ## Features
 
-### In both apps
+<details>
+<summary><strong>In both phone apps</strong> — links, downloads, the library, playing, shorts, tablets, playlists, settings, updates</summary>
 
 **Getting a link in.** Paste, or let the add button notice a link already on
 the clipboard; share to the app from YouTube, TikTok or anything else — it
@@ -124,7 +125,10 @@ installs without your confirmation, and a version can be skipped. The first
 launch after an update shows what is new in it, and Settings → Updates opens
 that again at any time.
 
-### MeTube Ember (Windows)
+</details>
+
+<details>
+<summary><strong>MeTube Ember (Windows)</strong> — the library in a window, Ctrl+K, a reading room, channels, copies to this computer, sync</summary>
 
 The owner's app on a computer, new in 2.7.0, reading the same server as
 MeTube Super:
@@ -152,7 +156,10 @@ MeTube Super:
   server on the home network when you set it up, sits by the clock when
   closed if you want it to, and updates itself.
 
-### MeTube Lite only
+</details>
+
+<details>
+<summary><strong>MeTube Lite only</strong> — pulls the file to the phone and clears the server, Wi-Fi only</summary>
 
 - **Pulls the file to the phone and then deletes it from the server**, so a
   server shared with family and friends does not fill up.
@@ -163,7 +170,10 @@ MeTube Super:
 - Finished files are registered with Android so they appear in the phone's
   gallery.
 
-### MeTube Super only
+</details>
+
+<details>
+<summary><strong>MeTube Super only</strong> — subscriptions, search inside clips, read along, subtitles, tags, offline, sync</summary>
 
 - **Subscriptions**: follow a channel or playlist, and your MeTube server
   checks it on a schedule and downloads each new video into the same
@@ -208,26 +218,28 @@ MeTube Super:
   so the phone uses the fast path at home and the tunnel elsewhere, with a
   live status dot for each and a server card in settings.
 
+</details>
+
 ## Screenshots
-
-**MeTube Ember at night, and its channels** — the transcript beside a video,
-and the channels your server follows with what each has brought:
-
-![MeTube Ember at night with the transcript beside the video, and the channels page](docs/screenshots/desktop-more.jpg)
 
 **Search inside clips** (Super and Ember): a word found inside two clips, the
 transcript following playback, and the reading mode:
 
 ![A search for "backup" found inside two clips, the transcript following playback, and the reading mode](docs/screenshots/search.jpg)
 
+<details>
+<summary><strong>More screens</strong> — Ember at night, subscriptions, tablets, the players, MeTube Lite</summary>
+<br>
+
+**MeTube Ember at night, and its channels** — the transcript beside a video,
+and the channels your server follows with what each has brought:
+
+![MeTube Ember at night with the transcript beside the video, and the channels page](docs/screenshots/desktop-more.jpg)
+
 **Subscriptions** — your channels in the playlists tab, one channel's page,
 and the notice when a subscription brings new videos:
 
 ![The channels in the playlists tab, a channel's page, and the arrivals notice](docs/screenshots/subscriptions.jpg)
-
-<details>
-<summary><strong>More screens</strong> — tablets, the players, MeTube Lite</summary>
-<br>
 
 **On a tablet** — held sideways, the library with the "Now playing" panel
 beside it; upright, the library in two columns:

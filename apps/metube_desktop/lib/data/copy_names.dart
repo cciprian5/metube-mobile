@@ -22,7 +22,7 @@ String serverSubfolder(String serverPath) {
       .split('/')
       .where((part) => part.isNotEmpty)
       .map(windowsSafeName)
-      .join(Platform.pathSeparator);
+      .join(r'\');
 }
 
 /// [path], or the same name with " (2)", " (3)"… when taken, as Explorer

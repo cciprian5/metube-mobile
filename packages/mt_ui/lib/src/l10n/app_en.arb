@@ -666,6 +666,7 @@
   },
   "desktopCopyFilePreparing": "Preparing the file to copy; its progress is in Downloads",
   "desktopCopyLink": "Copy link",
+  "desktopCopyOneClip": "Copying takes one clip at a time",
   "desktopCopyQueued": "Waiting its turn",
   "desktopCopyQuote": "Copy with time and link",
   "desktopDefaultQualityHint": "What each add starts with; you can still change it for each link.",

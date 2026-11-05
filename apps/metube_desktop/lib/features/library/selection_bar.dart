@@ -13,6 +13,7 @@ import '../clip/clip_actions.dart';
 import '../clip/clip_state.dart';
 import '../clip/tags_dialog.dart';
 import '../lists/list_dialogs.dart';
+import 'clip_keys.dart';
 import 'selection.dart';
 
 /// A list of clips that can be chosen from: the list, and while any is
@@ -31,6 +32,9 @@ class SelectionFrame extends ConsumerStatefulWidget {
 
 class _SelectionFrameState extends ConsumerState<SelectionFrame> {
   late final LibrarySelectionNotifier _selection;
+
+  /// The bar, measured so a notice can rise above it.
+  final _bar = GlobalKey();
 
   @override
   void initState() {
@@ -55,6 +59,7 @@ class _SelectionFrameState extends ConsumerState<SelectionFrame> {
         focused?.widget is EditableText) {
       return false;
     }
+    if (clipCopyOf(event) case final copy?) return _copy(copy, focused);
     if (event.logicalKey == LogicalKeyboardKey.escape &&
         ref.read(librarySelectionProvider).urls.isNotEmpty) {
       _selection.clear();
@@ -67,6 +72,37 @@ class _SelectionFrameState extends ConsumerState<SelectionFrame> {
       return true;
     }
     return false;
+  }
+
+  /// The copy keys with no clip in focus (the owner's report, 2026-11-05:
+  /// with the mouse they did nothing). They take the one clip chosen, else
+  /// the one under the mouse; never several at once, which says so instead
+  /// of copying the lot.
+  bool _copy(ClipCopy copy, BuildContext? focused) {
+    // A clip with focus answers its own keys.
+    if (focused?.findAncestorWidgetOfExactType<ClipKeyArea>() != null) {
+      return false;
+    }
+    if (ModalRoute.of(context)?.isCurrent == false) return false;
+    final chosen = ref.read(librarySelectionProvider).urls;
+    if (chosen.length > 1) {
+      // Over the bar it would hide the bar's last buttons while it shows.
+      final bar = _bar.currentContext?.size?.height ?? 0;
+      showMTNotice(
+        context,
+        message: context.mtl.desktopCopyOneClip,
+        raise: bar + MTSpace.lg,
+      );
+      return true;
+    }
+    final item = chosen.isEmpty
+        ? ClipKeyArea.pointed
+        : widget.items
+              .where((i) => i.canonicalUrl == chosen.single)
+              .firstOrNull;
+    if (item == null) return false;
+    unawaited(runClipCopy(context, copy, item));
+    return true;
   }
 
   /// The choice the bar shows, kept while it leaves.
@@ -110,7 +146,9 @@ class _SelectionFrameState extends ConsumerState<SelectionFrame> {
                   onEnd: () {
                     if (!shown && mounted) setState(() => _shown = const []);
                   },
-                  child: Center(child: _Bar(items: _shown)),
+                  child: Center(
+                    child: _Bar(key: _bar, items: _shown),
+                  ),
                 ),
               ),
             ),
@@ -122,7 +160,7 @@ class _SelectionFrameState extends ConsumerState<SelectionFrame> {
 
 /// What can be done to every chosen clip at once.
 class _Bar extends ConsumerWidget {
-  const _Bar({required this.items});
+  const _Bar({super.key, required this.items});
 
   final List<LibraryItem> items;
 

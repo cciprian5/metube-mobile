@@ -26,6 +26,7 @@ void showMTNotice(
   String? actionLabel,
   VoidCallback? onAction,
   Duration duration = const Duration(seconds: 4),
+  double raise = 0,
 }) {
   final p = MTThemeX.of(context).palette;
   ScaffoldMessenger.of(context)
@@ -33,7 +34,7 @@ void showMTNotice(
     ..showSnackBar(
       SnackBar(
         duration: duration,
-        margin: _desktopPlace(context),
+        margin: _desktopPlace(context, raise),
         padding: EdgeInsets.zero,
         backgroundColor: p.miniBg,
         shape: RoundedRectangleBorder(
@@ -61,8 +62,9 @@ void showMTNotice(
 /// **On the computer, a card in the corner**, the width of a sentence and
 /// above the player bar. Across the whole window it ran from edge to edge
 /// over the play button, far longer than anything it says. Null on a
-/// phone, which keeps its own.
-EdgeInsets? _desktopPlace(BuildContext context) {
+/// phone, which keeps its own. [raise] lifts it further, over something
+/// else at the foot of the page that it would cover.
+EdgeInsets? _desktopPlace(BuildContext context, double raise) {
   final lift = MTDesktopApp.noticeLiftOf(context);
   if (lift == null) return null;
   final width = MediaQuery.sizeOf(context).width;
@@ -74,7 +76,7 @@ EdgeInsets? _desktopPlace(BuildContext context) {
   return EdgeInsets.only(
     left: rtl ? MTSpace.xl : away,
     right: rtl ? away : MTSpace.xl,
-    bottom: lift + MTSpace.sm,
+    bottom: lift + raise + MTSpace.sm,
   );
 }
 

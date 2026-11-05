@@ -729,6 +729,9 @@ class MTLocalizationsAr extends MTLocalizations {
   String get desktopCopyLink => 'نسخ الرابط';
 
   @override
+  String get desktopCopyOneClip => 'النسخ لمقطع واحد في كل مرة';
+
+  @override
   String get desktopCopyQueued => 'ينتظر دوره';
 
   @override

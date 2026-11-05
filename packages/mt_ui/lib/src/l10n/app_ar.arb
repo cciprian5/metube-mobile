@@ -363,6 +363,7 @@
   "desktopCopyFileNoSpace": "المساحة على القرص لا تكفي: الملف {needed} والمتاح {free}",
   "desktopCopyFilePreparing": "يُجهَّز الملف للنسخ، وتقدّمه في التنزيلات",
   "desktopCopyLink": "نسخ الرابط",
+  "desktopCopyOneClip": "النسخ لمقطع واحد في كل مرة",
   "desktopCopyQueued": "ينتظر دوره",
   "desktopCopyQuote": "انسخ مع الوقت والرابط",
   "desktopDefaultQualityHint": "ما تبدأ به كل إضافة، ويبقى تغييره ممكناً لكل رابط.",

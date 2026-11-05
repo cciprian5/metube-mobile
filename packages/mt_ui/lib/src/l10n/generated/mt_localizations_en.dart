@@ -699,6 +699,9 @@ class MTLocalizationsEn extends MTLocalizations {
   String get desktopCopyLink => 'Copy link';
 
   @override
+  String get desktopCopyOneClip => 'Copying takes one clip at a time';
+
+  @override
   String get desktopCopyQueued => 'Waiting its turn';
 
   @override

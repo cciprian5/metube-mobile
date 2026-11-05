@@ -1250,6 +1250,12 @@ abstract class MTLocalizations {
   /// **'Copy link'**
   String get desktopCopyLink;
 
+  /// No description provided for @desktopCopyOneClip.
+  ///
+  /// In en, this message translates to:
+  /// **'Copying takes one clip at a time'**
+  String get desktopCopyOneClip;
+
   /// No description provided for @desktopCopyQueued.
   ///
   /// In en, this message translates to:

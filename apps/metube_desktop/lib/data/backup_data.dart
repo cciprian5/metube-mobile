@@ -113,7 +113,7 @@ class EmberBackups {
 
   /// Writes the two files a phone takes (this computer's tags, playlists
   /// and positions as a backup, and its transcripts) into
-  /// `Downloads\MeTube\For the phone`, and returns that folder.
+  /// `Downloads\MeTube Ember\For the phone`, and returns that folder.
   Future<String?> exportForPhone({DateTime? at}) async {
     final base = await _ref.read(downloadFolderProvider.future);
     if (base == null) return null;

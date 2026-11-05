@@ -85,7 +85,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Copy file'));
-    final saved = '${root.path}\\MeTube\\Night Drive.mp4';
+    final saved = '${root.path}\\MeTube Ember\\Night Drive.mp4';
     for (var i = 0; i < 300 && !File(saved).existsSync(); i++) {
       await tester.pump(const Duration(milliseconds: 20));
     }

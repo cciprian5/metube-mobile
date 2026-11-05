@@ -59,8 +59,16 @@ for Android, and MeTube Ember for Windows.
 - **The smart playlists in Lite are quiet rows**, as in Super: favourites
   and the latest additions in one group, with their counts.
 
+- **Ember's folders bear its own name**: downloads go to
+  `Downloads\MeTube Ember` and offline copies to
+  `Videos\MeTube Ember\Offline` unless you choose others.
+
 ### Fixed
 
+- **A clip downloaded on the phone is no longer announced on the computer
+  as news from a subscription, nor the other way round (Super, Ember).**
+  Only what a subscription's own check queued on the server is announced
+  now, judged from the server's record of each check.
 - **A tag or playlist typed and closed with Done is kept (Ember).** The name
   in the field was dropped unless Enter was pressed, so tags and lists
   seemed never to be made; Done now adds it, and a button beside the field

@@ -64,9 +64,18 @@ void main() {
   late MemoryKeyValueStore store;
   late _SpyNotifications spy;
 
+  /// Requests to `/subscriptions` that fail from now on.
+  late int failNext;
+
+  /// Whether the subscription's checks queue anything after the first
+  /// look; off, every arrival was sent from somewhere else.
+  late bool checksQueue;
+
   setUp(() {
     store = MemoryKeyValueStore();
     spy = _SpyNotifications();
+    failNext = 0;
+    checksQueue = true;
   });
 
   HistoryResponse historyAt(List<(String url, String title, int ms)> rows) =>
@@ -86,34 +95,43 @@ void main() {
 
   /// One enabled subscription unless [subscribed] says otherwise: without
   /// one, the watcher deliberately stays silent.
+  ///
+  /// The subscription's first answer is where counting starts; every later
+  /// one reports a check, at 10 s, that queued five clips (all the clips
+  /// below are created between the two) unless [checksQueue] is off.
   ProviderContainer containerWith({
     bool subscribed = true,
     bool notify = true,
-    int failFirst = 0,
     String followedUrl = 'https://yt.example/@homelab',
     ClipAuthorLookup? author,
   }) {
-    var failures = failFirst;
+    var answered = 0;
     final api = MeTubeApiClient(
       config: ServerConfig(baseUrl: 'https://srv.example.com'),
       dio: Dio()
-        ..httpClientAdapter = _Adapter(
-          (_) => failures-- > 0
-              ? _json('boom', status: 500)
-              : _json(
-                  subscribed
-                      ? [
-                          {
-                            'id': 's1',
-                            'name': 'Homelab Hour',
-                            'url': followedUrl,
-                            'enabled': true,
-                            'check_interval_minutes': 60,
-                          },
-                        ]
-                      : <dynamic>[],
-                ),
-        ),
+        ..httpClientAdapter = _Adapter((_) {
+          if (failNext > 0) {
+            failNext--;
+            return _json('boom', status: 500);
+          }
+          final first = answered++ == 0;
+          final queued = !first && checksQueue;
+          return _json(
+            subscribed
+                ? [
+                    {
+                      'id': 's1',
+                      'name': 'Homelab Hour',
+                      'url': followedUrl,
+                      'enabled': true,
+                      'check_interval_minutes': 60,
+                      'seen_count': queued ? 15 : 10,
+                      'last_checked': queued ? 10 : 0.01,
+                    },
+                  ]
+                : <dynamic>[],
+          );
+        }),
     );
     return ProviderContainer(
       overrides: [
@@ -318,7 +336,8 @@ void main() {
     final watcher = await watcherIn(container);
 
     await watcher.onHistory(historyAt([('https://v/0', 'Old', 100)]));
-    // Nothing has read the list: it is loading when this pass starts.
+    // Nothing has read the list again: it is loading when this pass starts.
+    container.invalidate(subscriptionsProvider);
     expect(container.read(subscriptionsProvider).isLoading, isTrue);
     await watcher.onHistory(
       historyAt([('https://v/0', 'Old', 100), ('https://v/1', 'New', 5000)]),
@@ -330,7 +349,7 @@ void main() {
 
   test('a list that cannot be read leaves the arrival UNSEEN, and the next '
       'read announces it', () async {
-    final container = containerWith(failFirst: 1);
+    final container = containerWith();
     addTearDown(container.dispose);
     final watcher = await watcherIn(container);
     final later = historyAt([
@@ -339,6 +358,7 @@ void main() {
     ]);
 
     await watcher.onHistory(historyAt([('https://v/0', 'Old', 100)]));
+    failNext = 1;
     await watcher.onHistory(later);
     expect(spy.posted, isEmpty);
     expect(await seenKeys(), isNot(contains('https://v/1')));
@@ -449,8 +469,8 @@ void main() {
       expect(spy.posted.single.$1, contains('channel you follow'));
     });
 
-    test('**the guard**: one that cannot be told apart is only "on the '
-        'server", never "from a channel you follow"', () async {
+    test('one whose author cannot be told is still from a subscription when '
+        'a check queued it', () async {
       final container = containerWith(
         followedUrl: followedUrl,
         author: (_) async => null,
@@ -461,8 +481,26 @@ void main() {
       await watcher.onHistory(
         historyAt([known, ('https://www.youtube.com/watch?v=a', 'A', 5000)]),
       );
-      expect(spy.posted.single.$1, contains('on the server'));
-      expect(spy.posted.single.$1, isNot(contains('follow')));
+      expect(spy.posted.single.$1, contains('channel you follow'));
+    });
+
+    // The owner's report, 2026-11-05: the computer announced what the
+    // phone downloaded, and the other way round.
+    test('**the guard**: a clip by a followed channel that no check queued '
+        '(sent from the computer) says nothing, and is seen', () async {
+      checksQueue = false;
+      final container = containerWith(
+        followedUrl: followedUrl,
+        author: (_) async => (name: 'Homelab', url: followedUrl),
+      );
+      addTearDown(container.dispose);
+      final watcher = await afterFirstLook(container);
+
+      await watcher.onHistory(
+        historyAt([known, ('https://www.youtube.com/watch?v=a', 'A', 5000)]),
+      );
+      expect(spy.posted, isEmpty);
+      expect(await seenKeys(), contains('https://www.youtube.com/watch?v=a'));
     });
 
     test('**the guard**: a clip sent from here that finished while the app '

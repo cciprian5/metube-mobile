@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mt_core/mt_core.dart';
 
 import '../di.dart';
+import '../identity.dart';
 
 /// What this computer offers for folders: where they are by default, a
 /// folder dialog, and Explorer. The Windows one is put in by main; the
@@ -110,7 +111,7 @@ class FolderSettings {
   final bool askEachTime;
 
   /// A download goes into the same folder it has on the server
-  /// (`Downloads\MeTube\Kids\clip.mp4`), so both are arranged alike.
+  /// (`Downloads\MeTube Ember\Kids\clip.mp4`), so both are arranged alike.
   final bool serverFolders;
 
   FolderSettings copyWith({
@@ -184,18 +185,23 @@ class FolderSettingsNotifier extends Notifier<FolderSettings> {
       .run(() => write(ref.read(keyValueStoreProvider)));
 }
 
-/// The offline folder in use: the chosen one, or `Videos\MeTube\Offline`.
+/// The offline folder in use: the chosen one, or
+/// `Videos\MeTube Ember\Offline`: the app's own name, not
+/// MeTube's, whose maker has nothing to do with this app.
 final offlineFolderProvider = FutureProvider<String?>((ref) async {
   final chosen = ref.watch(folderSettingsProvider.select((s) => s.offline));
   if (chosen != null) return chosen;
   final videos = await ref.watch(desktopFoldersProvider).videos();
-  return videos == null ? null : '$videos\\MeTube\\Offline';
+  return videos == null
+      ? null
+      : '$videos\\${EmberIdentity.displayName}\\Offline';
 });
 
-/// The download folder in use: the chosen one, or `Downloads\MeTube`.
+/// The download folder in use: the chosen one, or
+/// `Downloads\MeTube Ember`.
 final downloadFolderProvider = FutureProvider<String?>((ref) async {
   final chosen = ref.watch(folderSettingsProvider.select((s) => s.download));
   if (chosen != null) return chosen;
   final downloads = await ref.watch(desktopFoldersProvider).downloads();
-  return downloads == null ? null : '$downloads\\MeTube';
+  return downloads == null ? null : '$downloads\\${EmberIdentity.displayName}';
 });

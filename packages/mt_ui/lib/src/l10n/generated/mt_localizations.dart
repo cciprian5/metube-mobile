@@ -3614,12 +3614,6 @@ abstract class MTLocalizations {
   /// **'{count, plural, =1{1 new from a channel you follow} other{{count} new from the channels you follow}}'**
   String newFromSubscriptions(int count);
 
-  /// No description provided for @newOnServer.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 new clip on the server} other{{count} new clips on the server}}'**
-  String newOnServer(int count);
-
   /// No description provided for @newPlaylistAction.
   ///
   /// In en, this message translates to:

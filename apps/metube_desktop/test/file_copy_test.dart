@@ -228,7 +228,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
       await tester.pump(const Duration(milliseconds: 400));
       expect(pasted, [
-        ['${root.path}\\MeTube\\Night Drive.mp4'],
+        ['${root.path}\\MeTube Ember\\Night Drive.mp4'],
       ]);
       expect(File(pasted.single.single).readAsBytesSync(), [1, 2, 3]);
       expect(find.textContaining('Ready to paste: Night Drive.mp4'), findsOne);

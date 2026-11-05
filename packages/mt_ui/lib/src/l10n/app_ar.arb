@@ -94,13 +94,6 @@
       }
     }
   },
-  "@newOnServer": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "@queueItemsCount": {
     "placeholders": {
       "count": {
@@ -771,7 +764,6 @@
   "newFolder": "مجلد جديد…",
   "newFolderHint": "مثال: Ai/دروس",
   "newFromSubscriptions": "{count, plural, =0{لا جديد} =1{مقطع جديد من قناة تتابعها} =2{مقطعان جديدان من قنواتك} few{{count} مقاطع جديدة من قنواتك} many{{count} مقطعاً جديداً من قنواتك} other{{count} مقطع جديد من قنواتك}}",
-  "newOnServer": "{count, plural, =0{لا جديد} =1{مقطع جديد على السيرفر} =2{مقطعان جديدان على السيرفر} few{{count} مقاطع جديدة على السيرفر} many{{count} مقطعاً جديداً على السيرفر} other{{count} مقطع جديد على السيرفر}}",
   "newPlaylistAction": "قائمة جديدة",
   "newTagHint": "وسم جديد",
   "next": "التالي",

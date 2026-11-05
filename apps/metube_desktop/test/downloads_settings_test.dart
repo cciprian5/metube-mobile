@@ -185,14 +185,19 @@ void main() {
     ) async {
       await open(tester, to: '/settings/folders');
       expect(find.byType(FoldersPane), findsOneWidget);
-      expect(find.text(r'C:\Users\me\Videos\MeTube\Offline'), findsOneWidget);
-      expect(find.text(r'C:\Users\me\Downloads\MeTube'), findsOneWidget);
+      // **The guard** (owner's choice, 2026-11-05): the folders bear the
+      // app's own name, not MeTube's.
+      expect(
+        find.text(r'C:\Users\me\Videos\MeTube Ember\Offline'),
+        findsOneWidget,
+      );
+      expect(find.text(r'C:\Users\me\Downloads\MeTube Ember'), findsOneWidget);
       await tester.tap(find.byType(MTSwitch).first);
       await tester.pumpAndSettle();
       // The download folder now reads "ask me every time", beside the
       // switch's own name.
       expect(find.text('Ask me every time'), findsNWidgets(2));
-      expect(find.text(r'C:\Users\me\Downloads\MeTube'), findsNothing);
+      expect(find.text(r'C:\Users\me\Downloads\MeTube Ember'), findsNothing);
     });
 
     testWidgets('**the guard**: "Change…" and "Open in Explorer" stand apart '

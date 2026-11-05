@@ -178,13 +178,6 @@
       }
     }
   },
-  "@newOnServer": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "@notEnoughSpace": {
     "placeholders": {
       "needed": {
@@ -1124,7 +1117,6 @@
   "newFolder": "New folder…",
   "newFolderHint": "e.g. Ai/Lessons",
   "newFromSubscriptions": "{count, plural, =1{1 new from a channel you follow} other{{count} new from the channels you follow}}",
-  "newOnServer": "{count, plural, =1{1 new clip on the server} other{{count} new clips on the server}}",
   "newPlaylistAction": "New playlist",
   "newTagHint": "New tag",
   "next": "Next",

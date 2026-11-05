@@ -2110,17 +2110,6 @@ class MTLocalizationsEn extends MTLocalizations {
   }
 
   @override
-  String newOnServer(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count new clips on the server',
-      one: '1 new clip on the server',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get newPlaylistAction => 'New playlist';
 
   @override

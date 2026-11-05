@@ -119,7 +119,10 @@ void main() {
         await settled(c);
         final copy = c.read(localCopiesProvider).single;
         expect(copy.phase, CopyPhase.done);
-        expect(copy.path, '${root.path}\\Videos\\MeTube\\Offline\\clip.mp4');
+        expect(
+          copy.path,
+          '${root.path}\\Videos\\MeTube Ember\\Offline\\clip.mp4',
+        );
         expect(File(copy.path!).readAsBytesSync(), [1, 2, 3]);
         final index = c.read(offlineIndexProvider);
         expect(
@@ -153,7 +156,7 @@ void main() {
       await copies.download(clip('Kids/clip.mp4'));
       await copies.download(clip('Kids/clip.mp4'));
       await settled(c);
-      final base = '${root.path}\\Downloads\\MeTube\\Kids';
+      final base = '${root.path}\\Downloads\\MeTube Ember\\Kids';
       expect(c.read(localCopiesProvider).map((c) => c.path), [
         '$base\\clip.mp4',
         '$base\\clip (2).mp4',

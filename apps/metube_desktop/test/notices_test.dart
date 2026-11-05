@@ -70,20 +70,32 @@ void main() {
   });
 
   group('where an arrival came from', () {
-    final eric = ChannelSubscription.fromJson({
-      'id': 'e',
-      'name': 'Eric Tech',
-      'url': 'https://www.youtube.com/@erictech',
-      'enabled': true,
-      'check_interval_minutes': 60,
-      'seen_count': 0,
-    })!;
+    // The clips below are created at noon. The subscription's first answer
+    // is where counting starts (its 11:00 check); every later one reports
+    // the 12:05 check, which queued five clips unless [queued] is false.
+    final noon = DateTime(2026, 11, 5, 12);
+    ChannelSubscription eric({required bool queued}) =>
+        ChannelSubscription.fromJson({
+          'id': 'e',
+          'name': 'Eric Tech',
+          'url': 'https://www.youtube.com/@erictech',
+          'enabled': true,
+          'check_interval_minutes': 60,
+          'seen_count': queued ? 15 : 10,
+          'last_checked':
+              noon
+                  .add(Duration(minutes: queued ? 5 : -60))
+                  .millisecondsSinceEpoch /
+              1000,
+        })!;
 
     Future<_Notices> arrive(
       WidgetTester tester, {
       required LibraryItem clip,
       required ClipAuthorLookup author,
+      bool checksQueue = true,
     }) async {
+      var answers = 0;
       ShellHarness.useWindow(tester, const Size(1440, 900));
       final notices = _Notices();
       final old = _onServer('old');
@@ -96,7 +108,10 @@ void main() {
           keyValueStoreProvider.overrideWithValue(store),
           noticePortProvider.overrideWithValue(notices),
           windowInFrontProvider.overrideWithValue(() async => false),
-          channelsProvider.overrideWith((ref) async => ChannelsState([eric])),
+          channelsProvider.overrideWith(
+            (ref) async =>
+                ChannelsState([eric(queued: answers++ > 0 && checksQueue)]),
+          ),
           arrivalAuthorProvider.overrideWithValue(author),
         ],
       );
@@ -110,12 +125,14 @@ void main() {
       title: 'Reel',
       onServer: true,
       serverFilename: 'reel.mp4',
+      timestamp: noon,
     );
     final video = LibraryItem(
       canonicalUrl: 'https://www.youtube.com/watch?v=a',
       title: 'Video',
       onServer: true,
       serverFilename: 'video.mp4',
+      timestamp: noon,
     );
 
     testWidgets('**the guard**: a reel added elsewhere, with only YouTube '
@@ -132,19 +149,32 @@ void main() {
       final notices = await arrive(
         tester,
         clip: video,
-        author: (_) async => (name: 'Eric Tech', url: eric.url),
+        author: (_) async => (name: 'Eric Tech', url: eric(queued: true).url),
       );
       expect(notices.shown.single.title, contains('channel you follow'));
     });
 
-    testWidgets('**the guard**: one that cannot be told apart is only "on the '
-        'server"', (tester) async {
+    testWidgets('one whose author cannot be told is still from a '
+        'subscription when a check queued it', (tester) async {
       final notices = await arrive(
         tester,
         clip: video,
         author: (_) async => null,
       );
-      expect(notices.shown.single.title, contains('on the server'));
+      expect(notices.shown.single.title, contains('channel you follow'));
+    });
+
+    // The owner's report, 2026-11-05: the computer announced what the
+    // phone downloaded, and the other way round.
+    testWidgets('**the guard**: a clip by a followed channel that no check '
+        'queued (sent from the phone) is not announced', (tester) async {
+      final notices = await arrive(
+        tester,
+        clip: video,
+        author: (_) async => (name: 'Eric Tech', url: eric(queued: true).url),
+        checksQueue: false,
+      );
+      expect(notices.shown, isEmpty);
     });
   });
 

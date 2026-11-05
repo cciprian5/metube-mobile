@@ -10,7 +10,7 @@ for Android, and MeTube Ember for Windows.
 
 ## [Unreleased]
 
-## [2.7.0] - 2026-10-30
+## [2.7.0] - 2026-11-05
 
 ### Added
 

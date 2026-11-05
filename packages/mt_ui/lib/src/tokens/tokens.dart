@@ -71,6 +71,10 @@ abstract final class MTMotion {
   /// A small element's pulse: badge, button, chip.
   static const Duration tap = Duration(milliseconds: 160);
 
+  /// Half a breath of a placeholder while the first answer is awaited:
+  /// slow enough to read as waiting, not as an alarm.
+  static const Duration wait = Duration(milliseconds: 900);
+
   /// A full screen transition.
   static const Duration page = Duration(milliseconds: 240);
 

@@ -9,6 +9,42 @@ import 'package:mt_ui/mt_ui.dart';
 /// but when it moves: only while playing, never for someone who turned
 /// animations off, and never asking for frames once it has settled.
 void main() {
+  // The owner, 2026-11-05: by day the glow could hardly be seen, at night
+  // it was right. Measured as the strongest ember's contrast with the
+  // ground, on the real palettes, in both apps and on both kinds of screen.
+  group('**the guard**: as present by day as by night', () {
+    double contrast(Color a, Color b) {
+      final (hi, lo) = a.computeLuminance() > b.computeLuminance()
+          ? (a.computeLuminance(), b.computeLuminance())
+          : (b.computeLuminance(), a.computeLuminance());
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    double standing(MTPalette p, {required bool dark, required bool desktop}) {
+      final peak = MTBreathingGlow.peakFor(dark: dark, desktop: desktop);
+      final ember = desktop ? p.accentDeep : p.accent;
+      return contrast(
+        Color.alphaBlend(ember.withValues(alpha: peak), p.bg),
+        p.bg,
+      );
+    }
+
+    for (final desktop in [false, true]) {
+      for (final (day, night) in [
+        (MTPalette.superDay, MTPalette.superNight),
+        (MTPalette.liteDay, MTPalette.liteNight),
+      ]) {
+        test('${desktop ? 'computer' : 'phone'}, '
+            '${day == MTPalette.superDay ? 'Super' : 'Lite'}', () {
+          final byNight = standing(night, dark: true, desktop: desktop);
+          final byDay = standing(day, dark: false, desktop: desktop);
+          expect(byDay, greaterThanOrEqualTo(1.5));
+          expect(byDay, greaterThan(byNight * 0.8));
+        });
+      }
+    }
+  });
+
   // One theme for every pump: a new one each time would make the app's
   // own theme animate between them, which is not the glow moving.
   final theme = mtTheme(MTVariant.superApp, Brightness.light);

@@ -49,6 +49,7 @@ Future<T?> showEmberMenu<T>(
   final at = overlay.globalToLocal(globalPosition);
   final size = overlay.size;
   final iconRoom = entries.any((e) => e.icon != null);
+  final row = emberMenuRowHeight(entries, size.height);
   return showMenu<T>(
     context: context,
     // At the app's pace: in as a page comes, out as quickly as a hover;
@@ -82,7 +83,7 @@ Future<T?> showEmberMenu<T>(
         if (entry.value case final value?)
           PopupMenuItem<T>(
             value: value,
-            height: MTDensity.desktop.row,
+            height: row,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -134,6 +135,23 @@ Future<T?> showEmberMenu<T>(
     ],
   );
 }
+
+/// The height of each row of a menu of [entries] in an overlay [room] tall:
+/// the usual row while the menu fits, shorter rows in a short window so its
+/// last line (often Delete) is not left below the edge, to be scrolled to.
+/// Never under [emberMenuTightRow]: past that the menu scrolls instead.
+double emberMenuRowHeight<T>(List<EmberMenuEntry<T>> entries, double room) {
+  final rows = entries.where((e) => e.value != null).length;
+  if (rows == 0) return MTDensity.desktop.row;
+  final dividers = entries.length - rows;
+  // Flutter keeps the menu 8 px from each edge of the overlay, pads its
+  // list 8 px above and below, and gives a divider 16.
+  final free = room - 4 * 8 - dividers * 16;
+  return (free / rows).clamp(emberMenuTightRow, MTDensity.desktop.row);
+}
+
+/// The shortest a menu row gets: an icon and a line of small text.
+const emberMenuTightRow = 28.0;
 
 /// The keyboard's way to a right-click menu: the menu key, or Shift+F10,
 /// pressed on whatever has focus inside [child] opens [onMenu] at the

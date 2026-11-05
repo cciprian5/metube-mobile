@@ -30,6 +30,12 @@ typedef MTEmber = ({Offset centre, double radius, double strength});
 /// back to the centre within a second — the still halo of before — and
 /// stay. And it stays still for anyone who turned animations off.
 class MTBreathingGlow extends StatefulWidget {
+  /// The strongest an ember gets: by day about as present on stone as at
+  /// night on charcoal (contrast 1.6 against 1.75); 0.18 and 0.26 stood
+  /// only 1.30 and 1.37 apart, and it could hardly be seen to move.
+  static double peakFor({required bool dark, required bool desktop}) =>
+      dark ? 0.34 : (desktop ? 0.32 : 0.36);
+
   const MTBreathingGlow({
     super.key,
     required this.playing,
@@ -203,11 +209,10 @@ class _MTBreathingGlowState extends State<MTBreathingGlow>
     // they cross reads warmer than either. Both from the palette, so the
     // petrol app gets two petrols.
     final colors = desktop ? [p.accentDeep, p.accent] : [p.accent, p.accent];
-    // Night needs more of it to be seen on charcoal than day needs on
-    // stone, where a moving light too strong reads as a travelling stain;
-    // on a large screen by day, more so.
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    final peak = dark ? 0.34 : (desktop ? 0.18 : 0.26);
+    final peak = MTBreathingGlow.peakFor(
+      dark: Theme.of(context).brightness == Brightness.dark,
+      desktop: desktop,
+    );
     // Room for the farthest ember: its offset plus its radius, past the
     // cover's half.
     final reach = widget.size * 0.5;

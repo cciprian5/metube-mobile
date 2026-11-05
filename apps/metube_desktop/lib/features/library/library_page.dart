@@ -17,6 +17,7 @@ import 'library_chips.dart';
 import 'library_heading.dart';
 import 'library_skeleton.dart';
 import 'library_item_view.dart';
+import 'library_scroll.dart';
 import 'library_state.dart';
 import 'selection.dart';
 import 'selection_bar.dart';
@@ -59,51 +60,55 @@ class LibraryPage extends ConsumerWidget {
 
     return SelectionFrame(
       items: visible.valueOrNull ?? const [],
-      child: CustomScrollView(
-        slivers: [
-          PinnedHeaderSliver(
-            child: PinnedLibraryHeading(
-              child: LibraryHeading(
-                title: title,
-                counts: all.isEmpty
-                    ? null
-                    : mtMetaLine([
-                        l.transcriptsClips(held),
-                        if (scope == LibraryScope.all && offline > 0)
-                          l.desktopOfflineCount(offline),
-                      ]),
-                mode: options.mode,
-                onMode: (m) => unawaited(
-                  ref.read(libraryViewProvider.notifier).setMode(m),
-                ),
-                sort: options.sort,
-                onSort: (s) => unawaited(
-                  ref.read(libraryViewProvider.notifier).setSort(s),
+      child: LibraryScroll(
+        place: libraryPlaceKey(scope, options),
+        builder: (controller) => CustomScrollView(
+          controller: controller,
+          slivers: [
+            PinnedHeaderSliver(
+              child: PinnedLibraryHeading(
+                child: LibraryHeading(
+                  title: title,
+                  counts: all.isEmpty
+                      ? null
+                      : mtMetaLine([
+                          l.transcriptsClips(held),
+                          if (scope == LibraryScope.all && offline > 0)
+                            l.desktopOfflineCount(offline),
+                        ]),
+                  mode: options.mode,
+                  onMode: (m) => unawaited(
+                    ref.read(libraryViewProvider.notifier).setMode(m),
+                  ),
+                  sort: options.sort,
+                  onSort: (s) => unawaited(
+                    ref.read(libraryViewProvider.notifier).setSort(s),
+                  ),
                 ),
               ),
             ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(
-              MTSpace.xl,
-              MTSpace.xs,
-              MTSpace.xl,
-              MTSpace.md,
-            ),
-            sliver: SliverList.list(
-              children: [
-                LibraryChips(scope: scope),
-                if (serverMissing && all.isNotEmpty) ...[
-                  const SizedBox(height: MTSpace.md),
-                  _ServerMissing(
-                    onRetry: () => ref.invalidate(historyProvider),
-                  ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                MTSpace.xl,
+                MTSpace.xs,
+                MTSpace.xl,
+                MTSpace.md,
+              ),
+              sliver: SliverList.list(
+                children: [
+                  LibraryChips(scope: scope),
+                  if (serverMissing && all.isNotEmpty) ...[
+                    const SizedBox(height: MTSpace.md),
+                    _ServerMissing(
+                      onRetry: () => ref.invalidate(historyProvider),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          ..._content(context, ref, visible, all, configured, held),
-        ],
+            ..._content(context, ref, visible, all, configured, held),
+          ],
+        ),
       ),
     );
   }
